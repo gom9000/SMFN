@@ -44,6 +44,25 @@ implements ScalarFieldElement<Complex>
 
 
     /**
+     * Constructs a new complex number with the given real part.
+     * @param real the real part of the complex number
+     */
+    public Complex(double real)
+    {
+    	this(real, 0);
+    }
+
+
+    /**
+     * Constructs a new complex from the given one.
+     */
+    public Complex(Complex z)
+    {
+    	this(z.getRe(), z.getIm());
+    }
+
+
+    /**
      * Returns the real part of this complex number.
      * @return the real part of this complex number
      */
@@ -87,10 +106,13 @@ implements ScalarFieldElement<Complex>
 	{
 		double re = this.real;
 		double im = this.imaginary;
+		double re0, im0;
     	for (int ii = 1; ii < power; ii++)
     	{
-    		re = (re * this.real) - (im * this.imaginary);
-        	im = (im * this.imaginary) + (im * this.real);        	
+    		re0 = (re * this.real) - (im * this.imaginary);
+        	im0 = (re * this.imaginary) + (im * this.real);
+        	re = re0;
+        	im = im0;
     	}
 
 		return new Complex(re, im);
