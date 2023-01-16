@@ -20,7 +20,7 @@ import net.gommagomma.smfn.math.algebra.ComplexField;
  * 
  * @author gommagomma.net
  */
-public class Mandelbrot
+public class MandelbrotSet
 extends ComplexIteration
 {
 	private int maximumIterations;
@@ -29,7 +29,7 @@ extends ComplexIteration
 	private ComplexField C = new ComplexField();
 
 
-	public Mandelbrot(int maximumIterations, double iterationEpsilon)
+	public MandelbrotSet(int maximumIterations, double iterationEpsilon)
 	{
 		super();
 		this.maximumIterations = maximumIterations;
@@ -59,6 +59,6 @@ extends ComplexIteration
 	@Override
 	public boolean iterationCondition(Complex zold, Complex zn)
 	{
-		return ((getCurrentIteration() <= maximumIterations) && zn.modulus() <= 2.0 && Math.abs(zn.modulus()-zold.modulus()) > iterationEpsilon); 
+		return (getCurrentIteration() <= maximumIterations) && zn.modulus() <= 2.0 && Math.abs(zn.modulus()-zold.modulus()) > iterationEpsilon; 
 	}
 }

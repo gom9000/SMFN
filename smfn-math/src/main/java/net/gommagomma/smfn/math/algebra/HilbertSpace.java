@@ -1,10 +1,10 @@
 package net.gommagomma.smfn.math.algebra;
 
 
-public abstract class HilbertSpace<F, E extends ScalarFieldElement<E>>
-extends VectorSpace<F, E>
+public abstract class HilbertSpace<E extends ScalarFieldElement<E>>
+extends VectorSpace<E>
 {
-	public HilbertSpace(int dimension, Field<F, E> field)
+	public HilbertSpace(int dimension, Field<E> field)
 	{
 		super(dimension, field);
 	}

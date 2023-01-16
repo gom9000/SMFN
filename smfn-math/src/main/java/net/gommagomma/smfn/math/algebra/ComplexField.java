@@ -17,7 +17,7 @@ package net.gommagomma.smfn.math.algebra;
  * @author gommagomma.net
  */
 public class ComplexField
-implements Field<ComplexField, Complex>
+implements Field<Complex>
 {
 	@Override
 	public Complex sum(Complex a, Complex b)
@@ -39,7 +39,7 @@ implements Field<ComplexField, Complex>
 	@Override
 	public Complex sub(Complex a, Complex b)
 	{
-		return new Complex(a.getRe() - b.getRe(), b.getIm() - b.getIm());
+		return new Complex(a.getRe() - b.getRe(), a.getIm() - b.getIm());
 	}
 
 

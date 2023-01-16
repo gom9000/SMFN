@@ -15,14 +15,13 @@ package net.gommagomma.smfn.math.algebra;
 /**
  * Representation of the vector space on field F.
  * @author gommagomma.net
- * @param <F> - the type of the under scalar field
  * @param <E> - the type of the under scalar field elements
  */
-public class VectorSpace<F, E extends ScalarFieldElement<E>>
-implements Space<VectorSpace<F, E>, Vector<E>, F, E>
+public class VectorSpace<E extends ScalarFieldElement<E>>
+implements Space<Vector<E>, E>
 {
     private int dimension;
-    private Field<F, E> field;
+    private Field<E> field;
 
 
     /**
@@ -30,7 +29,7 @@ implements Space<VectorSpace<F, E>, Vector<E>, F, E>
      * @param dimension the dimension of the space
      * @param field the lower scalar field
      */
-    public VectorSpace(int dimension, Field<F, E> field)
+    public VectorSpace(int dimension, Field<E> field)
     {
     	this.dimension = dimension;
     	this.field = field;
@@ -45,7 +44,7 @@ implements Space<VectorSpace<F, E>, Vector<E>, F, E>
 
 
 	@Override
-	public Field<F, E> getField()
+	public Field<E> getField()
 	{
 		return this.field;
 	}

@@ -37,6 +37,6 @@ public enum OrderOfMagnitude
 
 	public double getValue()
     {
-    	return (Math.pow(10, order));
+    	return Math.pow(10, order);
     }
 }

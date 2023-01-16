@@ -12,6 +12,9 @@
 package net.gommagomma.smfn.math.algebra;
 
 
+import net.gommagomma.smfn.math.SMFNConstant;
+
+
 /**
  * Representation of a complex number.
  * @author gommagomma.net
@@ -132,7 +135,9 @@ implements ScalarFieldElement<Complex>
     @Override
     public final boolean equals(Object z)
     {
-        return (z instanceof Complex && this.real == ((Complex)z).getRe()) && (this.imaginary == ((Complex)z).getIm());
+        return z instanceof Complex
+            && ((this.real - ((Complex)z).getRe()) < SMFNConstant.EPSILON)
+        	&& ((this.imaginary - ((Complex)z).getIm()) < SMFNConstant.EPSILON);
     }
 
 

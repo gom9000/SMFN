@@ -68,20 +68,15 @@ implements FieldElement<Vector<E>>
     @Override
     public final boolean equals(Object z) 
     {
-    	if (z instanceof ScalarFieldElement<?>)
+    	for (int ii = 0; ii < elements.size(); ii++)
     	{
-    		for (int ii = 0; ii < elements.size(); ii++)
+    		if (!((E)elements.get(ii)).equals(z))
     		{
-    			if (!((E)elements.get(ii)).equals(z))
-    			{
-    				return false;
-    			}
+    			return false;
     		}
-
-    		return true;
     	}
 
-    	return false;
+    	return true;
     }
 
 

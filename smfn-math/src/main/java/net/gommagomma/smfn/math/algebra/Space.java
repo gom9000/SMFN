@@ -19,16 +19,14 @@ package net.gommagomma.smfn.math.algebra;
  * - multiplication by a scalar: 
  * 
  * @author gommagomma.net
- * @param <S> - the type of the space
  * @param <V> - the type of the space elements
- * @param <F> - the type of the under scalar field
  * @param <E> - the type of the under scalar field elements
  */
-public interface Space<S, V, F, E>
+public interface Space<V, E>
 extends AlgebraicStructure
 {
 	public int getDimension();
-	public Field<F, E> getField();
+	public Field<E> getField();
 	public V sum(V u, V v);
 	public V mul(E l, V u);
 }

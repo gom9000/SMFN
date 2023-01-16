@@ -9,15 +9,14 @@ public class MainTest
 	public static void main(String[] args)
 	throws Exception
 	{
-		Field<ComplexField, Complex> field = new ComplexField();
+		Field<Complex> field = new ComplexField();
 		Complex z1 = new Complex(1,-5);
 		Complex z2 = new Complex(2,0);
 
 		Complex z3 = field.sum(z1, z2);
 		System.out.println(z1 + " + " + z2 + " = " + z3);
 
-		Space<VectorSpace<RealField, Real>, Vector<Real>, RealField, Real> realVectorSpace 
-		     = new VectorSpace<RealField, Real>(4, new RealField());
+		Space<Vector<Real>, Real> realVectorSpace = new VectorSpace<Real>(4, new RealField());
 		Vector<Real> v1 = new Vector<Real>(4);
 		v1.add(new Real(4));
 		v1.add(new Real(4));

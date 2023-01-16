@@ -16,10 +16,9 @@ package net.gommagomma.smfn.math.algebra;
  * A field is an algebraic structure on which addition, subtraction, multiplication
  * and division are defined.
  * @author gommagomma.net
- * @param <F> - the type of the field
  * @param <E> - the type of the field elements
  */
-public interface Field<F, E>
+public interface Field<E>
 extends AlgebraicStructure
 {
 	public E sum(E a, E b);

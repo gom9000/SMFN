@@ -12,6 +12,9 @@
 package net.gommagomma.smfn.math.algebra;
 
 
+import net.gommagomma.smfn.math.SMFNConstant;
+
+
 /**
  * Representation of a real number.
  * @author gommagomma.net
@@ -64,7 +67,7 @@ implements ScalarFieldElement<Real>
     @Override
     public final boolean equals(Object e) 
     {
-        return (e instanceof Real && this.value == ((Real)e).getValue());
+        return (e instanceof Real) && (this.value - ((Real)e).getValue()) < SMFNConstant.EPSILON;
     }
 
 

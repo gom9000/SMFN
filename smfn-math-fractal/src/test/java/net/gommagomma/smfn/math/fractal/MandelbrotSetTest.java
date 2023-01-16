@@ -19,7 +19,7 @@ public class MandelbrotSetTest
 		int sizeY = Math.abs((int)((2.6) / d))+1;
 		System.out.println("size: "+sizeX+"x"+sizeY);
 
-		ComplexIteration fractal = new Mandelbrot(1000, .00001);
+		ComplexIteration fractal = new MandelbrotSet(1000, .00001);
 		DiscreteGaussPlane plane = new DiscreteGaussPlane(lu, rd, d);
 
 		PlaneToArrayOfScalarOperator<Complex> op = fractal.iteratePlane(plane);

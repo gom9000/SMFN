@@ -17,7 +17,7 @@ package net.gommagomma.smfn.math.algebra;
  * @author gommagomma.net
  */
 public class RealField
-implements Field<RealField, Real>
+implements Field<Real>
 {
 	@Override
 	public Real sum(Real a, Real b)
