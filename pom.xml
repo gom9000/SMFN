@@ -10,5 +10,6 @@
 
 	<modules>
 		<module>smfn-math</module>
+        <module>smfn-math-fractal</module>
     </modules>
 </project>
