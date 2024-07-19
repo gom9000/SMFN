@@ -10,6 +10,7 @@
 
 	<modules>
 		<module>SMFN-math</module>
+		<module>SMFN-math-fractal</module>
     </modules>
 
 	<properties>
