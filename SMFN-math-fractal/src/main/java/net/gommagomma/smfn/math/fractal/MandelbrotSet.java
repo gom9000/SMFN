@@ -12,8 +12,8 @@
 package net.gommagomma.smfn.math.fractal;
 
 
-import net.gommagomma.smfn.math.algebra.Complex;
-import net.gommagomma.smfn.math.algebra.ComplexField;
+import net.gommagomma.smfn.old.math.algebra.Complex;
+import net.gommagomma.smfn.old.math.algebra.ComplexField;
 
 
 /**
@@ -47,14 +47,23 @@ extends ComplexIteration
 	@Override
 	public void postIteration(Complex zold, Complex zn)
 	{
-		//System.out.println(super.getCurrentIteration() + " : |zn|=" + zn.modulus() + ", delta=" + Math.abs(zn.modulus()-zold.modulus()));
+		//System.out.println(currentIteration + " : |zn|=" + zn.modulus() + ", delta=" + Math.abs(zn.modulus()-zold.modulus()));
 	}
 
 
 	@Override
 	public boolean iterationCondition(Complex zold, Complex zn)
 	{
-		//return getCurrentIteration() <= 3;
-		return (getCurrentIteration() <= maximumIterations) && (zn.modulus() <= 2+iterationEpsilon) && (Math.abs(zn.modulus()-zold.modulus()) > iterationEpsilon);
+		//System.out.println(currentIteration + " : |zn|=" + zn.modulus() + ", delta=" + Math.abs(zn.modulus()-zold.modulus()));
+		return (currentIteration <= maximumIterations) && (zn.modulus() <= 2) && (Math.abs(zn.modulus()-zold.modulus()) > iterationEpsilon);
+	}
+
+
+	@Override
+	public void postIterationLoop(Complex zold, Complex zn)
+	{
+		//System.out.println(currentIteration + " : |zn|=" + zn.modulus() + ", delta=" + Math.abs(zn.modulus()-zold.modulus()));
+		if (currentIteration >= maximumIterations) currentIteration = -currentIteration;
+		else if ((zn.modulus() <= 2)) currentIteration = -currentIteration;
 	}
 }

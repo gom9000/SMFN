@@ -1,9 +1,10 @@
 package net.gommagomma.smfn.math.fractal;
 
 
-import net.gommagomma.smfn.math.algebra.Complex;
-import net.gommagomma.smfn.math.geometry.DiscreteGaussPlane;
-import net.gommagomma.smfn.math.geometry.PlaneToArrayOfScalarOperator;
+import net.gommagomma.smfn.old.math.algebra.Complex;
+import net.gommagomma.smfn.old.math.algebra.Real;
+import net.gommagomma.smfn.old.math.geometry.DiscreteGaussPlane;
+import net.gommagomma.smfn.old.math.geometry.PlaneToScalarOperator;
 
 
 public class MandelbrotSetTest
@@ -11,27 +12,21 @@ public class MandelbrotSetTest
 	static public void main(String[] args)
 	throws Exception
 	{
-		Complex leftUp = new Complex(-2.1, 1.3);
-		Complex rightDown = new Complex(.6, -1.3);
-		double d = 0.1; //.0014;
+		Complex leftUp = new Complex(-2, 1.35);
+		Complex rightDown = new Complex(1, -1.35);
+		double d = 0.1;
 
-		int sizeX = Math.abs((int)((2.7) / d))+1;
-		int sizeY = Math.abs((int)((2.6) / d))+1;
-		System.out.println("size: "+sizeX+"x"+sizeY);
+		ComplexIteration fractal = new MandelbrotSet(1000000, Double.MIN_NORMAL);
+		//DiscreteGaussPlane plane = new DiscreteGaussPlane(leftUp, rightDown, d);
+		DiscreteGaussPlane plane = new DiscreteGaussPlane(leftUp, rightDown, 31, 27);
+		PlaneToScalarOperator<Real> op = fractal.iteratePlane(plane);
 
-		ComplexIteration fractal = new MandelbrotSet(1000, .000001);
-		DiscreteGaussPlane plane = new DiscreteGaussPlane(leftUp, rightDown, d);
-
-		PlaneToArrayOfScalarOperator<Complex> op = fractal.iteratePlane(plane);
-
-    	for (int jj = 0; jj < plane.getSizeY(); jj++)
+    	for (int yy = 0; yy < plane.getSizeY(); yy++)
     	{
-    		for (int ii = 0; ii < plane.getSizeX(); ii++)
+    		for (int xx = 0; xx < plane.getSizeX(); xx++)
     		{
-    			//System.out.print(((op.getValue(ii, jj)[0].modulus()<=2)?"*":" "));
-    			//System.out.print("["+((op.getValue(ii, jj)[0].modulus()<=2)?"*":" ")+"]");
-    			//System.out.print("["+(op.getValue(ii, jj))[0]+"]");
-    			System.out.print("["+(int)(op.getValue(ii, jj))[1].getRe()+"]");
+    			if (op.getValue(xx, yy).getValue() <= 0) System.out.print("[*]");
+    			else System.out.print("[ ]");
     		}
     		System.out.println();
     	}

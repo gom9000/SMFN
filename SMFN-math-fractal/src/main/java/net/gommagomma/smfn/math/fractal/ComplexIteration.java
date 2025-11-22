@@ -12,14 +12,15 @@
 package net.gommagomma.smfn.math.fractal;
 
 
-import net.gommagomma.smfn.math.algebra.Complex;
-import net.gommagomma.smfn.math.geometry.DiscreteGaussPlane;
-import net.gommagomma.smfn.math.geometry.PlaneToArrayOfScalarOperator;
+import net.gommagomma.smfn.old.math.algebra.Complex;
+import net.gommagomma.smfn.old.math.algebra.Real;
+import net.gommagomma.smfn.old.math.geometry.DiscreteGaussPlane;
+import net.gommagomma.smfn.old.math.geometry.PlaneToScalarOperator;
 
 
 public abstract class ComplexIteration
 {
-	private int currentIteration;
+	protected int currentIteration;
 	protected int maximumIterations;
 	protected double iterationEpsilon;
 
@@ -28,6 +29,7 @@ public abstract class ComplexIteration
 	abstract public void preIteration(Complex zn);
 	abstract public void postIteration(Complex zold, Complex zn);
 	abstract public boolean iterationCondition(Complex zold, Complex zn);
+	abstract public void postIterationLoop(Complex zold, Complex zn);
 
 
 	public ComplexIteration(int maximumIterations, double iterationEpsilon)
@@ -58,27 +60,23 @@ public abstract class ComplexIteration
 			postIteration(zold, zn);
 			this.currentIteration++;
 		}
-		this.currentIteration--;
+		//this.currentIteration--;
+		postIterationLoop(zold, zn);
 
 		return zn;
 	}
 
 
-	public PlaneToArrayOfScalarOperator<Complex> iteratePlane(DiscreteGaussPlane plane)
+	public PlaneToScalarOperator<Real> iteratePlane(DiscreteGaussPlane plane)
 	{
-		PlaneToArrayOfScalarOperator<Complex> operator = new PlaneToArrayOfScalarOperator<Complex>(plane);
+		PlaneToScalarOperator<Real> operator = new PlaneToScalarOperator<Real>(plane);
 
-		for (int xx = 0; xx < plane.getSizeX(); xx++)
+		for (int yy = 0; yy < plane.getSizeY(); yy++)
 		{
-			for (int yy = 0; yy < plane.getSizeY(); yy++)
+			for (int xx = 0; xx < plane.getSizeX(); xx++)
 			{
-				Complex z = iteratePoint(plane.getPoint(xx, yy));
-				//plane.setValue(xx, yy, new Real(getCurrentIteration()));
-				Complex[] values = new Complex[2];
-				values[0] = z;
-				//values[1] = new Complex(currentIteration>=maximumIterations? 0 : currentIteration);
-				values[1] = new Complex(currentIteration);
-				operator.setValue(xx, yy, values);
+				iteratePoint(plane.getPoint(xx, yy));
+				operator.setValue(xx, yy, new Real(currentIteration));
 			}
 		}
 
