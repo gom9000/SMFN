@@ -1,15 +1,13 @@
 package net.gommagomma.smfn.math.linearalgebra.complex;
 
+import java.util.Arrays;
+import java.util.List;
+
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.VectorElement;
 import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
 
 // Implementa VectorElement<ScalarType, VectorType>
 // E implementa Normable<NormResultType, VectorType>
@@ -72,12 +70,11 @@ implements VectorElement<Complex, ComplexVector>, Normable<Real, ComplexVector>
         if (this.dimension != other.dimension) {
             throw new IllegalArgumentException("Vectors must have the same dimension to add.");
         }
-        List<Complex> resultComponents = new ArrayList<>(dimension);
         Complex[] resultData = new Complex[dimension];
         for (int i = 0; i < dimension; i++) {
             resultData[i] = this.data[i].add(other.data[i]);
         }
-        return new ComplexVector(resultComponents);
+        return new ComplexVector(resultData);
     }
     
     @Override
