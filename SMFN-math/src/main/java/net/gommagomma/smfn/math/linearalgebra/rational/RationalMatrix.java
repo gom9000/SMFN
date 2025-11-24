@@ -1,8 +1,12 @@
 package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import java.util.Arrays;
+import java.util.Comparator;
+
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.linearalgebra.core.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
+import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 
 /**
  * Rappresenta una matrice di numeri razionali immutabile, fornendo precisione esatta.
@@ -162,13 +166,22 @@ implements Matrix<Rational, RationalVector, RationalMatrix>
 		return new RationalVector(columnData);
 	}
 
-    // --- Metodi Complessi (Determinante, Inversa) ---
-    // Placeholder in attesa di algoritmi numerici esatti (es. Gauss-Jordan)
-    @Override
-    public Rational determinant() { throw new UnsupportedOperationException("Determinant calculation not yet implemented for RationalMatrix."); }
+	@Override
+    public Rational determinant()
+    {
+        Comparator<Rational> rationalComparator = Comparator.naturalOrder();
+
+        return GaussianElimination.determinant(this.data, Rational.ZERO, rationalComparator);
+    }
 
     @Override
-    public RationalMatrix inverse() { throw new UnsupportedOperationException("Matrix inversion not yet implemented for RationalMatrix."); }
+    public RationalMatrix inverse()
+    {
+        Comparator<Rational> rationalComparator = Comparator.naturalOrder();
+        Rational[][] invertedData = GaussJordanElimination.inverse(this.data, Rational.ZERO, Rational.ONE,rationalComparator);
+
+        return new RationalMatrix(invertedData);
+    }
 
     // --- Standard Java impls ---
     

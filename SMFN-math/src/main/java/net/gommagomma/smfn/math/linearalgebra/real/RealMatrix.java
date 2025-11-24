@@ -1,9 +1,12 @@
 package net.gommagomma.smfn.math.linearalgebra.real;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
+import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 
 public final class RealMatrix
 implements Matrix<Real, RealVector, RealMatrix>
@@ -58,22 +61,20 @@ implements Matrix<Real, RealVector, RealMatrix>
 
     
     @Override
-    public Real determinant() {
-        if (rows != cols) throw new UnsupportedOperationException("Determinant only for square matrices.");
-        // L'implementazione efficiente richiede algoritmi di decomposizione (es. LU) 
-        // che sono complessi da implementare da zero. Placeholder per ora.
-        // Puoi usare un algoritmo ricorsivo di Laplace per piccole matrici (2x2, 3x3)
-        if (rows == 2) {
-            return data[0][0].multiply(data[1][1]).subtract(data[0][1].multiply(data[1][0]));
-        }
-        throw new UnsupportedOperationException("Advanced determinant calculation not yet implemented.");
+    public Real determinant()
+    {
+        Comparator<Real> realComparator = Comparator.naturalOrder();
+
+        return GaussianElimination.determinant(this.data, Real.ZERO, realComparator);
     }
 
     @Override
-    public RealMatrix inverse() {
-        if (rows != cols) throw new UnsupportedOperationException("Inverse only for square matrices.");
-        // Richiede algoritmi complessi come Gauss-Jordan. Placeholder per ora.
-        throw new UnsupportedOperationException("Matrix inversion not yet implemented.");
+    public RealMatrix inverse()
+    {
+        Comparator<Real> realComparator = Comparator.naturalOrder();
+        Real[][] invertedData = GaussJordanElimination.inverse(this.data, Real.ZERO, Real.ONE, realComparator);
+
+        return new RealMatrix(invertedData);
     }
 
     // --- Standard Java impls ---

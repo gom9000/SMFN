@@ -1,9 +1,12 @@
 package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.linearalgebra.core.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
+import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 
 /**
  * Rappresenta una matrice di numeri complessi immutabile.
@@ -171,13 +174,22 @@ implements Matrix<Complex, ComplexVector, ComplexMatrix>
 		return new ComplexVector(columnData);
 	}
 
-    // --- Metodi Complessi (Determinante, Inversa) ---
-    // Questi metodi sono placeholder per ora, richiedono algoritmi avanzati.
-    @Override
-    public Complex determinant() { throw new UnsupportedOperationException("Determinant calculation not yet implemented."); }
+	@Override
+    public Complex determinant() {
+        // Usa il comparatore per modulo per i complessi
+        Comparator<Complex> complexComparator = (c1, c2) -> Double.compare(c1.modulus(), c2.modulus());
+
+        return GaussianElimination.determinant(this.data, Complex.ZERO, complexComparator);
+    }
 
     @Override
-    public ComplexMatrix inverse() { throw new UnsupportedOperationException("Matrix inversion not yet implemented."); }
+    public ComplexMatrix inverse()
+    {
+        Comparator<Complex> complexComparator = (c1, c2) -> Double.compare(c1.modulus(), c2.modulus());
+        Complex[][] invertedData = GaussJordanElimination.inverse(this.data, Complex.ZERO, Complex.ONE, complexComparator);
+
+        return new ComplexMatrix(invertedData);	
+    }
 
     // --- Standard Java impls ---
     

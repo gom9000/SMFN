@@ -103,6 +103,10 @@ smfn/
 - interface Matrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends Matrix<K, V, M>> extends AlgebraicElement<M> {}
 - interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends Matrix<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
 
+## net.gommagomma.smfn.math.linearalgebra.core.algorithms
+- final class GaussianElimination {public static <K extends FieldElement<K>> K determinant(K[][] matrixData, K elementZero, Comparator<K> magnitudeComparator) {}}
+- final class GaussJordanElimination {public static <K extends FieldElement<K>> K[][] inverse(K[][] matrixData, K elementZero, K elementOne, java.util.Comparator<K> magnitudeComparator) {}}
+
 ### net.gommagomma.smfn.math.linearalgebra.natural:
 - class NaturalVector implements SemimoduleElement<Natural, NaturalVector> { //... }
 net.gommagomma.smfn.math.linearalgebra.signedint:
