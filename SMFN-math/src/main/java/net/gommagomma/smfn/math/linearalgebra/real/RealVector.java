@@ -62,6 +62,10 @@ implements NormedVectorElement<Real, RealVector>
 		return new RealVector(components.toArray(new Real[0]));
 	}
 
+	@Override
+    public RealVector createNewInstance(Real... components) {
+        return new RealVector(components);
+    }
 
 	// --- Implementazione di AlgebraicElement e AdditiveMonoidElement ---
 

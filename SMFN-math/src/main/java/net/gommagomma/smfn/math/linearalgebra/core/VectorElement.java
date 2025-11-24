@@ -13,7 +13,9 @@ extends SpaceElement<V>, AbelianGroupElement<V>
 
     int dimension();
     K get(int index);
-    
+
+    V createNewInstance(@SuppressWarnings("unchecked") K... components); 
+
     // I metodi add, subtract, negate sono ereditati da AbelianGroupElement<E>
 
     // Metodi specifici per l'algebra lineare/moduli:

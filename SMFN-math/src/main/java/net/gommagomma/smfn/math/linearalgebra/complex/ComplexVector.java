@@ -45,6 +45,10 @@ implements VectorElement<Complex, ComplexVector>, Normable<Real, ComplexVector>
         return new ComplexVector(complexComponents);
     }
 
+    @Override
+    public ComplexVector createNewInstance(Complex... components) {
+        return new ComplexVector(components);
+    }
 
     // --- Metodi Algebrici (isEqual, copy, getZero, add, negate, ecc.) ---
     

@@ -57,6 +57,10 @@ implements VectorElement<SignedInt, SignedIntVector>
         return new SignedIntVector(intComponents);
     }
 
+    @Override
+    public SignedIntVector createNewInstance(SignedInt... components) {
+        return new SignedIntVector(components);
+    }
 
     // --- Implementazione di AlgebraicElement e AdditiveMonoidElement ---
 

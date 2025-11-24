@@ -50,7 +50,12 @@ implements NormedVectorElement<Rational, RationalVector> // I razionali sono un 
                                           .toArray(Rational[]::new);
         return new RationalVector(rationalComponents);
     }
-    
+
+    @Override
+    public RationalVector createNewInstance(Rational... components) {
+        return new RationalVector(components);
+    }
+
     // --- Implementazioni di AlgebraicElement e AdditiveMonoidElement ---
 
     @Override
