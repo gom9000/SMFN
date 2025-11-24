@@ -54,7 +54,7 @@ implements VectorElement<Complex, ComplexVector>, Normable<Real, ComplexVector>
     }
 
     @Override
-    public ComplexVector copy() { return this; }
+    public ComplexVector copy() { return new ComplexVector(this.data); }
 
 	@Override
 	public ComplexVector getZero()

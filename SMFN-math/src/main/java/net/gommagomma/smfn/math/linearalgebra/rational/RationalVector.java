@@ -60,7 +60,7 @@ implements NormedVectorElement<Rational, RationalVector> // I razionali sono un 
 
     @Override
     public RationalVector copy() {
-        return this; // Immutabile
+        return new RationalVector(this.data);
     }
 
 	@Override

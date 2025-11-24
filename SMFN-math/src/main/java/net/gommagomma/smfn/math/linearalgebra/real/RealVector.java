@@ -79,8 +79,7 @@ implements NormedVectorElement<Real, RealVector>
 
 	@Override
 	public RealVector copy() {
-		// L'immutabilità rende la copia una semplice restituzione di se stesso
-		return this; 
+		return new RealVector(this.data); 
 	}
 
 	@Override

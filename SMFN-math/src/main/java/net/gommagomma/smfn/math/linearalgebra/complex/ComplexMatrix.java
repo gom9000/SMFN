@@ -75,7 +75,7 @@ implements Matrix<Complex, ComplexVector, ComplexMatrix>
         return this.data[row][col];
     }
 
-    @Override public ComplexMatrix copy() { return this; }
+    @Override public ComplexMatrix copy() { return new ComplexMatrix(this.data); }
 
 	// --- Implementazioni Aritmetiche (dall'interfaccia Matrix) ---
 

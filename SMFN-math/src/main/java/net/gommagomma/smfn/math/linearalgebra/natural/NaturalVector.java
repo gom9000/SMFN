@@ -58,7 +58,7 @@ implements SemimoduleElement<Natural, NaturalVector>
     @Override
     public boolean isEqual(NaturalVector other) { return Arrays.equals(this.data, other.data); }
     @Override
-    public NaturalVector copy() { return new NaturalVector(Arrays.copyOf(this.data, dimension)); }
+    public NaturalVector copy() { return new NaturalVector(this.data); }
     
     @Override
     public NaturalVector getZero() { return new NaturalVector(dimension); }

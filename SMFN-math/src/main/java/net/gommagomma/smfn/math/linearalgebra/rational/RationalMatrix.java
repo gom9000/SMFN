@@ -77,7 +77,7 @@ implements Matrix<Rational, RationalVector, RationalMatrix>
         return true;
     }
     
-    @Override public RationalMatrix copy() { return this; }
+    @Override public RationalMatrix copy() { return new RationalMatrix(this.data); }
 
 	// --- Implementazioni Aritmetiche (dall'interfaccia Matrix) ---
 

@@ -140,8 +140,7 @@ implements Matrix<Real, RealVector, RealMatrix>
 
     @Override
     public RealMatrix copy() {
-        // Poiché la matrice è immutabile, una "copia" è semplicemente un riferimento a se stessa
-        return this;
+        return new RealMatrix(this.data);
     }
 
     @Override

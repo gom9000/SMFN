@@ -68,7 +68,7 @@ implements VectorElement<SignedInt, SignedIntVector>
 
     @Override
     public SignedIntVector copy() {
-        return this; // Immutabile, quindi restituire 'this' è sicuro
+        return new SignedIntVector(this.data);
     }
 
 	@Override
