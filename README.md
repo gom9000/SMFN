@@ -103,7 +103,7 @@ smfn/
 - interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M> {}
 - interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
 
-## net.gommagomma.smfn.math.linearalgebra.core.algorithms
+### net.gommagomma.smfn.math.linearalgebra.core.algorithms
 - final class GaussianElimination {public static <K extends FieldElement<K>> K determinant(K[][] matrixData, K elementZero, Comparator<K> magnitudeComparator) {}}
 - final class GaussJordanElimination {public static <K extends FieldElement<K>> K[][] inverse(K[][] matrixData, K elementZero, K elementOne, java.util.Comparator<K> magnitudeComparator) {}}
 
@@ -132,11 +132,14 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 - class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
 
 ### net.gommagomma.smfn.math.analysis.core:
-- interface MathFunction<T extends AlgebraicElement<T>, R extends AlgebraicElement<R>> {R evaluate(T input);}
+- interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);}
 - interface IterativeSystem<T> { T nextIteration(T current);}
 - interface ConvergenceTest<T> { boolean isConverged(T current, T previous, Real tolerance);}
 - interface Solver<P, S> {S solve(P problem, ConvergenceTest<S> test);}
 
+### net.gommagomma.smfn.math.analysis.functions:
+- final class Polynomial<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
+- final class LinearFunction<K extends FieldElement<K>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
 ### net.gommagomma.smfn.math.analysis.fractals;
 - class MandelbrotSolver implements Solver<Complex, Integer> {}
 - class MandelbrotFunction implements MathFunction<Complex, Real> {}
