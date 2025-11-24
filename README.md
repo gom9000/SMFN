@@ -100,8 +100,8 @@ smfn/
 - interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {int dimension();}
 - interface Module<V extends VectorElement<K, V>, K extends RingElement<K>> extends Space<V> {Ring<K> getScalarRing(); }
 - interface VectorSpace<V extends VectorElement<K, V>, K extends FieldElement<K>> extends Module<V, K> {Field<K> getScalarRing();}
-- interface Matrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends Matrix<K, V, M>> extends AlgebraicElement<M> {}
-- interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends Matrix<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
+- interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M> {}
+- interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
 
 ## net.gommagomma.smfn.math.linearalgebra.core.algorithms
 - final class GaussianElimination {public static <K extends FieldElement<K>> K determinant(K[][] matrixData, K elementZero, Comparator<K> magnitudeComparator) {}}
@@ -116,19 +116,19 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 ### net.gommagomma.smfn.math.linearalgebra.real:
 - class RealVector implements NormedVector<Real, RealVector> {//...}
 - class RealVectorSpace implements VectorSpace<RealVector, Real> {//...}
-- class RealMatrix implements Matrix<Real, RealVector, RealMatrix> {//...}
+- class RealMatrix implements MatrixElement<Real, RealVector, RealMatrix> {//...}
 - class RealMatrixSpace implements MatrixSpace<Real, RealVector, RealMatrix> {//...}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
 - class ComplexVector implements Vector<Complex, ComplexVector> { /... }
 - class ComplexVectorSpace implements VectorSpace<ComplexVector, Complex> {//...}
-- class ComplexMatrix implements Matrix<Complex, ComplexVector, ComplexMatrix> {//...}
+- class ComplexMatrix implements MatrixElement<Complex, ComplexVector, ComplexMatrix> {//...}
 - class ComplexMatrixSpace implements MatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
 
 ### net.gommagomma.smfn.math.linearalgebra.rational:
 - class RationalVector implements Vector<Rational, RationalVector> { /... }
 - class RationalVectorSpace implements VectorSpace<RationalVector, Rational> {//...}
-- class RationalMatrix implements Matrix<Rational, RationalVector, RationalMatrix> {//...}
+- class RationalMatrix implements MatrixElement<Rational, RationalVector, RationalMatrix> {//...}
 - class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
 
 ### net.gommagomma.smfn.math.analysis.core:

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.linearalgebra.core.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.core.MatrixElement;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 
@@ -13,7 +13,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianEliminatio
  * Aderisce all'interfaccia Matrix<Complex, ComplexVector, ComplexMatrix>.
  */
 public final class ComplexMatrix
-implements Matrix<Complex, ComplexVector, ComplexMatrix>
+implements MatrixElement<Complex, ComplexVector, ComplexMatrix>
 {    
     private final Complex[][] data;
     private final int rows;

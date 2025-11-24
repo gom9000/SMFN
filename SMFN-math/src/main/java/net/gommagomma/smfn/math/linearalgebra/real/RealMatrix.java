@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.core.MatrixElement;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 
 public final class RealMatrix
-implements Matrix<Real, RealVector, RealMatrix>
+implements MatrixElement<Real, RealVector, RealMatrix>
 {    
     private final Real[][] data;
     private final int rows;

@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.core;
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 
-public interface Matrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends Matrix<K, V, M>>
+public interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>>
 extends AlgebraicElement<M>
 {
     int getRows();

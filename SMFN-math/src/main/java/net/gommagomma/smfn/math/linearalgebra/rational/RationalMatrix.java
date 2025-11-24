@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.linearalgebra.core.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.core.MatrixElement;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 
@@ -13,7 +13,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianEliminatio
  * Aderisce all'interfaccia Matrix<Rational, RationalVector, RationalMatrix>.
  */
 public final class RationalMatrix
-implements Matrix<Rational, RationalVector, RationalMatrix>
+implements MatrixElement<Rational, RationalVector, RationalMatrix>
 {    
     private final Rational[][] data;
     private final int rows;
