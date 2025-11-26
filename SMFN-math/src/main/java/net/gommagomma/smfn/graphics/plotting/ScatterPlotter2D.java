@@ -1,11 +1,11 @@
 package net.gommagomma.smfn.graphics.plotting;
 
-import net.gommagomma.smfn.graphics.core.Renderer1D; // Usiamo Renderer1D che estende Renderer
-import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.math.geometry.Point;
-
 import java.awt.Color;
 import java.util.List;
+
+import net.gommagomma.smfn.graphics.core.Renderer2D;
+import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.math.geometry.Point;
 
 /**
  * Utility per plottare un insieme discreto di punti (scatter plot) su un Renderer.
@@ -19,7 +19,7 @@ public class ScatterPlotter2D
      * @param points La lista dei punti matematici da disegnare.
      * @param pointColor Il colore con cui disegnare i punti.
      */
-    public static void plotPoints(Renderer1D renderer, Viewport viewport, List<Point> points, Color pointColor)
+    public static void plotPoints(Renderer2D renderer, Viewport viewport, List<Point> points, Color pointColor)
     {
         renderer.setColor(pointColor);
         

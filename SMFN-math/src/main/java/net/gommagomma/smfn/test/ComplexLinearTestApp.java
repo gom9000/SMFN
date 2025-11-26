@@ -58,6 +58,8 @@ public class ComplexLinearTestApp
             }
         };
 
+        renderer.startDrawing();
+
         // --- 4. Processo di rendering ---
         renderer.clear(Color.WHITE);
         
@@ -65,6 +67,6 @@ public class ComplexLinearTestApp
             renderer, viewport, complexFunction, domainAdapter, colorMapper
         );
         
-        renderer.flush();
+        renderer.endDrawingAndFlush();
     }
 }

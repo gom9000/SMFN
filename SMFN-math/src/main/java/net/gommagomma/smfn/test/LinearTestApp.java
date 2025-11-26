@@ -44,7 +44,7 @@ public class LinearTestApp
         Function<Real, Double> codomainAdapter = Real::getValue; // Assumo esista getValue() in Real
 
         // --- 4. Processo di rendering (Composizione dei grafici) ---
-        
+        renderer.startDrawing(); 
 
         // Pulisci lo sfondo
         renderer.clear(Color.BLACK);
@@ -73,6 +73,6 @@ public class LinearTestApp
         renderer.drawOverlayText(infoText3, 10, 50, Color.RED);
 
         // Mostra il risultato a schermo
-        renderer.flush();
+        renderer.endDrawingAndFlush();
     }
 }

@@ -18,7 +18,7 @@ public class PolynomialTestApp
     public static void main(String[] args)
     {
         // --- 1. Definizione della funzione matematica (y = f(x)) ---
-    	RealVector coeffs = new RealVector(new Real(1.0), new Real(1.0), new Real(1.0), new Real(1.0));
+    	RealVector coeffs = new RealVector(new Real(-2.0), new Real(-5.0), new Real(3.0), new Real(1.5));
         PolynomialFunction<Real> linearFunction = new PolynomialFunction<>(coeffs);
 
         // --- 2. Setup del contesto grafico ---
@@ -34,9 +34,11 @@ public class PolynomialTestApp
         frame.add(renderer);
         frame.pack();
         frame.setVisible(true);
+        try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+        renderer.requestFocusInWindow();
         renderer.initBufferStrategy(); // Necessario per il buffer
 
-        // Definisci l'area matematica da visualizzare: [-5, 5] x [-10, 20]
+        // Definisci l'area matematica da visualizzare:
         Viewport viewport = new Viewport(-10.0, 10.0, -10.0, 10.0, width, height);
 
         // --- 3. Definizione degli adattatori (Adapter Pattern) ---
@@ -46,6 +48,7 @@ public class PolynomialTestApp
         Function<Real, Double> codomainAdapter = Real::getValue; // Assumo esista getValue() in Real
 
         // --- 4. Processo di rendering (Composizione dei grafici) ---
+        renderer.startDrawing();
         
         // Pulisci lo sfondo
         renderer.clear(Color.BLACK);
@@ -60,6 +63,6 @@ public class PolynomialTestApp
         );
         
         // Mostra il risultato a schermo
-        renderer.flush();
+        renderer.endDrawingAndFlush();
     }
 }

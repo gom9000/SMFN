@@ -7,6 +7,9 @@ import java.awt.Color;
  */
 public interface Renderer
 {
+	void startDrawing();
+    void endDrawingAndFlush();
+
     void clear(Color color);
     void setColor(Color color);
     void drawLine(int x1, int y1, int x2, int y2);

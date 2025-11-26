@@ -51,12 +51,14 @@ public class EllipseTestApp {
             }
         };
 
+        renderer.startDrawing();
+
         FunctionPlotter2D.plotFunction(
             renderer, viewport, ellipseFunction, domainAdapter, colorMapper
         );
         
         CartesianAxisPlotter2D.plotAxes(renderer, viewport, Color.DARK_GRAY);
 
-        renderer.flush();
+        renderer.endDrawingAndFlush();
     }
 }

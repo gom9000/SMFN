@@ -55,12 +55,14 @@ public class CircleTestApp {
             }
         };
 
+        renderer.startDrawing();
+
         FunctionPlotter2D.plotFunction(
             renderer, viewport, circleFunction, domainAdapter, colorMapper
         );
 
         CartesianAxisPlotter2D.plotAxes(renderer, viewport, Color.DARK_GRAY);
 
-        renderer.flush();
+        renderer.endDrawingAndFlush();
     }
 }

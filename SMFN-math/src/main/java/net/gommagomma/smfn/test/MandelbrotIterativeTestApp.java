@@ -101,12 +101,12 @@ implements ViewportController.ViewportUpdateHandler
         // Disegna il nuovo rettangolo di selezione trasparente SOPRA la scena
         renderer.setColor(selectionColor);
         renderer.fillRect(x, y, width, height);
-        
-        renderer.flush(); // Mostra il buffer
     }
 
     // Metodo centralizzato per il rendering di tutta la scena
     private void renderScene(Viewport viewport) {
+    	renderer.startDrawing();
+
         renderer.clear(Color.WHITE);
         
         // Disegna il frattale
@@ -130,7 +130,7 @@ implements ViewportController.ViewportUpdateHandler
         renderer.drawOverlayText(infoText2, 10, 35, Color.RED);
         renderer.drawOverlayText(infoText3, 10, 50, Color.RED);
 
-        renderer.flush();
+        renderer.endDrawingAndFlush();
     }
 
     public static void main(String[] args) {

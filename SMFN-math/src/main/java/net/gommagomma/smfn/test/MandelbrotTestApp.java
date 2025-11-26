@@ -55,6 +55,8 @@ public class MandelbrotTestApp {
         };
 
         // --- 4. Processo di rendering ---
+        renderer.startDrawing();
+
         // Pulisci lo sfondo prima di disegnare (anche se il plotter coprirà tutto)
         renderer.clear(Color.WHITE);
         
@@ -66,6 +68,6 @@ public class MandelbrotTestApp {
         CartesianAxisPlotter2D.plotAxes(renderer, viewport, Color.DARK_GRAY);
 
         // Mostra il risultato a schermo
-        renderer.flush();
+        renderer.endDrawingAndFlush();
     }
 }
