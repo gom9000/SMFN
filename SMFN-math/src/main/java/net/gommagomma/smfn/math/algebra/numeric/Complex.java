@@ -269,4 +269,14 @@ implements FieldElement<Complex>, Normable<Real, Complex>, Exponentiable<Complex
     {
         return new Real(this.modulus());
     }
+
+
+    /**
+     * Calcola l'argomento (fase) del numero complesso in radianti.
+     * Restituisce un valore nell'intervallo (-pi, pi].
+     * @return L'angolo in radianti.
+     */
+    public double argument() {
+        return Math.atan2(imaginary, real);
+    }
 }

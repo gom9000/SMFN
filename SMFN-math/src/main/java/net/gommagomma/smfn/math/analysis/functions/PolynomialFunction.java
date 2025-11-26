@@ -12,8 +12,8 @@ import net.gommagomma.smfn.math.linearalgebra.core.VectorElement;
  * 
  * @param <K> Il tipo di campo dei coefficienti (es. Real, Rational, Complex)
  */
-public final class Polynomial<K extends FieldElement<K>> 
-implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K>
+public final class PolynomialFunction<K extends FieldElement<K>> 
+implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K>
 {
     // Usiamo un VectorElement per archiviare i coefficienti [c0, c1, ..., cn]
     private final VectorElement<K, ? extends VectorElement<K, ?>> coefficients;
@@ -26,7 +26,7 @@ implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K>
      * Il coefficiente a indice 0 è il termine costante.
      * @param coeffs Un vettore di coefficienti.
      */
-    public Polynomial(VectorElement<K, ? extends VectorElement<K, ?>> coeffs)
+    public PolynomialFunction(VectorElement<K, ? extends VectorElement<K, ?>> coeffs)
     {
         if (coeffs == null || coeffs.dimension() == 0) {
             throw new IllegalArgumentException("I coefficienti non possono essere nulli o vuoti.");
@@ -64,7 +64,7 @@ implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K>
     // --- Implementazione di AlgebraicElement (per sommare, copiare polinomi) ---
 
     @Override
-    public boolean isEqual(Polynomial<K> other)
+    public boolean isEqual(PolynomialFunction<K> other)
     {
     	if (this.degree != other.degree) {
             return false;
@@ -80,30 +80,30 @@ implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K>
     }
 
     @Override
-    public Polynomial<K> copy() {
-        return new Polynomial<>(this.coefficients.copy());
+    public PolynomialFunction<K> copy() {
+        return new PolynomialFunction<>(this.coefficients.copy());
     }
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Polynomial<K> getZero() {
+	public PolynomialFunction<K> getZero() {
         K zero = zeroScalar.getZero();
         // Chiamiamo createNewInstance su un'istanza esistente (coefficients)
         VectorElement<K, ?> zeroVector = this.coefficients.createNewInstance(zero); 
-        return new Polynomial<>(zeroVector);
+        return new PolynomialFunction<>(zeroVector);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Polynomial<K> getOne() {
+	public PolynomialFunction<K> getOne() {
         K one = zeroScalar.getOne();
         VectorElement<K, ?> oneVector = this.coefficients.createNewInstance(one);
-        return new Polynomial<>(oneVector);
+        return new PolynomialFunction<>(oneVector);
 	}
 
 	@Override
     @SuppressWarnings("unchecked")
-    public Polynomial<K> negate() {
+    public PolynomialFunction<K> negate() {
         int n = this.coefficients.dimension();
         K[] negatedCoeffs = (K[]) new FieldElement[n]; 
 
@@ -112,12 +112,12 @@ implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K>
         }
 
         VectorElement<K, ?> resultVector = this.coefficients.createNewInstance(negatedCoeffs);
-        return new Polynomial<>(resultVector);
+        return new PolynomialFunction<>(resultVector);
     }
 
 	@Override
     @SuppressWarnings("unchecked")
-    public Polynomial<K> add(Polynomial<K> other) {
+    public PolynomialFunction<K> add(PolynomialFunction<K> other) {
         int maxLength = Math.max(this.coefficients.dimension(), other.coefficients.dimension());
         K[] resultCoeffs = (K[]) new FieldElement[maxLength];
 
@@ -141,12 +141,12 @@ implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K>
         
         // Usiamo createNewInstance per creare il nuovo vettore
         VectorElement<K, ?> resultVector = this.coefficients.createNewInstance(finalCoeffs);
-        return new Polynomial<>(resultVector);
+        return new PolynomialFunction<>(resultVector);
     }
 
 	@Override
     @SuppressWarnings("unchecked")
-    public Polynomial<K> multiply(Polynomial<K> other) {
+    public PolynomialFunction<K> multiply(PolynomialFunction<K> other) {
         int degree1 = this.degree;
         int degree2 = other.degree;
         int resultDegree = degree1 + degree2;
@@ -190,6 +190,6 @@ implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K>
 
         VectorElement<K, ?> resultVector = this.coefficients.createNewInstance(finalCoeffs);
             
-        return new Polynomial<>(resultVector);
+        return new PolynomialFunction<>(resultVector);
     }
 }

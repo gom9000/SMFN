@@ -16,21 +16,23 @@ smfn/
 |   |   |-- structures/                     (NaturalSemiring, IntegerRing, RationalField, RealField, ComplexField)
 |   |-- linearalgebra                       # Algebra Lineare (Vettori, Matrici, Tensori)
 |   |   |-- core                            # Interfacce per Vettori/Matrici (VectorElement, Matrix)
+|   |   |   |-- algorythms/					 # GaussianEliminator, GaussJordanEliminator,...
 |   |   |-- complex                         # Implementazioni per C (ComplexVector, ComplexMatrix)
 |   |   |-- rational                        # Implementazioni per Q (RationalVector, RationalMatrix)
 |   |   |-- real                            # Implementazioni per R (RealVector, RealMatrix)
 |   |   |-- signedint                       # Implementazioni per Z (SignedIntVector, SignedIntMatrix)
 |   |-- analysis/                           # Calcolo (Funzioni, Derivate, Integrali, Risolutori Numerici)
 |   |   |-- core/                           # Contiene le interfacce generiche riutilizzabili
+|   |   |-- functions/						 # LinearFunction, PolynomialFunction, ...
 |   |   |-- fractals/                       # Contiene implementazioni specifiche di frattali
 |   |   |-- solvers/                        # Contiene implementazioni di metodi numerici (es. NewtonRaphsonSolver)
 |   |   |-- integral/                       # (es. Metodi di quadratura numerica)
 |   |   |-- differential/                   # (es. Runge-Kutta per ODE)
 |   |-- utils                               # Utility e Costanti (MathConstants, MathUtils)
 |-- graphics/                               # Logica specifica per la viewport e il rendering
-|   |-- core/                               # Interfacce grafiche (Renderer, Viewport, DataSource, RenderableData)
-|   |-- swing/                              # impl (SwingRenderer)
-|   |-- plotting/                           # (FunctionPlotter, ...)
+|   |-- core/                               # Interfacce grafiche (Renderer, Viewport, ColorMapper)
+|   |-- swing/                              # impl (SwingRenderer1D)
+|   |-- plotting/                           # (FunctionPlotter, CartesianaxisPlotter)
 |-- physics                                 # Package per le applicazioni fisiche (Elettromagnetismo, MQ, RG)
 |   |-- core/                               (Interfacce fisiche base: particella, forza...)
 |   |-- mechanics/                          (Dinamica, gravità, cinematica)
@@ -40,8 +42,8 @@ smfn/
 </pre>
 
 
-## net.gommagomma.smfn.math
----------------------------
+## net.gommagomma.smfn.math.algebra
+-----------------------------------
 ### net.gommagomma.smfn.math.algebra.core:
 - interface Commutative {}
 - interface AlgebraicElement<E extends AlgebraicElement<E>> { boolean isEqual(E other); E copy();}
@@ -90,6 +92,8 @@ smfn/
 - class RealField implements Field<Real> { /* ... */ }
 - class ComplexField implements Field<Complex> { /* ... */ }
 
+## net.gommagomma.smfn.math.linearalgebra
+-----------------------------------------
 ### net.gommagomma.smfn.math.linearalgebra.core:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
 - interface VectorElement<K extends RingElement<K>, V extends VectorElement<K, V>> extends SpaceElement<V>, AbelianGroupElement<V> {
@@ -131,6 +135,8 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 - class RationalMatrix implements MatrixElement<Rational, RationalVector, RationalMatrix> {//...}
 - class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
 
+## net.gommagomma.smfn.math.analysis
+------------------------------------
 ### net.gommagomma.smfn.math.analysis.core:
 - interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);}
 - interface IterativeSystem<T> { T nextIteration(T current);}
@@ -140,13 +146,13 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 ### net.gommagomma.smfn.math.analysis.functions:
 - final class Polynomial<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
 - final class LinearFunction<K extends FieldElement<K>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
+
 ### net.gommagomma.smfn.math.analysis.fractals;
 - class MandelbrotSolver implements Solver<Complex, Integer> {}
 - class MandelbrotFunction implements MathFunction<Complex, Real> {}
 - class JuliaFunction implements MathFunction<Complex, Real> {}
 
 
-- AlgebraicElement.copy(): Il metodo copy() è utile ma potrebbe essere ridefinito come un'interfaccia CloneableElement separata se non tutti gli elementi devono essere clonabili (anche se in questo contesto è quasi sempre necessario).
 - abstractMatrix ?
 - trasformazioni
 
@@ -167,44 +173,25 @@ interface NormedSpace<S extends FieldElement<S>, V extends VectorElement<S, V>> 
     doubl norm(V v);
 
 
-## net.gommagomma.smfn.graphics:
+## net.gommagomma.smfn.graphics
+-------------------------------
 ### net.gommagomma.smfn.core:
-- interface Viewport<E extends AlgebraicElement<E>> {int getPixelWidth();int getPixelHeight();double getMinX();double getMaxX();double getMinY();double getMaxY();E mapPixelToElement(int x, int y);void setMathematicalArea(double minX, double maxX, double minY, double maxY);}
-- interface Renderer {void setPixel(int x, int y, int rgbColor);void display();}
-- interface ColorMapper {int toRGB(double value);}
-- interface CoordinateMapper<E extends AlgebraicElement<E>> {E mapPixelToElement(int x, int y, Viewport<E> viewport);}
+- final class Viewport {}
+- final class ViewportController {}
+- interface Renderer {}
+- interface Renderer1D extends Renderer {}
+- interface Renderer2D extends Renderer {}
+- interface ColorMapper {Color map(E value);}
 
 ### net.gommagomma.smfn.plotting:
-- class ElementPlaneViewport<E extends AlgebraicElement<E>> implements Viewport<E> {}
-- class LinearColorMapper implements ColorMapper {}
-- class LinearComplexCoordinateMapper implements CoordinateMapper<Complex> {}
-- class FunctionPlotter<I extends AlgebraicElement<I>, O extends AlgebraicElement<O>>
+- class FunctionPlotter1D
+- class FunctionPlotter2D
+- class CartesianAxisPlotter1D
+- class CartesianAxisPlotter2D
 
-### net.gommagomma.smfn.swing:
-class SwingRenderer implements Renderer {}
-
-Funzionalità della Sezione smfn.graphics
-Questa sezione si occuperà di creare View (visualizzazioni) che prendono i tuoi Model (oggetti matematici/fisici) e li disegnano.
-A. Per le Funzioni Matematiche (Plotting 2D)
-Avrai bisogno di classi per:
-
-    PlottingPanel (o Canvas): Un componente Swing personalizzato in cui disegnare.
-    FunctionRenderer: Logica per prendere una funzione (es. un'interfaccia Function<Double, Double>) e campionarla in punti (x, y) per disegnarla come una linea.
-    Gestione Assi: Logica per disegnare gli assi cartesiani, le etichette, lo zoom e il panning.
-
-public interface Viewport<K extends FieldElement<K>, V extends VectorElement<K, V>> {
-    int getWidth();
-    int getHeight();
-
-    // Mappa dal pixel allo spazio matematico
-    V mapPixelToMathematicalSpace(NaturalVector pixelCoords);
-
-    // Mappa dallo spazio matematico al pixel (con quantizzazione implicita)
-    NaturalVector mapMathematicalSpaceToPixel(V mathCoords);
-    
-    // Un metodo per ottenere la trasformazione affine sottostante, se necessario
-    // AffineTransform<K, V> getMathematicalTransform(); 
-}
+### net.gommagomma.smfn.drivers.swing:
+- class SwingRenderer1D extends Canvas implements Renderer1D
+- class SwingRenderer2D extends Canvas implements Renderer2D
 
 
 ## net.gommagomma.smfn.physics

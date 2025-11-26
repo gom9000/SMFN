@@ -17,7 +17,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Rational;
 class RationalFieldAxiomTest
 {
 
-    private final RationalField field = new RationalField(); // Istanzia la struttura per accedere alle costanti/metodi
+    private final RationalField field = RationalField.INSTANCE;
 
     // Metodo helper per fornire un set diversificato di numeri razionali per i test parametrici
     static Stream<Rational> rationalProvider() {
