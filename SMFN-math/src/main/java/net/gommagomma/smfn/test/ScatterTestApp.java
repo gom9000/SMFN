@@ -7,9 +7,9 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
-import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter2D;
-import net.gommagomma.smfn.graphics.plotting.ScatterPlotter2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
+import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
+import net.gommagomma.smfn.graphics.plotting.ScatterPlotter;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.geometry.Point;
 
@@ -20,7 +20,7 @@ public class ScatterTestApp
         int width = 800;
         int height = 600;
         
-        SwingRenderer2D renderer = new SwingRenderer2D(width, height);
+        SwingRenderer1D renderer = new SwingRenderer1D(width, height);
         JFrame frame = new JFrame("SMFN Scatter Points Plot");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(renderer);
@@ -46,10 +46,10 @@ public class ScatterTestApp
         renderer.clear(Color.BLACK);
 
         // --- Processo di rendering ---
-        CartesianAxisPlotter2D.plotAxes(renderer, viewport, Color.DARK_GRAY);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
 
         // Plotta i punti in rosso
-        ScatterPlotter2D.plotPoints(renderer, viewport, dataPoints, Color.BLUE);
+        ScatterPlotter.plotPoints(renderer, viewport, dataPoints, Color.BLUE);
         
         renderer.endDrawingAndFlush();
     }

@@ -2,7 +2,7 @@ package net.gommagomma.smfn.test;
 
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
-import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter1D;
+import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.functions.LinearFunction;
@@ -50,7 +50,7 @@ public class LinearTestApp
         renderer.clear(Color.BLACK);
 
         // Disegna gli assi cartesiani
-        CartesianAxisPlotter1D.plotAxes(renderer, viewport, Color.DARK_GRAY);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
 
         // Disegna la funzione lineare (in blu)
         renderer.setColor(Color.BLUE);

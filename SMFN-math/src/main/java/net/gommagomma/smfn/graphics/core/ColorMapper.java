@@ -1,6 +1,8 @@
 package net.gommagomma.smfn.graphics.core;
 
+
 import java.awt.Color;
+
 
 /**
  * Interfaccia per mappare un valore generico E in un colore AWT.

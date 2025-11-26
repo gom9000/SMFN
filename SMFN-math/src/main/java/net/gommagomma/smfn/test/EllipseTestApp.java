@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
-import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter2D;
+import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.geometry.Ellipse;
@@ -57,7 +57,7 @@ public class EllipseTestApp {
             renderer, viewport, ellipseFunction, domainAdapter, colorMapper
         );
         
-        CartesianAxisPlotter2D.plotAxes(renderer, viewport, Color.DARK_GRAY);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
 
         renderer.endDrawingAndFlush();
     }

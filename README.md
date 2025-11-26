@@ -194,8 +194,7 @@ interface NormedSpace<S extends FieldElement<S>, V extends VectorElement<S, V>> 
 ### net.gommagomma.smfn.plotting:
 - class FunctionPlotter1D
 - class FunctionPlotter2D
-- class CartesianAxisPlotter1D
-- class CartesianAxisPlotter2D
+- class CartesianAxisPlotter
 
 ### net.gommagomma.smfn.drivers.swing:
 - class SwingRenderer1D extends Canvas implements Renderer1D

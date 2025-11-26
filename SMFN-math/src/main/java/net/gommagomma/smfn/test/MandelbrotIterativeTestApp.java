@@ -13,7 +13,7 @@ import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.core.ViewportController;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
-import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter2D;
+import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
@@ -115,7 +115,7 @@ implements ViewportController.ViewportUpdateHandler
         );
         
         // Disegna gli assi sopra il frattale
-        CartesianAxisPlotter2D.plotAxes(renderer, viewport, Color.DARK_GRAY);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
 
         // Calcola l'ampiezza del range matematico
         double rangeX = viewport.maxX - viewport.minX;

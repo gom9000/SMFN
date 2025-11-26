@@ -12,16 +12,18 @@ import java.awt.event.MouseWheelEvent;
  */
 public class ViewportController
 extends MouseAdapter
-implements KeyListener
+implements KeyListener // Manteniamo KeyListener solo per conformità, i metodi sono vuoti
 {
     private Viewport currentViewport;
     private final ViewportUpdateHandler updateHandler;
 
-    private int lastMouseX, lastMouseY;
-    private int startX, startY, endX, endY;
-    private boolean selecting = false;
-    private boolean useSelectionMode = false; // Flag che indica se Shift/Ctrl è premuto
+    private int startX, startY; // Usato per tracciare l'inizio del drag o della selezione
+    private boolean selecting = false; // Flag che indica se stiamo disegnando un rettangolo di selezione
 
+    /**
+     * Interfaccia di callback per notificare l'host (es. un pannello grafico)
+     * che la viewport è cambiata o che deve disegnare un rettangolo temporaneo.
+     */
     public interface ViewportUpdateHandler {
         void onViewportUpdated(Viewport newViewport);
         // Notifica per il disegno temporaneo del rettangolo di selezione
@@ -38,9 +40,10 @@ implements KeyListener
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            startX = endX = e.getX();
-            startY = endY = e.getY();
-            selecting = useSelectionMode; // Avvia la selezione solo se il tasto modificatore è premuto
+            startX = e.getX();
+            startY = e.getY();
+            // Controlla lo stato del modificatore (Shift o Ctrl) direttamente dall'evento
+            selecting = e.isShiftDown() || e.isControlDown(); 
         }
     }
 
@@ -48,8 +51,8 @@ implements KeyListener
     public void mouseDragged(MouseEvent e) {
         if (selecting) {
             // Modalità Zoom Selettivo (con Shift/Ctrl premuto)
-            endX = e.getX();
-            endY = e.getY();
+            int endX = e.getX();
+            int endY = e.getY();
             int x = Math.min(startX, endX);
             int y = Math.min(startY, endY);
             int w = Math.abs(startX - endX);
@@ -58,66 +61,93 @@ implements KeyListener
 
         } else if (e.getButton() == MouseEvent.BUTTON1) {
             // Modalità Panning (trascinamento libero)
-            int dx = e.getX() - lastMouseX;
-            int dy = e.getY() - lastMouseY;
 
-            double mathDx = currentViewport.convertPixelXToMathX(dx) - currentViewport.convertPixelXToMathX(0);
-            double mathDy = currentViewport.convertPixelYToMathY(dy) - currentViewport.convertPixelYToMathY(0);
+            // Calcola lo spostamento in pixel dall'inizio del drag o dall'ultima chiamata a dragged
+            int dx = e.getX() - startX;
+            int dy = e.getY() - startY;
 
+            // Calcola quanto "vale" un pixel nel mondo matematico
+            double mathUnitsPerPixelX = currentViewport.rangeX / currentViewport.pixelWidth;
+            double mathUnitsPerPixelY = currentViewport.rangeY / currentViewport.pixelHeight;
+            
+            // Calcola lo spostamento matematico effettivo
+            double mathDx = dx * mathUnitsPerPixelX;
+            double mathDy = dy * mathUnitsPerPixelY; 
+
+            // Applica il panning
             double newMinX = currentViewport.minX - mathDx;
             double newMaxX = currentViewport.maxX - mathDx;
-            double newMinY = currentViewport.minY + mathDy; // Nota l'inversione Y
+            // L'asse Y nei pixel è invertito rispetto al mondo matematico, quindi invertiamo qui l'effetto
+            double newMinY = currentViewport.minY + mathDy; 
             double newMaxY = currentViewport.maxY + mathDy;
 
             updateViewport(newMinX, newMaxX, newMinY, newMaxY);
+            
+            // Reimposta startX/Y per la prossima iterazione di mouseDragged
+            startX = e.getX();
+            startY = e.getY();
         }
-
-        this.lastMouseX = e.getX();
-        this.lastMouseY = e.getY();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (selecting && e.getButton() == MouseEvent.BUTTON1) {
             selecting = false;
-            // Calcola la nuova viewport dall'area selezionata
-            double newMinX = currentViewport.convertPixelXToMathX(Math.min(startX, endX));
-            double newMaxX = currentViewport.convertPixelXToMathX(Math.max(startX, endX));
-            double newMinY = currentViewport.convertPixelYToMathY(Math.max(startY, endY)); 
-            double newMaxY = currentViewport.convertPixelYToMathY(Math.min(startY, endY));
+            // Ridisegna una volta per cancellare l'ultimo rettangolo temporaneo
+            updateHandler.onTemporaryDraw(0, 0, 0, 0); 
+            
+            // Calcola la nuova viewport dall'area selezionata in coordinate matematiche
+            double newMinX = currentViewport.convertPixelXToMathX(Math.min(startX, e.getX()));
+            double newMaxX = currentViewport.convertPixelXToMathX(Math.max(startX, e.getX()));
+            // Inversione Y
+            double newMinY = currentViewport.convertPixelYToMathY(Math.max(startY, e.getY())); 
+            double newMaxY = currentViewport.convertPixelYToMathY(Math.min(startY, e.getY()));
 
             updateViewport(newMinX, newMaxX, newMinY, newMaxY);
         }
     }
-
-    // --- Gestione Eventi Tastiera (KeyListener) ---
-
+    
     @Override
-    public void keyPressed(KeyEvent e) {
-        // Attiva la modalità selezione quando Shift o Ctrl sono premuti
-        if (e.getKeyCode() == KeyEvent.VK_SHIFT || e.getKeyCode() == KeyEvent.VK_CONTROL) {
-            useSelectionMode = true;
+    public void mouseWheelMoved(MouseWheelEvent e) { 
+        double zoomFactor = 1.1; // 10% di zoom per passo della rotellina
+        if (e.getWheelRotation() > 0) {
+            zoomFactor = 1.0 / zoomFactor; // Zoom out
         }
+        
+        // Mantieni il centro dello zoom fisso nel punto del cursore
+        double mouseMathX = currentViewport.convertPixelXToMathX(e.getX());
+        double mouseMathY = currentViewport.convertPixelYToMathY(e.getY());
+        
+        // Calcola i nuovi range
+        double newRangeX = currentViewport.rangeX / zoomFactor;
+        double newRangeY = currentViewport.rangeY / zoomFactor;
+        
+        // Calcola i nuovi min/max mantenendo il punto del mouse proporzionale nel nuovo range
+        double newMinX = mouseMathX - (mouseMathX - currentViewport.minX) / zoomFactor;
+        double newMaxX = newMinX + newRangeX;
+        double newMinY = mouseMathY - (mouseMathY - currentViewport.minY) / zoomFactor;
+        double newMaxY = newMinY + newRangeY;
+        
+        updateViewport(newMinX, newMaxX, newMinY, newMaxY);
     }
 
-    @Override
-    public void keyReleased(KeyEvent e) {
-        // Disattiva la modalità selezione quando Shift o Ctrl vengono rilasciati
-        if (e.getKeyCode() == KeyEvent.VK_SHIFT || e.getKeyCode() == KeyEvent.VK_CONTROL) {
-            useSelectionMode = false;
-            // Ridisegna la scena per cancellare l'ultimo rettangolo temporaneo
-            updateHandler.onViewportUpdated(currentViewport); 
-        }
-    }
+    // --- Implementazione KeyListener (Metodi vuoti, usiamo i modificatori del MouseEvent) ---
+    @Override public void keyPressed(KeyEvent e) {}
+    @Override public void keyReleased(KeyEvent e) {}
+    @Override public void keyTyped(KeyEvent e) {} 
+    
 
-    @Override public void mouseWheelMoved(MouseWheelEvent e) { /* ... logica zoom rotellina ... */ }
-    @Override public void keyTyped(KeyEvent e) {} // Non usato
-
+    /**
+     * Crea e notifica una nuova Viewport valida.
+     */
     private void updateViewport(double minX, double maxX, double minY, double maxY) {
-        this.currentViewport = new Viewport(minX, maxX, minY, maxY, 
-                                            currentViewport.pixelWidth, 
-                                            currentViewport.pixelHeight);
-        updateHandler.onViewportUpdated(this.currentViewport);
+        // Aggiungi qui la logica di validazione (es. non permettere range negativi o troppo piccoli)
+        if (maxX - minX > 1e-9 && maxY - minY > 1e-9) { 
+             this.currentViewport = new Viewport(minX, maxX, minY, maxY, 
+                                                currentViewport.pixelWidth, 
+                                                currentViewport.pixelHeight);
+            updateHandler.onViewportUpdated(this.currentViewport);
+        }
     }
     
     public Viewport getCurrentViewport() { return currentViewport; }
