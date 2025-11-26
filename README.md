@@ -21,6 +21,7 @@ smfn/
 |   |   |-- rational                        # Implementazioni per Q (RationalVector, RationalMatrix)
 |   |   |-- real                            # Implementazioni per R (RealVector, RealMatrix)
 |   |   |-- signedint                       # Implementazioni per Z (SignedIntVector, SignedIntMatrix)
+|   |-- geometry/								 # (GeometryEntity, Point, Circle, Ellipse)
 |   |-- analysis/                           # Calcolo (Funzioni, Derivate, Integrali, Risolutori Numerici)
 |   |   |-- core/                           # Contiene le interfacce generiche riutilizzabili
 |   |   |-- functions/						 # LinearFunction, PolynomialFunction, ...
@@ -134,6 +135,13 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 - class RationalVectorSpace implements VectorSpace<RationalVector, Rational> {//...}
 - class RationalMatrix implements MatrixElement<Rational, RationalVector, RationalMatrix> {//...}
 - class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
+
+## net.gommagomma.smfn.math.geometry
+-------------------------------------
+- interface GeometryEntity<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> extends MathFunction<D, C> {}
+- class Point implements NormedVectorElement<Real, Point> {}
+- class Circle implements GeometryEntity<RealVector, Real> {}
+- class Ellipse implements GeometryEntity<RealVector, Real> {}
 
 ## net.gommagomma.smfn.math.analysis
 ------------------------------------

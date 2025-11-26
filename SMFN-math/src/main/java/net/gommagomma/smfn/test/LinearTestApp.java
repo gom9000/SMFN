@@ -1,4 +1,4 @@
-package net.gommagomma.smfn;
+package net.gommagomma.smfn.test;
 
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
@@ -27,7 +27,7 @@ public class LinearTestApp
         SwingRenderer1D renderer = new SwingRenderer1D(width, height);
         
         // Prepara la finestra Swing
-        JFrame frame = new JFrame("SMFN 1D Plotting Example");
+        JFrame frame = new JFrame("SMFN Linear Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(renderer);
         frame.pack();
@@ -45,6 +45,7 @@ public class LinearTestApp
 
         // --- 4. Processo di rendering (Composizione dei grafici) ---
         
+
         // Pulisci lo sfondo
         renderer.clear(Color.BLACK);
 

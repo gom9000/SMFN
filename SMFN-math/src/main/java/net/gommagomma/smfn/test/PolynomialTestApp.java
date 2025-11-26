@@ -1,4 +1,4 @@
-package net.gommagomma.smfn;
+package net.gommagomma.smfn.test;
 
 import java.awt.Color;
 import java.util.function.Function;
@@ -29,7 +29,7 @@ public class PolynomialTestApp
         SwingRenderer1D renderer = new SwingRenderer1D(width, height);
         
         // Prepara la finestra Swing
-        JFrame frame = new JFrame("SMFN 1D Plotting Example");
+        JFrame frame = new JFrame("SMFN Polynomial Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(renderer);
         frame.pack();

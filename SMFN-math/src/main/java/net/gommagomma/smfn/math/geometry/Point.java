@@ -1,71 +1,81 @@
 package net.gommagomma.smfn.math.geometry;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.Module;
+import net.gommagomma.smfn.math.linearalgebra.core.NormedVectorElement;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
-
 
 /**
  * Rappresenta un punto geometrico nello spazio N-dimensionale.
- * Estende RealVector, aggiungendo metodi e semantica specifici della geometria.
+ * Implementa NormedVectorElement<Real, Point> tramite composizione di un RealVector.
  */
-public class Point extends RealVector {
+public class Point
+implements NormedVectorElement<Real, Point>
+{    
+    private final RealVector position;
 
-    /**
-     * Costruttore per creare un punto da coordinate specifiche.
-     * @param components Le coordinate del punto.
-     */
-    public Point(Real... components) {
-        super(components);
-    }
+    // --- Costruttori ---
+    public Point(RealVector position) { this.position = position; }
+    public Point(Real... components) { this(new RealVector(components)); }
+    public Point(Real x, Real y) { this(new RealVector(x, y)); }
+    public Point(Real x, Real y, Real z) { this(new RealVector(x, y, z)); }
 
-    /**
-     * Costruisce un punto a 2D.
-     * @param x Coordinata X.
-     * @param y Coordinata Y.
-     */
-    public Point(Real x, Real y) {
-        super(x, y);
-    }
+    // --- Metodi geometrici/utilitari ---
+    public int dimension() { return position.dimension(); }
+    public Real get(int index) { return position.get(index); } // Necessario per VectorElement
 
-    /**
-     * Costruisce un punto a 3D.
-     * @param x Coordinata X.
-     * @param y Coordinata Y.
-     * @param z Coordinata Z.
-     */
-    public Point(Real x, Real y, Real z) {
-        super(x, y, z);
-    }
+    // Metodi di accesso rapido
+    public Real getX() { return get(0); }
+    public Real getY() { return dimension() > 1 ? get(1) : new Real(Double.NaN); }
+    public Real getZ() { return dimension() > 2 ? get(2) : new Real(Double.NaN); }
 
-    /**
-     * Calcola la distanza euclidea tra questo punto e un altro punto.
-     * @param other L'altro punto.
-     * @return La distanza come oggetto Real.
-     */
-    public Real distanceTo(Point other) {
-        // La distanza è la norma (modulo) del vettore differenza
-        return this.subtract(other).norm(); 
-    }
+    // --- Implementazioni di NormedVectorElement / VectorElement / Normable / AlgebraicElement ---
 
-    // Metodi di accesso rapido per convenienza (sebbene RealVector abbia get(index))
-    public Real getX() {
-        return get(0);
-    }
-
-    public Real getY() {
-        if (dimension() > 1) return get(1);
-        throw new IndexOutOfBoundsException("Point has no Y coordinate.");
-    }
-
-    public Real getZ() {
-        if (dimension() > 2) return get(2);
-        throw new IndexOutOfBoundsException("Point has no Z coordinate.");
-    }
-
-    // Potresti voler sovrascrivere toString() per una migliore leggibilità geometrica
     @Override
-    public String toString() {
-        // ... formato tipo "P(1.0, 2.0, 3.0)" invece di un array ...
-        return "P" + super.toString();
+    public Real norm() {
+        return this.position.norm(); 
     }
+    
+    @Override
+    public boolean isEqual(Point other) { return this.position.isEqual(other.position); }
+    
+    @Override
+    public Point copy() { return new Point(this.position.copy()); }
+
+    @Override
+    public Point getZero() { return new Point(this.position.getZero()); }
+    
+    @Override
+    public Point add(Point other) { return new Point(this.position.add(other.position)); }
+    
+    @Override
+    public Point negate() { return new Point(this.position.negate()); }
+
+    // I metodi 'multiplyByScalar', 'dotProduct' sono necessari per NormedVectorElement.
+    @Override
+    public Point multiplyByScalar(Real scalar) {
+        // Assume che RealVector abbia questo metodo
+        return new Point(this.position.multiplyByScalar(scalar));
+    }
+    
+    @Override
+    public Real dotProduct(Point other) {
+        // Ritorna K (Real). Assume che RealVector abbia questo metodo.
+        return this.position.dotProduct(other.position);
+    }
+
+    // --- Metodi Standard Java ---
+    @Override public String toString() { return "P" + position.toString(); }
+    @Override public boolean equals(Object o) { /* ... */ return (o instanceof Point) && isEqual((Point) o); }
+    @Override public int hashCode() { return position.hashCode(); }
+
+	@Override
+	public Point createNewInstance(Real... components) {
+		return new Point(components);
+	}
+    @Override
+	public Module<Point, Real> getModule() {
+		return null;
+	}
+
 }

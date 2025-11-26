@@ -1,4 +1,4 @@
-package net.gommagomma.smfn;
+package net.gommagomma.smfn.test;
 
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
