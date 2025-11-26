@@ -19,4 +19,10 @@ public interface MathFunction<D extends AlgebraicElement<D>, C extends Algebraic
      * @return L'elemento risultante nel codominio C.
      */
     C evaluate(D input);
+
+
+    // Metodo default per la composizione: f.compose(g) => f(g(x))
+    default <V extends AlgebraicElement<V>> MathFunction<V, C> compose(MathFunction<V, D> before) {
+        return (V input) -> evaluate(before.evaluate(input));
+    }
 }

@@ -31,9 +31,9 @@ smfn/
 |   |   |-- differential/                   # (es. Runge-Kutta per ODE)
 |   |-- utils                               # Utility e Costanti (MathConstants, MathUtils)
 |-- graphics/                               # Logica specifica per la viewport e il rendering
-|   |-- core/                               # Interfacce grafiche (Renderer, Viewport, ColorMapper)
-|   |-- swing/                              # impl (SwingRenderer1D)
-|   |-- plotting/                           # (FunctionPlotter, CartesianaxisPlotter)
+|   |-- core/                               # Interfacce grafiche (Renderer, Viewport, ColorMapper, VieportController)
+|   |-- swing/                              # impl (SwingRenderer1D, Swingrnderer2D)
+|   |-- plotting/                           # (FunctionPlotter, CartesianAxisPlotter, ScatterPlotter)
 |-- physics                                 # Package per le applicazioni fisiche (Elettromagnetismo, MQ, RG)
 |   |-- core/                               (Interfacce fisiche base: particella, forza...)
 |   |-- mechanics/                          (Dinamica, gravità, cinematica)
@@ -160,8 +160,37 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 - class MandelbrotFunction implements MathFunction<Complex, Real> {}
 - class JuliaFunction implements MathFunction<Complex, Real> {}
 
+## net.gommagomma.smfn.graphics
+-------------------------------
+### net.gommagomma.smfn.graphics.core:
+- final class Viewport {}
+- final class ViewportController {}
+- interface Renderer {}
+- interface Renderer1D extends Renderer {}
+- interface Renderer2D extends Renderer {}
+- interface ColorMapper {Color map(E value);}
 
-- abstractMatrix ?
+### net.gommagomma.smfn.graphics.plotting:
+- class FunctionPlotter1D
+- class FunctionPlotter2D
+- class CartesianAxisPlotter
+- class ScatterPlotter
+
+### net.gommagomma.smfn.graphics.drivers.swing:
+- class SwingRenderer1D extends Canvas implements Renderer1D
+- class SwingRenderer2D extends Canvas implements Renderer2D
+
+## net.gommagomma.smfn.physics
+------------------------------
+B. Per la Fisica (Simulazione e Animazione)
+Avrai bisogno di:
+
+    SimulationPanel: Un pannello che esegue un loop di aggiornamento a tempo fisso (es. 60 FPS).
+    PhysicsRenderer: Logica per disegnare gli oggetti fisici (es. la classe Particle dal package smfn.physics.core). Disegnerà cerchi per i corpi, frecce per le forze o i campi elettrici.
+    Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
+
+
+- abstractMatrix per raccogliere il codice comune ?
 - trasformazioni
 
 trasformazioni (in core):
@@ -179,42 +208,6 @@ interface MetricSpace<T extends AlgebraicElement<T>> extends Space<T>
     double distance(T e1, T 2);
 interface NormedSpace<S extends FieldElement<S>, V extends VectorElement<S, V>> extends VectorSpace<S, V>, MetricSpace<V>
     doubl norm(V v);
-
-
-## net.gommagomma.smfn.graphics
--------------------------------
-### net.gommagomma.smfn.core:
-- final class Viewport {}
-- final class ViewportController {}
-- interface Renderer {}
-- interface Renderer1D extends Renderer {}
-- interface Renderer2D extends Renderer {}
-- interface ColorMapper {Color map(E value);}
-
-### net.gommagomma.smfn.plotting:
-- class FunctionPlotter1D
-- class FunctionPlotter2D
-- class CartesianAxisPlotter
-
-### net.gommagomma.smfn.drivers.swing:
-- class SwingRenderer1D extends Canvas implements Renderer1D
-- class SwingRenderer2D extends Canvas implements Renderer2D
-
-
-## net.gommagomma.smfn.physics
-------------------------------
-B. Per la Fisica (Simulazione e Animazione)
-Avrai bisogno di:
-
-    SimulationPanel: Un pannello che esegue un loop di aggiornamento a tempo fisso (es. 60 FPS).
-    PhysicsRenderer: Logica per disegnare gli oggetti fisici (es. la classe Particle dal package smfn.physics.core). Disegnerà cerchi per i corpi, frecce per le forze o i campi elettrici.
-    Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
-
-
-todo:
-- javadoc e formattazioni strutture;
-- test sugli assiomi field;
-
 
 
 

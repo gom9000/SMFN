@@ -5,6 +5,7 @@ import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.analysis.core.MathFunction;
 import net.gommagomma.smfn.math.analysis.functions.LinearFunction;
 
 import javax.swing.*;
@@ -16,8 +17,10 @@ public class LinearTestApp
 {
     public static void main(String[] args)
     {
-        // --- 1. Definizione della funzione matematica (f(x) = 2x + 1) ---
-        LinearFunction<Real> linearFunction = new LinearFunction<>(new Real(1.0), new Real(0.0));
+        // --- 1. Definizione della funzione matematica (y = mx + q)
+        LinearFunction<Real> linearFunction1 = new LinearFunction<>(new Real(0.5), new Real(0.0));
+        LinearFunction<Real> linearFunction2 = new LinearFunction<>(new Real(2.0), new Real(5.0));
+        MathFunction<Real, Real> linearFunction = linearFunction1.compose(linearFunction2);
 
         // --- 2. Setup del contesto grafico ---
         int width = 800;
