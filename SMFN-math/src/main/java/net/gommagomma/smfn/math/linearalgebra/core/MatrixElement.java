@@ -1,21 +1,18 @@
 package net.gommagomma.smfn.math.linearalgebra.core;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
+import net.gommagomma.smfn.math.algebra.core.elements.additive.AbelianGroupElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 
 public interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>>
-extends AlgebraicElement<M>
+extends AlgebraicElement<M>, AbelianGroupElement<M>
 {
     int getRows();
     int getColumns();
     K get(int row, int col);
 
-    // Operazioni base (Addizione/Sottrazione richiedono stesse dimensioni)
-    M add(M other);
-    M subtract(M other);
-    
-    // Moltiplicazione matrice-matrice (richiede compatibilità delle dimensioni)
     M multiply(M other); 
+    M multiplyByScalar(K scalar);
     
     // Moltiplicazione matrice-vettore
     V multiply(V vector);

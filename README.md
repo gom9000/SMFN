@@ -98,8 +98,7 @@ smfn/
 ### net.gommagomma.smfn.math.linearalgebra.core:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
 - interface VectorElement<K extends RingElement<K>, V extends VectorElement<K, V>> extends SpaceElement<V>, AbelianGroupElement<V> {
-    Module<V, K> getModule(); int dimension(); K get(int index); V multiplyByScalar(K scalar);
-    K dotProduct(V other); default K getScalarZero() {//...} default K getScalarOne() {//...}
+    Module<V, K> getModule(); int dimension(); K get(int index); V multiplyByScalar(K scalar); V createNewInstance(K... components); K dotProduct(V other); default K getScalarZero() {//...} default K getScalarOne() {//...}
 - interface NormedVectorElement<K extends NormableOrderedFieldElement<K>, V extends NormedVectorElement<K, V>>extends VectorElement<K, V>, Normable<K, V>{//...}}
 - interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends CommutativeMonoidElement<V>, SpaceElement<V> {}
 - interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {int dimension();}

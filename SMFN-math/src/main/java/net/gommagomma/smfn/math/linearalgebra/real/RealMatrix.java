@@ -173,7 +173,6 @@ implements MatrixElement<Real, RealVector, RealMatrix>
 
     @Override
     public RealMatrix subtract(RealMatrix other) {
-        // Usa il metodo add e negate per implementare la sottrazione
         return this.add(other.negate());
     }
 
@@ -239,5 +238,34 @@ implements MatrixElement<Real, RealVector, RealMatrix>
         }
 
         return new RealMatrix(data); 
+    }
+
+    /**
+     * Restituisce una matrice nulla (identità additiva) delle stesse dimensioni di questa matrice.
+     * @return Una nuova istanza di RealMatrix riempita con Real.ZERO.
+     */
+    @Override
+    public RealMatrix getZero() {
+        Real[][] resultData = new Real[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            Arrays.fill(resultData[i], Real.ZERO);
+        }
+        return new RealMatrix(resultData);
+    }
+
+	/**
+     * Moltiplica questa matrice per uno scalare Real.
+     * @param scalar Lo scalare Real.
+     * @return Una nuova istanza di RealMatrix, risultato della moltiplicazione.
+     */
+    @Override
+    public RealMatrix multiplyByScalar(Real scalar) {
+        Real[][] resultData = new Real[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                resultData[i][j] = this.data[i][j].multiply(scalar);
+            }
+        }
+        return new RealMatrix(resultData);
     }
 }
