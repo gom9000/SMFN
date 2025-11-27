@@ -3,7 +3,7 @@
 
 ## struttura dei package
 <pre>
-smfn/
+net.gommagomma.smfn/
 |-- math/
 |   |-- algebra/
 |   |   |-- core/                           (AlgbraicElement, AlgebraicStructure, Commutative)
@@ -68,7 +68,6 @@ smfn/
 - interface Sqrtable<E extends Sqrtable<E>> extends AlgebraicElement<E> { E sqrt(); }
 - interface Exponentiable<E extends Exponentiable<E>> extends AlgebraicElement<E> { E power(int exponent);}
 - interface Normable<N extends FieldElement<N>, E extends Normable<N, E>> extends AlgebraicElement<E> {N norm();}
-- interface NormableOrderedFieldElement<E extends NormableOrderedFieldElement<E>> extends FieldElement<E>, ComparableElement<E>, Normable<E, E>, Sqrtable<E>{}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}
@@ -98,8 +97,10 @@ smfn/
 ### net.gommagomma.smfn.math.linearalgebra.core:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
 - interface VectorElement<K extends RingElement<K>, V extends VectorElement<K, V>> extends SpaceElement<V>, AbelianGroupElement<V> {
-    Module<V, K> getModule(); int dimension(); K get(int index); V multiplyByScalar(K scalar); V createNewInstance(K... components); K dotProduct(V other); default K getScalarZero() {//...} default K getScalarOne() {//...}
-- interface NormedVectorElement<K extends NormableOrderedFieldElement<K>, V extends NormedVectorElement<K, V>>extends VectorElement<K, V>, Normable<K, V>{//...}}
+    Module<V, K> getModule(); int dimension(); K get(int index); V multiplyByScalar(K scalar); V createNewInstance(K... components); default K getScalarZero() {//...} default K getScalarOne() {//...}
+- interface NormedVectorElement<K extends FieldElement<K> & Normable<Real, K> & Sqrtable<K>, V extends NormedVectorElement<K, V>>
+extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other) {}}
+- interface InnerProductSpaceElementInnerProductSpaceElement<K extends FieldElement<K> & Normable<Real, K> & Sqrtable<K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
 - interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends CommutativeMonoidElement<V>, SpaceElement<V> {}
 - interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {int dimension();}
 - interface Module<V extends VectorElement<K, V>, K extends RingElement<K>> extends Space<V> {Ring<K> getScalarRing(); }
@@ -121,20 +122,20 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 - class SignedIntVector implements VectorElement<SignedInt, SignedIntVector> {//...}
 
 ### net.gommagomma.smfn.math.linearalgebra.real:
-- class RealVector implements NormedVector<Real, RealVector> {//...}
+- class RealVector implements InnerProductSpaceElement<Real, RealVector> {//...}
 - class RealVectorSpace implements VectorSpace<RealVector, Real> {//...}
 - class RealMatrixFactory implements MatrixFactory<Real, RealVector, RealMatrix> {}
 - class RealMatrix extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
 - class RealMatrixSpace implements MatrixSpace<Real, RealVector, RealMatrix> {//...}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
-- class ComplexVector implements Vector<Complex, ComplexVector> { /... }
+- class ComplexVector implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
 - class ComplexVectorSpace implements VectorSpace<ComplexVector, Complex> {//...}
 - class ComplexMatrix implements MatrixElement<Complex, ComplexVector, ComplexMatrix> {//...}
 - class ComplexMatrixSpace implements MatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
 
 ### net.gommagomma.smfn.math.linearalgebra.rational:
-- class RationalVector implements Vector<Rational, RationalVector> { /... }
+- class RationalVector implements InnerProductSpaceElement<Rational, RationalVector> { /... }
 - class RationalVectorSpace implements VectorSpace<RationalVector, Rational> {//...}
 - class RationalMatrix implements MatrixElement<Rational, RationalVector, RationalMatrix> {//...}
 - class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}

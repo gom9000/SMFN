@@ -19,11 +19,7 @@ extends SpaceElement<V>, AbelianGroupElement<V>
     // I metodi add, subtract, negate sono ereditati da AbelianGroupElement<E>
 
     // Metodi specifici per l'algebra lineare/moduli:
-    V multiplyByScalar(K scalar);
-
-    // Prodotto scalare (dot product) - Nota: questo non è sempre definito su un modulo generale!
-    // Per ora lo lasciamo, assumendo che i moduli che usi lo supportino (es. Z^n)
-    K dotProduct(V other);
+    V multiplyByScalar(K scalar);  
 
     default K getScalarZero() {
         return getModule().getScalarRing().additiveIdentity();

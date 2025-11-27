@@ -12,8 +12,9 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableOrderedFieldElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
@@ -27,7 +28,7 @@ import net.gommagomma.smfn.math.utils.MathUtils;
  * @author gommagomma.net
  */
 public final class Rational
-implements FieldElement<Rational>, NormableOrderedFieldElement<Rational>, Exponentiable<Rational>
+implements FieldElement<Rational>, Normable<Real, Rational>, Exponentiable<Rational>, ComparableElement<Rational>
 {
 	public static final Rational ZERO = new Rational(0, 1);
     public static final Rational ONE = new Rational(1, 1);
@@ -316,12 +317,11 @@ implements FieldElement<Rational>, NormableOrderedFieldElement<Rational>, Expone
 
 
     @Override
-    public Rational norm()
+    public Real norm()
     {
-    	if (this.numerator >= 0) {
-            return this;
-        } else {
-            return new Rational(-this.numerator, this.denominator);
-        }
+        double absValue = (double) numerator / denominator;
+        if (absValue < 0) absValue = -absValue;
+        
+        return new Real(absValue);
     }
 }

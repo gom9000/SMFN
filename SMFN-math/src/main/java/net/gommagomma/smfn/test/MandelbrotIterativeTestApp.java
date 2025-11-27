@@ -33,7 +33,7 @@ implements ViewportController.ViewportUpdateHandler
 
     public MandelbrotIterativeTestApp() {
         // --- 1. Funzione e Adattatori (rimangono costanti) ---
-        final int MAX_ITERATIONS = 500;
+        final int MAX_ITERATIONS = 5000;
         this.mandelbrotFunction = new MandelbrotFunction(MAX_ITERATIONS);
         this.domainAdapter = Complex::new;
         

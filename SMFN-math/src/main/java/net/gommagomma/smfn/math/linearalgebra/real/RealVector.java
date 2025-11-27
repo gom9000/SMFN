@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.NormedVectorElement;
+import net.gommagomma.smfn.math.linearalgebra.core.InnerProductSpaceElement;
 import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
 public final class RealVector
-implements NormedVectorElement<Real, RealVector>
+implements InnerProductSpaceElement<Real, RealVector>
 {
 	private final Real[] data;
 	private final int dimension;
@@ -117,20 +117,8 @@ implements NormedVectorElement<Real, RealVector>
 		return new RealVector(negatedData);
 	}
 
-	// --- Implementazione di VectorElement (dotProduct, multiplyByScalar) ---
 
-	@Override
-	public Real dotProduct(RealVector other) {
-		if (this.dimension != other.dimension) {
-			throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
-		}
-		Real result = Real.ZERO;
-		for (int i = 0; i < dimension; i++) {
-			Real product = this.data[i].multiply(other.data[i]);
-			result = result.add(product);
-		}
-		return result;
-	}
+	// VectorElement impls
 
 	@Override
 	public RealVector multiplyByScalar(Real scalar) {
@@ -144,8 +132,19 @@ implements NormedVectorElement<Real, RealVector>
 	// --- Implementazione di Normable<Real, RealVector> (norm) ---
 
 	@Override
+	public Real dotProduct(RealVector other) {
+		if (this.dimension != other.dimension) {
+			throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
+		}
+		Real result = Real.ZERO;
+		for (int i = 0; i < dimension; i++) {
+			result = result.add(this.get(i).multiply(other.get(i)));
+		}
+		return result;
+	}
+
+	@Override
 	public Real norm() {
-		// Calcola la norma euclidea standard (sqrt del prodotto scalare con se stesso)
 		return this.dotProduct(this).sqrt(); 
 	}
 

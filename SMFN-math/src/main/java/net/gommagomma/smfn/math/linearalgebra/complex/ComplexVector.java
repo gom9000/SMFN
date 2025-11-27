@@ -3,16 +3,14 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 import java.util.Arrays;
 import java.util.List;
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.VectorElement;
+import net.gommagomma.smfn.math.linearalgebra.core.InnerProductSpaceElement;
 import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
-// Implementa VectorElement<ScalarType, VectorType>
-// E implementa Normable<NormResultType, VectorType>
+
 public final class ComplexVector
-implements VectorElement<Complex, ComplexVector>, Normable<Real, ComplexVector>
+implements InnerProductSpaceElement<Complex, ComplexVector>
 {
     private final Complex[] data;
     private final int dimension;

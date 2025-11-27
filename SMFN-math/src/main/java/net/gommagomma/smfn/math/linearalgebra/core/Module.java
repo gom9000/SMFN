@@ -12,6 +12,4 @@ extends Space<V>
      * Restituisce l'anello degli scalari su cui è definito questo modulo.
      */
     Ring<K> getScalarRing();
-    
-    // Potrebbero esserci altri metodi per basi, etc., ma questi sono i fondamentali.
 }

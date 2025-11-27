@@ -106,20 +106,7 @@ implements VectorElement<SignedInt, SignedIntVector>
         return new SignedIntVector(negatedData);
     }
 
-    // --- Implementazione di VectorElement (dotProduct, multiplyByScalar) ---
-    
-    @Override
-    public SignedInt dotProduct(SignedIntVector other) {
-        if (this.dimension != other.dimension) {
-            throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
-        }
-        SignedInt result = SignedInt.ZERO;
-        for (int i = 0; i < dimension; i++) {
-            SignedInt product = this.data[i].multiply(other.data[i]);
-            result = result.add(product);
-        }
-        return result;
-    }
+    // --- Implementazione di VectorElement
 
     @Override
     public SignedIntVector multiplyByScalar(SignedInt scalar) {

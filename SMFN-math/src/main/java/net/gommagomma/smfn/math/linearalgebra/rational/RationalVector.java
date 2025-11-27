@@ -3,7 +3,8 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.linearalgebra.core.NormedVectorElement;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.InnerProductSpaceElement;
 import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
 /**
@@ -11,7 +12,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
  * Forma uno Spazio Vettoriale (VectorSpace) sul Campo dei Razionali (Q).
  */
 public final class RationalVector
-implements NormedVectorElement<Rational, RationalVector> // I razionali sono un campo ordinato
+implements InnerProductSpaceElement<Rational, RationalVector>
 {
     private final Rational[] data;
     private final int dimension;
@@ -92,18 +93,8 @@ implements NormedVectorElement<Rational, RationalVector> // I razionali sono un 
         return new RationalVector(negatedData);
     }
 
-    // --- Implementazione di VectorElement (dotProduct, multiplyByScalar) ---
-    
-    @Override
-    public Rational dotProduct(RationalVector other) {
-        if (this.dimension != other.dimension) throw new IllegalArgumentException("Dimensions must match for dot product.");
-        Rational result = Rational.ZERO;
-        for (int i = 0; i < dimension; i++) {
-            Rational product = this.data[i].multiply(other.data[i]);
-            result = result.add(product);
-        }
-        return result;
-    }
+
+    // VectorElement impls
 
     @Override
     public RationalVector multiplyByScalar(Rational scalar) {
@@ -114,15 +105,27 @@ implements NormedVectorElement<Rational, RationalVector> // I razionali sono un 
         return new RationalVector(scaledData);
     }
 
+
     // --- Implementazione di NormedVectorElement (norm) ---
 
     @Override
-    public Rational norm() {
-        // La norma L2 è la radice quadrata del prodotto scalare con se stesso.
-        // Poiché Rational ha sqrt() solo per quadrati perfetti, questo può lanciare un'eccezione
-        // se la norma è irrazionale (es. il vettore (1/2, 1/2) ha norma sqrt(1/2)).
-        // Questo è un limite della precisione esatta!
-        return this.dotProduct(this).sqrt(); 
+    public Rational dotProduct(RationalVector other) {
+        if (this.dimension != other.dimension) {
+            throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
+        }
+        Rational result = Rational.ZERO; // Assumendo esista
+        for (int i = 0; i < dimension; i++) {
+            result = result.add(this.data[i].multiply(other.data[i]));
+        }
+        return result;
+    }
+
+    @Override
+    public Real norm() {
+        Rational normSquaredRational = this.dotProduct(this);
+        double normValue = Math.sqrt(normSquaredRational.getNumerator() / normSquaredRational.getDenominator());
+
+        return new Real(normValue);
     }
     
     // --- Implementazione di SpaceElement/VectorElement (utilità) ---

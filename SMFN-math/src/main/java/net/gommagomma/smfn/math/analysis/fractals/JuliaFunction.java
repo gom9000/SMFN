@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.core.MathFunction;
 import net.gommagomma.smfn.math.analysis.core.IterativeSystem;
-import net.gommagomma.smfn.math.analysis.core.ConvergenceTest;
+import net.gommagomma.smfn.math.analysis.core.MetricConvergenceTest;
 
 /**
  * Rappresenta la funzione matematica per un set di Julia specifico (definito da una costante C).
@@ -37,7 +37,7 @@ public class JuliaFunction implements MathFunction<Complex, Real> {
         };
 
         // Definiamo il test di convergenza standard (|z|^2 > 4)
-        ConvergenceTest<Complex> divergenceTest = current -> current.modulusSquared() > 4.0;
+        MetricConvergenceTest<Complex> divergenceTest = current -> current.modulusSquared() > 4.0;
 
         // Eseguiamo il solve, partendo da input (che è z0)
         int iterations = solver.solve(input, juliaSystem, divergenceTest, maxIterations);

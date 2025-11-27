@@ -13,7 +13,7 @@ import net.gommagomma.smfn.graphics.core.Viewport;
  */
 public final class CartesianAxisPlotter
 {	
-	private static final DecimalFormat DF = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.US));
+	private static final DecimalFormat DF = new DecimalFormat("0.########", new DecimalFormatSymbols(Locale.US));
 	private CartesianAxisPlotter() {}
 
 
