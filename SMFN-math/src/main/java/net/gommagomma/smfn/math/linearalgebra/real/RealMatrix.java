@@ -4,65 +4,51 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.MatrixElement;
+import net.gommagomma.smfn.math.linearalgebra.core.AbstractMatrix;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 
-public final class RealMatrix
-implements MatrixElement<Real, RealVector, RealMatrix>
-{    
-    private final Real[][] data;
-    private final int rows;
-    private final int cols;
 
-    
+public final class RealMatrix 
+extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
+{
+    private static final RealMatrixFactory FACTORY_INSTANCE = RealMatrixFactory.getInstance();
+
+
+    /**
+     * Costruttore principale per creare un RealMatrix da un array bidimensionale di componenti.
+     * @param data L'array di componenti Real.
+     */
     public RealMatrix(Real[][] data) {
-        if (data == null || data.length == 0 || data[0].length == 0) {
-            throw new IllegalArgumentException("Matrix data cannot be null or empty.");
-        }
-        
-        this.rows = data.length;
-        this.cols = data[0].length; // Determina il numero di colonne dalla prima riga
-        this.data = new Real[rows][cols];
-        
-        // Copia difensiva riga per riga e verifica la consistenza delle dimensioni
-        for (int i = 0; i < rows; i++) {
-            if (data[i].length != cols) {
-                 throw new IllegalArgumentException("All rows must have the same number of columns.");
-            }
-            // Copia l'array interno (difensivo)
-            this.data[i] = Arrays.copyOf(data[i], cols);
-        }
+        super(data, FACTORY_INSTANCE);
     }
-
-    @Override
-	public RealVector getRowVector(int row) {
-        if (row < 0 || row >= rows) {
-            throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
-        }
-		// Ritorna una copia difensiva della riga come nuovo RealVector
-		return new RealVector(Arrays.copyOf(data[row], cols));
-	}
-
-    @Override
-    public RealVector getColumnVector(int col) {
-        if (col < 0 || col >= cols) {
-            throw new IndexOutOfBoundsException("Column index out of bounds: " + col);
-        }
-
-        Real[] columnData = new Real[rows];
-
-        for (int i = 0; i < rows; i++) {
-            columnData[i] = data[i][col];
-        }
-
-        return new RealVector(columnData);
-    }
-
     
+    /**
+     * Costruttore per creare una matrice di zeri di dimensioni specifiche.
+     * Usato internamente per getZero(), identity(), ecc.
+     */
+    RealMatrix(int rows, int cols) {
+    	super(rows, cols, FACTORY_INSTANCE);
+    	for (int i = 0; i < rows; i++) {
+    		Arrays.fill(this.data[i], Real.ZERO);
+    	}
+    }
+
+    @Override
+    protected Class<Real> getScalarClass() {
+        return Real.class;
+    }
+
+
+    // MatrixElement impls
+
     @Override
     public Real determinant()
     {
+        if (rows != cols) {
+            throw new IllegalStateException("Determinant can only be calculated for square matrices.");
+        }
+
         Comparator<Real> realComparator = Comparator.naturalOrder();
 
         return GaussianElimination.determinant(this.data, Real.ZERO, realComparator);
@@ -71,158 +57,64 @@ implements MatrixElement<Real, RealVector, RealMatrix>
     @Override
     public RealMatrix inverse()
     {
-        Comparator<Real> realComparator = Comparator.naturalOrder();
-        Real[][] invertedData = GaussJordanElimination.inverse(this.data, Real.ZERO, Real.ONE, realComparator);
+    	if (rows != cols) {
+    		throw new IllegalStateException("Inverse can only be calculated for square matrices.");
+    	}
 
-        return new RealMatrix(invertedData);
+    	Comparator<Real> realComparator = Comparator.naturalOrder();
+    	Real[][] invertedData = GaussJordanElimination.inverse(this.data, Real.ZERO, Real.ONE, realComparator);
+
+    	return new RealMatrix(invertedData);
     }
-
-    // --- Standard Java impls ---
     
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(rows).append("x").append(cols).append(" Real Matrix:\n");
-        for (int i = 0; i < rows; i++) {
-            sb.append(Arrays.toString(data[i])).append("\n");
+    public RealVector getRowVector(int row)
+    {
+        if (row < 0 || row >= rows) {
+            throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
         }
-        return sb.toString();
-    }
-    
-    @Override
-    public final boolean equals(Object other) {
-        // Usa il warning di Real.equals()
-        return (other instanceof RealMatrix) && isEqual((RealMatrix)other);
-    }
-    
-    @Override
-    public final int hashCode() {
-        // Hash code basato sui contenuti
-        int result = java.util.Objects.hash(rows, cols);
-        result = 31 * result + Arrays.deepHashCode(data);
-        return result;
+
+        return factory.createVector(Arrays.copyOf(data[row], cols));
     }
 
     @Override
-    public int getRows() {
-        return this.rows;
-    }
-
-    @Override
-    public int getColumns() {
-        return this.cols;
-    }
-
-    @Override
-    public Real get(int row, int col) {
-        // Aggiungiamo controlli robusti sugli indici
-        if (row < 0 || row >= rows || col < 0 || col >= cols) {
-            throw new IndexOutOfBoundsException("Indices out of bounds: row=" + row + ", col=" + col);
+    public RealVector getColumnVector(int col)
+    {
+        if (col < 0 || col >= cols) {
+            throw new IndexOutOfBoundsException("Column index out of bounds: " + col);
         }
-        return this.data[row][col];
+
+        Real[] columnData = new Real[rows];
+        for (int i = 0; i < rows; i++) {
+            columnData[i] = data[i][col];
+        }
+
+        return factory.createVector(columnData);
     }
 
 
-    // --- Implementazioni di AlgebraicElement e Aritmetica ---
+    // Helper Methods
 
-    @Override
-    public boolean isEqual(RealMatrix other) {
-        if (this.rows != other.rows || this.cols != other.cols) return false;
-        // Confronto elemento per elemento usando Real.isEqual (epsilon-based)
+    /**
+     * Helper statico per creare matrici da array di double primitivi.
+     */
+    public static RealMatrix fromDoubles(double[][] data)
+    {
+        int rows = data.length;
+        int cols = data.length == 0 ? 0 : data[0].length;
+        Real[][] realData = new Real[rows][cols];
         for (int i = 0; i < rows; i++) {
+            if (data[i].length != cols) {
+                 throw new IllegalArgumentException("All rows must have the same number of columns.");
+            }
             for (int j = 0; j < cols; j++) {
-                if (!this.data[i][j].isEqual(other.data[i][j])) {
-                    return false;
-                }
+                realData[i][j] = new Real(data[i][j]);
             }
         }
-        return true;
+
+        return new RealMatrix(realData);
     }
 
-    @Override
-    public RealMatrix copy() {
-        return new RealMatrix(this.data);
-    }
-
-    @Override
-    public RealMatrix add(RealMatrix other) {
-        if (this.rows != other.rows || this.cols != other.cols) {
-            throw new IllegalArgumentException("Matrices must have the same dimensions for addition.");
-        }
-        // Crea un nuovo array per il risultato
-        Real[][] resultData = new Real[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                resultData[i][j] = this.data[i][j].add(other.data[i][j]);
-            }
-        }
-        // Restituisce una nuova istanza (immutabilità)
-        return new RealMatrix(resultData);
-    }
-    
-    // Metodo helper per la negazione (necessario per subtract)
-    public RealMatrix negate() {
-        Real[][] resultData = new Real[rows][cols];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				resultData[i][j] = this.data[i][j].negate();
-			}
-		}
-		return new RealMatrix(resultData);
-    }
-
-    @Override
-    public RealMatrix subtract(RealMatrix other) {
-        return this.add(other.negate());
-    }
-
-    @Override
-    public RealMatrix multiply(RealMatrix other) {
-        if (this.cols != other.rows) {
-            throw new IllegalArgumentException("Number of columns in the first matrix must match number of rows in the second.");
-        }
-        int resultRows = this.rows;
-        int resultCols = other.cols;
-        Real[][] resultData = new Real[resultRows][resultCols];
-
-        for (int i = 0; i < resultRows; i++) { // Iterate over rows of A
-            for (int j = 0; j < resultCols; j++) { // Iterate over columns of B
-                Real sum = Real.ZERO;
-                for (int k = 0; k < this.cols; k++) { // Dot product of row i and column j
-                    sum = sum.add(this.data[i][k].multiply(other.data[k][j]));
-                }
-                resultData[i][j] = sum;
-            }
-        }
-        return new RealMatrix(resultData);
-    }
-
-    @Override
-    public RealVector multiply(RealVector vector) {
-        if (this.cols != vector.dimension()) {
-             throw new IllegalArgumentException("Matrix columns must match vector dimension for multiplication.");
-        }
-        Real[] resultData = new Real[this.rows];
-        for (int i = 0; i < this.rows; i++) {
-            Real sum = Real.ZERO;
-            for (int j = 0; j < this.cols; j++) {
-                sum = sum.add(this.data[i][j].multiply(vector.get(j)));
-            }
-            resultData[i] = sum;
-        }
-		return new RealVector(resultData);
-    }
-
-    @Override
-    public RealMatrix transpose() {
-        Real[][] resultData = new Real[cols][rows];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                resultData[j][i] = this.data[i][j];
-            }
-        }
-        return new RealMatrix(resultData);
-    }
 
     public static RealMatrix identity(int size)
     {
@@ -230,42 +122,30 @@ implements MatrixElement<Real, RealVector, RealMatrix>
             throw new IllegalArgumentException("Dimension must be positive.");
         }
 
-        Real[][] data = new Real[size][size];
+        RealMatrix identityMatrix = new RealMatrix(size, size);
         for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                data[i][j] = (i == j) ? Real.ONE : Real.ZERO;
-            }
+             identityMatrix.data[i][i] = Real.ONE;
         }
 
-        return new RealMatrix(data); 
+        return identityMatrix; 
     }
 
+
+    // Java Standard impls
+    
     /**
-     * Restituisce una matrice nulla (identità additiva) delle stesse dimensioni di questa matrice.
-     * @return Una nuova istanza di RealMatrix riempita con Real.ZERO.
+     * WARNING: This equals method uses epsilon comparisons via Real.isEqual,
+     * violating the strict transitivity contract of Object.equals() in standard Java collections.
      */
     @Override
-    public RealMatrix getZero() {
-        Real[][] resultData = new Real[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            Arrays.fill(resultData[i], Real.ZERO);
-        }
-        return new RealMatrix(resultData);
+    public final boolean equals(Object other) {
+        return (other instanceof RealMatrix) && isEqual((RealMatrix)other);
     }
 
-	/**
-     * Moltiplica questa matrice per uno scalare Real.
-     * @param scalar Lo scalare Real.
-     * @return Una nuova istanza di RealMatrix, risultato della moltiplicazione.
-     */
     @Override
-    public RealMatrix multiplyByScalar(Real scalar) {
-        Real[][] resultData = new Real[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                resultData[i][j] = this.data[i][j].multiply(scalar);
-            }
-        }
-        return new RealMatrix(resultData);
+    public final int hashCode() {
+        int result = java.util.Objects.hash(rows, cols);
+        result = 31 * result + Arrays.deepHashCode(data);
+        return result;
     }
 }

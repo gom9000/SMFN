@@ -106,6 +106,9 @@ smfn/
 - interface VectorSpace<V extends VectorElement<K, V>, K extends FieldElement<K>> extends Module<V, K> {Field<K> getScalarRing();}
 - interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M> {}
 - interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
+- interface MatrixFactory<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>>
+ { M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); K getZeroScalar(); K getOneScalar();}
+- abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>> implements MatrixElement<K, V, M> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.algorithms
 - final class GaussianElimination {public static <K extends FieldElement<K>> K determinant(K[][] matrixData, K elementZero, Comparator<K> magnitudeComparator) {}}
@@ -120,7 +123,8 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 ### net.gommagomma.smfn.math.linearalgebra.real:
 - class RealVector implements NormedVector<Real, RealVector> {//...}
 - class RealVectorSpace implements VectorSpace<RealVector, Real> {//...}
-- class RealMatrix implements MatrixElement<Real, RealVector, RealMatrix> {//...}
+- class RealMatrixFactory implements MatrixFactory<Real, RealVector, RealMatrix> {}
+- class RealMatrix extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
 - class RealMatrixSpace implements MatrixSpace<Real, RealVector, RealMatrix> {//...}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
@@ -189,7 +193,7 @@ Avrai bisogno di:
     Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
 
 
-- abstractMatrix per raccogliere il codice comune ?
+- dotProduct...
 - trasformazioni
 
 trasformazioni (in core):

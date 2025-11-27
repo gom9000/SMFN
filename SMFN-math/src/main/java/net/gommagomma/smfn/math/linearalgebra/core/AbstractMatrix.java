@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.core;
 
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
@@ -25,7 +26,7 @@ implements MatrixElement<K, V, M>
      * @param data I dati della matrice.
      * @param factory La factory specifica per il tipo K.
      */
-    public AbstractMatrix(K[][] data, F factory)
+    protected AbstractMatrix(K[][] data, F factory)
     {
     	if (data == null || data.length == 0 || data[0].length == 0) {
             throw new IllegalArgumentException("Matrix data cannot be null or empty.");
@@ -36,11 +37,17 @@ implements MatrixElement<K, V, M>
         this.cols = data.length == 0 ? 0 : data[0].length;
         this.data = copyAndValidateData(data);
     }
-    
+
+    /**
+     * Restituisce la classe runtime di K (il tipo scalare).
+     * Necessario a causa della type erasure di Java per la creazione dinamica di array.
+     */
+    protected abstract Class<K> getScalarClass();
+
     /**
      * Costruttore helper per creare matrici vuote/zero.
      */
-    public AbstractMatrix(int rows, int cols, F factory)
+    protected AbstractMatrix(int rows, int cols, F factory)
     {
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("Dimensions must be positive.");
@@ -48,15 +55,25 @@ implements MatrixElement<K, V, M>
         this.rows = rows;
         this.cols = cols;
         this.factory = factory;
-        this.data = (K[][]) new FieldElement[rows][cols]; 
+        this.data = createMatrixArray(rows, cols);
     }
 
 
     // --- Metodi Helper Interni
 
+    /**
+     * Metodo helper per creare un array K[][] in modo sicuro (senza unchecked cast warnings)
+     * utilizzando la reflection e la classe K ottenuta da getScalarClass().
+     */
+    @SuppressWarnings("unchecked")
+    protected K[][] createMatrixArray(int rows, int cols)
+    {
+        return (K[][]) Array.newInstance(getScalarClass(), rows, cols);
+    }
+
     private K[][] copyAndValidateData(K[][] sourceData)
     {
-        K[][] newData = (K[][]) new FieldElement[rows][cols];
+        K[][] newData = createMatrixArray(rows, cols);
         for (int i = 0; i < rows; i++) {
             if (sourceData[i].length != cols) {
                  throw new IllegalArgumentException("All rows must have the same number of columns.");
@@ -70,6 +87,28 @@ implements MatrixElement<K, V, M>
         if (this.rows != other.getRows() || this.cols != other.getColumns()) {
             throw new IllegalArgumentException("Matrices must have the same dimensions.");
         }
+    }
+
+
+    // --- Implementazioni di AlgebraicElement
+
+    @Override
+    public M copy()
+    {
+        return factory.createMatrix(this.data);
+    }
+
+    @Override
+    public boolean isEqual(M other) {
+        if (this.rows != other.getRows() || this.cols != other.getColumns()) return false;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (!this.data[i][j].isEqual(other.get(i, j))) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
@@ -90,22 +129,9 @@ implements MatrixElement<K, V, M>
     }
 
     @Override
-    public boolean isEqual(M other) {
-        if (this.rows != other.getRows() || this.cols != other.getColumns()) return false;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (!this.data[i][j].isEqual(other.get(i, j))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
     public M add(M other) {
         validateDimensions(other);
-        K[][] resultData = (K[][]) new FieldElement[rows][cols];
+        K[][] resultData = createMatrixArray(rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 resultData[i][j] = this.data[i][j].add(other.get(i, j));
@@ -118,7 +144,7 @@ implements MatrixElement<K, V, M>
     public M subtract(M other) {
         validateDimensions(other);
         // Implementazione efficiente senza factory.createMatrix() per la negazione intermedia
-        K[][] resultData = (K[][]) new FieldElement[rows][cols];
+        K[][] resultData = createMatrixArray(rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 // Sottrai l'elemento other[i][j] negato
@@ -130,7 +156,7 @@ implements MatrixElement<K, V, M>
     
     @Override
     public M multiplyByScalar(K scalar) {
-        K[][] resultData = (K[][]) new FieldElement[rows][cols];
+        K[][] resultData = createMatrixArray(rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 resultData[i][j] = this.data[i][j].multiply(scalar);
@@ -146,7 +172,7 @@ implements MatrixElement<K, V, M>
         }
         int resultRows = this.rows;
         int resultCols = other.getColumns();
-        K[][] resultData = (K[][]) new FieldElement[resultRows][resultCols];
+        K[][] resultData = createMatrixArray(rows, cols);
         K zero = factory.getZeroScalar();
 
         for (int i = 0; i < resultRows; i++) {
@@ -161,7 +187,8 @@ implements MatrixElement<K, V, M>
         return factory.createMatrix(resultData);
     }
 
-    @Override
+	@Override
+	@SuppressWarnings("unchecked")
     public V multiply(V vector) {
         if (this.cols != vector.dimension()) {
              throw new IllegalArgumentException("Matrix columns must match vector dimension for multiplication.");
@@ -181,13 +208,32 @@ implements MatrixElement<K, V, M>
 
     @Override
     public M transpose() {
-        K[][] resultData = (K[][]) new FieldElement[cols][rows];
+        K[][] resultData = createMatrixArray(rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 resultData[j][i] = this.data[i][j];
             }
         }
         return factory.createMatrix(resultData);
+    }
+
+
+    @Override
+    public M getZero() {
+         return factory.createZeroMatrix(this.rows, this.cols);
+    }
+
+
+	@Override
+    public M negate() {
+        K[][] resultData = createMatrixArray(rows, cols);
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+                // Delega la negazione all'elemento K sottostante
+				resultData[i][j] = this.data[i][j].negate();
+			}
+		}
+		return factory.createMatrix(resultData);
     }
 
 
@@ -204,20 +250,4 @@ implements MatrixElement<K, V, M>
 
         return sb.toString();
     }
-
-
-    // --- Metodi Astratti ---
-
-    @Override
-    public abstract K determinant();
-    @Override
-    public abstract M inverse();
-    @Override
-    public abstract V getRowVector(int row);
-    @Override
-    public abstract V getColumnVector(int col);
-    @Override
-    public abstract boolean equals(Object other);
-    @Override
-    public abstract int hashCode();
 }

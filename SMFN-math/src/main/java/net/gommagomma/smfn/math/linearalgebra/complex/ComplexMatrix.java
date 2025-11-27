@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.linearalgebra.core.MatrixElement;
+import net.gommagomma.smfn.math.linearalgebra.core.AbstractMatrix;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 
@@ -13,170 +13,40 @@ import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianEliminatio
  * Aderisce all'interfaccia Matrix<Complex, ComplexVector, ComplexMatrix>.
  */
 public final class ComplexMatrix
-implements MatrixElement<Complex, ComplexVector, ComplexMatrix>
+extends AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory>
 {    
-    private final Complex[][] data;
-    private final int rows;
-    private final int cols;
+	private static final ComplexMatrixFactory FACTORY_INSTANCE = ComplexMatrixFactory.getInstance();
 
-    // --- Costruttori ---
 
-    /**
-     * Costruttore principale che accetta un array 2D di Complex. 
-     * DEDUCE le dimensioni dall'array e verifica che sia rettangolare.
+	/**
+     * Costruttore principale per creare un ComplexMatrix da un array bidimensionale di componenti.
+     * @param data L'array di componenti Complex.
      */
     public ComplexMatrix(Complex[][] data) {
-        if (data == null || data.length == 0 || data[0].length == 0) { // Controlli corretti
-            throw new IllegalArgumentException("Matrix data cannot be null or empty.");
-        }
-        
-        this.rows = data.length;
-        this.cols = data[0].length; // Dedotto dalla lunghezza della prima riga
-        
-        this.data = new Complex[rows][cols]; // Inizializza l'array interno
+        super(data, FACTORY_INSTANCE);
+    }
 
-        // Copia difensiva riga per riga e verifica la consistenza delle dimensioni
+    /**
+     * Costruttore per creare una matrice di zeri di dimensioni specifiche.
+     * Usato internamente per getZero(), identity(), ecc.
+     */
+    ComplexMatrix(int rows, int cols) {
+        super(rows, cols, FACTORY_INSTANCE);
         for (int i = 0; i < rows; i++) {
-            if (data[i].length != cols) {
-                 throw new IllegalArgumentException("All rows must have the same number of columns.");
-            }
-            this.data[i] = Arrays.copyOf(data[i], cols);
+             java.util.Arrays.fill(this.data[i], Complex.ZERO); 
+         }
+    }
+
+
+    // MatrixElement impls
+
+	@Override
+    public Complex determinant()
+	{
+		if (rows != cols) {
+            throw new IllegalStateException("Determinant can only be calculated for square matrices.");
         }
-    }
 
-    // --- Implementazioni di AlgebraicElement (isEqual, copy, getZero, getOne) ---
-
-    @Override
-    public boolean isEqual(ComplexMatrix other) {
-        if (this.rows != other.rows || this.cols != other.cols) return false;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                // Usa isEqual di Complex (epsilon-based)
-                if (!this.data[i][j].isEqual(other.data[i][j])) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public int getRows() {
-        return this.rows;
-    }
-
-    @Override
-    public int getColumns() {
-        return this.cols;
-    }
-
-    @Override 
-    public Complex get(int row, int col) { 
-        if (row < 0 || row >= rows || col < 0 || col >= cols) {
-            throw new IndexOutOfBoundsException("Indices out of bounds: row=" + row + ", col=" + col);
-        }
-        return this.data[row][col];
-    }
-
-    @Override public ComplexMatrix copy() { return new ComplexMatrix(this.data); }
-
-	// --- Implementazioni Aritmetiche (dall'interfaccia Matrix) ---
-
-	@Override
-	public ComplexMatrix add(ComplexMatrix other) {
-		if (this.rows != other.rows || this.cols != other.cols) throw new IllegalArgumentException("Dimensions must match.");
-		Complex[][] resultData = new Complex[rows][cols];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				resultData[i][j] = this.data[i][j].add(other.data[i][j]);
-			}
-		}
-		return new ComplexMatrix(resultData);
-	}
-    
-    public ComplexMatrix negate() {
-        Complex[][] resultData = new Complex[rows][cols];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				resultData[i][j] = this.data[i][j].negate();
-			}
-		}
-		return new ComplexMatrix(resultData);
-    }
-
-	@Override public ComplexMatrix subtract(ComplexMatrix other) { return this.add(other.negate()); }
-
-	@Override
-	public ComplexMatrix multiply(ComplexMatrix other) {
-		if (this.cols != other.rows) throw new IllegalArgumentException("Dimensions incompatible for multiplication.");
-		Complex[][] resultData = new Complex[this.rows][other.cols];
-		for (int i = 0; i < this.rows; i++) {
-			for (int j = 0; j < other.cols; j++) {
-				Complex sum = Complex.ZERO;
-				for (int k = 0; k < this.cols; k++) {
-					sum = sum.add(this.data[i][k].multiply(other.data[k][j]));
-				}
-				resultData[i][j] = sum;
-			}
-		}
-		return new ComplexMatrix(resultData);
-	}
-    
-	@Override
-	public ComplexVector multiply(ComplexVector vector) {
-        if (this.cols != vector.dimension()) throw new IllegalArgumentException("Matrix columns must match vector dimension.");
-        Complex[] resultData = new Complex[this.rows];
-        for (int i = 0; i < this.rows; i++) {
-            Complex sum = Complex.ZERO;
-            for (int j = 0; j < this.cols; j++) {
-                sum = sum.add(this.data[i][j].multiply(vector.get(j)));
-            }
-            resultData[i] = sum;
-        }
-		return new ComplexVector(resultData);
-	}
-
-	@Override
-	public ComplexMatrix transpose() {
-		Complex[][] resultData = new Complex[cols][rows];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				resultData[j][i] = this.data[i][j];
-			}
-		}
-		return new ComplexMatrix(resultData);
-	}
-    
-    // NOTA: Per l'algebra lineare complessa, spesso serve la trasposta coniugata (Hermitian transpose/adjoint)
-    public ComplexMatrix conjugateTranspose() {
-        Complex[][] resultData = new Complex[cols][rows];
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				resultData[j][i] = this.data[i][j].conjugate(); // Usa il coniugato
-			}
-		}
-		return new ComplexMatrix(resultData);
-    }
-
-    @Override
-    public ComplexVector getRowVector(int row) {
-        if (row < 0 || row >= rows) throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
-		return new ComplexVector(Arrays.copyOf(data[row], cols));
-	}
-
-	@Override
-	public ComplexVector getColumnVector(int col) {
-        if (col < 0 || col >= cols) throw new IndexOutOfBoundsException("Column index out of bounds: " + col);
-        Complex[] columnData = new Complex[rows];
-		for (int i = 0; i < rows; i++) {
-			columnData[i] = data[i][col];
-		}
-		return new ComplexVector(columnData);
-	}
-
-	@Override
-    public Complex determinant() {
-        // Usa il comparatore per modulo per i complessi
         Comparator<Complex> complexComparator = (c1, c2) -> Double.compare(c1.modulus(), c2.modulus());
 
         return GaussianElimination.determinant(this.data, Complex.ZERO, complexComparator);
@@ -185,33 +55,94 @@ implements MatrixElement<Complex, ComplexVector, ComplexMatrix>
     @Override
     public ComplexMatrix inverse()
     {
+    	if (rows != cols) {
+    		throw new IllegalStateException("Inverse can only be calculated for square matrices.");
+    	}
+
         Comparator<Complex> complexComparator = (c1, c2) -> Double.compare(c1.modulus(), c2.modulus());
         Complex[][] invertedData = GaussJordanElimination.inverse(this.data, Complex.ZERO, Complex.ONE, complexComparator);
 
         return new ComplexMatrix(invertedData);	
     }
 
-    // --- Standard Java impls ---
-    
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(rows).append("x").append(cols).append(" Complex Matrix:\n");
-        for (int i = 0; i < rows; i++) {
-            sb.append(Arrays.toString(data[i])).append("\n");
+    public ComplexVector getRowVector(int row)
+    {
+    	if (row < 0 || row >= rows) {
+            throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
         }
-        return sb.toString();
+
+        return factory.createVector(Arrays.copyOf(data[row], cols));
+	}
+
+	@Override
+	public ComplexVector getColumnVector(int col)
+	{
+        if (col < 0 || col >= cols) {
+            throw new IndexOutOfBoundsException("Column index out of bounds: " + col);
+        }
+
+        Complex[] columnData = new Complex[rows];
+        for (int i = 0; i < rows; i++) {
+            columnData[i] = data[i][col];
+        }
+
+        return factory.createVector(columnData);
+	}
+
+
+	// Helper Methods
+
+    public static ComplexMatrix identity(int size)
+    {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Dimension must be positive.");
+        }
+
+        ComplexMatrix identityMatrix = new ComplexMatrix(size, size);
+        for (int i = 0; i < size; i++) {
+             identityMatrix.data[i][i] = Complex.ONE;
+        }
+
+        return identityMatrix; 
     }
-    
+
+
+	// Specific Methods
+
+    public ComplexMatrix conjugateTranspose()
+    {
+        Complex[][] resultData = new Complex[cols][rows];
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				resultData[j][i] = this.data[i][j].conjugate();
+			}
+		}
+
+		return new ComplexMatrix(resultData);
+    }
+
+
+   // Java Standard impls
+
+    /**
+     * WARNING: This equals method uses epsilon comparisons via Real.isEqual,
+     * violating the strict transitivity contract of Object.equals() in standard Java collections.
+     */
     @Override
     public final boolean equals(Object other) {
         return (other instanceof ComplexMatrix) && isEqual((ComplexMatrix)other);
     }
-    
+
     @Override
     public final int hashCode() {
         int result = java.util.Objects.hash(rows, cols);
         result = 31 * result + Arrays.deepHashCode(data);
         return result;
+    }
+
+    @Override
+    protected Class<Complex> getScalarClass() {
+        return Complex.class;
     }
 }
