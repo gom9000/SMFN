@@ -64,7 +64,7 @@ net.gommagomma.smfn/
 - interface FieldElement<E extends FieldElement<E>> extends CommutativeRingElement<E>{E inverse();default E divide(E other) {	return multiply(other.inverse());}}
 
 ### net.gommagomma.smfn.math.algebra.core.elements.capabilities:
-- interface ComparableElement<E extends ComparableElement<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;}}
+- interface ComparableElement<E extends ComparableElement<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;} double modulus();}
 - interface SqrtableElement<E extends SqrtableElement<E>> extends AlgebraicElement<E> { E sqrt(); }
 - interface ExponentiableElement<E extends ExponentiableElement<E>> extends AlgebraicElement<E> { E power(int exponent);}
 - interface NormableElement<N extends FieldElement<N>, E extends NormableElement<N, E>>  extends AlgebraicElement<E> {N norm();}
@@ -108,7 +108,7 @@ net.gommagomma.smfn/
 extends ModuleElement<K, V> {}
 - interface NormedVectorElement<K extends FieldElement<K> & Normable<Real, K>, V extends NormedVectorElement<K, V>>
 extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other) {}}
-- interface InnerProductSpaceElement<K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
+- interface InnerProductSpaceElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
 - interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {}
 - interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M>, AbelianGroupElement<M> {}
 - abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>> implements MatrixElement<K, V, M> {}
@@ -122,10 +122,6 @@ extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other
  { M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); K getZeroScalar(); K getOneScalar();}
  - interface MetricSpace<T extends AlgebraicElement<T>> 
 extends Space<T> {Real distance(T point1, T point2);}
-
-### net.gommagomma.smfn.math.linearalgebra.core.algorithms
-- final class GaussianElimination {public static <K extends FieldElement<K>> K determinant(K[][] matrixData, K elementZero, Comparator<K> magnitudeComparator) {}}
-- final class GaussJordanElimination {public static <K extends FieldElement<K>> K[][] inverse(K[][] matrixData, K elementZero, K elementOne, java.util.Comparator<K> magnitudeComparator) {}}
 
 ### net.gommagomma.smfn.math.linearalgebra.natural:
 - class NaturalVector implements SemimoduleElement<Natural, NaturalVector> { //... }

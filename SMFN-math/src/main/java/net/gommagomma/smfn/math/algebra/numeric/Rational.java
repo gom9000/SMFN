@@ -264,10 +264,9 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
     @Override
     public int compareTo(Rational other)
     {
-        java.math.BigInteger left = java.math.BigInteger.valueOf(this.numerator).multiply(java.math.BigInteger.valueOf(other.denominator));
-        java.math.BigInteger right = java.math.BigInteger.valueOf(other.numerator).multiply(java.math.BigInteger.valueOf(this.denominator));
-        
-        return left.compareTo(right);
+        long ad = this.numerator * other.denominator;
+        long bc = other.numerator * this.denominator;
+        return Long.compare(ad, bc);
     }
 
 
@@ -319,9 +318,16 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
     @Override
     public Real norm()
     {
-        double absValue = (double) numerator / denominator;
-        if (absValue < 0) absValue = -absValue;
-        
-        return new Real(absValue);
+        return new Real(modulus());
+    }
+
+
+    @Override
+    public double modulus()
+    {
+    	double absValue = (double) numerator / denominator;
+        if (absValue < 0) { absValue = -absValue; }
+
+        return absValue;
     }
 }

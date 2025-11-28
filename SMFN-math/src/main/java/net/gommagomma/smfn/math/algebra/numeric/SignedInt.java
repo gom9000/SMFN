@@ -148,4 +148,10 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     {
         return java.util.Objects.hash(this.value);
     }
+
+
+    @Override
+    public double modulus() {
+        return Math.abs(this.value);
+    }
 }

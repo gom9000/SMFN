@@ -5,8 +5,6 @@ import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
-import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.AbstractMatrix;
 
 /**
@@ -43,33 +41,13 @@ extends AbstractMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixF
         return Rational.class;
     }
 
+    @Override
+    protected Comparator<Rational> getMagnitudeComparator() {
+        return Comparator.naturalOrder(); 
+    }
+
 
     // MatrixElement impls
-
-	@Override
-    public Rational determinant()
-    {
-		if (rows != cols) {
-            throw new IllegalStateException("Determinant can only be calculated for square matrices.");
-        }
-
-        Comparator<Rational> rationalComparator = Comparator.naturalOrder();
-
-        return GaussianElimination.determinant(this.data, Rational.ZERO, rationalComparator);
-    }
-
-    @Override
-    public RationalMatrix inverse()
-    {
-    	if (rows != cols) {
-    		throw new IllegalStateException("Inverse can only be calculated for square matrices.");
-    	}
-
-        Comparator<Rational> rationalComparator = Comparator.naturalOrder();
-        Rational[][] invertedData = GaussJordanElimination.inverse(this.data, Rational.ZERO, Rational.ONE,rationalComparator);
-
-        return new RationalMatrix(invertedData);
-    }
 
     @Override
     public RationalVector getRowVector(int row)

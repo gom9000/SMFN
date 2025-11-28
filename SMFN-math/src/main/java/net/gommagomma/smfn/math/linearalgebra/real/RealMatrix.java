@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
-import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.AbstractMatrix;
 
 
@@ -39,33 +37,13 @@ extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
         return Real.class;
     }
 
+    @Override
+    protected Comparator<Real> getMagnitudeComparator() {
+        return Comparator.naturalOrder(); 
+    }
+
 
     // MatrixElement impls
-
-    @Override
-    public Real determinant()
-    {
-        if (rows != cols) {
-            throw new IllegalStateException("Determinant can only be calculated for square matrices.");
-        }
-
-        Comparator<Real> realComparator = Comparator.naturalOrder();
-
-        return GaussianElimination.determinant(this.data, Real.ZERO, realComparator);
-    }
-
-    @Override
-    public RealMatrix inverse()
-    {
-    	if (rows != cols) {
-    		throw new IllegalStateException("Inverse can only be calculated for square matrices.");
-    	}
-
-    	Comparator<Real> realComparator = Comparator.naturalOrder();
-    	Real[][] invertedData = GaussJordanElimination.inverse(this.data, Real.ZERO, Real.ONE, realComparator);
-
-    	return new RealMatrix(invertedData);
-    }
     
     @Override
     public RealVector getRowVector(int row)

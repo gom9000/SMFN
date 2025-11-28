@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
-import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.AbstractMatrix;
 
 /**
@@ -37,33 +35,13 @@ extends AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFacto
          }
     }
 
+    @Override
+    protected Comparator<Complex> getMagnitudeComparator() {
+        return Comparator.comparingDouble(Complex::modulus); 
+    }
+
 
     // MatrixElement impls
-
-	@Override
-    public Complex determinant()
-	{
-		if (rows != cols) {
-            throw new IllegalStateException("Determinant can only be calculated for square matrices.");
-        }
-
-        Comparator<Complex> complexComparator = (c1, c2) -> Double.compare(c1.modulus(), c2.modulus());
-
-        return GaussianElimination.determinant(this.data, Complex.ZERO, complexComparator);
-    }
-
-    @Override
-    public ComplexMatrix inverse()
-    {
-    	if (rows != cols) {
-    		throw new IllegalStateException("Inverse can only be calculated for square matrices.");
-    	}
-
-        Comparator<Complex> complexComparator = (c1, c2) -> Double.compare(c1.modulus(), c2.modulus());
-        Complex[][] invertedData = GaussJordanElimination.inverse(this.data, Complex.ZERO, Complex.ONE, complexComparator);
-
-        return new ComplexMatrix(invertedData);	
-    }
 
     @Override
     public ComplexVector getRowVector(int row)

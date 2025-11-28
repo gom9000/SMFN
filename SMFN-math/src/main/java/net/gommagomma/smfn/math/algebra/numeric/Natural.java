@@ -136,4 +136,10 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
     {
         return java.util.Objects.hash(this.value);
     }
+
+
+    @Override
+    public double modulus() {
+        return this.value;
+    }
 }

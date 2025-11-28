@@ -175,8 +175,12 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     @Override
     public Real norm()
     {
-        return new Real(Math.abs(this.value));
+        return new Real(modulus());
     }
 
 
+    @Override
+    public double modulus() {
+        return Math.abs(this.value);
+    }
 }
