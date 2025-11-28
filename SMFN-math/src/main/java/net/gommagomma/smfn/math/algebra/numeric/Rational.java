@@ -13,8 +13,8 @@ package net.gommagomma.smfn.math.algebra.numeric;
 
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
@@ -28,7 +28,7 @@ import net.gommagomma.smfn.math.utils.MathUtils;
  * @author gommagomma.net
  */
 public final class Rational
-implements FieldElement<Rational>, Normable<Real, Rational>, Exponentiable<Rational>, ComparableElement<Rational>
+implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>
 {
 	public static final Rational ZERO = new Rational(0, 1);
     public static final Rational ONE = new Rational(1, 1);

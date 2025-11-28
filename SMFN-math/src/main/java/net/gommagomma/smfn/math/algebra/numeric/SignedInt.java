@@ -1,11 +1,11 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 
 public final class SignedInt
-implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, ComparableElement<SignedInt>
+implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>
 {
 	public static final SignedInt ZERO = new SignedInt(0);
     public static final SignedInt ONE = new SignedInt(1);

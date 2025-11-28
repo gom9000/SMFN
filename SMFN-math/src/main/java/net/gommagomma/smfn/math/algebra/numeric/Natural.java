@@ -1,11 +1,11 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 
 public final class Natural
-implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural>
+implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>
 {
 	public static final Natural ZERO = new Natural(0);
     public static final Natural ONE = new Natural(1);

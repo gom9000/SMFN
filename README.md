@@ -10,7 +10,7 @@ net.gommagomma.smfn/
 |   |   |   |-- elements/                   (...)
 |   |   |   |   |-- additive/               (...)
 |   |   |   |   |-- multiplicative/         (...)
-|   |   |   |   |-- capabilities/           (...)
+|   |   |   |   |-- capabilities/           (ComparableElement,ExponentiableElement,NormableElement,SqrtableElement)
 |   |   |   |-- structures/                 (AdditiveMonoid, Semiring, Ring, CommutativeRing, Group, AbelianGroup, Field)
 |   |   |-- numeric/                        (Natural, Signedint, Rational, Real, Complex)
 |   |   |-- structures/                     (NaturalSemiring, IntegerRing, RationalField, RealField, ComplexField)
@@ -65,9 +65,9 @@ net.gommagomma.smfn/
 
 ### net.gommagomma.smfn.math.algebra.core.elements.capabilities:
 - interface ComparableElement<E extends ComparableElement<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;}}
-- interface Sqrtable<E extends Sqrtable<E>> extends AlgebraicElement<E> { E sqrt(); }
-- interface Exponentiable<E extends Exponentiable<E>> extends AlgebraicElement<E> { E power(int exponent);}
-- interface Normable<N extends FieldElement<N>, E extends Normable<N, E>> extends AlgebraicElement<E> {N norm();}
+- interface SqrtablElement<E extends SqrtablElement<E>> extends AlgebraicElement<E> { E sqrt(); }
+- interface ExponentiableElement<E extends ExponentiableElement<E>> extends AlgebraicElement<E> { E power(int exponent);}
+- interface NormableElement<N extends FieldElement<N>, E extends NormableElement<N, E>>  extends AlgebraicElement<E> {N norm();}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}
@@ -81,8 +81,8 @@ net.gommagomma.smfn/
 ### net.gommagomma.smfn.math.algebra.numeric:
 - final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural> { /* ... */ }
 - final class SignedInt implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
-- final class Rational implements FieldElement<Rational>, NormableOrderedFieldElement<Rational>, Exponentiable<Rational> { /* ... */ }
-- final class Real implements FieldElement<Real>, NormableOrderedFieldElement<Real>, Exponentiable<Real> { /* ... */ }
+- final class Rational implements FieldElement<Rational>, Normable<Real, Rational>, Exponentiable<Rational>, ComparableElement<Rational> { /* ... */ }
+- final class Real implements FieldElement<Real>, Normable<Real, Real>, Exponentiable<Real>, Sqrtable<Real>, ComparableElement<Real> { /* ... */ }
 - final class Complex implements FieldElement<Complex>, Normable<Real, Complex>, Exponentiable<Complex>, Sqrtable<Complex> { /* ... */ }
 
 ### net.gommagomma.smfn.math.algebra.structures:
@@ -143,7 +143,7 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 ## net.gommagomma.smfn.math.geometry
 -------------------------------------
 - interface GeometryEntity<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> extends MathFunction<D, C> {}
-- class Point implements NormedVectorElement<Real, Point> {}
+- class Point {}
 - class Circle implements GeometryEntity<RealVector, Real> {}
 - class Ellipse implements GeometryEntity<RealVector, Real> {}
 
@@ -152,11 +152,11 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 ### net.gommagomma.smfn.math.analysis.core:
 - interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);}
 - interface IterativeSystem<T> { T nextIteration(T current);}
-- interface ConvergenceTest<T> { boolean isConverged(T current, T previous, Real tolerance);}
-- interface Solver<P, S> {S solve(P problem, ConvergenceTest<S> test);}
+- interface MetricConvergenceTest<T> { boolean isConverged(T current, T previous, Real tolerance, int iteration, MetricSpace<T> space);}
+- interface MetricSolver<T extends AlgebraicElement<T>, R> {R solve(T initial, IterativeSystem<T> system, MetricConvergenceTest<T> test, Real tolerance, MetricSpace<T> space);}
 
 ### net.gommagomma.smfn.math.analysis.functions:
-- final class Polynomial<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
+- final class PolynomialFunction<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
 - final class LinearFunction<K extends FieldElement<K>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
 
 ### net.gommagomma.smfn.math.analysis.fractals;
@@ -167,8 +167,8 @@ net.gommagomma.smfn.math.linearalgebra.signedint:
 ## net.gommagomma.smfn.graphics
 -------------------------------
 ### net.gommagomma.smfn.graphics.core:
-- final class Viewport {}
-- final class ViewportController {}
+- class Viewport {}
+- class ViewportController {}
 - interface Renderer {}
 - interface Renderer1D extends Renderer {}
 - interface Renderer2D extends Renderer {}
@@ -194,7 +194,15 @@ Avrai bisogno di:
     Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
 
 
-- dotProduct...
+
+- Suggerimento: class Point<K extends FieldElement<K>, V extends VectorElement<K, V>> extends AbstractVector<K, V> implements GeometryEntity<V, K> {} (o qualcosa di simile) renderebbe il punto un vettore geometrico definito in uno spazio vettoriale specifico (es. Point<Real, RealVector>).
+
+-valuta se inserire capabilities: 
+public interface RoundableElement<E extends RoundableElement<E>> extends AlgebraicElement<E> {  
+    E round();
+    E floor();
+    E ceil();
+}
 - trasformazioni
 
 trasformazioni (in core):
@@ -207,11 +215,7 @@ interface AffineTransform<K extends FieldElement<K>, V extends VectorElement<K, 
 impl (in linearalgebra.real):
 class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
 
-e per l'analisi:
-interface MetricSpace<T extends AlgebraicElement<T>> extends Space<T>
-    double distance(T e1, T 2);
-interface NormedSpace<S extends FieldElement<S>, V extends VectorElement<S, V>> extends VectorSpace<S, V>, MetricSpace<V>
-    doubl norm(V v);
+- solutore di Runge-Kutta 4 (RK4)
 
 
 

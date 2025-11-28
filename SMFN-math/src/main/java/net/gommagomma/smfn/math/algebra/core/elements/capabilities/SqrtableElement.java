@@ -4,7 +4,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 
 
-public interface Sqrtable<E extends Sqrtable<E>>
+public interface SqrtableElement<E extends SqrtableElement<E>>
 extends AlgebraicElement<E>
 {
     /**

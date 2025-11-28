@@ -2,15 +2,15 @@ package net.gommagomma.smfn.math.algebra.numeric;
 
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Sqrtable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.SqrtableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Real
-implements FieldElement<Real>, Normable<Real, Real>, Exponentiable<Real>, Sqrtable<Real>, ComparableElement<Real>
+implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>
 {
 	public static final Real ZERO = new Real(0.0);
     public static final Real ONE = new Real(1.0);

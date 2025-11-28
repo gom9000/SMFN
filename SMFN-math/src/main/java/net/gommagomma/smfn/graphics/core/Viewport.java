@@ -5,7 +5,7 @@ package net.gommagomma.smfn.graphics.core;
  * Gestisce la trasformazione tra coordinate del mondo matematico e coordinate pixel dello schermo,
  * mantenendo il corretto aspect ratio matematico.
  */
-public final class Viewport
+public class Viewport
 {
     public final double minX;
     public final double maxX;
