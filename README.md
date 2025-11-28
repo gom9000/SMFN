@@ -110,7 +110,7 @@ extends ModuleElement<K, V> {}
 extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other) {}}
 - interface InnerProductSpaceElement<K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
 - interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {}
-- interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {int dimension();}
+- interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {}
 - interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Space<V> {Ring<K> getScalarRing(); }
 - interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarRing();}
 - interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M> {}

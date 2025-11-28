@@ -22,11 +22,6 @@ implements VectorSpace<Complex, ComplexVector>
     }
 
     @Override
-    public int dimension() {
-        throw new UnsupportedOperationException("Specific vector instances have dimensions, the space C^n itself is generic.");
-    }
-
-    @Override
     public String getName() {
         return "Complex Vector Space (C^n)";
     }

@@ -18,13 +18,8 @@ implements VectorSpace<Rational, RationalVector>
     }
 
     @Override
-    public RationalField getScalarRing() { // getScalarRing qui è in realtà un Field
+    public RationalField getScalarRing() {
         return RationalField.getInstance();
-    }
-    
-    @Override
-    public int dimension() {
-        throw new UnsupportedOperationException("Specific vector instances have dimensions, the space Q^n itself is generic.");
     }
 
     @Override

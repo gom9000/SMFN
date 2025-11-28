@@ -25,12 +25,6 @@ implements VectorSpace<Real, RealVector>, MetricSpace<RealVector>
     }
 
     @Override
-    public int dimension()
-    {
-        throw new UnsupportedOperationException("Specific vector instances have dimensions, the space R^n itself is generic.");
-    }
-
-    @Override
     public String getName() {
         return "Real Vector Space (R^n)";
     }

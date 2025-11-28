@@ -42,9 +42,4 @@ implements MatrixSpace<Rational, RationalVector, RationalMatrix>
     public boolean contains(RationalMatrix m) {
         return (m != null);
     }
-
-	@Override
-	public int dimension() {
-		throw new UnsupportedOperationException("Specific vector instances have dimensions, the space Q^n itself is generic.");
-	}
 }

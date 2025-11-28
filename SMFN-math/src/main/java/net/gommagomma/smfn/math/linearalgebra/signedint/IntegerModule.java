@@ -22,11 +22,6 @@ implements Module<SignedInt, SignedIntVector>
     }
 
     @Override
-    public int dimension() {
-        throw new UnsupportedOperationException("Specific vector instances have dimensions, the module Z^n itself is generic.");
-    }
-
-    @Override
     public String getName() {
         return "Integer Module (Z^n)";
     }

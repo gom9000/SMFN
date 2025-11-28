@@ -35,10 +35,4 @@ implements MatrixSpace<Real, RealVector, RealMatrix>
     public boolean contains(RealMatrix m) {
         return m.getRows() == rows && m.getColumns() == cols;
     }
-
-    @Override
-    public int dimension() {
-        // !!! Non conosco la dimensione qui, quindi lancio l'eccezione !!!
-        throw new UnsupportedOperationException("Specific vector instances have dimensions, the space R^n itself is generic.");
-    }
 }
