@@ -1,15 +1,15 @@
 package net.gommagomma.smfn.test.analysis;
 
-import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.analysis.core.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.IterativeSystem;
-import net.gommagomma.smfn.math.analysis.core.MathFunction;
-import net.gommagomma.smfn.math.analysis.core.MetricConvergenceTest;
-import net.gommagomma.smfn.math.analysis.core.NumericalDifferentiator;
 import net.gommagomma.smfn.math.analysis.differential.CentralDifferenceDifferentiator;
 import net.gommagomma.smfn.math.analysis.solvers.NewtonRaphsonSolver;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.ScalarMetricSpace;
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.core.analysis.ConvergenceParameters;
+import net.gommagomma.smfn.math.core.analysis.IterativeSystem;
+import net.gommagomma.smfn.math.core.analysis.MathFunction;
+import net.gommagomma.smfn.math.core.analysis.MetricConvergenceTest;
+import net.gommagomma.smfn.math.core.analysis.NumericalDifferentiator;
+import net.gommagomma.smfn.math.core.linearalgebra.structures.MetricSpace;
+import net.gommagomma.smfn.math.core.linearalgebra.structures.ScalarMetricSpace;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVectorSpace;
 
 public class RootSolverTestApp

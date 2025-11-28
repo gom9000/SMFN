@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.geometry;
 
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
 
 /**

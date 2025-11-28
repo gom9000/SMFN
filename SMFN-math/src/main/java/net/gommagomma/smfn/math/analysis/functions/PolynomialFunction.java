@@ -1,9 +1,9 @@
 package net.gommagomma.smfn.math.analysis.functions;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.analysis.core.MathFunction;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.VectorElement;
+import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.CommutativeRingElement;
+import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.core.analysis.MathFunction;
+import net.gommagomma.smfn.math.core.linearalgebra.elements.VectorElement;
 
 
 /**

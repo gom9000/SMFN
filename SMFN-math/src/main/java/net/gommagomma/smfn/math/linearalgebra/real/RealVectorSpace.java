@@ -1,9 +1,9 @@
 package net.gommagomma.smfn.math.linearalgebra.real;
 
-import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.VectorSpace;
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.core.linearalgebra.structures.MetricSpace;
+import net.gommagomma.smfn.math.core.linearalgebra.structures.VectorSpace;
 
 
 public class RealVectorSpace

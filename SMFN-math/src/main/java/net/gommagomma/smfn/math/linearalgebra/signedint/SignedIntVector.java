@@ -3,8 +3,8 @@ package net.gommagomma.smfn.math.linearalgebra.signedint;
 import java.util.Arrays;
 import java.util.List;
 
-import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.ModuleElement;
+import net.gommagomma.smfn.math.core.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.core.linearalgebra.elements.ModuleElement;
 
 public final class SignedIntVector
 implements ModuleElement<SignedInt, SignedIntVector>

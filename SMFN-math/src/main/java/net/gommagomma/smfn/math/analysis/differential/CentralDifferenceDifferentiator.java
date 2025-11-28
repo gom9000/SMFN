@@ -1,9 +1,9 @@
 package net.gommagomma.smfn.math.analysis.differential;
 
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.analysis.core.MathFunction;
-import net.gommagomma.smfn.math.analysis.core.NumericalDifferentiator;
+import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.core.analysis.MathFunction;
+import net.gommagomma.smfn.math.core.analysis.NumericalDifferentiator;
 
 
 public class CentralDifferenceDifferentiator<K extends FieldElement<K>> 

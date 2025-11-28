@@ -1,13 +1,13 @@
 package net.gommagomma.smfn.math.analysis.solvers;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.analysis.core.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.IterativeSystem;
-import net.gommagomma.smfn.math.analysis.core.MathFunction;
-import net.gommagomma.smfn.math.analysis.core.MetricConvergenceTest;
-import net.gommagomma.smfn.math.analysis.core.MetricSolver;
-import net.gommagomma.smfn.math.analysis.core.NumericalDifferentiator;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
+import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.core.analysis.ConvergenceParameters;
+import net.gommagomma.smfn.math.core.analysis.IterativeSystem;
+import net.gommagomma.smfn.math.core.analysis.MathFunction;
+import net.gommagomma.smfn.math.core.analysis.MetricConvergenceTest;
+import net.gommagomma.smfn.math.core.analysis.MetricSolver;
+import net.gommagomma.smfn.math.core.analysis.NumericalDifferentiator;
+import net.gommagomma.smfn.math.core.linearalgebra.structures.MetricSpace;
 
 
 public class NewtonRaphsonSolver<K extends FieldElement<K>>

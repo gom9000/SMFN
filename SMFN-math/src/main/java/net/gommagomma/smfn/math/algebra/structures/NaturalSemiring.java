@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
-import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.core.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.core.algebra.structures.Semiring;
 
 
 public class NaturalSemiring

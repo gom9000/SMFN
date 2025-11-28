@@ -2,13 +2,13 @@
 
 package net.gommagomma.smfn.math.analysis.fractals;
 
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.analysis.core.MetricConvergenceTest;
-import net.gommagomma.smfn.math.analysis.core.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.IterativeSystem;
-import net.gommagomma.smfn.math.analysis.core.MetricSolver;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
+import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.core.analysis.ConvergenceParameters;
+import net.gommagomma.smfn.math.core.analysis.IterativeSystem;
+import net.gommagomma.smfn.math.core.analysis.MetricConvergenceTest;
+import net.gommagomma.smfn.math.core.analysis.MetricSolver;
+import net.gommagomma.smfn.math.core.linearalgebra.structures.MetricSpace;
 
 
 public class MandelbrotSolver

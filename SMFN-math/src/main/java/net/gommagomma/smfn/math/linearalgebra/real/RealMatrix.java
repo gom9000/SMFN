@@ -3,8 +3,8 @@ package net.gommagomma.smfn.math.linearalgebra.real;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.AbstractMatrix;
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.core.linearalgebra.elements.AbstractMatrix;
 
 
 public final class RealMatrix 

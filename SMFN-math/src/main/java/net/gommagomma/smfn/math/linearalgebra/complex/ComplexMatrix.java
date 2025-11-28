@@ -3,8 +3,8 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.AbstractMatrix;
+import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.core.linearalgebra.elements.AbstractMatrix;
 
 /**
  * Rappresenta una matrice di numeri complessi immutabile.

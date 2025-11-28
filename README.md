@@ -5,35 +5,37 @@
 <pre>
 net.gommagomma.smfn/
 |-- math/
-|   |-- algebra/
-|   |   |-- core/                           (AlgbraicElement, AlgebraicStructure, Commutative)
+|   |-- core/
+|   |   |-- algebra/                        (AlgebraicElement, AlgebraicStructure, Commutative)
 |   |   |   |-- elements/                   (...)
 |   |   |   |   |-- additive/               (...)
 |   |   |   |   |-- multiplicative/         (...)
-|   |   |   |   |-- capabilities/           (ComparableElement,ExponentiableElement,NormableElement,SqrtableElement)
-|   |   |   |-- structures/                 (AdditiveMonoid, Semiring, Ring, CommutativeRing, Group, AbelianGroup, Field)
+|   |   |   |   \-- capabilities/           (ComparableElement,ExponentiableElement,NormableElement,SqrtableElement)
+|   |   |   |-- structures/                 (AdditiveMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
+|   |   |-- linearalgebra                   # Interfacce per Vettori, Matrici, Spazi
+|   |   |   |-- elements/                   (...)
+|   |   |   \-- structures/                 (...)
+|   |   \-- analysis/
+|   |-- algebra/
 |   |   |-- numeric/                        (Natural, Signedint, Rational, Real, Complex)
-|   |   |-- structures/                     (NaturalSemiring, IntegerRing, RationalField, RealField, ComplexField)
-|   |-- linearalgebra                       # Algebra Lineare (Vettori, Matrici, Tensori)
-|   |   |-- core                            # Interfacce per Vettori/Matrici (VectorElement, Matrix)
-|   |   |   |-- algorythms/					 # GaussianEliminator, GaussJordanEliminator,...
-|   |   |-- complex                         # Implementazioni per C (ComplexVector, ComplexMatrix)
-|   |   |-- rational                        # Implementazioni per Q (RationalVector, RationalMatrix)
-|   |   |-- real                            # Implementazioni per R (RealVector, RealMatrix)
-|   |   |-- signedint                       # Implementazioni per Z (SignedIntVector, SignedIntMatrix)
+|   |   \-- structures/                     (NaturalSemiring, IntegerRing, RationalField, RealField, ComplexField)
+|   |-- linearalgebra                       # Vettori, Matrici e Spazi
+|   |   |-- complex                         # Implementazioni per C (ComplexVector, ComplexMatrix, spaces)
+|   |   |-- rational                        # Implementazioni per Q (RationalVector, RationalMatrix, spaces)
+|   |   |-- real                            # Implementazioni per R (RealVector, RealMatrix, spaces)
+|   |   \-- signedint                       # Implementazioni per Z (SignedIntVector, SignedIntMatrix, spaces)
 |   |-- geometry/								 # (GeometryEntity, Point, Circle, Ellipse)
 |   |-- analysis/                           # Calcolo (Funzioni, Derivate, Integrali, Risolutori Numerici)
-|   |   |-- core/                           # Contiene le interfacce generiche riutilizzabili
 |   |   |-- functions/						 # LinearFunction, PolynomialFunction, ...
 |   |   |-- fractals/                       # Contiene implementazioni specifiche di frattali
 |   |   |-- solvers/                        # Contiene implementazioni di metodi numerici (es. NewtonRaphsonSolver)
 |   |   |-- integral/                       # (es. Metodi di quadratura numerica)
-|   |   |-- differential/                   # (es. Runge-Kutta per ODE)
+|   |   \-- differential/                   # (es. Runge-Kutta per ODE)
 |   |-- utils                               # Utility e Costanti (MathConstants, MathUtils)
 |-- graphics/                               # Logica specifica per la viewport e il rendering
 |   |-- core/                               # Interfacce grafiche (Renderer, Viewport, ColorMapper, VieportController)
 |   |-- swing/                              # impl (SwingRenderer1D, Swingrnderer2D)
-|   |-- plotting/                           # (FunctionPlotter, CartesianAxisPlotter, ScatterPlotter)
+|   \-- plotting/                           # (FunctionPlotter, CartesianAxisPlotter, ScatterPlotter)
 |-- physics                                 # Package per le applicazioni fisiche (Elettromagnetismo, MQ, RG)
 |   |-- core/                               (Interfacce fisiche base: particella, forza...)
 |   |-- mechanics/                          (Dinamica, gravità, cinematica)
@@ -43,9 +45,9 @@ net.gommagomma.smfn/
 </pre>
 
 
-## net.gommagomma.smfn.math.algebra
------------------------------------
-### net.gommagomma.smfn.math.algebra.core:
+## net.gommagomma.smfn.math.core
+--------------------------------
+### net.gommagomma.smfn.math.core.algebra:
 - interface Commutative {}
 - interface AlgebraicElement<E extends AlgebraicElement<E>> { boolean isEqual(E other); E copy();}
 - interface AlgebraicStructure<E extends AlgebraicElement<E>> { String getName(); boolean contains(E e); }
@@ -55,7 +57,7 @@ net.gommagomma.smfn/
 - interface GroupElement<E extends GroupElement<E>> extends AdditiveMonoidElement<E> {E negate(); default E subtract(E other) {return add(other.negate());}}
 - interface AbelianGroupElement<E extends AbelianGroupElement<E>> extends GroupElement<E>, CommutativeMonoidElement<E> {}
 
-### net.gommagomma.smfn.math.algebra.core.elements.multiplicative:
+### net.gommagomma.smfn.math.core.algebra.elements.multiplicative:
 - interface MultiplicativeMonoidElement<E extends MultiplicativeMonoidElement<E>> extends AlgebraicElement<E> { E multiply(E other); E getOne(); default boolean isOne() { return isEqual(getOne()); }}
 - interface CommutativeMultiplicativeMonoidElement<T extends CommutativeMultiplicativeMonoidElement<T>> extends MultiplicativeMonoidElement<T>, Commutative {}
 - interface SemiringElement<E extends SemiringElement<E>> extends CommutativeMonoidElement<E>, MultiplicativeMonoidElement<E> {}
@@ -63,13 +65,13 @@ net.gommagomma.smfn/
 - interface CommutativeRingElement<E extends CommutativeRingElement<E>> extends RingElement<E>, CommutativeMultiplicativeMonoidElement<E> {}
 - interface FieldElement<E extends FieldElement<E>> extends CommutativeRingElement<E>{E inverse();default E divide(E other) {	return multiply(other.inverse());}}
 
-### net.gommagomma.smfn.math.algebra.core.elements.capabilities:
+### net.gommagomma.smfn.math.core.algebra.elements.capabilities:
 - interface ComparableElement<E extends ComparableElement<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;} double modulus();}
 - interface SqrtableElement<E extends SqrtableElement<E>> extends AlgebraicElement<E> { E sqrt(); }
 - interface ExponentiableElement<E extends ExponentiableElement<E>> extends AlgebraicElement<E> { E power(int exponent);}
 - interface NormableElement<N extends FieldElement<N>, E extends NormableElement<N, E>>  extends AlgebraicElement<E> {N norm();}
 
-### net.gommagomma.smfn.math.algebra.core.structures:
+### net.gommagomma.smfn.math.core.algebra.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}
 - interface MultiplicativeMonoid<E extends MultiplicativeMonoidElement<E>> extends AlgebraicStructure<E> {  E multiplicativeIdentity();}
 - interface CommutativeMultiplicativeMonoid<E extends CommutativeMultiplicativeMonoidElement<E>> extends MultiplicativeMonoid<E> {}
@@ -80,23 +82,16 @@ net.gommagomma.smfn/
 - interface CommutativeRing<E extends CommutativeRingElement<E>> extends Ring<E>, CommutativeMultiplicativeMonoid<E> {}
 - interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {}
 
-### net.gommagomma.smfn.math.algebra.numeric:
+### net.gommagomma.smfn.math.core.algebra.numeric:
 - final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural> { /* ... */ }
 - final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
 - final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational> { /* ... */ }
 - final class Real implements FieldElement<Real>, NormableElement<Real, Real>, Exponentiablev<Real>, SqrtableElement<Real>, ComparableElement<Real> { /* ... */ }
 - final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex> { /* ... */ }
 
-### net.gommagomma.smfn.math.algebra.structures:
-- class NaturalSemiring implements Semiring<Natural> { /* ... */ }
-- class IntegerRing implements CommutativeRing<SignedInt> { /* ... */ }
-- class RationalField implements Field<Rational> { /* ... */ }
-- class RealField implements Field<Real> { /* ... */ }
-- class ComplexField implements Field<Complex> { /* ... */ }
-
-## net.gommagomma.smfn.math.linearalgebra
------------------------------------------
-### net.gommagomma.smfn.math.linearalgebra.core.elements:
+## net.gommagomma.smfn.math.core.linearalgebra
+----------------------------------------------
+### net.gommagomma.smfn.math.core.linearalgebra.elements:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
 - interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SpaceElement<V>, AbelianGroupElement<V> {
     int dimension();
@@ -113,7 +108,7 @@ extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other
 - interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M>, AbelianGroupElement<M> {}
 - abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>> implements MatrixElement<K, V, M> {}
 
-### net.gommagomma.smfn.math.linearalgebra.core.structures:
+### net.gommagomma.smfn.math.core.linearalgebra.structures:
 - interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {}
 - interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Space<V> {Ring<K> getScalarRing(); }
 - interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarRing();}
@@ -124,7 +119,31 @@ extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other
 extends Space<T> {Real distance(T point1, T point2);}
 class ScalarMetricSpace<T extends AbelianGroupElement<T> & NormableElement<Real, T>> 
 implements MetricSpace<T> {}
+- interface InnerProductSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
+extends VectorSpace<K, V>, MetricSpace<V>
 
+## net.gommagomma.smfn.math.core.analysis
+-----------------------------------------
+- interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);}
+- interface IterativeSystem<T> { T nextIteration(T current);}
+- interface MetricConvergenceTest<T> { boolean isConverged(T current, T previous, ConvergenceParameters params, int iteration, MetricSpace<T> space);}
+- interface MetricSolver<T extends AlgebraicElement<T>, R> {R solve(T initial, IterativeSystem<T> system, MetricConvergenceTest<T> test, ConvergenceParameters params, MetricSpace<T> space);}
+- interface NumericalDifferentiator<K extends FieldElement<K>> {K derivativeAt(MathFunction<K, K> function, K x, K h);}
+- class ConvergenceParameters {public final Real tolerance;  public final int maxIterations;}
+- public interface HilbertSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> 
+extends InnerProductSpace<K, V> {}
+
+## net.gommagomma.smfn.math.algebra
+-----------------------------------
+### net.gommagomma.smfn.math.algebra.structures:
+- class NaturalSemiring implements Semiring<Natural> { /* ... */ }
+- class IntegerRing implements CommutativeRing<SignedInt> { /* ... */ }
+- class RationalField implements Field<Rational> { /* ... */ }
+- class RealField implements Field<Real> { /* ... */ }
+- class ComplexField implements Field<Complex> { /* ... */ }
+
+## net.gommagomma.smfn.math.linearalgebra
+-----------------------------------------
 ### net.gommagomma.smfn.math.linearalgebra.natural:
 - class NaturalVector implements SemimoduleElement<Natural, NaturalVector> { //... }
 
@@ -160,14 +179,6 @@ implements MetricSpace<T> {}
 
 ## net.gommagomma.smfn.math.analysis
 ------------------------------------
-### net.gommagomma.smfn.math.analysis.core:
-- interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);}
-- interface IterativeSystem<T> { T nextIteration(T current);}
-- interface MetricConvergenceTest<T> { boolean isConverged(T current, T previous, ConvergenceParameters params, int iteration, MetricSpace<T> space);}
-- interface MetricSolver<T extends AlgebraicElement<T>, R> {R solve(T initial, IterativeSystem<T> system, MetricConvergenceTest<T> test, ConvergenceParameters params, MetricSpace<T> space);}
-- interface NumericalDifferentiator<K extends FieldElement<K>> {K derivativeAt(MathFunction<K, K> function, K x, K h);}
-- class ConvergenceParameters {public final Real tolerance;  public final int maxIterations;}
-
 ### net.gommagomma.smfn.math.analysis.functions:
 - final class PolynomialFunction<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
 - final class LinearFunction<K extends FieldElement<K>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.core.algebra.numeric.Rational;
 
 /**
  * Test suite per verificare che la classe Rational soddisfi gli assiomi di un Campo (Field).

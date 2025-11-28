@@ -9,8 +9,8 @@ import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.functions.PolynomialFunction;
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
 
 public class PolynomialTestApp

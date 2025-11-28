@@ -3,9 +3,9 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 import java.util.Arrays;
 import java.util.List;
 
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.InnerProductSpaceElement;
+import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.core.linearalgebra.elements.InnerProductSpaceElement;
 
 
 public final class ComplexVector
