@@ -71,12 +71,14 @@ net.gommagomma.smfn/
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}
+- interface MultiplicativeMonoid<E extends MultiplicativeMonoidElement<E>> extends AlgebraicStructure<E> {  E multiplicativeIdentity();}
+- interface CommutativeMultiplicativeMonoid<E extends CommutativeMultiplicativeMonoidElement<E>> extends MultiplicativeMonoid<E> {}
 - interface Group<E extends GroupElement<E>> extends AdditiveMonoid<E> {}
 - interface AbelianGroup<E extends AbelianGroupElement<E>> extends Group<E> {}
+- interface Semiring<E extends SemiringElement<E>> extends AlgebraicStructure<E>{}
 - interface Ring<E extends RingElement<E>> extends Semiring<E>, AbelianGroup<E> {}
-- interface CommutativeRing<E extends CommutativeRingElement<E>> extends Ring<E> {}
+- interface CommutativeRing<E extends CommutativeRingElement<E>> extends Ring<E>, CommutativeMultiplicativeMonoid<E> {}
 - interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {}
-- interface Semiring<E extends SemiringElement<E>> extends AlgebraicStructure<E>{E additiveIdentity(); E multiplicativeIdentity(); }
 
 ### net.gommagomma.smfn.math.algebra.numeric:
 - final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural> { /* ... */ }
