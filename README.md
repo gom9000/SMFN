@@ -122,6 +122,8 @@ extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other
  { M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); K getZeroScalar(); K getOneScalar();}
  - interface MetricSpace<T extends AlgebraicElement<T>> 
 extends Space<T> {Real distance(T point1, T point2);}
+class ScalarMetricSpace<T extends AbelianGroupElement<T> & NormableElement<Real, T>> 
+implements MetricSpace<T> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.natural:
 - class NaturalVector implements SemimoduleElement<Natural, NaturalVector> { //... }
@@ -161,16 +163,25 @@ extends Space<T> {Real distance(T point1, T point2);}
 ### net.gommagomma.smfn.math.analysis.core:
 - interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);}
 - interface IterativeSystem<T> { T nextIteration(T current);}
-- interface MetricConvergenceTest<T> { boolean isConverged(T current, T previous, Real tolerance, int iteration, MetricSpace<T> space);}
-- interface MetricSolver<T extends AlgebraicElement<T>, R> {R solve(T initial, IterativeSystem<T> system, MetricConvergenceTest<T> test, Real tolerance, MetricSpace<T> space);}
+- interface MetricConvergenceTest<T> { boolean isConverged(T current, T previous, ConvergenceParameters params, int iteration, MetricSpace<T> space);}
+- interface MetricSolver<T extends AlgebraicElement<T>, R> {R solve(T initial, IterativeSystem<T> system, MetricConvergenceTest<T> test, ConvergenceParameters params, MetricSpace<T> space);}
+- interface NumericalDifferentiator<K extends FieldElement<K>> {K derivativeAt(MathFunction<K, K> function, K x, K h);}
+- class ConvergenceParameters {public final Real tolerance;  public final int maxIterations;}
 
 ### net.gommagomma.smfn.math.analysis.functions:
 - final class PolynomialFunction<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
 - final class LinearFunction<K extends FieldElement<K>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
 
+### net.gommagomma.smfn.math.analysis.differential;
+-class CentralDifferenceDifferentiator<K extends FieldElement<K>> implements NumericalDifferentiator<K> {}
+
+### net.gommagomma.smfn.math.analysis.solvers;
+public class NewtonRaphsonSolver<K extends FieldElement<K>> implements MetricSolver<K, K> {}
+
 ### net.gommagomma.smfn.math.analysis.fractals;
 - class MandelbrotSolver implements Solver<Complex, Integer> {}
 - class MandelbrotFunction implements MathFunction<Complex, Real> {}
+- class JuliaSolver implements Solver<Complex, Integer> {}
 - class JuliaFunction implements MathFunction<Complex, Real> {}
 
 ## net.gommagomma.smfn.graphics

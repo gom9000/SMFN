@@ -2,7 +2,6 @@
 package net.gommagomma.smfn.math.analysis.core;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
 
 /**
@@ -18,17 +17,9 @@ public interface MetricConvergenceTest<T extends AlgebraicElement<T>>
      * 
      * @param current L'iterazione corrente.
      * @param previous L'iterazione precedente (può essere null per la prima iterazione).
-     * @param tolerance La tolleranza (epsilon) desiderata per il test.
-     * @param iteration Il numero di iterazioni correnti effettuate.
+     * @param params I parametri legati alla convergenza (tolleranza, iterazioni massime).
      * @param space Lo Spazio Metrico a cui appartengono current e previous.
      * @return true se la convergenza è raggiunta o se le iterazioni massime sono state superate.
      */
-    boolean isConverged(T current, T previous, Real tolerance, int iteration, MetricSpace<T> space);
-
-
-    /**
-     * Restituisce il numero massimo di iterazioni consentite.
-     * @return Il limite intero.
-     */
-    int getMaxIterations();
+	boolean isConverged(T current, T previous, ConvergenceParameters params, int iteration, MetricSpace<T> space);
 }
