@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.VectorSpace;
 
 public class ComplexVectorSpace
 implements VectorSpace<Complex, ComplexVector>

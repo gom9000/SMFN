@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.linearalgebra.core;
+package net.gommagomma.smfn.math.linearalgebra.core.structures;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real; // La distanza è sempre un numero reale >= 0

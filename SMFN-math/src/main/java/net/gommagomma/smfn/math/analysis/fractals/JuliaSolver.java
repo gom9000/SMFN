@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.core.IterativeSystem;
 import net.gommagomma.smfn.math.analysis.core.MetricConvergenceTest;
 import net.gommagomma.smfn.math.analysis.core.MetricSolver;
-import net.gommagomma.smfn.math.linearalgebra.core.MetricSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
 
 
 public class JuliaSolver

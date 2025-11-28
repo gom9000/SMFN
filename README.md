@@ -65,7 +65,7 @@ net.gommagomma.smfn/
 
 ### net.gommagomma.smfn.math.algebra.core.elements.capabilities:
 - interface ComparableElement<E extends ComparableElement<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;}}
-- interface SqrtablElement<E extends SqrtablElement<E>> extends AlgebraicElement<E> { E sqrt(); }
+- interface SqrtableElement<E extends SqrtableElement<E>> extends AlgebraicElement<E> { E sqrt(); }
 - interface ExponentiableElement<E extends ExponentiableElement<E>> extends AlgebraicElement<E> { E power(int exponent);}
 - interface NormableElement<N extends FieldElement<N>, E extends NormableElement<N, E>>  extends AlgebraicElement<E> {N norm();}
 
@@ -82,10 +82,10 @@ net.gommagomma.smfn/
 
 ### net.gommagomma.smfn.math.algebra.numeric:
 - final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural> { /* ... */ }
-- final class SignedInt implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
-- final class Rational implements FieldElement<Rational>, Normable<Real, Rational>, Exponentiable<Rational>, ComparableElement<Rational> { /* ... */ }
-- final class Real implements FieldElement<Real>, Normable<Real, Real>, Exponentiable<Real>, Sqrtable<Real>, ComparableElement<Real> { /* ... */ }
-- final class Complex implements FieldElement<Complex>, Normable<Real, Complex>, Exponentiable<Complex>, Sqrtable<Complex> { /* ... */ }
+- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
+- final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational> { /* ... */ }
+- final class Real implements FieldElement<Real>, NormableElement<Real, Real>, Exponentiablev<Real>, SqrtableElement<Real>, ComparableElement<Real> { /* ... */ }
+- final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex> { /* ... */ }
 
 ### net.gommagomma.smfn.math.algebra.structures:
 - class NaturalSemiring implements Semiring<Natural> { /* ... */ }
@@ -96,7 +96,7 @@ net.gommagomma.smfn/
 
 ## net.gommagomma.smfn.math.linearalgebra
 -----------------------------------------
-### net.gommagomma.smfn.math.linearalgebra.core:
+### net.gommagomma.smfn.math.linearalgebra.core.elements:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
 - interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SpaceElement<V>, AbelianGroupElement<V> {
     int dimension();
@@ -110,14 +110,18 @@ extends ModuleElement<K, V> {}
 extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other) {}}
 - interface InnerProductSpaceElement<K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
 - interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {}
+- interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M>, AbelianGroupElement<M> {}
+- abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>> implements MatrixElement<K, V, M> {}
+
+### net.gommagomma.smfn.math.linearalgebra.core.structures:
 - interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {}
 - interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Space<V> {Ring<K> getScalarRing(); }
 - interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarRing();}
-- interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M> {}
 - interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
 - interface MatrixFactory<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>>
  { M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); K getZeroScalar(); K getOneScalar();}
-- abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>> implements MatrixElement<K, V, M> {}
+ - interface MetricSpace<T extends AlgebraicElement<T>> 
+extends Space<T> {Real distance(T point1, T point2);}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.algorithms
 - final class GaussianElimination {public static <K extends FieldElement<K>> K determinant(K[][] matrixData, K elementZero, Comparator<K> magnitudeComparator) {}}
@@ -206,12 +210,6 @@ Avrai bisogno di:
 
 - Suggerimento: class Point<K extends FieldElement<K>, V extends VectorElement<K, V>> extends AbstractVector<K, V> implements GeometryEntity<V, K> {} (o qualcosa di simile) renderebbe il punto un vettore geometrico definito in uno spazio vettoriale specifico (es. Point<Real, RealVector>).
 
--valuta se inserire capabilities: 
-public interface RoundableElement<E extends RoundableElement<E>> extends AlgebraicElement<E> {  
-    E round();
-    E floor();
-    E ceil();
-}
 - trasformazioni
 
 trasformazioni (in core):

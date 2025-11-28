@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.InnerProductSpaceElement;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.InnerProductSpaceElement;
 
 /**
  * Rappresenta un vettore immutabile di numeri razionali.

@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.AbstractMatrix;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussJordanElimination;
 import net.gommagomma.smfn.math.linearalgebra.core.algorithms.GaussianElimination;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.AbstractMatrix;
 
 
 public final class RealMatrix 

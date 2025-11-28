@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.linearalgebra.core.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixSpace;
 
 public final class ComplexMatrixSpace
 implements MatrixSpace<Complex, ComplexVector, ComplexMatrix>

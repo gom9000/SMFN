@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.real;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.linearalgebra.core.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixSpace;
 
 public class RealMatrixSpace
 implements MatrixSpace<Real, RealVector, RealMatrix>

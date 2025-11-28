@@ -1,7 +1,8 @@
-package net.gommagomma.smfn.math.linearalgebra.core;
+package net.gommagomma.smfn.math.linearalgebra.core.structures;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.VectorElement;
 
 // V è il tipo del vettore (es. RealVector)
 // K è il tipo dello scalare (es. Real)

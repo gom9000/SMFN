@@ -1,8 +1,9 @@
-package net.gommagomma.smfn.math.linearalgebra.core;
+package net.gommagomma.smfn.math.linearalgebra.core.structures;
 
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.RingElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.ModuleElement;
 
 
 public interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> 

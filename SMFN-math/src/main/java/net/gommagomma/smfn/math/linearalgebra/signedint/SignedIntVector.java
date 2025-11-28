@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.linearalgebra.core.ModuleElement;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.ModuleElement;
 
 public final class SignedIntVector
 implements ModuleElement<SignedInt, SignedIntVector>
