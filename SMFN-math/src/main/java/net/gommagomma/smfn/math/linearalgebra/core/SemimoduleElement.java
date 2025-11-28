@@ -11,7 +11,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringEle
  * e sul tipo del vettore V.
  */
 public interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>>
-extends CommutativeMonoidElement<V>, SpaceElement<V>
+extends SpaceElement<V>, CommutativeMonoidElement<V>
 {
     int dimension(); 
     K get(int index); 

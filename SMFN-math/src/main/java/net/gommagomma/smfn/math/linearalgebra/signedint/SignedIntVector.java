@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.linearalgebra.core.Module;
-import net.gommagomma.smfn.math.linearalgebra.core.VectorElement;
+import net.gommagomma.smfn.math.linearalgebra.core.ModuleElement;
 
 public final class SignedIntVector
-implements VectorElement<SignedInt, SignedIntVector>
+implements ModuleElement<SignedInt, SignedIntVector>
 {
     private final SignedInt[] data;
     private final int dimension;
@@ -129,11 +128,6 @@ implements VectorElement<SignedInt, SignedIntVector>
         return this.data[index];
     }
 
-    @Override
-    public Module<SignedIntVector, SignedInt> getModule() {
-        // Restituisce l'istanza singleton del modulo intero
-        return IntegerModule.getInstance(); 
-    }
     
     // --- Java Standard impls ---
 

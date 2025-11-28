@@ -6,7 +6,6 @@ import java.util.List;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.InnerProductSpaceElement;
-import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
 
 public final class ComplexVector
@@ -127,10 +126,6 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
         return this.data[index];
     }
 
-    @Override
-    public VectorSpace<ComplexVector, Complex> getModule() {
-        return ComplexVectorSpace.getInstance(); 
-    }
     
     // --- Implementazione di Normable<Real, ComplexVector> ---
     

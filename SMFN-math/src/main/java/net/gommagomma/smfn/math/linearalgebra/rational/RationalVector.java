@@ -5,7 +5,6 @@ import java.util.Arrays;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.InnerProductSpaceElement;
-import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
 /**
  * Rappresenta un vettore immutabile di numeri razionali.
@@ -123,7 +122,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     @Override
     public Real norm() {
         Rational normSquaredRational = this.dotProduct(this);
-        double normValue = Math.sqrt(normSquaredRational.getNumerator() / normSquaredRational.getDenominator());
+        double normValue = Math.sqrt((double)normSquaredRational.getNumerator() / normSquaredRational.getDenominator());
 
         return new Real(normValue);
     }
@@ -133,10 +132,6 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     @Override public int dimension() { return this.dimension; }
     @Override public Rational get(int index) { return this.data[index]; }
 
-    @Override
-    public VectorSpace<RationalVector, Rational> getModule() {
-        return RationalVectorSpace.getInstance(); 
-    }
     
     // --- Java Standard impls ---
 

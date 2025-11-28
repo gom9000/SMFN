@@ -6,13 +6,11 @@ import net.gommagomma.smfn.math.linearalgebra.core.Module;
 
 
 public class IntegerModule
-implements Module<SignedIntVector, SignedInt>
+implements Module<SignedInt, SignedIntVector>
 {
     private static final IntegerModule INSTANCE = new IntegerModule();
 
-    private IntegerModule() {
-        // Costruttore privato per il singleton
-    }
+    private IntegerModule() {}
 
     public static IntegerModule getInstance() {
         return INSTANCE;

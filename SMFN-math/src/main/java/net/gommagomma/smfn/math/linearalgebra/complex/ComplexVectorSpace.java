@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
 public class ComplexVectorSpace
-implements VectorSpace<ComplexVector, Complex>
+implements VectorSpace<Complex, ComplexVector>
 {    
     private static final ComplexVectorSpace INSTANCE = new ComplexVectorSpace();
 

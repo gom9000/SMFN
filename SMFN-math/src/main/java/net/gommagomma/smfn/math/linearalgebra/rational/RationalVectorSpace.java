@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
 public final class RationalVectorSpace
-implements VectorSpace<RationalVector, Rational>
+implements VectorSpace<Rational, RationalVector>
 {    
     private static final RationalVectorSpace INSTANCE = new RationalVectorSpace();
 

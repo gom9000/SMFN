@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.InnerProductSpaceElement;
-import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
 public final class RealVector
 implements InnerProductSpaceElement<Real, RealVector>
@@ -160,10 +159,6 @@ implements InnerProductSpaceElement<Real, RealVector>
 		return this.data[index];
 	}
 
-	@Override
-	public VectorSpace<RealVector, Real> getModule() {
-		return RealVectorSpace.getInstance(); 
-	}
 
 	// --- Java Standard impls ---
 

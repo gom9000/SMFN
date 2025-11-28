@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.VectorSpace;
 
 
 public class RealVectorSpace
-implements VectorSpace<RealVector, Real>, MetricSpace<RealVector>
+implements VectorSpace<Real, RealVector>, MetricSpace<RealVector>
 {
     private static final RealVectorSpace INSTANCE = new RealVectorSpace();
 
