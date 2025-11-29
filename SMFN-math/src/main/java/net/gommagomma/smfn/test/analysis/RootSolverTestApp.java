@@ -1,15 +1,15 @@
 package net.gommagomma.smfn.test.analysis;
 
-import net.gommagomma.smfn.math.analysis.differential.CentralDifferenceDifferentiator;
-import net.gommagomma.smfn.math.analysis.solvers.NewtonRaphsonSolver;
-import net.gommagomma.smfn.math.core.algebra.MathFunction;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.analysis.ConvergenceParameters;
-import net.gommagomma.smfn.math.core.analysis.IterativeSystem;
-import net.gommagomma.smfn.math.core.analysis.MetricConvergenceTest;
-import net.gommagomma.smfn.math.core.analysis.NumericalDifferentiator;
-import net.gommagomma.smfn.math.core.linearalgebra.structures.MetricSpace;
-import net.gommagomma.smfn.math.core.linearalgebra.structures.ScalarMetricSpace;
+import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.analysis.models.IterativeSystem;
+import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceTest;
+import net.gommagomma.smfn.math.analysis.solvers.differential.CentralDifferenceDifferentiator;
+import net.gommagomma.smfn.math.analysis.solvers.differential.NumericalDifferentiator;
+import net.gommagomma.smfn.math.analysis.solvers.iterative.NewtonRaphsonSolver;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.ScalarMetricSpace;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVectorSpace;
 
 public class RootSolverTestApp
@@ -34,7 +34,7 @@ public class RootSolverTestApp
         Real tolerance = new Real(0.000001); // Precisione richiesta per la soluzione
         int maxIter = 100;                   // Limite massimo di passi
         ConvergenceParameters params = new ConvergenceParameters(tolerance, maxIter);
-        MetricConvergenceTest<Real> convergenceTest = (current, previous, convParams, iteration, space) -> {    
+        ConvergenceTest<Real> convergenceTest = (current, previous, convParams, iteration, space) -> {    
             // Controlla se il limite di iterazioni è stato raggiunto
             if (iteration >= convParams.maxIterations) {
                 System.out.println("[SOLVER] Non convergente: superato il numero max di iterazioni.");

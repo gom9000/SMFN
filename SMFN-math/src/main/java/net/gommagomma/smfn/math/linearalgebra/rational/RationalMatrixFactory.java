@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.rational;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.core.linearalgebra.structures.MatrixFactory;
+import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixFactory;
 
 
 public class RationalMatrixFactory

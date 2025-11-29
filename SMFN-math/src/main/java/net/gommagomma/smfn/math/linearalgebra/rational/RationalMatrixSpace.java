@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.linearalgebra.rational;
 
+import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
-import net.gommagomma.smfn.math.core.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.core.linearalgebra.structures.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixSpace;
 
 public final class RationalMatrixSpace
 implements MatrixSpace<Rational, RationalVector, RationalMatrix>

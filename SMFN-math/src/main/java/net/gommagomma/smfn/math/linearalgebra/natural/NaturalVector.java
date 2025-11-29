@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.natural;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.core.linearalgebra.elements.SemimoduleElement;
+import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.SemimoduleElement;
 
 import java.util.Arrays;
 import java.util.List;

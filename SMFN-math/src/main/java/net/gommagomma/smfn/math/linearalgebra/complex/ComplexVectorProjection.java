@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.linearalgebra.complex;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.linearalgebra.operators.AbstractProjectionOperator;
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.operators.AbstractProjectionOperator;
 
 
 public class ComplexVectorProjection

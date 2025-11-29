@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.core.algebra.numeric;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 class ComplexTest {

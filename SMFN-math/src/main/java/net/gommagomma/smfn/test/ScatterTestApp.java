@@ -10,7 +10,7 @@ import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.ScatterPlotter;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.geometry.Point;
 
 public class ScatterTestApp

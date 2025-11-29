@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.algebra.structures.Field;
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
 
 
 public class ComplexField

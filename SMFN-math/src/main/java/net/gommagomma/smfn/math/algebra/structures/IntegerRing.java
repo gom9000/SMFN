@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
-import net.gommagomma.smfn.math.core.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.core.algebra.structures.CommutativeRing;
+import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
+import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 
 
 public class IntegerRing

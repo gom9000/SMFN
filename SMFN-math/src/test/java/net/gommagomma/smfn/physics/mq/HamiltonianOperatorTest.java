@@ -2,7 +2,8 @@ package net.gommagomma.smfn.physics.mq;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
+
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
 
 public class HamiltonianOperatorTest

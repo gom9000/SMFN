@@ -10,9 +10,9 @@ import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.fractals.JuliaFunction;
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
 
 public class JuliaTestApp {
     public static void main(String[] args) {

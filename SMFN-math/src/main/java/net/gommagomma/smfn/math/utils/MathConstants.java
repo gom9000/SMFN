@@ -33,7 +33,7 @@ public final class MathConstants
      * Two floating-point numbers {@code a} and {@code b} are considered equal if 
      * {@code Math.abs(a - b) < EPSILON}.
      */
-	public static final double EPSILON = 1E-15;
+	public static final double EPSILON = 1E-12;
 
 	/**
 	 * The ratio of the circumference of a circle to its diameter (Pi).

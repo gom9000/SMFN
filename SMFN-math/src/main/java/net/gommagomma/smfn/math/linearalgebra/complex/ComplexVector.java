@@ -3,9 +3,9 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 import java.util.Arrays;
 import java.util.List;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.linearalgebra.elements.InnerProductSpaceElement;
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.InnerProductSpaceElement;
 
 
 public final class ComplexVector
@@ -48,10 +48,19 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
     }
 
     // --- Metodi Algebrici (isEqual, copy, getZero, add, negate, ecc.) ---
-    
+
     @Override
     public boolean isEqual(ComplexVector other) {
-    	return Arrays.equals(this.data, other.data);
+        if (this.dimension != other.dimension) {
+            return false;
+        }
+        // Implementazione manuale che usa Complex.isEqual() per gestire la tolleranza EPSILON
+        for (int i = 0; i < this.dimension; i++) {
+            if (!this.data[i].isEqual(other.data[i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

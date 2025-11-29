@@ -1,10 +1,10 @@
 package net.gommagomma.smfn.physics.mq;
 
-import net.gommagomma.smfn.math.core.algebra.elements.capabilities.NormableElement;
-import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.analysis.structures.HilbertSpace;
-import net.gommagomma.smfn.math.core.linearalgebra.elements.InnerProductSpaceElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.InnerProductSpaceElement;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.HilbertSpace;
 
 
 public class QuantumSystemSimulator

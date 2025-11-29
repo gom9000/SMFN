@@ -1,8 +1,7 @@
 package net.gommagomma.smfn.physics.mq;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.linearalgebra.operators.HermitianOperator;
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexMatrix;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
 
@@ -10,8 +9,7 @@ import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
  * Rappresenta un operatore Hamiltoniano (energia) implementato usando la composizione.
  * Contiene una ComplexMatrix internamente.
  */
-public final class HamiltonianOperator 
-implements HermitianOperator<Complex, ComplexVector, HamiltonianOperator>
+final class HamiltonianOperator implements Observable<Complex, ComplexVector, HamiltonianOperator>
 {
     private final ComplexMatrix matrix;
 

@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.linearalgebra.complex;
 
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.analysis.structures.HilbertSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.HilbertSpace;
 
 public class ComplexVectorSpace
 implements HilbertSpace<Complex, ComplexVector>

@@ -1,18 +1,18 @@
 package net.gommagomma.smfn.physics.mq;
 
-import net.gommagomma.smfn.math.analysis.differential.DifferentialSystem;
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.analysis.models.DynamicSystem;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
 
 
 public class SchrodingerEquationSystem
-implements DifferentialSystem<Complex, ComplexVector>
+implements DynamicSystem<Complex, ComplexVector>
 {
-    private final HamiltonianOperator H;
+	private final Observable<Complex, ComplexVector, ?> H;
     // hbar (costante di Planck ridotta) è spesso 1.0 in unità naturali per MQ
 
-    public SchrodingerEquationSystem(HamiltonianOperator h) {
+    public SchrodingerEquationSystem(Observable<Complex, ComplexVector, ?> h) {
         this.H = h;
     }
 

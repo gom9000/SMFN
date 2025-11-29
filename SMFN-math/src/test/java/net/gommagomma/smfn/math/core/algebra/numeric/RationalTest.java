@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import org.junit.jupiter.api.Test;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numeric.Rational;
 
 
 class RationalTest

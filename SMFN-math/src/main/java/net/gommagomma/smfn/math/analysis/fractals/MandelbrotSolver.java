@@ -2,23 +2,23 @@
 
 package net.gommagomma.smfn.math.analysis.fractals;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.analysis.ConvergenceParameters;
-import net.gommagomma.smfn.math.core.analysis.IterativeSystem;
-import net.gommagomma.smfn.math.core.analysis.MetricConvergenceTest;
-import net.gommagomma.smfn.math.core.analysis.MetricSolver;
-import net.gommagomma.smfn.math.core.linearalgebra.structures.MetricSpace;
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.analysis.models.IterativeSystem;
+import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceTest;
+import net.gommagomma.smfn.math.analysis.solvers.core.IterativeSolver;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
 
 
 public class MandelbrotSolver
-implements MetricSolver<Complex, Integer>
+implements IterativeSolver<Complex, Integer>
 {
 	private static final double DIVERGENCE_RADIUS_SQ = 4.0;
 
 
     @Override
-    public Integer solve(Complex initial, IterativeSystem<Complex> system, MetricConvergenceTest<Complex> test, ConvergenceParameters params, MetricSpace<Complex> space)
+    public Integer solve(Complex initial, IterativeSystem<Complex> system, ConvergenceTest<Complex> test, ConvergenceParameters params, MetricSpace<Complex> space)
     {
         Complex currentZ = initial;
         Complex previousZ = null;
@@ -50,7 +50,7 @@ implements MetricSolver<Complex, Integer>
         IterativeSystem<Complex> system = current -> current.multiply(current).add(c);
         
      // Il test di convergenza/divergenza (|z_n|^2 > 4)
-        MetricConvergenceTest<Complex> divergenceTest = (current, previous, params, iteration, space) -> {
+        ConvergenceTest<Complex> divergenceTest = (current, previous, params, iteration, space) -> {
         	if (current == null) return false; // Prima iterazione
         	return current.modulusSquared() > DIVERGENCE_RADIUS_SQ;
         };        

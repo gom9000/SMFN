@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 
 class SignedIntTest
 {

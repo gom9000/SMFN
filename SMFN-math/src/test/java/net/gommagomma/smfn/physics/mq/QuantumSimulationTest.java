@@ -2,20 +2,33 @@ package net.gommagomma.smfn.physics.mq;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.function.Function;
-
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.analysis.differential.ODESolver;
-import net.gommagomma.smfn.math.analysis.differential.RungeKutta4Solver;
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.algebra.structures.Field;
+import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.solvers.core.IntegrationParameters;
+import net.gommagomma.smfn.math.analysis.solvers.core.IntervalSolver;
+import net.gommagomma.smfn.math.analysis.solvers.ode.EmbeddedRK23Solver;
+import net.gommagomma.smfn.math.analysis.solvers.ode.ODESolver;
+import net.gommagomma.smfn.math.analysis.solvers.ode.RungeKutta4Solver;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
+import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVectorSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.VectorElement;
 
 public class QuantumSimulationTest
 {
+	// Helper method generico per calcolare il valore di aspettazione di qualsiasi Observable
+    private <K extends FieldElement<K>, V extends VectorElement<K, V>> 
+            Real measureExpectation(Observable<K, V, ?> observable, V state) {
+        // Chiama il metodo ereditato da HermitianOperator
+        return observable.expectationValue(state); 
+    }
+
+
 	/**
 	 * Questa simulazione modella un sistema quantistico molto semplice:
 	 * un qubit (un sistema a due livelli, come lo spin di un elettrone o un atomo a due stati energetici)
@@ -42,7 +55,7 @@ public class QuantumSimulationTest
         // Usiamo un Hamiltoniano 2x2 con autovalori 1 e -1.
         // H = |1  0|
         //     |0 -1|
-        HamiltonianOperator H = new HamiltonianOperator(new Complex[][] {
+    	Observable<Complex, ComplexVector, ?> H = new HamiltonianOperator(new Complex[][] {
             {new Complex(1.0), new Complex(0.0)},
             {new Complex(0.0), new Complex(-1.0)}
         });
@@ -56,11 +69,11 @@ public class QuantumSimulationTest
         ComplexVector psi_state = new ComplexVector(psi_up, psi_down);
 
         // 3. Esegui la "misura" (calcola il valore di aspettazione E = <psi|H|psi>)
-        Real expectedEnergy = H.expectationValue(psi_state);
+        Real expectedEnergy = measureExpectation(H, psi_state);
 
         // 4. Verifica il risultato atteso
         Real expectedValue = new Real(0.0);
-        
+
         // Usiamo isEqual() che gestisce la tolleranza EPSILON per i double
         assertTrue(expectedEnergy.isEqual(expectedValue), "Il valore di aspettazione dell'energia doveva essere 0.0");
     }
@@ -78,7 +91,7 @@ public class QuantumSimulationTest
             {Complex.ZERO, Complex.ZERO, new Complex(3.0)}
         };
         
-        HamiltonianOperator H = new HamiltonianOperator(hData);
+        Observable<Complex, ComplexVector, ?> H = new HamiltonianOperator(hData);
 
         // Crea un vettore di stato 3D normalizzato
         ComplexVector psi_state = new ComplexVector(
@@ -87,11 +100,11 @@ public class QuantumSimulationTest
             new Complex(1/Math.sqrt(3))
         );
 
-        Real expectedEnergy = H.expectationValue(psi_state);
+        Real expectedEnergy = measureExpectation(H, psi_state);
         
         // Verifica il risultato atteso
         Real expectedValue = new Real(2.0);
-        
+
         // Usiamo isEqual() che gestisce la tolleranza EPSILON per i double
         assertTrue(expectedEnergy.isEqual(expectedValue), "Il valore di aspettazione dell'energia doveva essere 2.0");
     }
@@ -100,7 +113,7 @@ public class QuantumSimulationTest
     @Test
     public void testQuantumTimeEvolution() {
         // 1. Definisci l'Hamiltoniano (es. un campo magnetico costante sull'asse X)
-        HamiltonianOperator Hx = new HamiltonianOperator(new Complex[][] {
+    	Observable<Complex, ComplexVector, ?> Hx = new HamiltonianOperator(new Complex[][] {
             {new Complex(0.0), new Complex(1.0)},
             {new Complex(1.0), new Complex(0.0)}
         });
@@ -113,20 +126,67 @@ public class QuantumSimulationTest
 
         // 4. Configura il solutore (come nel punto 2)
         Field<Complex> complexField = ComplexField.getInstance();
-        Function<Real, Complex> r2c = Complex::new;
-        ODESolver<Complex, ComplexVector> mqSolver = new RungeKutta4Solver<>(complexField, r2c);
+        ODESolver<Complex, ComplexVector> mqSolver = new RungeKutta4Solver<>(complexField);
 
-        // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2, con passo dt=0.01
+        // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2, con passo dt=0.0001
         Real startTime = new Real(0.0);
         Real endTime = new Real(Math.PI/2.0);
-        Real deltaTime = new Real(0.000001);
+        Real deltaTime = new Real(0.001);
+        IntegrationParameters params = new IntegrationParameters(deltaTime);
 
-        ComplexVector psi_final = mqSolver.integrate(system, psi_initial, startTime, endTime, deltaTime);
+        ComplexVector psi_final = mqSolver.integrate(system, psi_initial, startTime, endTime, params);
 
         // 6. Verifica il risultato atteso
         // Con questo Hx e questo tempo finale (PI), lo stato dovrebbe essere |giù> = (0, 1)
-        ComplexVector expected_final = new ComplexVector(new Complex(0.0), new Complex(-1.0));
+        ComplexVector expected_final = new ComplexVector(new Complex(0.0), new Complex(0.0, -1.0));
         System.out.println("psi final = " + psi_final + ", psi expected = " + expected_final);
+        assertTrue(psi_final.isEqual(expected_final), "Lo stato finale doveva essere |giù>, psi=" + psi_final);
+    }
+
+    @Test
+    public void testQuantumTimeEvolutionAdaptive() {
+        // 1. Definisci l'Hamiltoniano (es. un campo magnetico costante sull'asse X)
+    	Observable<Complex, ComplexVector, ?> Hx = new HamiltonianOperator(new Complex[][] {
+            {new Complex(0.0), new Complex(1.0)},
+            {new Complex(1.0), new Complex(0.0)}
+        });
+        
+        // 2. Definisci il sistema differenziale
+        SchrodingerEquationSystem system = new SchrodingerEquationSystem(Hx);
+
+        // 3. Definisci lo stato iniziale |psi(t=0)> (es. |su> state)
+        ComplexVector psi_initial = new ComplexVector(new Complex(1.0), new Complex(0.0));
+
+        // 4. Configura il solutore (ORA ADATTIVO)
+        Field<Complex> complexField = ComplexField.getInstance();
+        
+        // Inizializziamo l'EmbeddedRK23Solver passando solo il Field<Complex>
+        IntervalSolver<Complex, ComplexVector> mqSolver = new EmbeddedRK23Solver<>(complexField);
+
+        // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2
+        Real startTime = new Real(0.0);
+        Real endTime = new Real(Math.PI/2.0);
+
+        // Scegliamo una tolleranza target per l'errore locale (es. 1e-8)
+        Real tolerance = new Real(1e-6);
+        ConvergenceParameters convParams = new ConvergenceParameters(tolerance, 0); // max iterazioni non è molto rilevante qui
+
+        // Creiamo IntegrationParameters usando i parametri di convergenza, non fixedStepSize
+        IntegrationParameters params = new IntegrationParameters(convParams); 
+        
+        // Chiamiamo integrate()
+        ComplexVector psi_final = mqSolver.integrate(system, psi_initial, startTime, endTime, params);
+
+        // 6. Verifica il risultato atteso (usando una tolleranza adeguata)
+        // Il risultato corretto atteso è (0, -i)
+        ComplexVector expected_final = new ComplexVector(new Complex(0.0), new Complex(0.0, -1.0));
+        
+        System.out.println("psi final = " + psi_final + ", psi expected = " + expected_final);
+        
+        // Usiamo una tolleranza (EPSILON) per il confronto del risultato finale
+        // L'errore finale dovrebbe essere ben al di sotto della tolleranza locale impostata (1e-8)
+        final double FINAL_EPSILON = 1e-7;
+
         assertTrue(psi_final.isEqual(expected_final), "Lo stato finale doveva essere |giù>, psi=" + psi_final);
     }
 }
