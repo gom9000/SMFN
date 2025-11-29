@@ -49,4 +49,11 @@ implements Field<Complex>
 	{
 		return Complex.ONE;
 	}
+
+
+	@Override
+    public Complex valueOf(double value)
+	{
+        return new Complex(value, 0.0);
+    }
 }

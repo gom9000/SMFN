@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.algebra.numeric;
+package net.gommagomma.smfn.math.core.algebra.numeric;
 
 
 import static org.assertj.core.api.Assertions.assertThat;

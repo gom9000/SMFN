@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.algebra.numeric;
+package net.gommagomma.smfn.math.core.algebra.numeric;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

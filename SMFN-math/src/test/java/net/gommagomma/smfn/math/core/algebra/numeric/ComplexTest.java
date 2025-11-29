@@ -1,9 +1,8 @@
-package net.gommagomma.smfn.math.algebra.numeric;
+package net.gommagomma.smfn.math.core.algebra.numeric;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 class ComplexTest {
@@ -87,6 +86,13 @@ class ComplexTest {
         Assertions.assertTrue(inverse.isEqual(expected));
         // Verifica che z * inverse sia circa 1 (l'identità moltiplicativa)
         Assertions.assertTrue(z.multiply(inverse).isOne());
+    }
+    @Test
+    public void testInverse2() {
+        // Inverso di i: 1/i = -i
+        Complex i = new Complex(0.0, 1.0);
+        Complex expected = new Complex(0.0, -1.0);
+        Assertions.assertTrue(i.inverse().isEqual(expected), "Inverse of i should be -i");
     }
 
     @Test

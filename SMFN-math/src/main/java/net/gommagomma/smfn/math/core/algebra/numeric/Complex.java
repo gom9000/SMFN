@@ -41,6 +41,16 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
 
 
     /**
+     * Constructs a new complex number with the given Real.
+     * @param real the real part of the complex number
+     */
+    public Complex(Real real)
+    {
+        this(real.getValue(), 0.0);
+    }
+
+
+    /**
      * Returns the real part of this complex number.
      * @return the real part of this complex number
      */

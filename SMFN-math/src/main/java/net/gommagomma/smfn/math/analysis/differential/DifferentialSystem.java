@@ -1,0 +1,15 @@
+package net.gommagomma.smfn.math.analysis.differential;
+
+import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.core.linearalgebra.elements.VectorElement;
+
+
+//T è vincolato a essere un VectorElement operante su un campo K (es. Real, Complex)
+public interface DifferentialSystem<K extends FieldElement<K>, T extends VectorElement<K, T>> {
+	/**
+	 * Calcola la derivata (dX/dt = f(X, t)) dato lo stato e il tempo.
+	 * La funzione ritorna un rate di cambiamento, che è dello stesso tipo di T.
+	 */
+	T derivative(T state, Real time);
+}

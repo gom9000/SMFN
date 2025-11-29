@@ -38,9 +38,9 @@ net.gommagomma.smfn/
 |   \-- plotting/                           # (FunctionPlotter, CartesianAxisPlotter, ScatterPlotter)
 |-- physics                                 # Package per le applicazioni fisiche (Elettromagnetismo, MQ, RG)
 |   |-- core/                               (Interfacce fisiche base: particella, forza...)
-|   |-- mechanics/                          (Dinamica, gravit√†, cinematica)
+|   |-- mechanics/                          (Dinamica, gravit‡†, cinematica)
 |   |-- em                                  # Classi per campi E e B
-|   |-- mq                                  # Classi per funzioni d'onda, operatori
+|   |-- mq                                  # Classi per funzioni d'onda, operatori (HamiltonianOperator, Observable, ...)
 |   |-- relativity                          # Classi per metriche tensoriali
 </pre>
 
@@ -173,7 +173,6 @@ extends InnerProductSpace<K, V> {}
 - class ComplexMatrix implements AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
 - class ComplexMatrixSpace implements MatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
 - class ComplexVectorProjection extends AbstractProjectionOperator<Complex, ComplexVector> {}
-- final class HamiltonianOperator implements HermitianOperator<Complex, ComplexVector, HamiltonianOperator> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.rational:
 - class RationalVector implements InnerProductSpaceElement<Rational, RationalVector> { /... }
@@ -194,8 +193,13 @@ extends InnerProductSpace<K, V> {}
 - final class PolynomialFunction<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
 - final class LinearFunction<K extends FieldElement<K>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
 
-### net.gommagomma.smfn.math.analysis.differential;
--class CentralDifferenceDifferentiator<K extends FieldElement<K>> implements NumericalDifferentiator<K> {}
+### net.gommagomma.smfn.math.analysis.differential
+- interface DifferentialSystem<K extends FieldElement<K>, T extends VectorElement<K, T>> {T derivative(T state, Real time);}
+- interface ODESolver<K extends FieldElement<K>, T extends VectorElement<K, T>> {
+  T step(DifferentialSystem<K, T> system, T currentState, Real currentTime, Real deltaTime);
+  T integrate(DifferentialSystem<K, T> system, T initialState, Real startTime, Real endTime, Real deltaTime);}
+- class CentralDifferenceDifferentiator<K extends FieldElement<K>> implements NumericalDifferentiator<K> {}
+- class RungeKutta4Solver<K extends FieldElement<K>, T extends VectorElement<K, T>> implements ODESolver<K, T> {}
 
 ### net.gommagomma.smfn.math.analysis.solvers;
 public class NewtonRaphsonSolver<K extends FieldElement<K>> implements MetricSolver<K, K> {}
@@ -228,6 +232,12 @@ public class NewtonRaphsonSolver<K extends FieldElement<K>> implements MetricSol
 
 ## net.gommagomma.smfn.physics
 ------------------------------
+### net.gommagomma.smfn.physics.mq:
+- final class HamiltonianOperator implements HermitianOperator<Complex, ComplexVector, HamiltonianOperator> {}
+- interface Observable<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends Observable<K, V, O>> extends HermitianOperator<K, V, O>{}
+- class SchrodingerEquationSystem implements DifferentialSystem<Complex, ComplexVector>{}
+
+
 B. Per la Fisica (Simulazione e Animazione)
 Avrai bisogno di:
 
@@ -250,9 +260,3 @@ interface AffineTransform<K extends FieldElement<K>, V extends VectorElement<K, 
 }
 impl (in linearalgebra.real):
 class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
-
-- solutore di Runge-Kutta 4 (RK4)
-
-
-
-

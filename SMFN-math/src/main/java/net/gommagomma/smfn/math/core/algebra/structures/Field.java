@@ -7,4 +7,6 @@ import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.FieldElemen
 //Un campo è un anello commutativo con inversi moltiplicativi
 public interface Field<E extends FieldElement<E>>
 extends CommutativeRing<E>
-{}
+{
+	E valueOf(double value);
+}
