@@ -2,12 +2,11 @@ package net.gommagomma.smfn.math.linearalgebra.real;
 
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.linearalgebra.structures.MetricSpace;
-import net.gommagomma.smfn.math.core.linearalgebra.structures.VectorSpace;
+import net.gommagomma.smfn.math.core.analysis.structures.HilbertSpace;
 
 
 public class RealVectorSpace
-implements VectorSpace<Real, RealVector>, MetricSpace<RealVector>
+implements HilbertSpace<Real, RealVector>
 {
     private static final RealVectorSpace INSTANCE = new RealVectorSpace();
 

@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.analysis.fractals;
 
+import net.gommagomma.smfn.math.core.algebra.MathFunction;
 import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.core.algebra.numeric.Real;
-import net.gommagomma.smfn.math.core.analysis.MathFunction;
 
 /**
  * Rappresenta la funzione matematica dell'insieme di Mandelbrot.

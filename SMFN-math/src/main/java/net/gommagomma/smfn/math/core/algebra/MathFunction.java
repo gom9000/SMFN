@@ -1,7 +1,4 @@
-// net.gommagomma.smfn.math.analysis.core.MathFunction.java (Versione Rivista)
-package net.gommagomma.smfn.math.core.analysis;
-
-import net.gommagomma.smfn.math.core.algebra.AlgebraicElement;
+package net.gommagomma.smfn.math.core.algebra;
 
 /**
  * Rappresenta una funzione matematica astratta che mappa un dominio T in un codominio R.

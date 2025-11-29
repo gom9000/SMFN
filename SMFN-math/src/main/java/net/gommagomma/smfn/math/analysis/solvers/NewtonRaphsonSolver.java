@@ -1,9 +1,9 @@
 package net.gommagomma.smfn.math.analysis.solvers;
 
+import net.gommagomma.smfn.math.core.algebra.MathFunction;
 import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.core.analysis.ConvergenceParameters;
 import net.gommagomma.smfn.math.core.analysis.IterativeSystem;
-import net.gommagomma.smfn.math.core.analysis.MathFunction;
 import net.gommagomma.smfn.math.core.analysis.MetricConvergenceTest;
 import net.gommagomma.smfn.math.core.analysis.MetricSolver;
 import net.gommagomma.smfn.math.core.analysis.NumericalDifferentiator;

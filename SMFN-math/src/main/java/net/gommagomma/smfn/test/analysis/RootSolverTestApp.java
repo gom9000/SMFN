@@ -2,10 +2,10 @@ package net.gommagomma.smfn.test.analysis;
 
 import net.gommagomma.smfn.math.analysis.differential.CentralDifferenceDifferentiator;
 import net.gommagomma.smfn.math.analysis.solvers.NewtonRaphsonSolver;
+import net.gommagomma.smfn.math.core.algebra.MathFunction;
 import net.gommagomma.smfn.math.core.algebra.numeric.Real;
 import net.gommagomma.smfn.math.core.analysis.ConvergenceParameters;
 import net.gommagomma.smfn.math.core.analysis.IterativeSystem;
-import net.gommagomma.smfn.math.core.analysis.MathFunction;
 import net.gommagomma.smfn.math.core.analysis.MetricConvergenceTest;
 import net.gommagomma.smfn.math.core.analysis.NumericalDifferentiator;
 import net.gommagomma.smfn.math.core.linearalgebra.structures.MetricSpace;

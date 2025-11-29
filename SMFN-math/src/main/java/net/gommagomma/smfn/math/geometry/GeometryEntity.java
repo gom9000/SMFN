@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.geometry;
 
 import net.gommagomma.smfn.math.core.algebra.AlgebraicElement;
-import net.gommagomma.smfn.math.core.analysis.MathFunction;
+import net.gommagomma.smfn.math.core.algebra.MathFunction;
 
 /**
  * Interfaccia base che caratterizza un ente geometrico.

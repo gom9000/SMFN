@@ -1,0 +1,18 @@
+package net.gommagomma.smfn.math.linearalgebra.real;
+
+import net.gommagomma.smfn.math.core.algebra.numeric.Real;
+import net.gommagomma.smfn.math.core.linearalgebra.operators.AbstractProjectionOperator;
+
+
+public class RealVectorProjection
+extends AbstractProjectionOperator<Real, RealVector>
+{
+    public RealVectorProjection(RealVector direction) {
+        super(direction);
+    }
+
+    @Override
+    protected Real getInverseNormScalar(Real normValue) {
+        return new Real(1.0 / normValue.modulus());
+    }
+}

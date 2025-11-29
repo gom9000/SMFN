@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.core.analysis;
 
 
+import net.gommagomma.smfn.math.core.algebra.MathFunction;
 import net.gommagomma.smfn.math.core.algebra.elements.multiplicative.FieldElement;
 
 

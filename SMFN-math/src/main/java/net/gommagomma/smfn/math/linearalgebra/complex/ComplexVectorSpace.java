@@ -2,10 +2,10 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.core.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.core.linearalgebra.structures.VectorSpace;
+import net.gommagomma.smfn.math.core.analysis.structures.HilbertSpace;
 
 public class ComplexVectorSpace
-implements VectorSpace<Complex, ComplexVector>
+implements HilbertSpace<Complex, ComplexVector>
 {    
     private static final ComplexVectorSpace INSTANCE = new ComplexVectorSpace();
 

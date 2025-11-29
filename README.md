@@ -51,7 +51,9 @@ net.gommagomma.smfn/
 - interface Commutative {}
 - interface AlgebraicElement<E extends AlgebraicElement<E>> { boolean isEqual(E other); E copy();}
 - interface AlgebraicStructure<E extends AlgebraicElement<E>> { String getName(); boolean contains(E e); }
-- net.gommagomma.smfn.math.algebra.core.elements.additive:
+- interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);default <V extends AlgebraicElement<V>> MathFunction<V, C> compose(MathFunction<V, D> before)}
+
+### net.gommagomma.smfn.math.algebra.core.elements.additive:
 - interface AdditiveMonoidElement<E extends AdditiveMonoidElement<E>> extends AlgebraicElement<E> { E add(E other); E getZero(); default boolean isZero() { return isEqual(getZero()); }}
 - interface CommutativeMonoidElement<E extends CommutativeMonoidElement<E>> extends AdditiveMonoidElement<E>, Commutative {}
 - interface GroupElement<E extends GroupElement<E>> extends AdditiveMonoidElement<E> {E negate(); default E subtract(E other) {return add(other.negate());}}
@@ -122,9 +124,15 @@ implements MetricSpace<T> {}
 - interface InnerProductSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
 extends VectorSpace<K, V>, MetricSpace<V>
 
+### net.gommagomma.smfn.math.core.linearalgebra.operators:
+- interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> extends MathFunction<V, V> {}
+- interface ProjectionOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, P extends ProjectionOperator<K, V, P>> extends LinearOperator<K, V, P> {}
+- public abstract class AbstractProjectionOperator<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> 
+implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
+- interface HermitianOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends HermitianOperator<K, V, O>>  extends LinearOperator<K, V, O> {Real expectationValue(V state);}
+
 ## net.gommagomma.smfn.math.core.analysis
 -----------------------------------------
-- interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);}
 - interface IterativeSystem<T> { T nextIteration(T current);}
 - interface MetricConvergenceTest<T> { boolean isConverged(T current, T previous, ConvergenceParameters params, int iteration, MetricSpace<T> space);}
 - interface MetricSolver<T extends AlgebraicElement<T>, R> {R solve(T initial, IterativeSystem<T> system, MetricConvergenceTest<T> test, ConvergenceParameters params, MetricSpace<T> space);}
@@ -153,16 +161,19 @@ extends InnerProductSpace<K, V> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.real:
 - class RealVector implements InnerProductSpaceElement<Real, RealVector> {//...}
-- class RealVectorSpace implements VectorSpace<Real, RealVector> {//...}
+- class RealVectorSpace implements HilbertSpace<Real, RealVector> {//...}
 - class RealMatrixFactory implements MatrixFactory<Real, RealVector, RealMatrix> {}
 - class RealMatrix extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
 - class RealMatrixSpace implements MatrixSpace<Real, RealVector, RealMatrix> {//...}
+- class RealVectorProjection extends AbstractProjectionOperator<Real, RealVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
 - class ComplexVector implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
-- class ComplexVectorSpace implements VectorSpace<Complex, ComplexVector> {//...}
-- class ComplexMatrix implements AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {//...}
+- class ComplexVectorSpace implements HilbertSpace<Complex, ComplexVector> {//...}
+- class ComplexMatrix implements AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
 - class ComplexMatrixSpace implements MatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
+- class ComplexVectorProjection extends AbstractProjectionOperator<Complex, ComplexVector> {}
+- final class HamiltonianOperator implements HermitianOperator<Complex, ComplexVector, HamiltonianOperator> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.rational:
 - class RationalVector implements InnerProductSpaceElement<Rational, RationalVector> { /... }

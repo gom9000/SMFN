@@ -7,7 +7,7 @@ import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Renderer;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.math.core.algebra.AlgebraicElement;
-import net.gommagomma.smfn.math.core.analysis.MathFunction;
+import net.gommagomma.smfn.math.core.algebra.MathFunction;
 
 
 /**
