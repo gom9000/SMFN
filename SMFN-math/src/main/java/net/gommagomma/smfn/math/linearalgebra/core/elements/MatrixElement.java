@@ -10,18 +10,16 @@ extends AlgebraicElement<M>, AbelianGroupElement<M>
     int getRows();
     int getColumns();
     K get(int row, int col);
+    V getRowVector(int row);
+    V getColumnVector(int col);
 
     M multiply(M other); 
     M multiplyByScalar(K scalar);
-    
-    // Moltiplicazione matrice-vettore
+
     V multiply(V vector);
 
     // Operazioni specifiche per l'algebra lineare su campo
-    K determinant(); // Solo per matrici quadrate
-    M inverse();     // Solo per matrici quadrate invertibili
+    K determinant();
+    M inverse();
     M transpose();
-
-    V getRowVector(int row);
-    V getColumnVector(int col);
 }

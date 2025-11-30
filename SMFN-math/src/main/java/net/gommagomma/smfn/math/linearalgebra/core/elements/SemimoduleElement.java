@@ -14,14 +14,6 @@ public interface SemimoduleElement<K extends SemiringElement<K>, V extends Semim
 extends SpaceElement<V>, CommutativeMonoidElement<V>
 {
     int dimension(); 
-    K get(int index); 
-    void set(int index, K value); // Aggiungiamo il set per flessibilità
-    
-    /**
-     * Moltiplicazione per uno scalare dal semianello K.
-     */
+    K get(int index);
     V multiplyByScalar(K scalar);
-    
-    // NOTA: Non definiamo un "dot product" qui, poiché richiede che il tipo K sia almeno un RingElement
-    // e che ci sia la sottrazione nel semianello risultante, cosa non vera per i Naturali.
 }

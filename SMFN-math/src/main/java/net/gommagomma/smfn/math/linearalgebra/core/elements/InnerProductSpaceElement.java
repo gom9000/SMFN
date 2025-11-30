@@ -17,9 +17,5 @@ extends NormedVectorElement<K, V>
      * @return Il risultato scalare K.
      */
     K dotProduct(V other);
-
-    // Nota: la norma di default è già gestita in NormedVectorElement e usa subtract/norm.
-    // Matematicamente, la norma dovrebbe essere la radice del prodotto interno di un vettore con se stesso: sqrt(dotProduct(v,v)).
-    // Se vuoi far rispettare questa relazione, puoi sovrascrivere il metodo default 'norm()' qui.
 }
 

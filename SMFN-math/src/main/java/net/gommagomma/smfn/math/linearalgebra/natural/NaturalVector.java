@@ -40,9 +40,6 @@ implements SemimoduleElement<Natural, NaturalVector>
     @Override
     public Natural get(int index) { return data[index]; }
 
-    @Override
-    public void set(int index, Natural value) { this.data[index] = value; }
-
     // Implementazioni di CommutativeMonoidElement<V> (add, getZero, isEqual, copy)
     @Override
     public NaturalVector add(NaturalVector other) {

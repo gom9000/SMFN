@@ -111,6 +111,7 @@ net.gommagomma.smfn/
 -----------------------------------------
 ### net.gommagomma.smfn.math.linearalgebra.core.elements:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
+- interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {int dimension(); K get(int index); V multiplyByScalar(K scalar);}
 - interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SpaceElement<V>, AbelianGroupElement<V> {
     int dimension();
     K get(int index);
@@ -122,7 +123,6 @@ extends ModuleElement<K, V> {}
 - interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>>
 extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other) {}}
 - interface InnerProductSpaceElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
-- interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {}
 - interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M>, AbelianGroupElement<M> {}
 - abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>> implements MatrixElement<K, V, M> {}
 
@@ -286,3 +286,12 @@ class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
 |   |   \-- problems/
 |   |       \-- ParticleInABox # Suggerito
 
+
+todo:
+math.analysis.solvers.integral: metodi di quadratura numerici (Regola di Simpson, Regola del Trapezio o Gauss-Legendre)
+net.gommagomma.smfn.math.linearalgebra.solvers o estendono AbstractMatrix: 
+	Decomposizione LU, Decomposizione QR
+	QR Algorithm
+math.analysis.solvers.ode: EmbeddedRK23Solver / RKF45Solver / Crank-Nicolson
+physics.mq.solvers: Metodo agli Elementi Finiti (FEM) o alle Differenze Finite (FDM)
+math.linearalgebra.solvers: Algoritmo di Lanczos o Arnoldi
