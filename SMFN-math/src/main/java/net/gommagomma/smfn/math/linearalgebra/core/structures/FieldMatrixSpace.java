@@ -5,10 +5,10 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.FieldMatrixElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.VectorElement;
 
-public interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
-extends Space<M>
+
+public interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
+extends RingMatrixSpace<K, V, M>
 {
-	Field<K> getScalarField();
-	int getMatrixRows();
-	int getMatrixColumns();
+	@Override
+	Field<K> getScalarStructure();
 }

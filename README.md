@@ -112,7 +112,7 @@ net.gommagomma.smfn/
 ### net.gommagomma.smfn.math.linearalgebra.core.elements:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
 - interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {int dimension(); K get(int index); V multiplyByScalar(K scalar);}
-- interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemoduleElement<K, V>, AbelianGroupElement<V> {  V createNewInstance(@SuppressWarnings("unchecked") K... components); }
+- interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemioduleElement<K, V>, AbelianGroupElement<V> {  V createNewInstance(@SuppressWarnings("unchecked") K... components); }
 - interface VectorElement<K extends FieldElement<K>, V extends VectorElement<K, V>>
 extends ModuleElement<K, V> {}
 - interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>>
@@ -140,7 +140,10 @@ implements MetricSpace<T> {}
 extends VectorSpace<K, V>, MetricSpace<V>
 - interface HilbertSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
 
-- interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
+- interface SemiringMatrixSpace<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M> {Semiring<K> getScalarStructure();	int getMatrixRows(); int getMatrixColumns();}
+- interface RingMatrixSpace<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSpace<K, V, M> { @Override	Ring<K> getScalarStructure();}
+- public interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends 
+extends RingMatrixSpace<K, V, M>{Field<K> getScalarField();}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.operators:
 - interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> extends MathFunction<V, V> {}

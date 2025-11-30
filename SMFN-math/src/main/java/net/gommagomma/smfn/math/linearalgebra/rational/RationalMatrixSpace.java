@@ -2,10 +2,10 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.FieldMatrixSpace;
 
 public final class RationalMatrixSpace
-implements MatrixSpace<Rational, RationalVector, RationalMatrix>
+implements FieldMatrixSpace<Rational, RationalVector, RationalMatrix>
 {    
     private static final RationalMatrixSpace INSTANCE = new RationalMatrixSpace();
 
@@ -18,7 +18,7 @@ implements MatrixSpace<Rational, RationalVector, RationalMatrix>
     }
 
     @Override
-    public RationalField getScalarField() {
+    public RationalField getScalarStructure() {
         return RationalField.getInstance();
     }
     

@@ -3,10 +3,10 @@ package net.gommagomma.smfn.math.linearalgebra.real;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.FieldMatrixSpace;
 
 public class RealMatrixSpace
-implements MatrixSpace<Real, RealVector, RealMatrix>
+implements FieldMatrixSpace<Real, RealVector, RealMatrix>
 {
     private final int rows;
     private final int cols;
@@ -17,7 +17,7 @@ implements MatrixSpace<Real, RealVector, RealMatrix>
     }
 
     @Override
-    public Field<Real> getScalarField() {
+    public Field<Real> getScalarStructure() {
         return RealField.getInstance(); // Restituisce l'istanza del campo dei reali
     }
     

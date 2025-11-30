@@ -2,10 +2,10 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.FieldMatrixSpace;
 
 public final class ComplexMatrixSpace
-implements MatrixSpace<Complex, ComplexVector, ComplexMatrix>
+implements FieldMatrixSpace<Complex, ComplexVector, ComplexMatrix>
 {    
     private static final ComplexMatrixSpace INSTANCE = new ComplexMatrixSpace();
 
@@ -18,7 +18,7 @@ implements MatrixSpace<Complex, ComplexVector, ComplexMatrix>
     }
 
     @Override
-    public ComplexField getScalarField() {
+    public ComplexField getScalarStructure() {
         return ComplexField.getInstance();
     }
     
