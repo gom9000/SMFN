@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.matrices.AbstractMatrix;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFieldMatrix;
 
 
 public final class RealMatrix 
-extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
+extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
 {
     private static final RealMatrixFactory FACTORY_INSTANCE = RealMatrixFactory.getInstance();
 
@@ -32,6 +32,10 @@ extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
     	}
     }
 
+    /**
+     * Restituisce la classe runtime dello scalare K (Field).
+     * Essenziale per la reflection nell'AbstractMatrix.
+     */
     @Override
     protected Class<Real> getScalarClass() {
         return Real.class;

@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.matrices;
+package net.gommagomma.smfn.math.linearalgebra.core.elements.matrices;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.core.elements.additive.CommutativeMonoidElement;

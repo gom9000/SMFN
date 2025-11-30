@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.rational;
 
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
@@ -7,31 +8,25 @@ import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrix
 public final class RationalMatrixSpace
 implements FieldMatrixSpace<Rational, RationalVector, RationalMatrix>
 {    
-    private static final RationalMatrixSpace INSTANCE = new RationalMatrixSpace();
+    private final int rows;
+    private final int cols;
 
-    private RationalMatrixSpace() {
-        // Costruttore privato per il singleton
-    }
 
-    public static RationalMatrixSpace getInstance() {
-        return INSTANCE;
+    public RationalMatrixSpace(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
     }
 
     @Override
-    public RationalField getScalarStructure() {
+    public Field<Rational> getScalarStructure() {
         return RationalField.getInstance();
     }
-    
-    // Come discusso, queste proprietà sono specifiche dell'istanza della matrice, non dello spazio generico.
-    @Override
-    public int getMatrixRows() {
-        throw new UnsupportedOperationException("Specific matrix instances have dimensions, the space Q^mxn itself is generic.");
-    }
 
     @Override
-    public int getMatrixColumns() {
-         throw new UnsupportedOperationException("Specific matrix instances have dimensions, the space Q^mxn itself is generic.");
-    }
+    public int getMatrixRows() { return rows; }
+
+    @Override
+    public int getMatrixColumns() { return cols; }
 
     @Override
     public String getName() {
@@ -40,6 +35,6 @@ implements FieldMatrixSpace<Rational, RationalVector, RationalMatrix>
 
     @Override
     public boolean contains(RationalMatrix m) {
-        return (m != null);
+    	return m.getRows() == this.rows && m.getColumns() == this.cols;
     }
 }

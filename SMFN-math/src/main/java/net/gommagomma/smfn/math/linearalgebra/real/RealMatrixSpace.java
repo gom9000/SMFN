@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
 
-public class RealMatrixSpace
+public final class RealMatrixSpace
 implements FieldMatrixSpace<Real, RealVector, RealMatrix>
 {
     private final int rows;
@@ -18,7 +18,7 @@ implements FieldMatrixSpace<Real, RealVector, RealMatrix>
 
     @Override
     public Field<Real> getScalarStructure() {
-        return RealField.getInstance(); // Restituisce l'istanza del campo dei reali
+        return RealField.getInstance();
     }
     
     @Override

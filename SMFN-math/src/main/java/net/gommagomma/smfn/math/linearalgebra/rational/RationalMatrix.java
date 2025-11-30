@@ -5,14 +5,14 @@ import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.matrices.AbstractMatrix;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFieldMatrix;
 
 /**
  * Rappresenta una matrice di numeri razionali immutabile, fornendo precisione esatta.
  * Aderisce all'interfaccia Matrix<Rational, RationalVector, RationalMatrix>.
  */
 public final class RationalMatrix
-extends AbstractMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory>
+extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory>
 {    
 	private static final RationalMatrixFactory FACTORY_INSTANCE = RationalMatrixFactory.getInstance();
 

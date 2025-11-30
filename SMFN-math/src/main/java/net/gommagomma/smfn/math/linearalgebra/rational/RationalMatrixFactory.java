@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.FieldMatrixFactory;
 
 
-public class RationalMatrixFactory
+public final class RationalMatrixFactory
 implements FieldMatrixFactory<Rational, RationalVector, RationalMatrix>
 {
     private static final RationalMatrixFactory INSTANCE = new RationalMatrixFactory();

@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.matrices.AbstractMatrix;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFieldMatrix;
 
 /**
  * Rappresenta una matrice di numeri complessi immutabile.
  * Aderisce all'interfaccia Matrix<Complex, ComplexVector, ComplexMatrix>.
  */
 public final class ComplexMatrix
-extends AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory>
+extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory>
 {    
 	private static final ComplexMatrixFactory FACTORY_INSTANCE = ComplexMatrixFactory.getInstance();
 

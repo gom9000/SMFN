@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.FieldMatrixFactory;
 
 
-public class ComplexMatrixFactory
+public final class ComplexMatrixFactory
 implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix>
 {
     private static final ComplexMatrixFactory INSTANCE = new ComplexMatrixFactory();

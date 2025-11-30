@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.complex;
 
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
@@ -9,16 +10,14 @@ implements FieldMatrixSpace<Complex, ComplexVector, ComplexMatrix>
 {    
     private static final ComplexMatrixSpace INSTANCE = new ComplexMatrixSpace();
 
-    private ComplexMatrixSpace() {
-        // Costruttore privato per il singleton
-    }
+    private ComplexMatrixSpace() {}
 
     public static ComplexMatrixSpace getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public ComplexField getScalarStructure() {
+    public Field<Complex> getScalarStructure() {
         return ComplexField.getInstance();
     }
     

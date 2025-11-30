@@ -1,11 +1,12 @@
 package net.gommagomma.smfn.math.linearalgebra.real;
 
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.HilbertSpace;
 
 
-public class RealVectorSpace
+public final class RealVectorSpace
 implements HilbertSpace<Real, RealVector>
 {
     private static final RealVectorSpace INSTANCE = new RealVectorSpace();
@@ -18,7 +19,7 @@ implements HilbertSpace<Real, RealVector>
     }
 
     @Override
-    public RealField getScalarStructure()
+    public Field<Real> getScalarStructure()
     {
         return RealField.getInstance();
     }

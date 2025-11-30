@@ -112,7 +112,7 @@ net.gommagomma.smfn/
 ### net.gommagomma.smfn.math.linearalgebra.core.elements.vectors:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
 - interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {int dimension(); K get(int index); V multiplyByScalar(K scalar);}
-- interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemioduleElement<K, V>, AbelianGroupElement<V> {  V createNewInstance(@SuppressWarnings("unchecked") K... components); }
+- interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemimoduleElement<K, V>, AbelianGroupElement<V> {  V createNewInstance(@SuppressWarnings("unchecked") K... components); }
 - interface VectorElement<K extends FieldElement<K>, V extends VectorElement<K, V>>
 extends ModuleElement<K, V> {}
 - interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>>
@@ -123,7 +123,9 @@ extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other
 - interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends AlgebraicElement<M>, CommutativeMonoidElement<M> { int getRows(); int getColumns(); K get(int row, int col); V getRowVector(int row); V getColumnVector(int col);  M multiply(M other);  M multiplyByScalar(K scalar); V multiply(V vector);}
 - interface RingMatrixElement<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixElement<K, V, M>, AbelianGroupElement<M> {}
 - interface FieldMatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixElement<K, V, M> { K determinant(); M inverse(); M transpose(); }
-- abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>> implements MatrixElement<K, V, M> {}
+- abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, F extends SemiringMatrixFactory<K, V, M>> implements SemiringMatrixElement<K, V, M> {    protected final K[][] data; protected final int rows;  protected final int cols;  protected final F factory;}
+- abstract class AbstractRingMatrix<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>, F extends RingMatrixFactory<K, V, M>> extends AbstractSemiringMatrix<K, V, M, F> implements RingMatrixElement<K, V, M> {}
+- abstract class AbstractFieldMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, F extends FieldMatrixFactory<K, V, M>> extends AbstractRingMatrix<K, V, M, F> implements FieldMatrixElement<K, V, M> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.structures.spaces:
 - interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {}
@@ -158,33 +160,40 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - interface HermitianOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends HermitianOperator<K, V, O>>  extends LinearOperator<K, V, O> {Real expectationValue(V state);}
 
 ### net.gommagomma.smfn.math.linearalgebra.natural:
-- class NaturalVector implements SemimoduleElement<Natural, NaturalVector> { //... }
+- final class NaturalVector implements SemimoduleElement<Natural, NaturalVector> { //... }
+- final class NaturalSemimodule implements Semimodule<Natural, NaturalVector> {}
+- final class NaturalMatrixFactory implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix> {}
+- final class NaturalMatrix extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixFactory>  {}
+- final class NaturalMatrixSemimodule implements SemiringMatrixSpace<Natural, NaturalVector, NaturalMatrix> {}
 
 ###net.gommagomma.smfn.math.linearalgebra.signedint:
-- class IntegerModule implements Module<SignedInt, SignedIntVector>
-- class SignedIntVector implements ModuleElement<SignedInt, SignedIntVector> {//...}
+- final class SignedIntVector implements ModuleElement<SignedInt, SignedIntVector> {//...}
+- final class IntegerModule implements Module<SignedInt, SignedIntVector> {}
+- final class SignedIntMatrixFactory implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix> {}
+- final class SignedIntMatrix extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIntMatrixFactory> {}
+- public class SigndIntMatrixModule implements RingMatrixSpace<SignedInt, SignedIntVector, SignedIntMatrix> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.real:
-- class RealVector implements InnerProductSpaceElement<Real, RealVector> {//...}
-- class RealVectorSpace implements HilbertSpace<Real, RealVector> {//...}
-- class RealMatrixFactory implements MatrixFactory<Real, RealVector, RealMatrix> {}
-- class RealMatrix extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
-- class RealMatrixSpace implements MatrixSpace<Real, RealVector, RealMatrix> {//...}
+- final class RealVector implements InnerProductSpaceElement<Real, RealVector> {//...}
+- final class RealVectorSpace implements HilbertSpace<Real, RealVector> {//...}
+- final class RealMatrixFactory implements MatrixFactory<Real, RealVector, RealMatrix> {}
+- final class RealMatrix extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
+- final class RealMatrixSpace implements MatrixSpace<Real, RealVector, RealMatrix> {//...}
 - class RealVectorProjection extends AbstractProjectionOperator<Real, RealVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
-- class ComplexVector implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
-- class ComplexVectorSpace implements HilbertSpace<Complex, ComplexVector> {//...}
-- class ComplexMatrix implements AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
-- class ComplexMatrixSpace implements MatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
+- final class ComplexVector implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
+- final class ComplexVectorSpace implements HilbertSpace<Complex, ComplexVector> {//...}
+- final class ComplexMatrix implements AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
+- final class ComplexMatrixSpace implements MatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
 - class ComplexVectorProjection extends AbstractProjectionOperator<Complex, ComplexVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.rational:
-- class RationalVector implements InnerProductSpaceElement<Rational, RationalVector> { /... }
-- class RationalVectorSpace implements VectorSpace<Rational, RationalVector> {//...}
-- class RationalMatrixFactory implements MatrixFactory<Rational, RationalVector, RationalMatrix> {}
-- class RationalMatrix implements AbstractMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory> {//...}
-- class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
+- final class RationalVector implements InnerProductSpaceElement<Rational, RationalVector> { /... }
+- final class RationalVectorSpace implements VectorSpace<Rational, RationalVector> {//...}
+- final class RationalMatrixFactory implements MatrixFactory<Rational, RationalVector, RationalMatrix> {}
+- final class RationalMatrix implements AbstractMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory> {//...}
+- final class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
 
 ## net.gommagomma.smfn.math.geometry
 -------------------------------------
