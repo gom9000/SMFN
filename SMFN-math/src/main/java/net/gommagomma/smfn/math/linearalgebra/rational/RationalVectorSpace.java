@@ -18,7 +18,7 @@ implements VectorSpace<Rational, RationalVector>
     }
 
     @Override
-    public RationalField getScalarRing() {
+    public RationalField getScalarStructure() {
         return RationalField.getInstance();
     }
 

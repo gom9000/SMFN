@@ -6,15 +6,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixFactory;
 
 
 //K = Tipo Scalare (es. Real)
 //V = Tipo Vettore (es. RealVector)
 //M = Tipo Matrice (es. RealMatrix)
 //F = Tipo Factory (es. RealMatrixFactory)
-public abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>>
-implements MatrixElement<K, V, M> 
+public abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>>
+implements FieldMatrixElement<K, V, M> 
 {
     protected final K[][] data;
     protected final int rows;

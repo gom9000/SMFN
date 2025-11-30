@@ -18,7 +18,7 @@ implements HilbertSpace<Real, RealVector>
     }
 
     @Override
-    public RealField getScalarRing()
+    public RealField getScalarStructure()
     {
         return RealField.getInstance();
     }

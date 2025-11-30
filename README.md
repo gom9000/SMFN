@@ -112,27 +112,24 @@ net.gommagomma.smfn/
 ### net.gommagomma.smfn.math.linearalgebra.core.elements:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
 - interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {int dimension(); K get(int index); V multiplyByScalar(K scalar);}
-- interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SpaceElement<V>, AbelianGroupElement<V> {
-    int dimension();
-    K get(int index);
-    V multiplyByScalar(K scalar);
-    V createNewInstance(@SuppressWarnings("unchecked") K... components); 
-}
+- interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemoduleElement<K, V>, AbelianGroupElement<V> {  V createNewInstance(@SuppressWarnings("unchecked") K... components); }
 - interface VectorElement<K extends FieldElement<K>, V extends VectorElement<K, V>>
 extends ModuleElement<K, V> {}
 - interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>>
 extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other) {}}
 - interface InnerProductSpaceElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
-- interface MatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends AlgebraicElement<M>, AbelianGroupElement<M> {}
+
+- interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends AlgebraicElement<M>, CommutativeMonoidElement<M> { int getRows(); int getColumns(); K get(int row, int col); V getRowVector(int row); V getColumnVector(int col);  M multiply(M other);  M multiplyByScalar(K scalar); V multiply(V vector);}
+- interface RingMatrixElement<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixElement<K, V, M>, AbelianGroupElement<M> {}
+- interface FieldMatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixElement<K, V, M> { K determinant(); M inverse(); M transpose(); }
 - abstract class AbstractMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>, F extends MatrixFactory<K, V, M>> implements MatrixElement<K, V, M> {}
+- interface MatrixFactory<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> { M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); K getZeroScalar(); K getOneScalar();}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.structures:
 - interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {}
-- interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Space<V> {Ring<K> getScalarRing(); }
-- interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarRing();}
-- interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
-- interface MatrixFactory<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>>
- { M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); K getZeroScalar(); K getOneScalar();}
+- interface Semimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends Space<V> {Semiring<K> getScalarStructure();}
+- interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Semimodule<K, V> {Ring<K> getScalarStructure(); }
+- interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarStructure();}
  - interface MetricSpace<T extends AlgebraicElement<T>> 
 extends Space<T> {Real distance(T point1, T point2);}
 class ScalarMetricSpace<T extends AbelianGroupElement<T> & NormableElement<Real, T>> 
@@ -142,6 +139,8 @@ implements MetricSpace<T> {}
 - interface InnerProductSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
 extends VectorSpace<K, V>, MetricSpace<V>
 - interface HilbertSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
+
+- interface MatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> extends Space<M>{Field<K> getScalarField();	int getMatrixRows();	int getMatrixColumns();}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.operators:
 - interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> extends MathFunction<V, V> {}

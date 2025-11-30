@@ -17,7 +17,7 @@ implements Module<SignedInt, SignedIntVector>
     }
 
     @Override
-    public IntegerRing getScalarRing() {
+    public IntegerRing getScalarStructure() {
         return IntegerRing.getInstance();
     }
 

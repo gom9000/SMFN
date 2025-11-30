@@ -7,10 +7,11 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.ModuleElement;
 
 
 public interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> 
-extends Space<V>
+extends Semimodule<K, V>
 {
     /**
      * Restituisce l'anello degli scalari su cui è definito questo modulo.
      */
-    Ring<K> getScalarRing();
+	@Override
+    Ring<K> getScalarStructure();
 }

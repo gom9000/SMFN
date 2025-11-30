@@ -12,10 +12,7 @@ extends Module<K, V>
 {
     /**
      * Restituisce il campo degli scalari.
-     * Sovrascrive getScalarRing per restituire esplicitamente un Field.
      */
 	@Override
-    Field<K> getScalarRing();
-    
-    // Metodi specifici per spazi vettoriali (es. base ortonormale, etc.)
+    Field<K> getScalarStructure();
 }
