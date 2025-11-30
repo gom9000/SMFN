@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.geometry;
 
+import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
 
@@ -7,7 +8,8 @@ import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
  * Rappresenta un punto geometrico nello spazio N-dimensionale.
  */
 public class Point
-{    
+implements AlgebraicElement<Point>
+{
     private final RealVector position;
 
     // --- Costruttori ---
@@ -35,6 +37,6 @@ public class Point
 
     // --- Metodi Standard Java ---
     @Override public String toString() { return "P" + position.toString(); }
-    @Override public boolean equals(Object o) { /* ... */ return (o instanceof Point) && isEqual((Point) o); }
+    @Override public boolean equals(Object o) { return (o instanceof Point) && isEqual((Point) o); }
     @Override public int hashCode() { return position.hashCode(); }
 }

@@ -194,7 +194,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 ## net.gommagomma.smfn.math.geometry
 -------------------------------------
 - interface GeometryEntity<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> extends MathFunction<D, C> {}
-- class Point {}
+- class Point implements AlgebraicElement<Point> {}
 - class Circle implements GeometryEntity<RealVector, Real> {}
 - class Ellipse implements GeometryEntity<RealVector, Real> {}
 
@@ -263,52 +263,12 @@ implements ODESolver<K, T> {}
 - class SchrodingerEquationSystem implements DifferentialSystem<Complex, ComplexVector>{}
 
 
-B. Per la Fisica (Simulazione e Animazione)
-Avrai bisogno di:
 
-    SimulationPanel: Un pannello che esegue un loop di aggiornamento a tempo fisso (es. 60 FPS).
-    PhysicsRenderer: Logica per disegnare gli oggetti fisici (es. la classe Particle dal package smfn.physics.core). Disegnerà cerchi per i corpi, frecce per le forze o i campi elettrici.
-    Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
+TODO:
+- public class Point<K extends FieldElement<K>, V extends VectorElement<K, V>>
+implements AlgebraicElement<Point<K, V>>
 
-
-
-- Suggerimento: class Point<K extends FieldElement<K>, V extends VectorElement<K, V>> extends AbstractVector<K, V> implements GeometryEntity<V, K> {} (o qualcosa di simile) renderebbe il punto un vettore geometrico definito in uno spazio vettoriale specifico (es. Point<Real, RealVector>).
-
-- trasformazioni
-
-trasformazioni (in core):
-class AffineMapper
-interface AffineTransform<K extends FieldElement<K>, V extends VectorElement<K, V>> {
-    V transform(V inputVector);
-    AffineTransform<K, V> inverse();
-    AffineTransform<K, V> compose(AffineTransform<K, V> other);
-}
-impl (in linearalgebra.real):
-class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
-
-|   |-- mq/                                  
-|   |   \-- operators/
-|   |   |   \-- HamiltonianOperator, PositionOperator, MomentumOperator # Suggeriti
-|   |   \-- dynamics/
-|   |   |   \-- SchrodingerEquationSystem, SchrodingerSolver # Suggeriti/Rilocati
-|   |   \-- core/ # Vecchia interfaces
-|   |   |   \-- Observable
-|   |   \-- states/
-|   |   |   \-- StateVector # Suggerito
-|   |   \-- problems/
-|   |       \-- ParticleInABox # Suggerito
-
-
-todo:
-math.analysis.solvers.integral: metodi di quadratura numerici (Regola di Simpson, Regola del Trapezio o Gauss-Legendre)
-net.gommagomma.smfn.math.linearalgebra.solvers o estendono AbstractMatrix: 
-	Decomposizione LU, Decomposizione QR
-	QR Algorithm
-math.analysis.solvers.ode: EmbeddedRK23Solver / RKF45Solver / Crank-Nicolson
-physics.mq.solvers: Metodo agli Elementi Finiti (FEM) o alle Differenze Finite (FDM)
-math.linearalgebra.solvers: Algoritmo di Lanczos o Arnoldi
-
-
+- isEqual e hash da modificare sulle classi base e su tutte le successive
 Mantieni isEqual(Real other) come metodo matematico con tolleranza, ma fai in modo che Object.equals(Object other) e hashCode() usino l'uguaglianza esatta del double sottostante.
 @Override
 public final boolean equals(Object other) 
@@ -325,3 +285,51 @@ public final int hashCode()
 {
     return java.util.Objects.hash(this.value);
 }
+@Override
+    public final boolean equals(Object o) 
+    {
+        if (this == o) return true;
+        if (!(o instanceof Point)) return false;
+        Point point = (Point) o;
+        // Usa l'uguaglianza esatta del double sottostante per essere transitivo e consistente
+        return position.equals(point.position); 
+    }
+
+- trasformazioni:
+class AffineMapper
+interface AffineTransform<K extends FieldElement<K>, V extends VectorElement<K, V>> {
+    V transform(V inputVector);
+    AffineTransform<K, V> inverse();
+    AffineTransform<K, V> compose(AffineTransform<K, V> other);
+}
+impl (in linearalgebra.real):
+class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
+
+- struttura mq
+|   |-- mq/                                  
+|   |   \-- operators/
+|   |   |   \-- HamiltonianOperator, PositionOperator, MomentumOperator # Suggeriti
+|   |   \-- dynamics/
+|   |   |   \-- SchrodingerEquationSystem, SchrodingerSolver # Suggeriti/Rilocati
+|   |   \-- core/ # Vecchia interfaces
+|   |   |   \-- Observable
+|   |   \-- states/
+|   |   |   \-- StateVector # Suggerito
+|   |   \-- problems/
+|   |       \-- ParticleInABox # Suggerito
+
+- Solvers per mq:
+math.analysis.solvers.integral: metodi di quadratura numerici (Regola di Simpson, Regola del Trapezio o Gauss-Legendre)
+net.gommagomma.smfn.math.linearalgebra.solvers o estendono AbstractMatrix: 
+	Decomposizione LU, Decomposizione QR
+	QR Algorithm
+math.analysis.solvers.ode: EmbeddedRK23Solver / RKF45Solver / Crank-Nicolson
+physics.mq.solvers: Metodo agli Elementi Finiti (FEM) o alle Differenze Finite (FDM)
+math.linearalgebra.solvers: Algoritmo di Lanczos o Arnoldi
+
+- Per la Fisica (Simulazione e Animazione)
+Avrai bisogno di:
+    SimulationPanel: Un pannello che esegue un loop di aggiornamento a tempo fisso (es. 60 FPS).
+    PhysicsRenderer: Logica per disegnare gli oggetti fisici (es. la classe Particle dal package smfn.physics.core). Disegnerà cerchi per i corpi, frecce per le forze o i campi elettrici.
+    Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
+
