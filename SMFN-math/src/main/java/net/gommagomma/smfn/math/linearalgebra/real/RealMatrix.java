@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.AbstractMatrix;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.matrices.AbstractMatrix;
 
 
 public final class RealMatrix 

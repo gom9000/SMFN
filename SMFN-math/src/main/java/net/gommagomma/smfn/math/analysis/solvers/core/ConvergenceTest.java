@@ -2,7 +2,7 @@
 package net.gommagomma.smfn.math.analysis.solvers.core;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
 
 /**
  * Definisce i criteri per testare la convergenza di un processo iterativo all'interno di uno Spazio Metrico.

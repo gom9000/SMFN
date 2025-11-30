@@ -3,8 +3,8 @@ package net.gommagomma.smfn.physics.mq;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.InnerProductSpaceElement;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.HilbertSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.HilbertSpace;
 
 
 public class QuantumSystemSimulator

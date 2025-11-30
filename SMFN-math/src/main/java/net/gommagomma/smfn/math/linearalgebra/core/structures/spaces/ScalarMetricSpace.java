@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.linearalgebra.core.structures; 
+package net.gommagomma.smfn.math.linearalgebra.core.structures.spaces; 
 
 import net.gommagomma.smfn.math.algebra.core.elements.additive.AbelianGroupElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;

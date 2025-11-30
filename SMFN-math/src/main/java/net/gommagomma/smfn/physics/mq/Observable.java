@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.physics.mq;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.VectorElement;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 import net.gommagomma.smfn.math.linearalgebra.core.operators.HermitianOperator;
 
 

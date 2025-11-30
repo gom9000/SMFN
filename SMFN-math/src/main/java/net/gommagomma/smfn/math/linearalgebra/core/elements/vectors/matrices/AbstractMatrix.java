@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.linearalgebra.core.elements;
+package net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.matrices;
 
 
 import java.lang.reflect.Array;
@@ -6,7 +6,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.MatrixFactory;
 
 
 //K = Tipo Scalare (es. Real)

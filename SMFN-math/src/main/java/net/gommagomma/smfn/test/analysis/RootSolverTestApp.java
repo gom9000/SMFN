@@ -8,8 +8,8 @@ import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceTest;
 import net.gommagomma.smfn.math.analysis.solvers.differential.CentralDifferenceDifferentiator;
 import net.gommagomma.smfn.math.analysis.solvers.differential.NumericalDifferentiator;
 import net.gommagomma.smfn.math.analysis.solvers.iterative.NewtonRaphsonSolver;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.ScalarMetricSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.ScalarMetricSpace;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVectorSpace;
 
 public class RootSolverTestApp

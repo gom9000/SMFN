@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.AbstractMatrix;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.matrices.AbstractMatrix;
 
 /**
  * Rappresenta una matrice di numeri complessi immutabile.

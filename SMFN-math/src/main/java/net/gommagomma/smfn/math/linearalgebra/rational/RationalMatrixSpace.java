@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.FieldMatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
 
 public final class RationalMatrixSpace
 implements FieldMatrixSpace<Rational, RationalVector, RationalMatrix>

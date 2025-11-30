@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceTest;
 import net.gommagomma.smfn.math.analysis.solvers.core.IterativeSolver;
 import net.gommagomma.smfn.math.analysis.solvers.differential.NumericalDifferentiator;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
 
 
 public class NewtonRaphsonSolver<K extends FieldElement<K>>

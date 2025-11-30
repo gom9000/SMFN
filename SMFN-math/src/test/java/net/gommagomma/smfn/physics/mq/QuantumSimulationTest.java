@@ -17,7 +17,7 @@ import net.gommagomma.smfn.math.analysis.solvers.ode.ODESolver;
 import net.gommagomma.smfn.math.analysis.solvers.ode.RungeKutta4Solver;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVectorSpace;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.VectorElement;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
 public class QuantumSimulationTest
 {

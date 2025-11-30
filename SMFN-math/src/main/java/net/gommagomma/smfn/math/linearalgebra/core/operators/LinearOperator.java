@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.core.operators;
 
 import net.gommagomma.smfn.math.algebra.core.MathFunction;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.VectorElement; 
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement; 
 
 
 /**

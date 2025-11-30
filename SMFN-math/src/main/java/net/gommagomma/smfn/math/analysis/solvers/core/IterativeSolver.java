@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.analysis.solvers.core;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 import net.gommagomma.smfn.math.analysis.models.IterativeSystem;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MetricSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
 
 
 /**

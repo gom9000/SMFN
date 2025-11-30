@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.InnerProductSpaceElement;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 
 public final class RealVector
 implements InnerProductSpaceElement<Real, RealVector>

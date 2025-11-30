@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.signedint;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.Module;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.Module;
 
 
 public class IntegerModule

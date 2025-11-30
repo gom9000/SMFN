@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.MatrixFactory;
 
 
 public class ComplexMatrixFactory

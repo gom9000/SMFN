@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.linearalgebra.core.elements;
+package net.gommagomma.smfn.math.linearalgebra.core.elements.vectors;
 
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;

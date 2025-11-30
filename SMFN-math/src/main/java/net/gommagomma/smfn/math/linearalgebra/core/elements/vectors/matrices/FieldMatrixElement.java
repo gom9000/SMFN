@@ -1,6 +1,7 @@
-package net.gommagomma.smfn.math.linearalgebra.core.elements;
+package net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.matrices;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
 
 public interface FieldMatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>

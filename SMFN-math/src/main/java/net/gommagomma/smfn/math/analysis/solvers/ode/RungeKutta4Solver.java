@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.models.DynamicSystem;
 import net.gommagomma.smfn.math.analysis.solvers.core.IntegrationParameters;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.VectorElement; 
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement; 
 
 
 /**
