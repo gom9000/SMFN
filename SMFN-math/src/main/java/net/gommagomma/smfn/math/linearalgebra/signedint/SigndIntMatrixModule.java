@@ -3,11 +3,11 @@ package net.gommagomma.smfn.math.linearalgebra.signedint;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RingMatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RingMatrixModule;
 
 
 public class SigndIntMatrixModule
-implements RingMatrixSpace<SignedInt, SignedIntVector, SignedIntMatrix>
+implements RingMatrixModule<SignedInt, SignedIntVector, SignedIntMatrix>
 {
     private final int rows;
     private final int cols;

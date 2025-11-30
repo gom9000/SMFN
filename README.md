@@ -138,10 +138,10 @@ extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other
 extends VectorSpace<K, V>, MetricSpace<V>
 - interface HilbertSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
 
-- interface SemiringMatrixSpace<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M> {Semiring<K> getScalarStructure();	int getMatrixRows(); int getMatrixColumns();}
-- interface RingMatrixSpace<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSpace<K, V, M> { @Override	Ring<K> getScalarStructure();}
+- interface SemiringMatrixSemimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M> {Semiring<K> getScalarStructure();	int getMatrixRows(); int getMatrixColumns();}
+- interface RingMatrixModule<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSemimodule<K, V, M> { @Override	Ring<K> getScalarStructure();}
 - interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends 
-extends RingMatrixSpace<K, V, M>{Field<K> getScalarField();}
+extends RingMatrixModule<K, V, M>{Field<K> getScalarField();}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.structures.factories:
 - interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>{ M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); 	K getZeroScalar();	K getOneScalar();}
@@ -160,14 +160,14 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - final class NaturalSemimodule implements Semimodule<Natural, NaturalVector> {}
 - final class NaturalMatrixFactory implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix> {}
 - final class NaturalMatrix extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixFactory>  {}
-- final class NaturalMatrixSemimodule implements SemiringMatrixSpace<Natural, NaturalVector, NaturalMatrix> {}
+- final class NaturalMatrixSemimodule implements SemiringMatrixSemimodule<Natural, NaturalVector, NaturalMatrix> {}
 
 ###net.gommagomma.smfn.math.linearalgebra.signedint:
 - final class SignedIntVector implements ModuleElement<SignedInt, SignedIntVector> {//...}
 - final class SignedIntModule implements Module<SignedInt, SignedIntVector> {}
 - final class SignedIntMatrixFactory implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix> {}
 - final class SignedIntMatrix extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIntMatrixFactory> {}
-- final class SignedIntMatrixModule implements RingMatrixSpace<SignedInt, SignedIntVector, SignedIntMatrix> {}
+- final class SignedIntMatrixModule implements RingMatrixModule<SignedInt, SignedIntVector, SignedIntMatrix> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.real:
 - final class RealVector implements InnerProductSpaceElement<Real, RealVector> {//...}

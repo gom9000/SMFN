@@ -3,14 +3,14 @@ package net.gommagomma.smfn.math.linearalgebra.natural;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.SemiringMatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.SemiringMatrixSemimodule;
 
 /**
  * Rappresenta lo Spazio delle Matrici M x N sui Numeri Naturali (NaturalMatrixSpace).
  * Tutte le matrici in questo spazio hanno dimensioni fisse e utilizzano Natural come scalari.
  */
 public final class NaturalMatrixSemimodule 
-implements SemiringMatrixSpace<Natural, NaturalVector, NaturalMatrix>
+implements SemiringMatrixSemimodule<Natural, NaturalVector, NaturalMatrix>
 {
     private final int rows;
     private final int cols;

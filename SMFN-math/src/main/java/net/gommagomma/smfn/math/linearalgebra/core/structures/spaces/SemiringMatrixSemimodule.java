@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.SemiringMat
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
 
 
-public interface SemiringMatrixSpace<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>
+public interface SemiringMatrixSemimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>
 extends Space<M>
 {
 	Semiring<K> getScalarStructure();

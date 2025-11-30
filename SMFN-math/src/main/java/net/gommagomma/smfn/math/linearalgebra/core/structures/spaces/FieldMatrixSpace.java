@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
 
 
 public interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
-extends RingMatrixSpace<K, V, M>
+extends RingMatrixModule<K, V, M>
 {
 	@Override
 	Field<K> getScalarStructure();

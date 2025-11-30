@@ -31,7 +31,7 @@ implements GeometryEntity<RealVector, Real>
 
     @Override
     public boolean isOnEntity(RealVector point) {
-        return Math.abs(evaluate(point).getValue()) < 0.0001;
+    	return evaluate(point).isZero();
     }
 
     /**
