@@ -132,12 +132,8 @@ extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other
 - interface Semimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends Space<V> {Semiring<K> getScalarStructure();}
 - interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Semimodule<K, V> {Ring<K> getScalarStructure(); }
 - interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarStructure();}
-- interface MetricSpace<T extends AlgebraicElement<T>> 
-extends Space<T> {Real distance(T point1, T point2);}
-class ScalarMetricSpace<T extends AbelianGroupElement<T> & NormableElement<Real, T>> 
-implements MetricSpace<T> {}
-- class ScalarMetricSpace<T extends AbelianGroupElement<T> & NormableElement<Real, T>> 
-implements MetricSpace<T> {}
+- interface MetricSpace<T extends AlgebraicElement<T>> extends Space<T> {Real distance(T point1, T point2);}
+- class ScalarMetricSpace<T extends AbelianGroupElement<T> & NormableElement<Real, T>> implements MetricSpace<T> {}
 - interface InnerProductSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
 extends VectorSpace<K, V>, MetricSpace<V>
 - interface HilbertSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
@@ -168,10 +164,10 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 
 ###net.gommagomma.smfn.math.linearalgebra.signedint:
 - final class SignedIntVector implements ModuleElement<SignedInt, SignedIntVector> {//...}
-- final class IntegerModule implements Module<SignedInt, SignedIntVector> {}
+- final class SignedIntModule implements Module<SignedInt, SignedIntVector> {}
 - final class SignedIntMatrixFactory implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix> {}
 - final class SignedIntMatrix extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIntMatrixFactory> {}
-- public class SigndIntMatrixModule implements RingMatrixSpace<SignedInt, SignedIntVector, SignedIntMatrix> {}
+- final class SignedIntMatrixModule implements RingMatrixSpace<SignedInt, SignedIntVector, SignedIntMatrix> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.real:
 - final class RealVector implements InnerProductSpaceElement<Real, RealVector> {//...}
@@ -311,3 +307,21 @@ net.gommagomma.smfn.math.linearalgebra.solvers o estendono AbstractMatrix:
 math.analysis.solvers.ode: EmbeddedRK23Solver / RKF45Solver / Crank-Nicolson
 physics.mq.solvers: Metodo agli Elementi Finiti (FEM) o alle Differenze Finite (FDM)
 math.linearalgebra.solvers: Algoritmo di Lanczos o Arnoldi
+
+
+Mantieni isEqual(Real other) come metodo matematico con tolleranza, ma fai in modo che Object.equals(Object other) e hashCode() usino l'uguaglianza esatta del double sottostante.
+@Override
+public final boolean equals(Object other) 
+{
+    if (this == other) return true;
+    if (!(other instanceof Real)) return false;
+    Real real = (Real) other;
+    return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(real.value);
+}
+
+// AGGIORNAMENTO 2: Rendi hashCode() coerente con l'uguaglianza esatta
+@Override
+public final int hashCode()
+{
+    return java.util.Objects.hash(this.value);
+}

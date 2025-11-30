@@ -6,14 +6,14 @@ import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.Module;
 
 
-public class IntegerModule
+public class SignedIntModule
 implements Module<SignedInt, SignedIntVector>
 {
-    private static final IntegerModule INSTANCE = new IntegerModule();
+    private static final SignedIntModule INSTANCE = new SignedIntModule();
 
-    private IntegerModule() {}
+    private SignedIntModule() {}
 
-    public static IntegerModule getInstance() {
+    public static SignedIntModule getInstance() {
         return INSTANCE;
     }
 
