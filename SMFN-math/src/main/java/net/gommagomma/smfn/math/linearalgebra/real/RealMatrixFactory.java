@@ -1,11 +1,11 @@
 package net.gommagomma.smfn.math.linearalgebra.real;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.MatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.FieldMatrixFactory;
 
 
 public class RealMatrixFactory
-implements MatrixFactory<Real, RealVector, RealMatrix>
+implements FieldMatrixFactory<Real, RealVector, RealMatrix>
 {
     private static final RealMatrixFactory INSTANCE = new RealMatrixFactory();
 

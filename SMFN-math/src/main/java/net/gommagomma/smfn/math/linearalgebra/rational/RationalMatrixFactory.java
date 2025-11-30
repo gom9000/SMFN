@@ -1,11 +1,11 @@
 package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.MatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.FieldMatrixFactory;
 
 
 public class RationalMatrixFactory
-implements MatrixFactory<Rational, RationalVector, RationalMatrix>
+implements FieldMatrixFactory<Rational, RationalVector, RationalMatrix>
 {
     private static final RationalMatrixFactory INSTANCE = new RationalMatrixFactory();
 

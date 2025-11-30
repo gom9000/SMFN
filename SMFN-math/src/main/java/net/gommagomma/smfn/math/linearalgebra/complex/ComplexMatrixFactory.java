@@ -1,11 +1,11 @@
 package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.MatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.FieldMatrixFactory;
 
 
 public class ComplexMatrixFactory
-implements MatrixFactory<Complex, ComplexVector, ComplexMatrix>
+implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix>
 {
     private static final ComplexMatrixFactory INSTANCE = new ComplexMatrixFactory();
 

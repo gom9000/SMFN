@@ -142,11 +142,13 @@ extends VectorSpace<K, V>, MetricSpace<V>
 
 - interface SemiringMatrixSpace<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M> {Semiring<K> getScalarStructure();	int getMatrixRows(); int getMatrixColumns();}
 - interface RingMatrixSpace<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSpace<K, V, M> { @Override	Ring<K> getScalarStructure();}
-- public interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends 
+- interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends 
 extends RingMatrixSpace<K, V, M>{Field<K> getScalarField();}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.structures.factories:
-- interface MatrixFactory<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends MatrixElement<K, V, M>> { M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); K getZeroScalar(); K getOneScalar();}
+- interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>{ M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); 	K getZeroScalar();	K getOneScalar();}
+- interface RingMatrixFactory<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>>extends SemiringMatrixFactory<K, V, M> {}
+- interface FieldMatrixFactory<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixFactory<K, V, M> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.operators:
 - interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> extends MathFunction<V, V> {}
