@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.MatrixFactory;
 
 
 //K = Tipo Scalare (es. Real)
