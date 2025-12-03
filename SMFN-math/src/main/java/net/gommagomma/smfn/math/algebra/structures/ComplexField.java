@@ -10,9 +10,7 @@ implements Field<Complex>
 {
 	public static final ComplexField INSTANCE = new ComplexField();
 
-    private ComplexField() {
-    	// Costruttore privato per il singleton
-    }
+    private ComplexField() {}
 
     public static ComplexField getInstance() {
         return INSTANCE;

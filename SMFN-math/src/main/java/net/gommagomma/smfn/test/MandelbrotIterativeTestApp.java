@@ -33,7 +33,7 @@ implements ViewportController.ViewportUpdateHandler
 
     public MandelbrotIterativeTestApp() {
         // --- 1. Funzione e Adattatori (rimangono costanti) ---
-        final int MAX_ITERATIONS = 5000;
+        final int MAX_ITERATIONS = 100;
         this.mandelbrotFunction = new MandelbrotFunction(MAX_ITERATIONS);
         this.domainAdapter = Complex::new;
         
@@ -52,8 +52,8 @@ implements ViewportController.ViewportUpdateHandler
         };
 
         // --- 2. Setup Grafico Iniziale ---
-        int width = 1200;
-        int height = 800;
+        int width = 1600;
+        int height = 1200;
         this.renderer = new SwingRenderer2D(width, height);
         JFrame frame = new JFrame("SMFN Mandelbrot Set Interactive Plot");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

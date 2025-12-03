@@ -115,8 +115,7 @@ net.gommagomma.smfn/
 - interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemimoduleElement<K, V>, AbelianGroupElement<V> {  V createNewInstance(@SuppressWarnings("unchecked") K... components); }
 - interface VectorElement<K extends FieldElement<K>, V extends VectorElement<K, V>>
 extends ModuleElement<K, V> {}
-- interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>>
-extends VectorElement<K, V>, Normable<Real, V>{  default Real distanceTo(V other) {}}
+- interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>> extends VectorElement<K, V>, NormableElement<Real, V>{  default Real distanceTo(V other) {}}
 - interface InnerProductSpaceElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.elements.matrices:
@@ -268,8 +267,14 @@ TODO:
 - public class Point<K extends FieldElement<K>, V extends VectorElement<K, V>>
 implements AlgebraicElement<Point<K, V>>
 
-- isEqual e hash da modificare sulle classi base e su tutte le successive
-Mantieni isEqual(Real other) come metodo matematico con tolleranza, ma fai in modo che Object.equals(Object other) e hashCode() usino l'uguaglianza esatta del double sottostante.
+-  Implementare equals() e hashCode() utilizzando l'uguaglianza esatta dei bit
+
+ /**
+     * Compares this element to another using the appropriate mathematical equality 
+     * for the underlying type (epsilon for reals, exact for integers).
+     */
+    boolean isMathematicallyEqualTo(E other);
+// per wrapper
 @Override
 public final boolean equals(Object other) 
 {
@@ -278,22 +283,95 @@ public final boolean equals(Object other)
     Real real = (Real) other;
     return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(real.value);
 }
-
-// AGGIORNAMENTO 2: Rendi hashCode() coerente con l'uguaglianza esatta
 @Override
 public final int hashCode()
 {
     return java.util.Objects.hash(this.value);
 }
-@Override
-    public final boolean equals(Object o) 
-    {
-        if (this == o) return true;
-        if (!(o instanceof Point)) return false;
-        Point point = (Point) o;
-        // Usa l'uguaglianza esatta del double sottostante per essere transitivo e consistente
-        return position.equals(point.position); 
+public boolean isApproximatelyEqualTo(Real other, double epsilon) {
+    if (other == null) {
+        return false;
     }
+    return Math.abs(this.value - other.value) < epsilon;
+}
+// per vettori
+@Override
+public final boolean equals(Object other) {
+    // ... controlli di base ...
+    final RealVector that = (RealVector) other;
+    
+    // Si delega a Arrays.equals(), che a sua volta delega a Real.equals()
+    return Arrays.equals(this.data, that.data); 
+}
+     @override
+    public boolean isApproximatelyEqualTo(RealVector other, double epsilon) {
+        // 1. Controlli preliminari
+        if (this == other) {
+            return true;
+        }
+        if (other == null || this.data.length != other.data.length) {
+            return false;
+        }
+
+        // 2. Confronto elemento per elemento usando la tolleranza
+        for (int i = 0; i < this.data.length; i++) {
+            // Utilizza il metodo della classe Real per il confronto approssimativo
+            // Passiamo l'epsilon a ogni chiamata.
+            if (!this.data[i].isApproximatelyEqualTo(other.data[i], epsilon)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+// per matrici
+@Override
+public final boolean equals(Object o) 
+{
+    if (this == o) return true;
+    if (!(o instanceof Point)) return false;
+    Point point = (Point) o;
+    // Usa l'uguaglianza esatta del double sottostante per essere transitivo e consistente
+    return position.equals(point.position); 
+}
+
+    public boolean isApproximatelyEqualTo(RealMatrix other, double epsilon) {
+        // 1. Controlli preliminari (null, identità, dimensioni)
+        if (this == other) {
+            return true;
+        }
+        if (other == null || this.rows != other.rows || this.cols != other.cols) {
+            return false;
+        }
+
+        // 2. Confronto elemento per elemento usando la tolleranza
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                // Utilizza il metodo approssimativo della classe Real per il confronto della singola cella
+                if (!this.data[i][j].isApproximatelyEqualTo(other.data[i][j], epsilon)) {
+                    // Se una singola cella non rientra nella tolleranza, le matrici non sono uguali
+                    return false;
+                }
+            }
+        }
+        
+        // Se tutti gli elementi sono entro la tolleranza, le matrici sono approssimativamente uguali
+        return true;
+    }
+}
+
+- rivedi le impls dei "numeric" per ordine dei metodi;
+
+- Suggerimento: Vincola l'interfaccia HermitianOperator in modo più stretto, non solo a VectorElement, ma a InnerProductSpaceElement.
+// Vincolo più stretto per i problemi di MQ:
+public interface HermitianOperator<K extends FieldElement<K> & NormableElement<Real, K>, 
+                                  V extends InnerProductSpaceElement<K, V>, 
+                                  O extends HermitianOperator<K, V, O>> 
+    extends LinearOperator<K, V, O> {
+
+    Real expectationValue(V state); // Funziona solo se il prodotto scalare è definito
+}
+
 
 - trasformazioni:
 class AffineMapper
