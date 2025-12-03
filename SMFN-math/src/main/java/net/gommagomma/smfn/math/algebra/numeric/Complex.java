@@ -3,13 +3,14 @@ package net.gommagomma.smfn.math.algebra.numeric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.SqrtableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Complex
-implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>
+implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, CreatableFromDouble<Complex>
 {
 	public static final Complex ZERO = new Complex(0.0, 0.0);
     public static final Complex ONE = new Complex(1.0, 0.0);
@@ -293,4 +294,10 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
     public double argument() {
         return Math.atan2(imaginary, real);
     }
+
+
+	@Override
+	public Complex valueOf(double value) {
+		return new Complex(value, 0.0);
+	}
 }

@@ -46,11 +46,4 @@ implements Field<Real>
 	{
 		return Real.ONE;
 	}
-
-
-	@Override
-    public Real valueOf(double value)
-	{
-        return new Real(value);
-    }
 }

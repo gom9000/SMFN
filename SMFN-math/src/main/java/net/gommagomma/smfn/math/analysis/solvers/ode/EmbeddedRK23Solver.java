@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.analysis.solvers.ode;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
@@ -17,22 +18,25 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.NormedVector
  * @param <K> Il tipo di campo (es. Complex, Real) per gli scalari del sistema. Deve essere Normable.
  * @param <T> Il tipo di vettore (es. ComplexVector) che rappresenta lo stato del sistema. Deve essere NormedVector.
  */
-public class EmbeddedRK23Solver<K extends FieldElement<K> & NormableElement<Real, K>, T extends NormedVectorElement<K, T>> 
+public class EmbeddedRK23Solver<K extends FieldElement<K> & CreatableFromDouble<K> & NormableElement<Real, K>, T extends NormedVectorElement<K, T>> 
 implements IntervalSolver<K, T>
 {
-	private final Field<K> field;
+	private final K creator;
 
 
     /**
      * @param field L'istanza del Campo K.
      */
     public EmbeddedRK23Solver(Field<K> field) {
-        this.field = field;
+    	if (!(field.multiplicativeIdentity() instanceof CreatableFromDouble)) {
+            throw new IllegalArgumentException("Il campo K non supporta la creazione numerica da double.");
+        }
+    	this.creator = field.multiplicativeIdentity();
     }
 
     // Helper per ottenere costanti K da double (richiede ancora Field.valueOf(double))
     private K val(double v) {
-       return field.valueOf(v); 
+       return creator.valueOf(v); 
     }
 
     /**

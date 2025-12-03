@@ -58,7 +58,7 @@ implements IterativeSolver<Complex, Integer>
         ConvergenceTest<Complex> divergenceTest = (current, previous, params, iteration, space) -> {
         	if (current == null) return false; // Prima iterazione
         	return current.modulusSquared() > DIVERGENCE_RADIUS_SQ;
-        };        
+        };
 
         // Risolve partendo dal punto iniziale z0_initial (che è l'input variabile del set di Julia)
         ConvergenceParameters params = new ConvergenceParameters(new Real(0.0), maxIterations);

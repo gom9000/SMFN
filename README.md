@@ -81,6 +81,7 @@ net.gommagomma.smfn/
 - interface SqrtableElement<E extends SqrtableElement<E>> extends AlgebraicElement<E> { E sqrt(); }
 - interface ExponentiableElement<E extends ExponentiableElement<E>> extends AlgebraicElement<E> { E power(int exponent);}
 - interface NormableElement<N extends FieldElement<N>, E extends NormableElement<N, E>>  extends AlgebraicElement<E> {N norm();}
+- interface CreatableFromDouble<E extends AlgebraicElement<E>>{ E valueOf(double value);}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}
@@ -97,8 +98,8 @@ net.gommagomma.smfn/
 - final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural> { /* ... */ }
 - final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
 - final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational> { /* ... */ }
-- final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real> { /* ... */ }
-- final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex> { /* ... */ }
+- final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Complex> { /* ... */ }
+- final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, CreatableFromDouble<Complex> { /* ... */ }
 
 ### net.gommagomma.smfn.math.algebra.structures:
 - class NaturalSemiring implements Semiring<Natural> { /* ... */ }
@@ -225,7 +226,7 @@ implements NumericalDifferentiator<K> {}
 
 ### net.gommagomma.smfn.math.analysis.solvers.ode:
 - interface ODESolver<K extends FieldElement<K>, T extends VectorElement<K, T>> extends IntervalSolver<K, T> {T step(DynamicSystem<K, T> system, T currentState, Real currentTime, Real deltaTime);}
-- class RungeKutta4Solver<K extends FieldElement<K>, T extends VectorElement<K, T>> 
+- class RungeKutta4Solver<K extends FieldElement<K> & CreatableFromDouble<K>, T extends VectorElement<K, T>> 
 implements ODESolver<K, T> {}
 
 ### net.gommagomma.smfn.math.analysis.fractals;
