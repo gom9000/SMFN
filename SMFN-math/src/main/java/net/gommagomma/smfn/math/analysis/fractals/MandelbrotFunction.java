@@ -12,11 +12,16 @@ public class MandelbrotFunction
 implements MathFunction<Complex, Real>
 {
     private final MandelbrotSolver solver = new MandelbrotSolver();
-    private final int maxIterations;
+    private int maxIterations;
 
 
     public MandelbrotFunction(int maxIterations) {
         this.maxIterations = maxIterations;
+    }
+
+
+    public void setMaxIterations(int maxIterations) {
+    	this.maxIterations = maxIterations;
     }
 
 

@@ -287,7 +287,7 @@ public interface HermitianOperator<K extends FieldElement<K> & NormableElement<R
 
 - trasformazioni:
 - AbstractLinearTransformation
-
+LinearTransformation<K, V> extends MathFunction<V, V>, e la classe concreta MatrixOperator implementerebbe questa interfaccia, delegando il calcolo a Mv.
 class AffineMapper
 interface AffineTransform<K extends FieldElement<K>, V extends VectorElement<K, V>> {
     V transform(V inputVector);
@@ -296,6 +296,8 @@ interface AffineTransform<K extends FieldElement<K>, V extends VectorElement<K, 
 }
 impl (in linearalgebra.real):
 class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
+
+- Polynomial Ring: Hai PolynomialFunction che implementa CommutativeRingElement<Polynomial<K>>. Questa classe probabilmente rappresenta solo il polinomio come funzione. Manca la classe Polynomial<K> che rappresenta il Polinomio stesso (l'anello dei polinomi K[x]). Questo è cruciale per la Fattorizzazione, il Calcolo degli Autovalori (attraverso il polinomio caratteristico) e la teoria dei Campi.
 
 - struttura mq
 |   |-- mq/                                  

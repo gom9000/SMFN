@@ -19,6 +19,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.fractals.MandelbrotFunction;
 
+
 // L'app implementa l'interfaccia handler per gestire gli aggiornamenti della viewport
 public class MandelbrotIterativeTestApp
 implements ViewportController.ViewportUpdateHandler
@@ -26,30 +27,25 @@ implements ViewportController.ViewportUpdateHandler
     private final SwingRenderer2D renderer;
     private final MandelbrotFunction mandelbrotFunction;
     private final BiFunction<Double, Double, Complex> domainAdapter;
-    private final ColorMapper<Real> colorMapper;
+    private final ColorMapper<Real> baseColorMapper; // Mapper base (richiede un setter per le iterazioni)
     private ViewportController viewportController;
     private final Color selectionColor = new Color(0, 0, 255, 100); // Blu semi-trasparente
     private static final DecimalFormat DF = new DecimalFormat("0.000E0"); // Formattazione scientifica
 
+    // --- Parametri per l'Iterazione Dinamica ---
+    private static final int BASE_ITERATIONS = 100; // I_base: Iterazioni minime
+    private static final double SCALE_FACTOR = 300.0; // C: Fattore di tuning per lo zoom
+    private int currentMaxIterations = BASE_ITERATIONS;
+
+
     public MandelbrotIterativeTestApp() {
         // --- 1. Funzione e Adattatori (rimangono costanti) ---
-        final int MAX_ITERATIONS = 100;
-        this.mandelbrotFunction = new MandelbrotFunction(MAX_ITERATIONS);
+        // Inizializziamo con un valore base, verrà aggiornato subito dal rendering iniziale
+        this.mandelbrotFunction = new MandelbrotFunction(BASE_ITERATIONS);
         this.domainAdapter = Complex::new;
         
-        // Adattatore Colore (implementato con classe anonima)
-        this.colorMapper = new ColorMapper<>() {
-            @Override
-            public Color map(Real r) {
-            	double value = r.getValue();
-                if (value == 0) return Color.BLACK; 
-                if (value >= MAX_ITERATIONS) return Color.BLACK; 
-                float hue = (float) (value / MAX_ITERATIONS);
-                hue = (float) Math.sqrt(hue); 
-                float brightness = hue; 
-                return Color.getHSBColor(0.6f, 1.0f, brightness);
-            }
-        };
+        // Adattatore Colore: L'istanza deve essere mantenuta per essere aggiornata con le nuove MAX_ITERATIONS
+        this.baseColorMapper = createDynamicColorMapper();
 
         // --- 2. Setup Grafico Iniziale ---
         int width = 1600;
@@ -63,6 +59,7 @@ implements ViewportController.ViewportUpdateHandler
         renderer.initBufferStrategy();
 
         // --- 3. Inizializzazione Viewport e Controller ---
+        // Area iniziale: [-2.0, 1.0] x [-1.5, 1.5]
         Viewport initialViewport = new Viewport(-2.0, 1.0, -1.5, 1.5, width, height);
         this.viewportController = new ViewportController(initialViewport, this);
         
@@ -86,6 +83,28 @@ implements ViewportController.ViewportUpdateHandler
         renderScene(initialViewport);
     }
     
+    /**
+     * Crea un ColorMapper che utilizza il valore corrente di currentMaxIterations
+     */
+    private ColorMapper<Real> createDynamicColorMapper() {
+        return new ColorMapper<>() {
+            @Override
+            public Color map(Real r) {
+                double value = r.getValue();
+                // Usa currentMaxIterations che è aggiornato dal renderScene
+                if (value == 0) return Color.BLACK; 
+                if (value >= currentMaxIterations) return Color.BLACK; 
+                
+                // Mappatura del colore standard per i frattali (basata sulla radice quadrata)
+                float hue = (float) (value / currentMaxIterations);
+                hue = (float) Math.sqrt(hue); 
+                
+                return Color.getHSBColor(0.6f, 1.0f, hue);
+            }
+        };
+    }
+
+
     // Implementazione del metodo handler per aggiornamento Viewport
     @Override
     public void onViewportUpdated(Viewport newViewport) {
@@ -105,30 +124,48 @@ implements ViewportController.ViewportUpdateHandler
 
     // Metodo centralizzato per il rendering di tutta la scena
     private void renderScene(Viewport viewport) {
-    	renderer.startDrawing();
+        // --- Logica delle Iterazioni Dinamiche ---
+        double rangeX = viewport.maxX - viewport.minX;
+        
+        // Calcola log_2(1/S)
+        double logFactor = (rangeX > 0) ? Math.log(3.0 / rangeX) / Math.log(2.0) : 0; // 3.0 è l'ampiezza iniziale (1.0 - (-2.0))
+        
+        // Applica la formula: I_base + log_2(1/S) * C. Max è per evitare valori negativi o troppo bassi.
+        this.currentMaxIterations = (int) Math.max(
+            BASE_ITERATIONS,
+            BASE_ITERATIONS + logFactor * SCALE_FACTOR
+        );
+        
+        // La MandelbrotFunction deve avere un setter per aggiornare MAX_ITERATIONS
+        this.mandelbrotFunction.setMaxIterations(this.currentMaxIterations); 
+        
+        // --- Rendering ---
+        
+        renderer.startDrawing();
 
         renderer.clear(Color.WHITE);
         
         // Disegna il frattale
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, mandelbrotFunction, domainAdapter, colorMapper
+            renderer, viewport, mandelbrotFunction, domainAdapter, baseColorMapper
         );
         
         // Disegna gli assi sopra il frattale
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
 
         // Calcola l'ampiezza del range matematico
-        double rangeX = viewport.maxX - viewport.minX;
         double rangeY = viewport.maxY - viewport.minY;
 
         String infoText1 = "Range X: [" + DF.format(viewport.minX) + ", " + DF.format(viewport.maxX) + "] (Ampiezza: " + DF.format(rangeX) + ")";
         String infoText2 = "Range Y: [" + DF.format(viewport.minY) + ", " + DF.format(viewport.maxY) + "] (Ampiezza: " + DF.format(rangeY) + ")";
-        String infoText3 = "Zoom: " + DF.format(3.0 / rangeX) + "x"; // Calcolo dello zoom relativo all'ampiezza iniziale di 3.0
+        String infoText3 = "Zoom: " + DF.format(3.0 / rangeX) + "x"; 
+        String infoText4 = "Max Iterations: " + this.currentMaxIterations;
 
         // Disegna il testo in overlay (coordinate pixel fisse)
         renderer.drawOverlayText(infoText1, 10, 20, Color.RED);
         renderer.drawOverlayText(infoText2, 10, 35, Color.RED);
         renderer.drawOverlayText(infoText3, 10, 50, Color.RED);
+        renderer.drawOverlayText(infoText4, 10, 65, Color.RED);
 
         renderer.endDrawingAndFlush();
     }
