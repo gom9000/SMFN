@@ -269,37 +269,7 @@ implements AlgebraicElement<Point<K, V>>
 
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
--  Implementare equals() e hashCode() utilizzando l'uguaglianza esatta dei bit
-// per vettori
-@Override
-public final boolean equals(Object other) {
-    // ... controlli di base ...
-    final RealVector that = (RealVector) other;
-    
-    // Si delega a Arrays.equals(), che a sua volta delega a Real.equals()
-    return Arrays.equals(this.data, that.data); 
-}
-     @override
-    public boolean isApproximatelyEqualTo(RealVector other, double epsilon) {
-        // 1. Controlli preliminari
-        if (this == other) {
-            return true;
-        }
-        if (other == null || this.data.length != other.data.length) {
-            return false;
-        }
 
-        // 2. Confronto elemento per elemento usando la tolleranza
-        for (int i = 0; i < this.data.length; i++) {
-            // Utilizza il metodo della classe Real per il confronto approssimativo
-            // Passiamo l'epsilon a ogni chiamata.
-            if (!this.data[i].isApproximatelyEqualTo(other.data[i], epsilon)) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
 // per matrici
 @Override
 public final boolean equals(Object o) 

@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.signedint;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.ModuleElement;
@@ -64,9 +65,26 @@ implements ModuleElement<SignedInt, SignedIntVector>
     // --- Implementazione di AlgebraicElement e AdditiveMonoidElement ---
 
     @Override
-    public boolean isMathematicallyEqualTo(SignedIntVector other) {
-        // Usa Arrays.equals per un confronto efficiente degli array
-        return Arrays.equals(this.data, other.data);
+    public boolean isMathematicallyEqualTo(SignedIntVector other)
+    {
+    	if (this == other) {
+            return true;
+        }
+
+		if (other == null || this.data.length != other.data.length) {
+            return false;
+        }
+
+		if (this.dimension != other.dimension) {
+			return false;
+		}
+
+		for (int ii = 0; ii < dimension; ii++) {
+			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
+				return false;
+			}
+		}
+		return true;
     }
 
     @Override
@@ -133,13 +151,27 @@ implements ModuleElement<SignedInt, SignedIntVector>
 
     @Override
     public String toString() {
-        // Rappresentazione ad esempio come Z^3
         return "Z^" + dimension + Arrays.toString(data);
     }
     
     @Override
-    public final boolean equals(Object other) {
-        return (other instanceof SignedIntVector) && isMathematicallyEqualTo((SignedIntVector)other);
+    public final boolean equals(Object other)
+    {
+    	if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof SignedIntVector)) {
+            return false;
+        }
+
+        SignedIntVector that = (SignedIntVector) other;
+
+        if (this.dimension != that.dimension) {
+            return false;
+        }
+
+        return Objects.equals(this.data, that.data);
     }
 
     @Override

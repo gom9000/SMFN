@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
@@ -50,17 +51,26 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
     // --- Metodi Algebrici (isEqual, copy, getZero, add, negate, ecc.) ---
 
     @Override
-    public boolean isMathematicallyEqualTo(ComplexVector other) {
-        if (this.dimension != other.dimension) {
+    public boolean isMathematicallyEqualTo(ComplexVector other)
+    {
+    	if (this == other) {
+            return true;
+        }
+
+		if (other == null || this.data.length != other.data.length) {
             return false;
         }
-        // Implementazione manuale che usa Complex.isEqual() per gestire la tolleranza EPSILON
-        for (int i = 0; i < this.dimension; i++) {
-            if (!this.data[i].isMathematicallyEqualTo(other.data[i])) {
-                return false;
-            }
-        }
-        return true;
+
+		if (this.dimension != other.dimension) {
+			return false;
+		}
+
+		for (int ii = 0; ii < dimension; ii++) {
+			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
+				return false;
+			}
+		}
+		return true;
     }
 
     @Override
@@ -156,7 +166,21 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
     @Override
     public final boolean equals(Object other)
     {
-        return (other instanceof ComplexVector) && isMathematicallyEqualTo((ComplexVector)other);
+    	if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof ComplexVector)) {
+            return false;
+        }
+
+        ComplexVector that = (ComplexVector) other;
+
+        if (this.dimension != that.dimension) {
+            return false;
+        }
+
+        return Objects.equals(this.data, that.data);
     }
 
     @Override

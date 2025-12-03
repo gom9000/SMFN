@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
@@ -59,8 +60,26 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     // --- Implementazioni di AlgebraicElement e AdditiveMonoidElement ---
 
     @Override
-    public boolean isMathematicallyEqualTo(RationalVector other) {
-        return Arrays.equals(this.data, other.data); // Funziona perché Rational.equals è esatto
+    public boolean isMathematicallyEqualTo(RationalVector other)
+    {
+    	if (this == other) {
+            return true;
+        }
+
+		if (other == null || this.data.length != other.data.length) {
+            return false;
+        }
+
+		if (this.dimension != other.dimension) {
+			return false;
+		}
+
+		for (int ii = 0; ii < dimension; ii++) {
+			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
+				return false;
+			}
+		}
+		return true;
     }
 
     @Override
@@ -140,8 +159,23 @@ implements InnerProductSpaceElement<Rational, RationalVector>
         return "Q^" + dimension + Arrays.toString(data);
     }
     
-    @Override public final boolean equals(Object other) {
-        return (other instanceof RationalVector) && isMathematicallyEqualTo((RationalVector)other);
+    @Override public final boolean equals(Object other)
+    {
+    	if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof RationalVector)) {
+            return false;
+        }
+
+        RationalVector that = (RationalVector) other;
+
+        if (this.dimension != that.dimension) {
+            return false;
+        }
+
+        return Objects.equals(this.data, that.data);
     }
     
     @Override public final int hashCode() {

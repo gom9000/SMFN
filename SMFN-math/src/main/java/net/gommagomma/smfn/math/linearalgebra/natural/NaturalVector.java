@@ -1,10 +1,11 @@
 package net.gommagomma.smfn.math.linearalgebra.natural;
 
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
-
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
+import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
 
 public final class NaturalVector
 implements SemimoduleElement<Natural, NaturalVector>
@@ -54,7 +55,28 @@ implements SemimoduleElement<Natural, NaturalVector>
 
     // Implementazioni richieste da AlgebraicElement
     @Override
-    public boolean isMathematicallyEqualTo(NaturalVector other) { return Arrays.equals(this.data, other.data); }
+    public boolean isMathematicallyEqualTo(NaturalVector other)
+    { 
+    	if (this == other) {
+            return true;
+        }
+
+		if (other == null || this.data.length != other.data.length) {
+            return false;
+        }
+
+		if (this.dimension != other.dimension) {
+			return false;
+		}
+
+		for (int ii = 0; ii < dimension; ii++) {
+			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
+				return false;
+			}
+		}
+		return true;
+    }
+
     @Override
     public NaturalVector copy() { return new NaturalVector(this.data); }
     
@@ -68,5 +90,38 @@ implements SemimoduleElement<Natural, NaturalVector>
             scaledData[i] = this.data[i].multiply(scalar);
         }
         return new NaturalVector(scaledData);
+    }
+
+
+    // --- Java Standard impls ---
+
+    @Override
+    public String toString() {
+        return "N^" + dimension + Arrays.toString(data);
+    }
+    
+    @Override
+    public final boolean equals(Object other)
+    {
+    	if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof NaturalVector)) {
+            return false;
+        }
+
+        NaturalVector that = (NaturalVector) other;
+
+        if (this.dimension != that.dimension) {
+            return false;
+        }
+
+        return Objects.equals(this.data, that.data);
+    }
+
+    @Override
+    public final int hashCode() {
+        return Arrays.hashCode(data);
     }
 }

@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.real;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
@@ -69,11 +70,22 @@ implements InnerProductSpaceElement<Real, RealVector>
 	// --- Implementazione di AlgebraicElement e AdditiveMonoidElement ---
 
 	@Override
-	public boolean isMathematicallyEqualTo(RealVector other) {
-		// Usa il metodo isEqual() sensibile all'epsilon della classe Real per ogni elemento
-		if (this.dimension != other.dimension) return false;
-		for (int i = 0; i < dimension; i++) {
-			if (!this.data[i].isMathematicallyEqualTo(other.data[i])) {
+	public boolean isMathematicallyEqualTo(RealVector other)
+	{
+		if (this == other) {
+            return true;
+        }
+
+		if (other == null || this.data.length != other.data.length) {
+            return false;
+        }
+
+		if (this.dimension != other.dimension) {
+			return false;
+		}
+
+		for (int ii = 0; ii < dimension; ii++) {
+			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
 				return false;
 			}
 		}
@@ -88,7 +100,6 @@ implements InnerProductSpaceElement<Real, RealVector>
 	@Override
 	public RealVector getZero()
 	{
-		// Restituisce un nuovo vettore nullo della stessa dimensione
 		return new RealVector(dimension);
 	}
 
@@ -167,18 +178,28 @@ implements InnerProductSpaceElement<Real, RealVector>
 		return "R^" + dimension + Arrays.toString(data);
 	}
 
-	/**
-	 * WARNING: This equals method uses epsilon comparisons via Real.isEqual,
-	 * violating the strict transitivity contract of Object.equals() in standard Java collections.
-	 */
+
 	@Override
-	public final boolean equals(Object other) {
-		return (other instanceof RealVector) && isMathematicallyEqualTo((RealVector)other);
+	public final boolean equals(Object other)
+	{
+		if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof RealVector)) {
+            return false;
+        }
+
+        RealVector that = (RealVector) other;
+
+        if (this.dimension != that.dimension) {
+            return false;
+        }
+
+        return Objects.equals(this.data, that.data);
 	}
 
-	/**
-	 * Hash code consistent with the epsilon-based equals, but uses exact double values internally.
-	 */
+
 	@Override
 	public final int hashCode() {
 		return Arrays.hashCode(data);
