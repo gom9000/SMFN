@@ -10,9 +10,7 @@ implements Semiring<Natural>
 {
 	public static final NaturalSemiring INSTANCE = new NaturalSemiring();
 
-    private NaturalSemiring() {
-    	// Costruttore privato per il singleton
-    }
+    private NaturalSemiring() {}
 
     public static NaturalSemiring getInstance() {
         return INSTANCE;

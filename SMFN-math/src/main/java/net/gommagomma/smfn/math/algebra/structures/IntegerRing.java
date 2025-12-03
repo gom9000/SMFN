@@ -10,9 +10,7 @@ implements CommutativeRing<SignedInt>
 {
 	public static final IntegerRing INSTANCE = new IntegerRing();
 
-    private IntegerRing() {
-    	// Costruttore privato per il singleton
-    }
+    private IntegerRing() {}
 
     public static IntegerRing getInstance() {
         return INSTANCE;

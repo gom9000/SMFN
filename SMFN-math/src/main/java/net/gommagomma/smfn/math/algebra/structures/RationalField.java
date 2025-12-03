@@ -10,9 +10,7 @@ implements Field<Rational>
 {
 	public static final RationalField INSTANCE = new RationalField();
 
-    private RationalField() {
-    	// Costruttore privato per il singleton
-    }
+    private RationalField() {}
 
     public static RationalField getInstance() {
         return INSTANCE;

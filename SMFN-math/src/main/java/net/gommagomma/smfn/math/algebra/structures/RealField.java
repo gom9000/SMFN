@@ -10,9 +10,7 @@ implements Field<Real>
 {
 	public static final RealField INSTANCE = new RealField();
 
-    private RealField() {
-    	// Costruttore privato per il singleton
-    }
+    private RealField() {}
 
     public static RealField getInstance() {
         return INSTANCE;
