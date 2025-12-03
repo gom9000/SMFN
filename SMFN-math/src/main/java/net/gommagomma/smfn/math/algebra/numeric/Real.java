@@ -33,8 +33,15 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     // AlgebraicElement impls
 
     @Override
-    public boolean isEqual(Real other)
+    public boolean isMathematicallyEqualTo(Real other)
     {
+    	if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+
         return Math.abs(this.value - other.value) < MathConstants.EPSILON;
     }
 
@@ -137,38 +144,26 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     }
 
 
-    /**
-     * Indicates whether some other object is "equal to" this real number
-     * using an epsilon-based comparison for mathematical correctness.
-     *
-     * <p><b>WARNING:</b> Due to the use of a tolerance (EPSILON), this
-     * method violates the strict transitivity contract required by
-     * {@link Object#equals(Object)} and standard Java collections
-     * (like {@link java.util.HashSet} or {@link java.util.HashMap}).
-     * Use this class in standard collections with caution.</p>
-     *
-     * @param other The reference object with which to compare.
-     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
-     */
     @Override
     public final boolean equals(Object other) 
     {
-        return (other instanceof Real) && isEqual((Real)other);
+        if (this == other) {
+        	return true;
+        }
+
+        if (!(other instanceof Real)) {
+        	return false;
+        }
+
+        Real real = (Real) other;
+        return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(real.value);
     }
 
 
-    /**
-     * Returns a hash code value for the object. The hash code is based
-     * on the exact internal double value, which might be inconsistent
-     * with the epsilon-based {@link #equals(Object)} method for values
-     * that are "close enough" but have different exact representations.
-     *
-     * @return A hash code value for this object.
-     */
     @Override
     public final int hashCode()
     {
-        return java.util.Objects.hash(this.value);
+    	return java.util.Objects.hash(this.value);
     }
 
 

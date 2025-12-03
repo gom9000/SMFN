@@ -74,7 +74,7 @@ public class QuantumSimulationTest
         Real expectedValue = new Real(0.0);
 
         // Usiamo isEqual() che gestisce la tolleranza EPSILON per i double
-        assertTrue(expectedEnergy.isEqual(expectedValue), "Il valore di aspettazione dell'energia doveva essere 0.0");
+        assertTrue(expectedEnergy.isMathematicallyEqualTo(expectedValue), "Il valore di aspettazione dell'energia doveva essere 0.0");
     }
 
 
@@ -105,7 +105,7 @@ public class QuantumSimulationTest
         Real expectedValue = new Real(2.0);
 
         // Usiamo isEqual() che gestisce la tolleranza EPSILON per i double
-        assertTrue(expectedEnergy.isEqual(expectedValue), "Il valore di aspettazione dell'energia doveva essere 2.0");
+        assertTrue(expectedEnergy.isMathematicallyEqualTo(expectedValue), "Il valore di aspettazione dell'energia doveva essere 2.0");
     }
 
 
@@ -139,7 +139,7 @@ public class QuantumSimulationTest
         // Con questo Hx e questo tempo finale (PI), lo stato dovrebbe essere |giù> = (0, 1)
         ComplexVector expected_final = new ComplexVector(new Complex(0.0), new Complex(0.0, -1.0));
         System.out.println("psi final = " + psi_final + ", psi expected = " + expected_final);
-        assertTrue(psi_final.isEqual(expected_final), "Lo stato finale doveva essere |giù>, psi=" + psi_final);
+        assertTrue(psi_final.isMathematicallyEqualTo(expected_final), "Lo stato finale doveva essere |giù>, psi=" + psi_final);
     }
 
     @Test
@@ -186,6 +186,6 @@ public class QuantumSimulationTest
         // L'errore finale dovrebbe essere ben al di sotto della tolleranza locale impostata (1e-8)
         final double FINAL_EPSILON = 1e-7;
 
-        assertTrue(psi_final.isEqual(expected_final), "Lo stato finale doveva essere |giù>, psi=" + psi_final);
+        assertTrue(psi_final.isMathematicallyEqualTo(expected_final), "Lo stato finale doveva essere |giù>, psi=" + psi_final);
     }
 }

@@ -27,7 +27,7 @@ implements AlgebraicElement<Point>
     public Real getY() { return dimension() > 1 ? get(1) : new Real(Double.NaN); }
     public Real getZ() { return dimension() > 2 ? get(2) : new Real(Double.NaN); }
     
-    public boolean isEqual(Point other) { return this.position.isEqual(other.position); }
+    public boolean isMathematicallyEqualTo(Point other) { return this.position.isMathematicallyEqualTo(other.position); }
     public Point copy() { return new Point(this.position.copy()); }
     public Point getZero() { return new Point(this.position.getZero()); }
     public Real distanceTo(Point other) {
@@ -37,6 +37,6 @@ implements AlgebraicElement<Point>
 
     // --- Metodi Standard Java ---
     @Override public String toString() { return "P" + position.toString(); }
-    @Override public boolean equals(Object o) { return (o instanceof Point) && isEqual((Point) o); }
+    @Override public boolean equals(Object o) { return (o instanceof Point) && isMathematicallyEqualTo((Point) o); }
     @Override public int hashCode() { return position.hashCode(); }
 }

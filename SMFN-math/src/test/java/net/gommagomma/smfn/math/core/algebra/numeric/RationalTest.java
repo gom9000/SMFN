@@ -184,7 +184,7 @@ class RationalTest
     {
         Rational a = new Rational(1, 2);
         Rational b = new Rational(2, 4);
-        assertThat(a.isEqual(b)).isTrue();
+        assertThat(a.isMathematicallyEqualTo(b)).isTrue();
         assertThat(a).isEqualTo(b);
     }
 
@@ -193,7 +193,7 @@ class RationalTest
     {
         Rational a = new Rational(1, 2);
         Rational b = new Rational(1, 3);
-        assertThat(a.isEqual(b)).isFalse();
+        assertThat(a.isMathematicallyEqualTo(b)).isFalse();
         assertThat(a).isNotEqualTo(b);
     }
     

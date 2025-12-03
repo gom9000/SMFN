@@ -192,11 +192,11 @@ implements SemiringMatrixElement<K, V, M>
     }
 
     @Override
-    public boolean isEqual(M other) {
+    public boolean isMathematicallyEqualTo(M other) {
         if (this.rows != other.getRows() || this.cols != other.getColumns()) return false;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                if (!this.data[i][j].isEqual(other.get(i, j))) {
+                if (!this.data[i][j].isMathematicallyEqualTo(other.get(i, j))) {
                     return false;
                 }
             }

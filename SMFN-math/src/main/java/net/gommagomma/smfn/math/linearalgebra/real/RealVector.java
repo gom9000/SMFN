@@ -69,11 +69,11 @@ implements InnerProductSpaceElement<Real, RealVector>
 	// --- Implementazione di AlgebraicElement e AdditiveMonoidElement ---
 
 	@Override
-	public boolean isEqual(RealVector other) {
+	public boolean isMathematicallyEqualTo(RealVector other) {
 		// Usa il metodo isEqual() sensibile all'epsilon della classe Real per ogni elemento
 		if (this.dimension != other.dimension) return false;
 		for (int i = 0; i < dimension; i++) {
-			if (!this.data[i].isEqual(other.data[i])) {
+			if (!this.data[i].isMathematicallyEqualTo(other.data[i])) {
 				return false;
 			}
 		}
@@ -173,7 +173,7 @@ implements InnerProductSpaceElement<Real, RealVector>
 	 */
 	@Override
 	public final boolean equals(Object other) {
-		return (other instanceof RealVector) && isEqual((RealVector)other);
+		return (other instanceof RealVector) && isMathematicallyEqualTo((RealVector)other);
 	}
 
 	/**

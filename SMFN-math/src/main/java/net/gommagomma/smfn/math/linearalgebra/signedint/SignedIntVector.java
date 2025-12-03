@@ -64,7 +64,7 @@ implements ModuleElement<SignedInt, SignedIntVector>
     // --- Implementazione di AlgebraicElement e AdditiveMonoidElement ---
 
     @Override
-    public boolean isEqual(SignedIntVector other) {
+    public boolean isMathematicallyEqualTo(SignedIntVector other) {
         // Usa Arrays.equals per un confronto efficiente degli array
         return Arrays.equals(this.data, other.data);
     }
@@ -139,7 +139,7 @@ implements ModuleElement<SignedInt, SignedIntVector>
     
     @Override
     public final boolean equals(Object other) {
-        return (other instanceof SignedIntVector) && isEqual((SignedIntVector)other);
+        return (other instanceof SignedIntVector) && isMathematicallyEqualTo((SignedIntVector)other);
     }
 
     @Override

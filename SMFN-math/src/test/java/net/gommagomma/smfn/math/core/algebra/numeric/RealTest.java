@@ -26,8 +26,8 @@ class RealTest
         Real r2 = new Real(1.0 + MathConstants.EPSILON / 2); // Entro la tolleranza
         Real r3 = new Real(1.1); // Fuori tolleranza
 
-        assertTrue(r1.isEqual(r2), "r1 e r2 dovrebbero essere uguali entro la tolleranza");
-        assertFalse(r1.isEqual(r3), "r1 e r3 non dovrebbero essere uguali");
+        assertTrue(r1.isMathematicallyEqualTo(r2), "r1 e r2 dovrebbero essere uguali entro la tolleranza");
+        assertFalse(r1.isMathematicallyEqualTo(r3), "r1 e r3 non dovrebbero essere uguali");
     }
 
     @Test
@@ -37,7 +37,7 @@ class RealTest
         Real sum = r1.add(r2);
         Real expected = new Real(3.8);
 
-        assertTrue(sum.isEqual(expected));
+        assertTrue(sum.isMathematicallyEqualTo(expected));
     }
 
     @Test
@@ -46,7 +46,7 @@ class RealTest
         Real negated = r.negate();
         Real expected = new Real(5.5);
         
-        assertTrue(negated.isEqual(expected));
+        assertTrue(negated.isMathematicallyEqualTo(expected));
     }
     
     @Test
@@ -57,7 +57,7 @@ class RealTest
         Real diff = r1.subtract(r2); 
         Real expected = new Real(7.0);
 
-        assertTrue(diff.isEqual(expected));
+        assertTrue(diff.isMathematicallyEqualTo(expected));
     }
 
     @Test
@@ -67,7 +67,7 @@ class RealTest
         Real product = r1.multiply(r2);
         Real expected = new Real(5.0);
 
-        assertTrue(product.isEqual(expected));
+        assertTrue(product.isMathematicallyEqualTo(expected));
     }
     
     @Test
@@ -77,7 +77,7 @@ class RealTest
         Real inverse = r.inverse();
         Real expected = new Real(0.25);
 
-        assertTrue(inverse.isEqual(expected));
+        assertTrue(inverse.isMathematicallyEqualTo(expected));
         // Verifica che r * inverse sia circa 1 (l'identità moltiplicativa)
         assertTrue(r.multiply(inverse).isOne());
     }
@@ -94,7 +94,7 @@ class RealTest
         // 2.0^3 = 8.0
         Real result = base.power(3);
         Real expected = new Real(8.0);
-        assertTrue(result.isEqual(expected));
+        assertTrue(result.isMathematicallyEqualTo(expected));
     }
     
     @Test
@@ -103,7 +103,7 @@ class RealTest
         // 2.0^-2 = 0.25
         Real result = base.power(-2);
         Real expected = new Real(0.25);
-        assertTrue(result.isEqual(expected));
+        assertTrue(result.isMathematicallyEqualTo(expected));
     }
 
     @Test
@@ -118,7 +118,7 @@ class RealTest
         Real r = new Real(25.0);
         Real result = r.sqrt();
         Real expected = new Real(5.0);
-        assertTrue(result.isEqual(expected));
+        assertTrue(result.isMathematicallyEqualTo(expected));
     }
     
     @Test

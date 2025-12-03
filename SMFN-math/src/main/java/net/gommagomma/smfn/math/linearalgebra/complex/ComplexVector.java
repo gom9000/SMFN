@@ -50,13 +50,13 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
     // --- Metodi Algebrici (isEqual, copy, getZero, add, negate, ecc.) ---
 
     @Override
-    public boolean isEqual(ComplexVector other) {
+    public boolean isMathematicallyEqualTo(ComplexVector other) {
         if (this.dimension != other.dimension) {
             return false;
         }
         // Implementazione manuale che usa Complex.isEqual() per gestire la tolleranza EPSILON
         for (int i = 0; i < this.dimension; i++) {
-            if (!this.data[i].isEqual(other.data[i])) {
+            if (!this.data[i].isMathematicallyEqualTo(other.data[i])) {
                 return false;
             }
         }
@@ -156,7 +156,7 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
     @Override
     public final boolean equals(Object other)
     {
-        return (other instanceof ComplexVector) && isEqual((ComplexVector)other);
+        return (other instanceof ComplexVector) && isMathematicallyEqualTo((ComplexVector)other);
     }
 
     @Override

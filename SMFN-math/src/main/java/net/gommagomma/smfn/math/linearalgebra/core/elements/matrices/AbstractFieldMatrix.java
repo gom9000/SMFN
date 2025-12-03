@@ -76,7 +76,7 @@ implements FieldMatrixElement<K, V, M>
             }
             
             // Confronto con l'elemento zero della factory
-            if (A[i][i].isEqual(factory.getZeroScalar())) {
+            if (A[i][i].isMathematicallyEqualTo(factory.getZeroScalar())) {
                 return factory.getZeroScalar();
             }
             
@@ -138,7 +138,7 @@ implements FieldMatrixElement<K, V, M>
 
             // Normalizzazione della riga pivot
             K pivot = augmentedData[i][i];
-            if (pivot.isEqual(zero)) {
+            if (pivot.isMathematicallyEqualTo(zero)) {
                 throw new ArithmeticException("Matrix is singular, cannot be inverted.");
             }
             // Dividi tutta la riga per il pivot

@@ -22,13 +22,13 @@ public class HamiltonianOperatorTest
         // Hx * |su> = |giù> = [0, 1]
         ComplexVector result1 = Hx.evaluate(stateUp);
         ComplexVector expected1 = new ComplexVector(new Complex(0.0), new Complex(1.0));
-        assertTrue(result1.isEqual(expected1), "Hx * |su> should be |giù>");
+        assertTrue(result1.isMathematicallyEqualTo(expected1), "Hx * |su> should be |giù>");
 
         // Vettore |giù> = [0, 1]
         ComplexVector stateDown = new ComplexVector(new Complex(0.0), new Complex(1.0));
         // Hx * |giù> = |su> = [1, 0]
         ComplexVector result2 = Hx.evaluate(stateDown);
         ComplexVector expected2 = new ComplexVector(new Complex(1.0), new Complex(0.0));
-        assertTrue(result2.isEqual(expected2), "Hx * |giù> should be |su>");
+        assertTrue(result2.isMathematicallyEqualTo(expected2), "Hx * |giù> should be |su>");
     }
 }

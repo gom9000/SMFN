@@ -10,5 +10,5 @@ extends AlgebraicElement<E>
 {
 	E multiply(E other);
 	E getOne();
-	default boolean isOne() { return isEqual(getOne()); }
+	default boolean isOne() { return isMathematicallyEqualTo(getOne()); }
 }

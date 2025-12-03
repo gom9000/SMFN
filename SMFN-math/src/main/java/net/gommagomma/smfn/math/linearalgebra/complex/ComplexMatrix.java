@@ -109,7 +109,7 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
      */
     @Override
     public final boolean equals(Object other) {
-        return (other instanceof ComplexMatrix) && isEqual((ComplexMatrix)other);
+        return (other instanceof ComplexMatrix) && isMathematicallyEqualTo((ComplexMatrix)other);
     }
 
     @Override

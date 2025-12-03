@@ -73,8 +73,15 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
     // AlgebraicElement impls
 
     @Override
-    public boolean isEqual(Complex other)
+    public boolean isMathematicallyEqualTo(Complex other)
     {
+    	if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+
         return (Math.abs(this.real - other.real) < MathConstants.EPSILON)
             && (Math.abs(this.imaginary - other.imaginary) < MathConstants.EPSILON);
     }
@@ -241,23 +248,20 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
     }
 
 
-    /**
-     * Indicates whether some other object is "equal to" this complex number
-     * using an epsilon-based comparison for mathematical correctness.
-     *
-     * <p><b>WARNING:</b> Due to the use of a tolerance (EPSILON), this
-     * method violates the strict transitivity contract required by
-     * {@link Object#equals(Object)} and standard Java collections
-     * (like {@link java.util.HashSet} or {@link java.util.HashMap}).
-     * Use this class in standard collections with caution.</p>
-     *
-     * @param other The reference object with which to compare.
-     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
-     */
     @Override
     public final boolean equals(Object other)
     {
-        return (other instanceof Complex) && isEqual((Complex)other);
+    	if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Complex)) {
+            return false;
+        }
+
+        Complex complex = (Complex) other;
+        return Double.doubleToLongBits(this.real) == Double.doubleToLongBits(complex.real) &&
+        		Double.doubleToLongBits(this.imaginary) == Double.doubleToLongBits(complex.imaginary);
     }
 
 
@@ -270,7 +274,7 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
     @Override
     public final int hashCode()
     {
-        return java.util.Objects.hash(real, imaginary);
+    	return java.util.Objects.hash(this.real, this.imaginary);
     }
 
 

@@ -109,8 +109,15 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
      * @return {@code true} if the values are equal, {@code false} otherwise.
      */
     @Override
-    public boolean isEqual(Rational other)
+    public boolean isMathematicallyEqualTo(Rational other)
     {
+    	if (this == other) {
+    		return true;
+    	}
+    	if (other == null) {
+    		return false;
+    	}
+
         return this.numerator == other.numerator && this.denominator == other.denominator;
     }
 
@@ -288,17 +295,19 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
     }
 
 
-    /**
-     * Indicates whether some other object is "equal to" this rational number.
-     * It relies on {@link #isEqual(Rational)} for mathematical correctness.
-     *
-     * @param other The reference object with which to compare.
-     * @return {@code true} if this object is the same as the obj argument; {@code false} otherwise.
-     */
     @Override
     public final boolean equals(Object other) 
     {
-        return (other instanceof Rational) && isEqual((Rational)other);
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Rational)) {
+            return false;
+        }
+
+        Rational rational = (Rational) other;
+        return this.numerator == rational.numerator && this.denominator == rational.denominator;
     }
 
 

@@ -28,8 +28,15 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     // AlgebraicElement impls
 
     @Override
-    public boolean isEqual(SignedInt other)
+    public boolean isMathematicallyEqualTo(SignedInt other)
     {
+    	if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+
         return this.value == other.value;
     }
 
@@ -139,7 +146,16 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     @Override
     public final boolean equals(Object other) 
     {
-        return (other instanceof SignedInt) && isEqual((SignedInt)other);
+    	if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof SignedInt)) {
+            return false;
+        }
+
+        SignedInt natural = (SignedInt) other;
+        return this.value == natural.value;
     }
 
 

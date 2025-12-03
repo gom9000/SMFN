@@ -121,7 +121,7 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
      */
     @Override
     public final boolean equals(Object other) {
-        return (other instanceof RealMatrix) && isEqual((RealMatrix)other);
+        return (other instanceof RealMatrix) && isMathematicallyEqualTo((RealMatrix)other);
     }
 
     @Override

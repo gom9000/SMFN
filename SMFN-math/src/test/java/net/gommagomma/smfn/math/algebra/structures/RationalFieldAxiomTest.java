@@ -66,7 +66,7 @@ class RationalFieldAxiomTest
     @ParameterizedTest
     @MethodSource("rationalProvider")
     void multiplicativeInverseAxiom(Rational a) {
-        if (a.isEqual(field.additiveIdentity())) {
+        if (a.isMathematicallyEqualTo(field.additiveIdentity())) {
             // L'assioma dell'inverso moltiplicativo non si applica allo zero.
             // Ci assicuriamo che inverse() lanci l'eccezione corretta per zero.
         	assertThatExceptionOfType(ArithmeticException.class).isThrownBy(a::inverse);

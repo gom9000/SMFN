@@ -31,8 +31,8 @@ class NaturalTest
         Natural n2 = new Natural(5);
         Natural n3 = new Natural(6);
 
-        assertTrue(n1.isEqual(n2), "n1 e n2 dovrebbero essere uguali");
-        assertFalse(n1.isEqual(n3), "n1 e n3 non dovrebbero essere uguali");
+        assertTrue(n1.isMathematicallyEqualTo(n2), "n1 e n2 dovrebbero essere uguali");
+        assertFalse(n1.isMathematicallyEqualTo(n3), "n1 e n3 non dovrebbero essere uguali");
     }
 
     @Test
@@ -42,7 +42,7 @@ class NaturalTest
         Natural sum = n1.add(n2);
         Natural expected = new Natural(15);
 
-        assertTrue(sum.isEqual(expected));
+        assertTrue(sum.isMathematicallyEqualTo(expected));
         assertEquals(15L, sum.getValue());
     }
 
@@ -64,7 +64,7 @@ class NaturalTest
         Natural product = n1.multiply(n2);
         Natural expected = new Natural(12);
 
-        assertTrue(product.isEqual(expected));
+        assertTrue(product.isMathematicallyEqualTo(expected));
         assertEquals(12L, product.getValue());
     }
     
@@ -93,7 +93,7 @@ class NaturalTest
         // 3^4 = 81
         Natural result = base.power(4);
         Natural expected = new Natural(81);
-        assertTrue(result.isEqual(expected));
+        assertTrue(result.isMathematicallyEqualTo(expected));
     }
 
     @Test

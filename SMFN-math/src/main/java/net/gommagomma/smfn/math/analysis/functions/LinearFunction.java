@@ -41,8 +41,8 @@ implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>
     // --- Implementazione di AlgebraicElement ---
 
     @Override
-    public boolean isEqual(LinearFunction<K> other) {
-        return this.m.isEqual(other.m) && this.q.isEqual(other.q);
+    public boolean isMathematicallyEqualTo(LinearFunction<K> other) {
+        return this.m.isMathematicallyEqualTo(other.m) && this.q.isMathematicallyEqualTo(other.q);
     }
 
     @Override

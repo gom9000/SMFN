@@ -54,7 +54,7 @@ implements SemimoduleElement<Natural, NaturalVector>
 
     // Implementazioni richieste da AlgebraicElement
     @Override
-    public boolean isEqual(NaturalVector other) { return Arrays.equals(this.data, other.data); }
+    public boolean isMathematicallyEqualTo(NaturalVector other) { return Arrays.equals(this.data, other.data); }
     @Override
     public NaturalVector copy() { return new NaturalVector(this.data); }
     

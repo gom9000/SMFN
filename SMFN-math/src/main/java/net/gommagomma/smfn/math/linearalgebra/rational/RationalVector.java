@@ -59,7 +59,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     // --- Implementazioni di AlgebraicElement e AdditiveMonoidElement ---
 
     @Override
-    public boolean isEqual(RationalVector other) {
+    public boolean isMathematicallyEqualTo(RationalVector other) {
         return Arrays.equals(this.data, other.data); // Funziona perché Rational.equals è esatto
     }
 
@@ -141,7 +141,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     }
     
     @Override public final boolean equals(Object other) {
-        return (other instanceof RationalVector) && isEqual((RationalVector)other);
+        return (other instanceof RationalVector) && isMathematicallyEqualTo((RationalVector)other);
     }
     
     @Override public final int hashCode() {

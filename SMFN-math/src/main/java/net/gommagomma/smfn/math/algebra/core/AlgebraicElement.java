@@ -28,7 +28,7 @@ public interface AlgebraicElement<E extends AlgebraicElement<E>>
 	 * @param other The other element to compare against.
 	 * @return true if the elements are mathematically equal, false otherwise.
 	 */
-	boolean isEqual(E other);
+	boolean isMathematicallyEqualTo(E other);
 
 	/**
 	 * Creates an independent, deep copy of this element.

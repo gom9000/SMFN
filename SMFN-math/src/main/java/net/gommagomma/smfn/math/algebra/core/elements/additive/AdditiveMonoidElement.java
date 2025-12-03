@@ -31,5 +31,5 @@ extends AlgebraicElement<E>
      */
     E add(E other);
     E getZero();
-    default boolean isZero() { return isEqual(getZero()); }
+    default boolean isZero() { return isMathematicallyEqualTo(getZero()); }
 }

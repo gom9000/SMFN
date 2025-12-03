@@ -64,14 +64,14 @@ implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K>
     // --- Implementazione di AlgebraicElement (per sommare, copiare polinomi) ---
 
     @Override
-    public boolean isEqual(PolynomialFunction<K> other)
+    public boolean isMathematicallyEqualTo(PolynomialFunction<K> other)
     {
     	if (this.degree != other.degree) {
             return false;
         }
 
         for (int i = 0; i <= this.degree; i++) {
-            if (!this.coefficients.get(i).isEqual(other.coefficients.get(i))) {
+            if (!this.coefficients.get(i).isMathematicallyEqualTo(other.coefficients.get(i))) {
                 return false;
             }
         }
@@ -128,7 +128,7 @@ implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K>
         }
 
         int actualLength = maxLength;
-        while (actualLength > 0 && resultCoeffs[actualLength - 1].isEqual(zeroScalar.getZero())) {
+        while (actualLength > 0 && resultCoeffs[actualLength - 1].isMathematicallyEqualTo(zeroScalar.getZero())) {
             actualLength--;
         }
 
@@ -171,7 +171,7 @@ implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K>
         
         // Rimuove gli zeri finali se necessario (gestione dei polinomi nulli)
         int actualLength = resultDegree + 1;
-        while (actualLength > 0 && resultCoeffs[actualLength - 1].isEqual(zeroScalar.getZero())) {
+        while (actualLength > 0 && resultCoeffs[actualLength - 1].isMathematicallyEqualTo(zeroScalar.getZero())) {
             actualLength--;
         }
 

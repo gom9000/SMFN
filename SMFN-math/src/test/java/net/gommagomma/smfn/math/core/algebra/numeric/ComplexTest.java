@@ -25,8 +25,8 @@ class ComplexTest {
         Complex z2 = new Complex(1.0 + MathConstants.EPSILON / 2, 2.0 - MathConstants.EPSILON / 2);
         Complex z3 = new Complex(1.1, 2.0);
 
-        Assertions.assertTrue(z1.isEqual(z2), "z1 e z2 dovrebbero essere uguali entro la tolleranza");
-        Assertions.assertFalse(z1.isEqual(z3), "z1 e z3 non dovrebbero essere uguali");
+        Assertions.assertTrue(z1.isMathematicallyEqualTo(z2), "z1 e z2 dovrebbero essere uguali entro la tolleranza");
+        Assertions.assertFalse(z1.isMathematicallyEqualTo(z3), "z1 e z3 non dovrebbero essere uguali");
     }
 
     @Test
@@ -36,7 +36,7 @@ class ComplexTest {
         Complex sum = z1.add(z2);
         Complex expected = new Complex(4.0, -2.0);
 
-        Assertions.assertTrue(sum.isEqual(expected));
+        Assertions.assertTrue(sum.isMathematicallyEqualTo(expected));
     }
 
     @Test
@@ -45,7 +45,7 @@ class ComplexTest {
         Complex negated = z.negate();
         Complex expected = new Complex(-1.0, 2.0);
         
-        Assertions.assertTrue(negated.isEqual(expected));
+        Assertions.assertTrue(negated.isMathematicallyEqualTo(expected));
     }
     
     @Test
@@ -56,7 +56,7 @@ class ComplexTest {
         Complex diff = z1.subtract(z2); 
         Complex expected = new Complex(-2.0, 6.0);
 
-        Assertions.assertTrue(diff.isEqual(expected));
+        Assertions.assertTrue(diff.isMathematicallyEqualTo(expected));
     }
 
     @Test
@@ -67,7 +67,7 @@ class ComplexTest {
         Complex product = z1.multiply(z2);
         Complex expected = new Complex(11.0, 2.0);
 
-        Assertions.assertTrue(product.isEqual(expected));
+        Assertions.assertTrue(product.isMathematicallyEqualTo(expected));
     }
     
     @Test
@@ -84,7 +84,7 @@ class ComplexTest {
         Complex inverse = z.inverse();
         Complex expected = new Complex(0.2, -0.4);
 
-        Assertions.assertTrue(inverse.isEqual(expected));
+        Assertions.assertTrue(inverse.isMathematicallyEqualTo(expected));
         // Verifica che z * inverse sia circa 1 (l'identità moltiplicativa)
         Assertions.assertTrue(z.multiply(inverse).isOne());
     }
@@ -93,7 +93,7 @@ class ComplexTest {
         // Inverso di i: 1/i = -i
         Complex i = new Complex(0.0, 1.0);
         Complex expected = new Complex(0.0, -1.0);
-        Assertions.assertTrue(i.inverse().isEqual(expected), "Inverse of i should be -i");
+        Assertions.assertTrue(i.inverse().isMathematicallyEqualTo(expected), "Inverse of i should be -i");
     }
 
     @Test
@@ -107,7 +107,7 @@ class ComplexTest {
         Complex z = new Complex(1.0, -2.0);
         Complex conjugated = z.conjugate();
         Complex expected = new Complex(1.0, 2.0);
-        Assertions.assertTrue(conjugated.isEqual(expected));
+        Assertions.assertTrue(conjugated.isMathematicallyEqualTo(expected));
     }
 
     @Test
@@ -116,7 +116,7 @@ class ComplexTest {
         // (1 + i)^3 = (1 + i)^2 * (1 + i) = (1 + 2i - 1) * (1 + i) = 2i * (1 + i) = 2i - 2 = -2 + 2i
         Complex result = z.power(3);
         Complex expected = new Complex(-2.0, 2.0);
-        Assertions.assertTrue(result.isEqual(expected));
+        Assertions.assertTrue(result.isMathematicallyEqualTo(expected));
     }
     
     @Test
@@ -125,13 +125,13 @@ class ComplexTest {
         // 1^-5 = 1
         Complex result = z.power(-5);
         Complex expected = new Complex(1.0, 0.0);
-        Assertions.assertTrue(result.isEqual(expected));
+        Assertions.assertTrue(result.isMathematicallyEqualTo(expected));
         
         Complex z2 = new Complex(2.0, 0.0); // 2.0
         // 2^-2 = 0.25
         Complex result2 = z2.power(-2);
         Complex expected2 = new Complex(0.25, 0.0);
-        Assertions.assertTrue(result2.isEqual(expected2));
+        Assertions.assertTrue(result2.isMathematicallyEqualTo(expected2));
     }
 
     @Test
@@ -148,16 +148,16 @@ class ComplexTest {
         Complex result = z.sqrt();
         double expectedRe = 1.0 / Math.sqrt(2.0);
         Complex expected = new Complex(expectedRe, expectedRe);
-        Assertions.assertTrue(result.isEqual(expected));
+        Assertions.assertTrue(result.isMathematicallyEqualTo(expected));
         
         // Verifica che il quadrato del risultato sia circa z originale
-        Assertions.assertTrue(result.multiply(result).isEqual(z));
+        Assertions.assertTrue(result.multiply(result).isMathematicallyEqualTo(z));
         
         // Test sqrt(-4) = 2i
         Complex z2 = new Complex(-4.0, 0.0);
         Complex result2 = z2.sqrt();
         Complex expected2 = new Complex(0.0, 2.0);
-        Assertions.assertTrue(result2.isEqual(expected2));
+        Assertions.assertTrue(result2.isMathematicallyEqualTo(expected2));
     }
     
     @Test

@@ -23,8 +23,8 @@ class SignedIntTest
         SignedInt n2 = new SignedInt(5);
         SignedInt n3 = new SignedInt(6);
 
-        assertTrue(n1.isEqual(n2), "n1 e n2 dovrebbero essere uguali");
-        assertFalse(n1.isEqual(n3), "n1 e n3 non dovrebbero essere uguali");
+        assertTrue(n1.isMathematicallyEqualTo(n2), "n1 e n2 dovrebbero essere uguali");
+        assertFalse(n1.isMathematicallyEqualTo(n3), "n1 e n3 non dovrebbero essere uguali");
     }
 
     @Test
@@ -34,7 +34,7 @@ class SignedIntTest
         SignedInt sum = n1.add(n2);
         SignedInt expected = new SignedInt(-5);
 
-        assertTrue(sum.isEqual(expected));
+        assertTrue(sum.isMathematicallyEqualTo(expected));
         assertEquals(-5L, sum.getValue());
     }
 
@@ -54,12 +54,12 @@ class SignedIntTest
         SignedInt n = new SignedInt(5);
         SignedInt negated = n.negate();
         SignedInt expected = new SignedInt(-5);
-        assertTrue(negated.isEqual(expected));
+        assertTrue(negated.isMathematicallyEqualTo(expected));
         
         SignedInt n2 = new SignedInt(-5);
         SignedInt negated2 = n2.negate();
         SignedInt expected2 = new SignedInt(5);
-        assertTrue(negated2.isEqual(expected2));
+        assertTrue(negated2.isMathematicallyEqualTo(expected2));
     }
     
     @Test
@@ -77,7 +77,7 @@ class SignedIntTest
         SignedInt diff = n1.subtract(n2); 
         SignedInt expected = new SignedInt(7);
 
-        assertTrue(diff.isEqual(expected));
+        assertTrue(diff.isMathematicallyEqualTo(expected));
     }
 
     @Test
@@ -87,7 +87,7 @@ class SignedIntTest
         SignedInt product = n1.multiply(n2);
         SignedInt expected = new SignedInt(-12);
 
-        assertTrue(product.isEqual(expected));
+        assertTrue(product.isMathematicallyEqualTo(expected));
         assertEquals(-12L, product.getValue());
     }
     
@@ -116,7 +116,7 @@ class SignedIntTest
         // (-3)^3 = -27
         SignedInt result = base.power(3);
         SignedInt expected = new SignedInt(-27);
-        assertTrue(result.isEqual(expected));
+        assertTrue(result.isMathematicallyEqualTo(expected));
     }
 
     @Test

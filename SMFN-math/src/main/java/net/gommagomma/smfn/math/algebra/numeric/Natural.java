@@ -31,8 +31,15 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
     // AlgebraicElement impls
 
     @Override
-    public boolean isEqual(Natural other)
+    public boolean isMathematicallyEqualTo(Natural other)
     {
+    	if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+
         return this.value == other.value;
     }
 
@@ -127,7 +134,16 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
     @Override
     public final boolean equals(Object other) 
     {
-        return (other instanceof Natural) && isEqual((Natural)other);
+    	if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Natural)) {
+            return false;
+        }
+
+        Natural natural = (Natural) other;
+        return this.value == natural.value;
     }
 
 

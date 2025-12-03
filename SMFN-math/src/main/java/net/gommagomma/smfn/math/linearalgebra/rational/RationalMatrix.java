@@ -100,7 +100,7 @@ extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMa
      */
     @Override
     public final boolean equals(Object other) {
-        return (other instanceof RationalMatrix) && isEqual((RationalMatrix)other);
+        return (other instanceof RationalMatrix) && isMathematicallyEqualTo((RationalMatrix)other);
     }
     
     @Override

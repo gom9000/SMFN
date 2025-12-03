@@ -58,7 +58,7 @@ net.gommagomma.smfn/
 -----------------------------------
 ### net.gommagomma.smfn.math.algebra.core:
 - interface Commutative {}
-- interface AlgebraicElement<E extends AlgebraicElement<E>> { boolean isEqual(E other); E copy();}
+- interface AlgebraicElement<E extends AlgebraicElement<E>> { boolean isMathematicallyEqualTo(E other); E copy();}
 - interface AlgebraicStructure<E extends AlgebraicElement<E>> { String getName(); boolean contains(E e); }
 - interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);default <V extends AlgebraicElement<V>> MathFunction<V, C> compose(MathFunction<V, D> before)}
 
@@ -267,33 +267,9 @@ TODO:
 - public class Point<K extends FieldElement<K>, V extends VectorElement<K, V>>
 implements AlgebraicElement<Point<K, V>>
 
--  Implementare equals() e hashCode() utilizzando l'uguaglianza esatta dei bit
+- Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
- /**
-     * Compares this element to another using the appropriate mathematical equality 
-     * for the underlying type (epsilon for reals, exact for integers).
-     */
-    boolean isMathematicallyEqualTo(E other);
-// per wrapper
-@Override
-public final boolean equals(Object other) 
-{
-    if (this == other) return true;
-    if (!(other instanceof Real)) return false;
-    Real real = (Real) other;
-    return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(real.value);
-}
-@Override
-public final int hashCode()
-{
-    return java.util.Objects.hash(this.value);
-}
-public boolean isApproximatelyEqualTo(Real other, double epsilon) {
-    if (other == null) {
-        return false;
-    }
-    return Math.abs(this.value - other.value) < epsilon;
-}
+-  Implementare equals() e hashCode() utilizzando l'uguaglianza esatta dei bit
 // per vettori
 @Override
 public final boolean equals(Object other) {

@@ -105,7 +105,7 @@ implements IntervalSolver<K, T>
             // --- Adattamento del Passo ---
             double scaleFactor = safetyFactor * Math.pow(tolerance.modulus() / errorMagnitude.modulus(), 0.5); 
             
-            if (errorMagnitude.isLessThan(tolerance) || errorMagnitude.isEqual(tolerance)) {
+            if (errorMagnitude.isLessThan(tolerance) || errorMagnitude.isMathematicallyEqualTo(tolerance)) {
                 // Accetta il passo
                 currentState = resultRK2;
                 currentTime = (Real) currentTime.add(actualStep);
