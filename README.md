@@ -98,7 +98,7 @@ net.gommagomma.smfn/
 - final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural> { /* ... */ }
 - final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
 - final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational> { /* ... */ }
-- final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Complex> { /* ... */ }
+- final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Real> { /* ... */ }
 - final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, CreatableFromDouble<Complex> { /* ... */ }
 
 ### net.gommagomma.smfn.math.algebra.structures:
@@ -271,41 +271,6 @@ implements AlgebraicElement<Point<K, V>>
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
 
-// per matrici
-@Override
-public final boolean equals(Object o) 
-{
-    if (this == o) return true;
-    if (!(o instanceof Point)) return false;
-    Point point = (Point) o;
-    // Usa l'uguaglianza esatta del double sottostante per essere transitivo e consistente
-    return position.equals(point.position); 
-}
-
-    public boolean isApproximatelyEqualTo(RealMatrix other, double epsilon) {
-        // 1. Controlli preliminari (null, identità, dimensioni)
-        if (this == other) {
-            return true;
-        }
-        if (other == null || this.rows != other.rows || this.cols != other.cols) {
-            return false;
-        }
-
-        // 2. Confronto elemento per elemento usando la tolleranza
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.cols; j++) {
-                // Utilizza il metodo approssimativo della classe Real per il confronto della singola cella
-                if (!this.data[i][j].isApproximatelyEqualTo(other.data[i][j], epsilon)) {
-                    // Se una singola cella non rientra nella tolleranza, le matrici non sono uguali
-                    return false;
-                }
-            }
-        }
-        
-        // Se tutti gli elementi sono entro la tolleranza, le matrici sono approssimativamente uguali
-        return true;
-    }
-}
 
 - rivedi le impls dei "numeric" per ordine dei metodi;
 
@@ -321,6 +286,8 @@ public interface HermitianOperator<K extends FieldElement<K> & NormableElement<R
 
 
 - trasformazioni:
+- AbstractLinearTransformation
+
 class AffineMapper
 interface AffineTransform<K extends FieldElement<K>, V extends VectorElement<K, V>> {
     V transform(V inputVector);

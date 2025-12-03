@@ -159,8 +159,8 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
     @Override
     public Rational add(Rational other)
     {
-        long newNumerator = this.numerator * other.denominator + other.numerator * this.denominator;
-        long newDenominator = this.denominator * other.denominator;
+        long newNumerator = Math.multiplyExact(this.numerator, other.denominator) + Math.multiplyExact(other.numerator, this.denominator);
+        long newDenominator = Math.multiplyExact(this.denominator, other.denominator);
 
         return new Rational(newNumerator, newDenominator);
     }
@@ -192,8 +192,8 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
     @Override
     public Rational multiply(Rational other)
     {
-        long newNumerator = this.numerator * other.numerator;
-        long newDenominator = this.denominator * other.denominator;
+        long newNumerator = Math.multiplyExact(this.numerator, other.numerator);
+        long newDenominator = Math.multiplyExact(this.denominator, other.denominator);
 
         return new Rational(newNumerator, newDenominator);
     }

@@ -212,12 +212,6 @@ implements SemiringMatrixElement<K, V, M>
     // getRowVector e getColumnVector rimangono astratti, poiché la creazione
     // di un tipo V esatto dipende dall'implementazione concreta (es. NaturalVector)
 
-    @Override
-    public abstract V getRowVector(int row);
-
-    @Override
-    public abstract V getColumnVector(int col);
-
 
     // --- Implementazioni Java Standard
 
@@ -231,5 +225,47 @@ implements SemiringMatrixElement<K, V, M>
         }
 
         return sb.toString();
+    }
+
+
+    @Override
+    public final boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        M castedOther = (M) other; 
+
+        return this.isStructuralyEqualTo(castedOther);
+    }
+
+    @Override
+    public final int hashCode() {
+        int result = java.util.Objects.hash(rows, cols);
+
+        result = 31 * result + Arrays.deepHashCode(data); 
+        return result;
+    }
+
+
+    public final boolean isStructuralyEqualTo(M other)
+    {
+        if (this.rows != other.getRows() || this.cols != other.getColumns()) {
+        	return false;
+        }
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (!this.data[i][j].equals(other.get(i, j))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

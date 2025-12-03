@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFieldMatrix;
 
 /**
@@ -32,7 +31,7 @@ extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMa
 	RationalMatrix(int rows, int cols) {
 		super(rows, cols, FACTORY_INSTANCE);
 		for (int i = 0; i < rows; i++) {
-			Arrays.fill(this.data[i], Real.ZERO);
+			Arrays.fill(this.data[i], Rational.ZERO);
 		}
 	}
 
@@ -89,24 +88,5 @@ extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMa
         }
 
         return identityMatrix; 
-    }
-
-
-    // Java Standard impls
-    
-    /**
-     * WARNING: This equals method uses epsilon comparisons via Real.isEqual,
-     * violating the strict transitivity contract of Object.equals() in standard Java collections.
-     */
-    @Override
-    public final boolean equals(Object other) {
-        return (other instanceof RationalMatrix) && isMathematicallyEqualTo((RationalMatrix)other);
-    }
-    
-    @Override
-    public final int hashCode() {
-        int result = java.util.Objects.hash(rows, cols);
-        result = 31 * result + Arrays.deepHashCode(data);
-        return result;
     }
 }

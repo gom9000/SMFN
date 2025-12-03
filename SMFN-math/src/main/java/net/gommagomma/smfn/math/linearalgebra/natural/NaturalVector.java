@@ -2,7 +2,6 @@ package net.gommagomma.smfn.math.linearalgebra.natural;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
@@ -117,7 +116,7 @@ implements SemimoduleElement<Natural, NaturalVector>
             return false;
         }
 
-        return Objects.equals(this.data, that.data);
+        return Arrays.equals(this.data, that.data);
     }
 
     @Override

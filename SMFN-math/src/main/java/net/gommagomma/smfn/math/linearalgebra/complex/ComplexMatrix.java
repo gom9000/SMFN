@@ -101,24 +101,6 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
     }
 
 
-   // Java Standard impls
-
-    /**
-     * WARNING: This equals method uses epsilon comparisons via Real.isEqual,
-     * violating the strict transitivity contract of Object.equals() in standard Java collections.
-     */
-    @Override
-    public final boolean equals(Object other) {
-        return (other instanceof ComplexMatrix) && isMathematicallyEqualTo((ComplexMatrix)other);
-    }
-
-    @Override
-    public final int hashCode() {
-        int result = java.util.Objects.hash(rows, cols);
-        result = 31 * result + Arrays.deepHashCode(data);
-        return result;
-    }
-
     @Override
     protected Class<Complex> getScalarClass() {
         return Complex.class;

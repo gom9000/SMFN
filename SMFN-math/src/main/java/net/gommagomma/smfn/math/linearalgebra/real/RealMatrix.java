@@ -43,7 +43,11 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
 
     @Override
     protected Comparator<Real> getMagnitudeComparator() {
-        return Comparator.naturalOrder(); 
+    	return (r1, r2) -> {
+            double abs1 = r1.abs().getValue();
+            double abs2 = r2.abs().getValue();            
+            return Double.compare(abs1, abs2);
+        };
     }
 
 
@@ -110,24 +114,5 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
         }
 
         return identityMatrix; 
-    }
-
-
-    // Java Standard impls
-    
-    /**
-     * WARNING: This equals method uses epsilon comparisons via Real.isEqual,
-     * violating the strict transitivity contract of Object.equals() in standard Java collections.
-     */
-    @Override
-    public final boolean equals(Object other) {
-        return (other instanceof RealMatrix) && isMathematicallyEqualTo((RealMatrix)other);
-    }
-
-    @Override
-    public final int hashCode() {
-        int result = java.util.Objects.hash(rows, cols);
-        result = 31 * result + Arrays.deepHashCode(data);
-        return result;
     }
 }

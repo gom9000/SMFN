@@ -2,7 +2,6 @@ package net.gommagomma.smfn.math.linearalgebra.signedint;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.ModuleElement;
@@ -171,7 +170,7 @@ implements ModuleElement<SignedInt, SignedIntVector>
             return false;
         }
 
-        return Objects.equals(this.data, that.data);
+        return Arrays.equals(this.data, that.data);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
@@ -175,7 +174,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
             return false;
         }
 
-        return Objects.equals(this.data, that.data);
+        return Arrays.equals(this.data, that.data);
     }
     
     @Override public final int hashCode() {

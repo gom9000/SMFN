@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.algebra.numeric;
 
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.SqrtableElement;
@@ -10,7 +11,7 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Real
-implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>
+implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Real>
 {
 	public static final Real ZERO = new Real(0.0);
     public static final Real ONE = new Real(1.0);
@@ -177,5 +178,16 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     @Override
     public double modulus() {
         return Math.abs(this.value);
+    }
+
+
+	@Override
+	public Real valueOf(double value) {
+		return new Real(value);
+	}
+
+
+	public Real abs() {
+        return new Real(Math.abs(this.value)); 
     }
 }

@@ -2,7 +2,6 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
@@ -180,7 +179,7 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
             return false;
         }
 
-        return Objects.equals(this.data, that.data);
+        return Arrays.equals(this.data, that.data);
     }
 
     @Override
