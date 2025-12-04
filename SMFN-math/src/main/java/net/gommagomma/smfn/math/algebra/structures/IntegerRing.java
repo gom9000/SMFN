@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 
 
-public class IntegerRing
+public final class IntegerRing
 implements CommutativeRing<SignedInt>
 {
 	public static final IntegerRing INSTANCE = new IntegerRing();

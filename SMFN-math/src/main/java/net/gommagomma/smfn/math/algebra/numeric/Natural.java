@@ -1,11 +1,12 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 
 public final class Natural
-implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>
+implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>, CreatableFromDouble<Natural>
 {
 	public static final Natural ZERO = new Natural(0);
     public static final Natural ONE = new Natural(1);
@@ -158,4 +159,18 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
     public double modulus() {
         return this.value;
     }
+
+
+	@Override
+	public Natural valueOf(double value) {
+		if (value < 0.0) {
+	        throw new IllegalArgumentException("Cannot create a Natural number from a negative value: " + value);
+	    }
+	    
+	    if (value > Long.MAX_VALUE) {
+	        throw new ArithmeticException("Value " + value + " is outside the range of Natural (long).");
+	    }
+
+	    return new Natural((long) value);
+	}
 }

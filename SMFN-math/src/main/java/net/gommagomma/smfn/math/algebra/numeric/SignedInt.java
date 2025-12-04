@@ -1,11 +1,13 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.euclidean.EuclideanDomainElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 
 public final class SignedInt
-implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>
+implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, EuclideanDomainElement<SignedInt, SignedInt>, CreatableFromDouble<SignedInt>
 {
 	public static final SignedInt ZERO = new SignedInt(0);
     public static final SignedInt ONE = new SignedInt(1);
@@ -134,6 +136,53 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     }
 
 
+// --- EuclideanDomainElement impls ---
+    
+    /**
+     * Implementa la funzione norma euclidea v(n) = |n|.
+     * Nota: Stiamo usando SignedInt per la norma, assumendo che i valori positivi
+     * di SignedInt agiscano come i Naturali (N).
+     */
+    @Override
+    public SignedInt normValue() {
+        return new SignedInt(Math.abs(this.value));
+    }
+
+    /**
+     * Calcola il quoziente q della Divisione Euclidea: this = q * divisor + remainder.
+     */
+    @Override
+    public SignedInt quotient(SignedInt divisor) {
+        if (divisor.isZero()) {
+            throw new ArithmeticException("Division by zero in Euclidean domain.");
+        }
+
+        return new SignedInt(this.value / divisor.value);
+    }
+
+    /**
+     * Calcola il resto r della Divisione Euclidea: this = q * divisor + remainder.
+     * Restituisce r, normalizzato per essere nell'intervallo [0, |divisor| - 1].
+     */
+    @Override
+    public SignedInt remainder(SignedInt divisor) {
+        if (divisor.isZero()) {
+            throw new ArithmeticException("Division by zero in Euclidean domain.");
+        }
+        
+        // Resto standard di Java (che può essere negativo)
+        long rem = this.value % divisor.value;
+        
+        // Normalizzazione del resto per garantire che sia nell'intervallo [0, |divisor| - 1].
+        if (rem < 0) {
+            // Aggiunge il modulo assoluto se il resto è negativo.
+            rem += Math.abs(divisor.value);
+        }
+
+        return new SignedInt(rem);
+    }
+
+
     // Java Standard impls
 
     @Override
@@ -170,4 +219,14 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     public double modulus() {
         return Math.abs(this.value);
     }
+
+
+	@Override
+	public SignedInt valueOf(double value) {
+		if (value > Long.MAX_VALUE || value < Long.MIN_VALUE) {
+	        throw new ArithmeticException("Value " + value + " is outside the range of SignedInt (long).");
+	    }
+
+	    return new SignedInt((long) value);
+	}
 }

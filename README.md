@@ -95,18 +95,20 @@ net.gommagomma.smfn/
 - interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {E valueOf(double value);}
 
 ### net.gommagomma.smfn.math.algebra.numeric:
-- final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural> { /* ... */ }
-- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
-- final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational> { /* ... */ }
+- final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural>, CreatableFromDouble<Natural> { /* ... */ }
+- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, CreatableFromDouble<SignedInt> { /* ... */ }
+- final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>, CreatableFromDouble<Rational> { /* ... */ }
 - final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Real> { /* ... */ }
 - final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, CreatableFromDouble<Complex> { /* ... */ }
+- public final class Zn implements CommutativeRingElement<Zn>, CreatableFromDouble<Zn> {}
 
 ### net.gommagomma.smfn.math.algebra.structures:
-- class NaturalSemiring implements Semiring<Natural> { /* ... */ }
-- class IntegerRing implements CommutativeRing<SignedInt> { /* ... */ }
-- class RationalField implements Field<Rational> { /* ... */ }
-- class RealField implements Field<Real> { /* ... */ }
-- class ComplexField implements Field<Complex> { /* ... */ }
+- final class NaturalSemiring implements Semiring<Natural> { /* ... */ }
+- final class IntegerRing implements CommutativeRing<SignedInt> { /* ... */ }
+- final class RationalField implements Field<Rational> { /* ... */ }
+- final class RealField implements Field<Real> { /* ... */ }
+- final class ComplexField implements Field<Complex> { /* ... */ }
+- final final class ZnRing implements CommutativeRing<Zn> {}
 
 ## net.gommagomma.smfn.math.linearalgebra
 -----------------------------------------
@@ -201,7 +203,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 ## net.gommagomma.smfn.math.analysis
 ------------------------------------
 ### net.gommagomma.smfn.math.analysis.functions:
-- final class PolynomialFunction<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
+- final class PolynomialFunction<K extends FieldElement<K>> implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K> {}
 - final class LinearFunction<K extends FieldElement<K>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
 
 ### net.gommagomma.smfn.math.analysis.models:
