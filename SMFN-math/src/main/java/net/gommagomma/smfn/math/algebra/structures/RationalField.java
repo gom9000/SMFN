@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 
 
-public class RationalField
+public final class RationalField
 implements Field<Rational>
 {
 	public static final RationalField INSTANCE = new RationalField();

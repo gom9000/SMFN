@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 
 
-public class ComplexField
+public final class ComplexField
 implements Field<Complex>
 {
 	public static final ComplexField INSTANCE = new ComplexField();

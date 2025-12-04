@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
 
 
-public class NaturalSemiring
+public final class NaturalSemiring
 implements Semiring<Natural>
 {
 	public static final NaturalSemiring INSTANCE = new NaturalSemiring();
