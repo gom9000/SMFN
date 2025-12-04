@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.test;
+package net.gommagomma.smfn.client;
 
 import java.awt.Color;
 import java.util.function.BiFunction;
@@ -12,20 +12,35 @@ import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.analysis.fractals.MandelbrotFunction;
+import net.gommagomma.smfn.math.analysis.fractals.JuliaFunction;
 
-public class MandelbrotTestApp {
+public class JuliaFunctionClient {
     public static void main(String[] args) {
-        // --- 1. Definizione della funzione matematica (Mandelbrot Set) ---
+        // --- 1. Definizione della funzione matematica 
         final int MAX_ITERATIONS = 100;
-        MandelbrotFunction mandelbrotFunction = new MandelbrotFunction(MAX_ITERATIONS);
+        //final Complex constantC = new Complex(-0.11031, -0.67037);
+        //final Complex constantC = new Complex(-1.25, 0);
+        //final Complex constantC = new Complex(-0.74543, 0.11301);
+        //final Complex constantC = new Complex(-0.194, 0.6557);
+        //final Complex constantC = new Complex(-0.11, 0.6557);
+        //final Complex constantC = new Complex(0, 1);
+        //final Complex constantC = new Complex(0.31, 0.04);
+        final Complex constantC = new Complex(0.27334, 0.00742);
+        //final Complex constantC = new Complex(-0.481762, -0.531657);
+        //final Complex constantC = new Complex(-0.39054, -0.58679);
+        //final Complex constantC = new Complex(-0.15652, -1.03225);
+        //final Complex constantC = new Complex(-0.123, 0.745); // Douady's Rabbit
+        //final Complex constantC = new Complex(-0.8, 0.156); // Sierpinski Gasket
+        //final Complex constantC = new Complex(-0.5, 0.5); // Seahorse/Dendrite
+        //final Complex constantC = new Complex(0.285, 0.01); // cross
+        JuliaFunction juliaFunction = new JuliaFunction(constantC, MAX_ITERATIONS);
 
         // --- 2. Setup del contesto grafico ---
         int width = 800;
         int height = 600;
         
         SwingRenderer2D renderer = new SwingRenderer2D(width, height);
-        JFrame frame = new JFrame("SMFN Mandelbrot Set Plot");
+        JFrame frame = new JFrame("SMFN Julia Set (c = " + constantC + ") Plot");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(renderer);
         frame.pack();
@@ -34,7 +49,7 @@ public class MandelbrotTestApp {
 
         // Definisci l'area matematica (Viewport): [-2.0, 1.0] x [-1.5, 1.5] 
         // L'area classica che contiene l'intero set
-        Viewport viewport = new Viewport(-2, 1, -1.5, 1.5, width, height);
+        Viewport viewport = new Viewport(-1.5, 1.5, -1.5, 1.5, width, height);
 
         // --- 3. Definizione degli adattatori (Adapter Pattern) ---
         
@@ -62,7 +77,7 @@ public class MandelbrotTestApp {
         
         // Usa il FunctionPlotter2D per disegnare il frattale
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, mandelbrotFunction, domainAdapter, colorMapper
+            renderer, viewport, juliaFunction, domainAdapter, colorMapper
         );
 
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);

@@ -157,15 +157,17 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
      * @param other The rational number to add.
      * @return The sum of the two rational numbers.
      */
-    @Override
-    public Rational add(Rational other)
-    {
-        long newNumerator = Math.multiplyExact(this.numerator, other.denominator) + Math.multiplyExact(other.numerator, this.denominator);
-        long newDenominator = Math.multiplyExact(this.denominator, other.denominator);
+	@Override
+	public Rational add(Rational other)
+	{
+	    // Calcolo del numeratore usando addExact e multiplyExact
+	    long num1 = Math.multiplyExact(this.numerator, other.denominator);
+	    long num2 = Math.multiplyExact(other.numerator, this.denominator);
+	    long newNumerator = Math.addExact(num1, num2);   
+	    long newDenominator = Math.multiplyExact(this.denominator, other.denominator);
 
-        return new Rational(newNumerator, newDenominator);
-    }
-
+	    return new Rational(newNumerator, newDenominator);
+	}
 
     // GroupElement impls
 

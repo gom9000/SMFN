@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.test;
+package net.gommagomma.smfn.client;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.geometry.Point;

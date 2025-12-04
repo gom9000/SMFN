@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.test;
+package net.gommagomma.smfn.client;
 
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
@@ -21,7 +21,7 @@ import net.gommagomma.smfn.math.analysis.fractals.MandelbrotFunction;
 
 
 // L'app implementa l'interfaccia handler per gestire gli aggiornamenti della viewport
-public class MandelbrotIterativeTestApp
+public class MandelbrotFunctionIterativeClient
 implements ViewportController.ViewportUpdateHandler
 {
     private final SwingRenderer2D renderer;
@@ -38,7 +38,7 @@ implements ViewportController.ViewportUpdateHandler
     private int currentMaxIterations = BASE_ITERATIONS;
 
 
-    public MandelbrotIterativeTestApp() {
+    public MandelbrotFunctionIterativeClient() {
         // --- 1. Funzione e Adattatori (rimangono costanti) ---
         // Inizializziamo con un valore base, verrà aggiornato subito dal rendering iniziale
         this.mandelbrotFunction = new MandelbrotFunction(BASE_ITERATIONS);
@@ -172,6 +172,6 @@ implements ViewportController.ViewportUpdateHandler
 
     public static void main(String[] args) {
         // Avvia l'applicazione Swing nel thread di eventi dedicato
-        SwingUtilities.invokeLater(MandelbrotIterativeTestApp::new);
+        SwingUtilities.invokeLater(MandelbrotFunctionIterativeClient::new);
     }
 }

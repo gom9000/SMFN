@@ -92,15 +92,15 @@ net.gommagomma.smfn/
 - interface Semiring<E extends SemiringElement<E>> extends AlgebraicStructure<E>{}
 - interface Ring<E extends RingElement<E>> extends Semiring<E>, AbelianGroup<E> {}
 - interface CommutativeRing<E extends CommutativeRingElement<E>> extends Ring<E>, CommutativeMultiplicativeMonoid<E> {}
-- interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {E valueOf(double value);}
+- interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {}
 
 ### net.gommagomma.smfn.math.algebra.numeric:
-- final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural>, CreatableFromDouble<Natural> { /* ... */ }
+- final class Natural implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>, CreatableFromDouble<Natural> { /* ... */ }
 - final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, CreatableFromDouble<SignedInt> { /* ... */ }
 - final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>, CreatableFromDouble<Rational> { /* ... */ }
 - final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Real> { /* ... */ }
 - final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, CreatableFromDouble<Complex> { /* ... */ }
-- public final class Zn implements CommutativeRingElement<Zn>, CreatableFromDouble<Zn> {}
+- public final class ZnElement implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.structures:
 - final class NaturalSemiring implements Semiring<Natural> { /* ... */ }
@@ -108,7 +108,7 @@ net.gommagomma.smfn/
 - final class RationalField implements Field<Rational> { /* ... */ }
 - final class RealField implements Field<Real> { /* ... */ }
 - final class ComplexField implements Field<Complex> { /* ... */ }
-- final final class ZnRing implements CommutativeRing<Zn> {}
+- final class ZnRing implements CommutativeRing<ZnElement> {}
 
 ## net.gommagomma.smfn.math.linearalgebra
 -----------------------------------------

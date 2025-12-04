@@ -8,8 +8,8 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.Commutative
  * Rappresenta un elemento [r] dell'anello Z/nZ (ZModNRing).
  * Implementa CommutativeRingElement direttamente, senza l'astrazione Ideal/QuotientRing.
  */
-public final class Zn 
-implements CommutativeRingElement<Zn>, CreatableFromDouble<Zn>
+public final class ZnElement 
+implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement>
 {
     private final SignedInt value; 
     private final SignedInt modulus;
@@ -19,7 +19,7 @@ implements CommutativeRingElement<Zn>, CreatableFromDouble<Zn>
      * @param value L'intero rappresentante.
      * @param modulus Il modulo n.
      */
-    public Zn(SignedInt value, SignedInt modulus) {
+    public ZnElement(SignedInt value, SignedInt modulus) {
         if (modulus.isZero() || modulus.isLessThan(new SignedInt(1))) {
             throw new IllegalArgumentException("Modulus must be a positive integer > 0.");
         }
@@ -37,7 +37,7 @@ implements CommutativeRingElement<Zn>, CreatableFromDouble<Zn>
     // AlgebraicElement impls
 
     @Override
-    public boolean isMathematicallyEqualTo(Zn other) {
+    public boolean isMathematicallyEqualTo(ZnElement other) {
         if (!this.modulus.isMathematicallyEqualTo(other.modulus)) {
              return false;
         }
@@ -46,20 +46,20 @@ implements CommutativeRingElement<Zn>, CreatableFromDouble<Zn>
     }
 
     @Override
-    public Zn copy() {
-        return new Zn(this.value, this.modulus); 
+    public ZnElement copy() {
+        return new ZnElement(this.value, this.modulus); 
     }
     
     // CommutativeRingElement impls
 
     @Override
-    public Zn getZero() {
-        return new Zn(new SignedInt(0), this.modulus);
+    public ZnElement getZero() {
+        return new ZnElement(new SignedInt(0), this.modulus);
     }
 
     @Override
-    public Zn getOne() {
-        return new Zn(new SignedInt(1), this.modulus);
+    public ZnElement getOne() {
+        return new ZnElement(new SignedInt(1), this.modulus);
     }
     
     @Override
@@ -70,46 +70,46 @@ implements CommutativeRingElement<Zn>, CreatableFromDouble<Zn>
     // AdditiveMonoidElement impls
 
     @Override
-    public Zn add(Zn other) {
+    public ZnElement add(ZnElement other) {
         if (!this.modulus.isMathematicallyEqualTo(other.modulus)) {
             throw new IllegalArgumentException("Cannot add elements from different modulus rings.");
         }
         // [a] + [b] = [a + b] mod n
         SignedInt sum = this.value.add(other.value);
-        return new Zn(sum, this.modulus); // Il costruttore normalizza
+        return new ZnElement(sum, this.modulus); // Il costruttore normalizza
     }
 
     // GroupElement impls
 
     @Override
-    public Zn negate() {
+    public ZnElement negate() {
         // [a] -> [-a] mod n
         SignedInt negatedValue = this.value.negate();
-        return new Zn(negatedValue, this.modulus); // Il costruttore normalizza
+        return new ZnElement(negatedValue, this.modulus); // Il costruttore normalizza
     }
     
     // MultiplicativeMonoidElement impls
 
     @Override
-    public Zn multiply(Zn other) {
+    public ZnElement multiply(ZnElement other) {
         if (!this.modulus.isMathematicallyEqualTo(other.modulus)) {
             throw new IllegalArgumentException("Cannot multiply elements from different modulus rings.");
         }
         // [a] * [b] = [a * b] mod n
         SignedInt product = this.value.multiply(other.value);
-        return new Zn(product, this.modulus); // Il costruttore normalizza
+        return new ZnElement(product, this.modulus); // Il costruttore normalizza
     }
 
     
     // CreatableFromDouble impls
 
     @Override
-    public Zn valueOf(double value) {
+    public ZnElement valueOf(double value) {
     	if (value > Long.MAX_VALUE || value < Long.MIN_VALUE) {
 	        throw new ArithmeticException("Value " + value + " is outside the range of SignedInt (long).");
 	    }
         SignedInt intValue = new SignedInt((long) value);
-        return new Zn(intValue, this.modulus);
+        return new ZnElement(intValue, this.modulus);
     }
     
     // Java Standard impls
@@ -122,8 +122,8 @@ implements CommutativeRingElement<Zn>, CreatableFromDouble<Zn>
     @Override
     public final boolean equals(Object other) {
         if (this == other) return true;
-        if (!(other instanceof Zn)) return false;
-        Zn that = (Zn) other;
+        if (!(other instanceof ZnElement)) return false;
+        ZnElement that = (ZnElement) other;
         return this.value.equals(that.value) && this.modulus.equals(that.modulus);
     }
 

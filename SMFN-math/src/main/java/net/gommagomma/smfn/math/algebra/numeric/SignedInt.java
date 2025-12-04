@@ -157,7 +157,23 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
             throw new ArithmeticException("Division by zero in Euclidean domain.");
         }
 
-        return new SignedInt(this.value / divisor.value);
+        long a = this.value;
+        long b = divisor.value;
+
+        // 1. Ottiene il resto Euclideo normalizzato r, chiamando il metodo remainder.
+        SignedInt remainderElement = this.remainder(divisor);
+        long r = remainderElement.value; 
+
+        // 2. Calcola il quoziente q usando la formula: q = (a - r) / b
+        //    Questa formula GARANTISCE la coerenza: a = q*b + r.
+        
+        long numerator = Math.subtractExact(a, r); // Per (10, -3), questo è 10 - 1 = 9
+        
+        // Esegui la divisione intera standard di Java.
+        // Per (10, -3), questo è 9 / -3 = -3. (CORRETTO per la verifica)
+        long q = numerator / b; 
+
+        return new SignedInt(q);
     }
 
     /**
@@ -229,4 +245,5 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
 
 	    return new SignedInt((long) value);
 	}
+
 }

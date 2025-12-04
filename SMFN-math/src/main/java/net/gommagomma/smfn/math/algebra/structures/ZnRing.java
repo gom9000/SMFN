@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.algebra.numeric.Zn;
+import net.gommagomma.smfn.math.algebra.numeric.ZnElement;
 
 /**
  * Rappresenta la struttura dell'Anello Commutativo Z/nZ (ZModNRing).
@@ -10,13 +10,13 @@ import net.gommagomma.smfn.math.algebra.numeric.Zn;
  * * Z/nZ è un Campo se e solo se n è primo. Qui è implementato come Anello generico.
  */
 public final class ZnRing
-implements CommutativeRing<Zn>
+implements CommutativeRing<ZnElement>
 {
     private final SignedInt modulus;
 
     // Cache degli elementi zero e uno per l'efficienza
-    private final Zn additiveIdentity;
-    private final Zn multiplicativeIdentity;
+    private final ZnElement additiveIdentity;
+    private final ZnElement multiplicativeIdentity;
     
     /**
      * Costruisce l'anello Z/nZ specificando il modulo n.
@@ -29,8 +29,8 @@ implements CommutativeRing<Zn>
         this.modulus = modulus;
         
         // Inizializzazione delle identità
-        this.additiveIdentity = new Zn(SignedInt.ZERO, this.modulus);
-        this.multiplicativeIdentity = new Zn(SignedInt.ONE, this.modulus);
+        this.additiveIdentity = new ZnElement(SignedInt.ZERO, this.modulus);
+        this.multiplicativeIdentity = new ZnElement(SignedInt.ONE, this.modulus);
     }
     
     /**
@@ -46,8 +46,8 @@ implements CommutativeRing<Zn>
      * * @param value Il rappresentante intero.
      * @return L'elemento [value] in Z/nZ.
      */
-    public Zn getElement(SignedInt value) {
-        return new Zn(value, this.modulus);
+    public ZnElement getElement(SignedInt value) {
+        return new ZnElement(value, this.modulus);
     }
 
     // --- AlgebraicStructure impls ---
@@ -58,19 +58,19 @@ implements CommutativeRing<Zn>
     }
 
     @Override
-    public boolean contains(Zn e) {
+    public boolean contains(ZnElement e) {
         return e.getModulus().isMathematicallyEqualTo(this.modulus);
     }
 
     // --- CommutativeRing impls ---
 
     @Override
-    public Zn additiveIdentity() {
+    public ZnElement additiveIdentity() {
         return this.additiveIdentity;
     }
 
     @Override
-    public Zn multiplicativeIdentity() {
+    public ZnElement multiplicativeIdentity() {
         return this.multiplicativeIdentity;
     }
     

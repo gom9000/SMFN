@@ -163,6 +163,10 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
 
 	@Override
 	public Natural valueOf(double value) {
+		if (Double.isNaN(value) || Double.isInfinite(value)) {
+	        throw new IllegalArgumentException("Cannot create a Natural number from a non-finite value: " + value);
+	    }
+
 		if (value < 0.0) {
 	        throw new IllegalArgumentException("Cannot create a Natural number from a negative value: " + value);
 	    }
