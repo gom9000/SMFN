@@ -159,7 +159,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - final class NaturalVector implements SemimoduleElement<Natural, NaturalVector> { //... }
 - final class NaturalSemimodule implements Semimodule<Natural, NaturalVector> {}
 - final class NaturalMatrixFactory implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix> {}
-- final class NaturalMatrix extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixFactory>  {}
+- final class NaturalMatrix extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixFactory> {}
 - final class NaturalMatrixSemimodule implements SemiringMatrixSemimodule<Natural, NaturalVector, NaturalMatrix> {}
 
 ###net.gommagomma.smfn.math.linearalgebra.signedint:
@@ -172,15 +172,16 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 ### net.gommagomma.smfn.math.linearalgebra.real:
 - final class RealVector implements InnerProductSpaceElement<Real, RealVector> {//...}
 - final class RealVectorSpace implements HilbertSpace<Real, RealVector> {//...}
-- final class RealMatrixFactory implements MatrixFactory<Real, RealVector, RealMatrix> {}
-- final class RealMatrix extends AbstractMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
+- final class RealMatrixFactory implements FieldMatrixFactory<Real, RealVector, RealMatrix> {}
+- final class RealMatrix extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
 - final class RealMatrixSpace implements MatrixSpace<Real, RealVector, RealMatrix> {//...}
 - class RealVectorProjection extends AbstractProjectionOperator<Real, RealVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
 - final class ComplexVector implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
 - final class ComplexVectorSpace implements HilbertSpace<Complex, ComplexVector> {//...}
-- final class ComplexMatrix implements AbstractMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
+- final class ComplexMatrixFactory implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix> {}
+- final class ComplexMatrix implements AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
 - final class ComplexMatrixSpace implements MatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
 - class ComplexVectorProjection extends AbstractProjectionOperator<Complex, ComplexVector> {}
 
@@ -188,7 +189,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - final class RationalVector implements InnerProductSpaceElement<Rational, RationalVector> { /... }
 - final class RationalVectorSpace implements VectorSpace<Rational, RationalVector> {//...}
 - final class RationalMatrixFactory implements MatrixFactory<Rational, RationalVector, RationalMatrix> {}
-- final class RationalMatrix implements AbstractMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory> {//...}
+- final class RationalMatrix implements AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory> {//...}
 - final class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
 
 ## net.gommagomma.smfn.math.geometry
