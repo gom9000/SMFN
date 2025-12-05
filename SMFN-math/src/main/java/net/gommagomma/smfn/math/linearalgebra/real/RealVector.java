@@ -4,25 +4,31 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 
 public final class RealVector
+extends AbstractRank1Tensor<Real, RealVector>
 implements InnerProductSpaceElement<Real, RealVector>
 {
 	private final Real[] data;
-	private final int dimension;
+
+    private static int validateAndGetLength(Real[] components) {
+        if (components == null || components.length == 0) {
+            throw new IllegalArgumentException("Components array cannot be null or empty.");
+        }
+        return components.length;
+    }
+
 
 	/**
 	 * Costruttore principale per creare un RealVector da un array di componenti.
 	 * @param components Un array di componenti Real. L'array viene copiato internamente per garantire l'immutabilità.
 	 */
 	public RealVector(Real... components) {
-		if (components == null || components.length == 0) {
-			throw new IllegalArgumentException("Components cannot be null or empty.");
-		}
-		// Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
-		this.data = Arrays.copyOf(components, components.length); 
-		this.dimension = components.length;
+		super(validateAndGetLength(components));
+        // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
+        this.data = Arrays.copyOf(components, components.length);
 	}
 
 	public RealVector(List<Real> components) {
@@ -34,10 +40,7 @@ implements InnerProductSpaceElement<Real, RealVector>
 	 * @param dimension La dimensione del vettore.
 	 */
 	public RealVector(int dimension) {
-		if (dimension <= 0) {
-			throw new IllegalArgumentException("Dimension must be positive.");
-		}
-		this.dimension = dimension;
+		super(dimension);
 		this.data = new Real[dimension];
 		Arrays.fill(this.data, Real.ZERO);
 	}
@@ -158,11 +161,6 @@ implements InnerProductSpaceElement<Real, RealVector>
 	}
 
 	// --- Implementazione di SpaceElement/VectorElement (utilità) ---
-
-	@Override
-	public int dimension() {
-		return this.dimension;
-	}
 
 	@Override
 	public Real get(int index) {

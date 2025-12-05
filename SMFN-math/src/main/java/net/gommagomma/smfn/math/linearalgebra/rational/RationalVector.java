@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 
 /**
@@ -11,32 +12,34 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProduct
  * Forma uno Spazio Vettoriale (VectorSpace) sul Campo dei Razionali (Q).
  */
 public final class RationalVector
+extends AbstractRank1Tensor<Rational, RationalVector>
 implements InnerProductSpaceElement<Rational, RationalVector>
 {
     private final Rational[] data;
-    private final int dimension;
+
+    private static int validateAndGetLength(Rational[] components) {
+        if (components == null || components.length == 0) {
+            throw new IllegalArgumentException("Components array cannot be null or empty.");
+        }
+        return components.length;
+    }
+
 
     /**
      * Costruisce un RationalVector da un numero variabile di componenti Rational.
      * @param components Le componenti del vettore.
      */
     public RationalVector(Rational... components) {
-        if (components == null || components.length == 0) {
-            throw new IllegalArgumentException("Components cannot be null or empty.");
-        }
-        // Copia difensiva per garantire l'immutabilità
+    	super(validateAndGetLength(components));
+        // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
         this.data = Arrays.copyOf(components, components.length);
-        this.dimension = components.length;
     }
     
     /**
      * Costruisce un vettore nullo della dimensione specificata.
      */
     public RationalVector(int dimension) {
-        if (dimension <= 0) {
-             throw new IllegalArgumentException("Dimension must be positive.");
-        }
-        this.dimension = dimension;
+        super(dimension);
         this.data = new Rational[dimension];
         Arrays.fill(this.data, Rational.ZERO);
     }
@@ -147,7 +150,6 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     
     // --- Implementazione di SpaceElement/VectorElement (utilità) ---
 
-    @Override public int dimension() { return this.dimension; }
     @Override public Rational get(int index) { return this.data[index]; }
 
     

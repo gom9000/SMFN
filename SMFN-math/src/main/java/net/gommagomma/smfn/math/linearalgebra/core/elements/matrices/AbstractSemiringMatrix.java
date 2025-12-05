@@ -4,12 +4,13 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
+import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.SemiringMatrixFactory;
 
 
 public abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, F extends SemiringMatrixFactory<K, V, M>>
-implements SemiringMatrixElement<K, V, M>
+implements SemiringMatrixElement<K, V, M>, TensorElement<K>
 {
     protected final K[][] data;
     protected final int rows;
@@ -267,5 +268,32 @@ implements SemiringMatrixElement<K, V, M>
         }
 
         return true;
+    }
+
+
+    @Override
+    public final int getRank() {
+        return 2;
+    }
+
+    @Override
+    public final int[] getShape() {
+        return new int[] { this.rows, this.cols };
+    }
+
+    @Override
+    public final long size() {
+        return (long) this.rows * this.cols;
+    }
+
+    @Override
+    public final K get(int... indices) {
+        if (indices.length != getRank()) {
+            throw new IllegalArgumentException("Indices length (" + indices.length + ") must match the Tensor Rank (2) for matrices.");
+        }
+        int row = indices[0];
+        int col = indices[1];
+
+        return this.data[row][col]; 
     }
 }

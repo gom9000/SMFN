@@ -4,41 +4,44 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 
 public final class NaturalVector
-implements SemimoduleElement<Natural, NaturalVector>
+extends AbstractRank1Tensor<Natural, NaturalVector>
 {
     private final Natural[] data;
-    private final int dimension;
 
-    public NaturalVector(int dimension) {
-    	if (dimension <= 0) {
-            throw new IllegalArgumentException("Dimension must be positive.");
-       }
-       this.dimension = dimension;
-       this.data = new Natural[dimension];
-       Arrays.fill(this.data, Natural.ZERO);
+    private static int validateAndGetLength(Natural[] components) {
+        if (components == null || components.length == 0) {
+            throw new IllegalArgumentException("Components array cannot be null or empty.");
+        }
+        return components.length;
     }
+
     
     public NaturalVector(Natural... components) {
-        if (components == null || components.length == 0) {
-            throw new IllegalArgumentException("Components cannot be null or empty.");
-        }
+    	super(validateAndGetLength(components));
         // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
         this.data = Arrays.copyOf(components, components.length);
-        this.dimension = components.length;
     }
 
     public NaturalVector(List<Natural> components) {
         this(components.toArray(new Natural[0]));
     }
 
-    @Override
-    public int dimension() { return dimension; }
+    public NaturalVector(int dimension) {
+    	super(dimension);
+    	this.data = new Natural[dimension];
+    	Arrays.fill(this.data, Natural.ZERO);
+    }
 
     @Override
-    public Natural get(int index) { return data[index]; }
+    public Natural get(int index) {
+    	if (index < 0 || index >= dimension) { 
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+    	return data[index];
+    }
 
     // Implementazioni di CommutativeMonoidElement<V> (add, getZero, isEqual, copy)
     @Override

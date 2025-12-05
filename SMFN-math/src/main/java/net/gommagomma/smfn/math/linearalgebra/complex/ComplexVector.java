@@ -5,22 +5,28 @@ import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 
 
 public final class ComplexVector
+extends AbstractRank1Tensor<Complex, ComplexVector>
 implements InnerProductSpaceElement<Complex, ComplexVector>
 {
     private final Complex[] data;
-    private final int dimension;
+
+    private static int validateAndGetLength(Complex[] components) {
+        if (components == null || components.length == 0) {
+            throw new IllegalArgumentException("Components array cannot be null or empty.");
+        }
+        return components.length;
+    }
+
 
     public ComplexVector(Complex... components) {
-    	if (components == null || components.length == 0) {
-            throw new IllegalArgumentException("Components cannot be null or empty.");
-        }
+    	super(validateAndGetLength(components));
         // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
         this.data = Arrays.copyOf(components, components.length);
-        this.dimension = components.length;
     }
 
     public ComplexVector(List<Complex> components) {
@@ -133,11 +139,6 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
     }
 
     // --- Implementazione di SpaceElement/VectorElement (utilità) ---
-
-    @Override
-    public int dimension() {
-        return this.dimension;
-    }
 
     @Override
     public Complex get(int index) {

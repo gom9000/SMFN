@@ -76,6 +76,9 @@ net.gommagomma.smfn/
 - interface CommutativeRingElement<E extends CommutativeRingElement<E>> extends RingElement<E>, CommutativeMultiplicativeMonoidElement<E> {}
 - interface FieldElement<E extends FieldElement<E>> extends CommutativeRingElement<E>{E inverse();default E divide(E other) {	return multiply(other.inverse());}}
 
+### net.gommagomma.smfn.math.algebra.core.elements.tensors:
+- interface TensorElement<K extends SemiringElement<K>> {int getRank(); int[] getShape(); long size(); K get(int... indices);}
+
 ### net.gommagomma.smfn.math.algebra.core.elements.capabilities:
 - interface ComparableElement<E extends ComparableElement<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;} double modulus();}
 - interface SqrtableElement<E extends SqrtableElement<E>> extends AlgebraicElement<E> { E sqrt(); }
@@ -114,18 +117,19 @@ net.gommagomma.smfn/
 -----------------------------------------
 ### net.gommagomma.smfn.math.linearalgebra.core.elements.vectors:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
-- interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V> {int dimension(); K get(int index); V multiplyByScalar(K scalar);}
+- interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V>, TensorElement<K> {int dimension(); K get(int index); V multiplyByScalar(K scalar);}
 - interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemimoduleElement<K, V>, AbelianGroupElement<V> {  V createNewInstance(@SuppressWarnings("unchecked") K... components); }
 - interface VectorElement<K extends FieldElement<K>, V extends VectorElement<K, V>>
 extends ModuleElement<K, V> {}
 - interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>> extends VectorElement<K, V>, NormableElement<Real, V>{  default Real distanceTo(V other) {}}
 - interface InnerProductSpaceElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
+- public abstract class AbstractRank1Tensor<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> implements SemimoduleElement<K, V> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.elements.matrices:
 - interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends AlgebraicElement<M>, CommutativeMonoidElement<M> { int getRows(); int getColumns(); K get(int row, int col); V getRowVector(int row); V getColumnVector(int col);  M multiply(M other);  M multiplyByScalar(K scalar); V multiply(V vector);}
 - interface RingMatrixElement<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixElement<K, V, M>, AbelianGroupElement<M> {}
 - interface FieldMatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixElement<K, V, M> { K determinant(); M inverse(); M transpose(); }
-- abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, F extends SemiringMatrixFactory<K, V, M>> implements SemiringMatrixElement<K, V, M> {    protected final K[][] data; protected final int rows;  protected final int cols;  protected final F factory;}
+- abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, F extends SemiringMatrixFactory<K, V, M>> implements SemiringMatrixElement<K, V, M>, TensorElement<K> {    protected final K[][] data; protected final int rows;  protected final int cols;  protected final F factory;}
 - abstract class AbstractRingMatrix<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>, F extends RingMatrixFactory<K, V, M>> extends AbstractSemiringMatrix<K, V, M, F> implements RingMatrixElement<K, V, M> {}
 - abstract class AbstractFieldMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, F extends FieldMatrixFactory<K, V, M>> extends AbstractRingMatrix<K, V, M, F> implements FieldMatrixElement<K, V, M> {}
 
@@ -136,14 +140,13 @@ extends ModuleElement<K, V> {}
 - interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarStructure();}
 - interface MetricSpace<T extends AlgebraicElement<T>> extends Space<T> {Real distance(T point1, T point2);}
 - class ScalarMetricSpace<T extends AbelianGroupElement<T> & NormableElement<Real, T>> implements MetricSpace<T> {}
-- interface InnerProductSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
-extends VectorSpace<K, V>, MetricSpace<V>
+- interface InnerProductSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends VectorSpace<K, V>, MetricSpace<V> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
 - interface HilbertSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
 
 - interface SemiringMatrixSemimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M> {Semiring<K> getScalarStructure();	int getMatrixRows(); int getMatrixColumns();}
 - interface RingMatrixModule<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSemimodule<K, V, M> { @Override	Ring<K> getScalarStructure();}
-- interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends 
-extends RingMatrixModule<K, V, M>{Field<K> getScalarField();}
+- interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
+extends RingMatrixModule<K, V, M> {@Override Field<K> getScalarStructure();}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.structures.factories:
 - interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>{ M createMatrix(K[][] data); M createZeroMatrix(int rows, int cols); V createVector(K[] data); 	K getZeroScalar();	K getOneScalar();}
@@ -158,21 +161,21 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - interface HermitianOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends HermitianOperator<K, V, O>>  extends LinearOperator<K, V, O> {Real expectationValue(V state);}
 
 ### net.gommagomma.smfn.math.linearalgebra.natural:
-- final class NaturalVector implements SemimoduleElement<Natural, NaturalVector> { //... }
+- final class NaturalVector extends AbstractRank1Tensor<Natural, NaturalVector> { //... }
 - final class NaturalSemimodule implements Semimodule<Natural, NaturalVector> {}
 - final class NaturalMatrixFactory implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix> {}
 - final class NaturalMatrix extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixFactory> {}
 - final class NaturalMatrixSemimodule implements SemiringMatrixSemimodule<Natural, NaturalVector, NaturalMatrix> {}
 
 ###net.gommagomma.smfn.math.linearalgebra.signedint:
-- final class SignedIntVector implements ModuleElement<SignedInt, SignedIntVector> {//...}
+- final class SignedIntVector extends AbstractRank1Tensor<SignedInt, SignedIntVector> implements ModuleElement<SignedInt, SignedIntVector> {//...}
 - final class SignedIntModule implements Module<SignedInt, SignedIntVector> {}
 - final class SignedIntMatrixFactory implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix> {}
 - final class SignedIntMatrix extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIntMatrixFactory> {}
 - final class SignedIntMatrixModule implements RingMatrixModule<SignedInt, SignedIntVector, SignedIntMatrix> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.real:
-- final class RealVector implements InnerProductSpaceElement<Real, RealVector> {//...}
+- final class RealVector extends AbstractRank1Tensor<Real, RealVector> implements InnerProductSpaceElement<Real, RealVector> {//...}
 - final class RealVectorSpace implements HilbertSpace<Real, RealVector> {//...}
 - final class RealMatrixFactory implements FieldMatrixFactory<Real, RealVector, RealMatrix> {}
 - final class RealMatrix extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
@@ -180,7 +183,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - class RealVectorProjection extends AbstractProjectionOperator<Real, RealVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
-- final class ComplexVector implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
+- final class ComplexVector extends AbstractRank1Tensor<Complex, ComplexVector> implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
 - final class ComplexVectorSpace implements HilbertSpace<Complex, ComplexVector> {//...}
 - final class ComplexMatrixFactory implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix> {}
 - final class ComplexMatrix implements AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
@@ -188,11 +191,11 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - class ComplexVectorProjection extends AbstractProjectionOperator<Complex, ComplexVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.rational:
-- final class RationalVector implements InnerProductSpaceElement<Rational, RationalVector> { /... }
+- final class RationalVector extends AbstractRank1Tensor<Rational, RationalVector> implements InnerProductSpaceElement<Rational, RationalVector> { /... }
 - final class RationalVectorSpace implements VectorSpace<Rational, RationalVector> {//...}
-- final class RationalMatrixFactory implements MatrixFactory<Rational, RationalVector, RationalMatrix> {}
+- final class RationalMatrixFactory implements FieldMatrixFactory<Rational, RationalVector, RationalMatrix> {}
 - final class RationalMatrix implements AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory> {//...}
-- final class RationalMatrixSpace implements MatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
+- final class RationalMatrixSpace implements FieldMatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
 
 ## net.gommagomma.smfn.math.geometry
 -------------------------------------
@@ -274,8 +277,7 @@ implements AlgebraicElement<Point<K, V>>
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
 
-
-- rivedi le impls dei "numeric" per ordine dei metodi;
+- metti a fattor comune i costruttori di abstractRank1Tensor (i costruttori dei figli ovviamente);
 
 - Suggerimento: Vincola l'interfaccia HermitianOperator in modo più stretto, non solo a VectorElement, ma a InnerProductSpaceElement.
 // Vincolo più stretto per i problemi di MQ:
@@ -287,6 +289,66 @@ public interface HermitianOperator<K extends FieldElement<K> & NormableElement<R
     Real expectationValue(V state); // Funziona solo se il prodotto scalare è definito
 }
 
+- Polinomi: Evaluatable<X, X>  - interfaccia chiave che definisca il concetto di "radice" (valutazione)
+
+- interfaccia ScalarFactory !!! (ScalarFactory -> SemimoduleVectorFactory -> SemiringMatrixFactory)
+e centralizza lì la costruzione di tutti gli elementi
+public interface ScalarFactory<K extends SemiringElement<K>> {
+    
+    /** Restituisce l'identità additiva (Zero) dello scalare K. */
+    K getZeroScalar();
+    
+    /** Restituisce l'identità moltiplicativa (Uno) dello scalare K. */
+    K getOneScalar();
+    
+    /** * Crea un nuovo elemento K partendo da un primitivo double.
+     * Questo è il metodo statico 'valueOf()' che mancava. 
+     */
+    K createScalar(double value);
+}
+public interface SemimoduleVectorFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> 
+    extends ScalarFactory<K> // Eredita le capacità di creazione di K
+{
+    /** Crea un nuovo elemento vettore V a partire da un array di scalari K. */
+    V createVector(K[] data);
+}
+public interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>
+extends ScalarFactory<K> // Eredita getZeroScalar(), getOneScalar(), createScalar(double)
+{ 
+    M createMatrix(K[][] data); 
+    M createZeroMatrix(int rows, int cols); 
+    V createVector(K[] data); 
+    
+    // NOTA: getZeroScalar() e getOneScalar() sono stati rimossi da qui
+    // e ora sono ereditati da ScalarFactory.
+}
+
+- ComplexVector: Dot Product
+Stai calcolando <v,w>=SOMMA(v(i) x w(i)\). Questa è la convenzione standard dei Matematici (lineare nel primo argomento, antilineare nel secondo).
+Attenzione per il package mq (Quantum Mechanics): Nella notazione di Dirac (Fisica), il prodotto scalare (bra-ket <phi|psi> è, per convenzione, antilineare nel primo argomento (bra) e lineare nel secondo (ket): <phi|psi>=SOMMA(phi(i)\ x psi(i))
+Se userai questa classe ComplexVector per i tuoi StateVector quantistici, dovrai ricordarti che v.dotProduct(w) calcolerà matematicamente <w|v> (o invertire la logica nella classe HilbertSpace specifica per la MQ).
+
+- Complex.sqrt() : 
+// Attuale: magnitude + real può andare in overflow se entrambi sono enormi
+double magnitude = this.modulus(); 
+
+// Alternativa numericamente stabile (Algorithm 312, ACM):
+double t = Math.sqrt((Math.abs(real) + magnitude) / 2.0);
+if (real >= 0) {
+    realPart = t;
+    imaginaryPart = imaginary / (2.0 * t);
+} else {
+    realPart = Math.abs(imaginary) / (2.0 * t);
+    imaginaryPart = (imaginary >= 0) ? t : -t;
+}
+- Rational.valueOf(double) : 
+ Se questo è l'intento (esattezza bit-a-bit): L'implementazione è perfetta.
+ Se l'intento è "trova la frazione più vicina": Spesso nelle librerie scientifiche si usa l'algoritmo delle Frazioni Continue per  convertire 0.100000001 in 1/10.
+ Suggerimento: Potresti voler aggiungere un metodo statico alternativo: Rational.approximate(double val, double epsilon).
+
+- Soluzione Architetturale: Nelle implementazioni concrete (es. RealMatrix), considera di usare internamente double[] o double[][] primitivi per lo storage, e crea gli oggetti Real "on the fly" solo quando richiesti tramite get(row, col).
+
+- Soluzione Architetturale: Nelle implementazioni concrete (es. RealMatrix), considera di usare internamente double[] o double[][] primitivi per lo storage, e crea gli oggetti Real "on the fly" solo quando richiesti tramite get(row, col).
 
 - trasformazioni:
 - AbstractLinearTransformation

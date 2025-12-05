@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.core.elements.vectors;
 
 import net.gommagomma.smfn.math.algebra.core.elements.additive.CommutativeMonoidElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
+import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 
 
 /**
@@ -11,7 +12,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringEle
  * e sul tipo del vettore V.
  */
 public interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>>
-extends SpaceElement<V>, CommutativeMonoidElement<V>
+extends SpaceElement<V>, CommutativeMonoidElement<V>, TensorElement<K>
 {
     int dimension(); 
     K get(int index);

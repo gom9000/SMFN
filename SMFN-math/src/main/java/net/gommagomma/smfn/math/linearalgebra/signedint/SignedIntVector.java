@@ -4,13 +4,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.ModuleElement;
 
 public final class SignedIntVector
+extends AbstractRank1Tensor<SignedInt, SignedIntVector>
 implements ModuleElement<SignedInt, SignedIntVector>
 {
     private final SignedInt[] data;
-    private final int dimension;
+
+    private static int validateAndGetLength(SignedInt[] components) {
+        if (components == null || components.length == 0) {
+            throw new IllegalArgumentException("Components array cannot be null or empty.");
+        }
+        return components.length;
+    }
 
     /**
      * Costruisce un SignedIntVector da un numero variabile di componenti SignedInt.
@@ -20,23 +28,17 @@ implements ModuleElement<SignedInt, SignedIntVector>
      * @throws IllegalArgumentException se components sono null o vuoti.
      */
     public SignedIntVector(SignedInt... components) {
-        if (components == null || components.length == 0) {
-            throw new IllegalArgumentException("Components cannot be null or empty.");
-        }
+    	super(validateAndGetLength(components));
         // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
-        this.data = Arrays.copyOf(components, components.length); 
-        this.dimension = components.length;
+        this.data = Arrays.copyOf(components, components.length);
     }
-    
+
     /**
      * Costruisce un vettore nullo della dimensione specificata.
      * @param dimension La dimensione del vettore.
      */
     public SignedIntVector(int dimension) {
-        if (dimension <= 0) {
-             throw new IllegalArgumentException("Dimension must be positive.");
-        }
-        this.dimension = dimension;
+    	super(dimension);
         this.data = new SignedInt[dimension];
         Arrays.fill(this.data, SignedInt.ZERO);
     }
@@ -135,10 +137,6 @@ implements ModuleElement<SignedInt, SignedIntVector>
 
     // --- Implementazione di SpaceElement/VectorElement (utilità) ---
 
-    @Override
-    public int dimension() {
-        return this.dimension;
-    }
 
     @Override
     public SignedInt get(int index) {
