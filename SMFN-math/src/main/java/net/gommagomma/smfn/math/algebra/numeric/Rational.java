@@ -13,6 +13,7 @@ package net.gommagomma.smfn.math.algebra.numeric;
 
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
@@ -28,7 +29,7 @@ import net.gommagomma.smfn.math.utils.MathUtils;
  * @author gommagomma.net
  */
 public final class Rational
-implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>
+implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>, CreatableFromDouble<Rational>
 {
 	public static final Rational ZERO = new Rational(0, 1);
     public static final Rational ONE = new Rational(1, 1);
@@ -156,15 +157,17 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
      * @param other The rational number to add.
      * @return The sum of the two rational numbers.
      */
-    @Override
-    public Rational add(Rational other)
-    {
-        long newNumerator = Math.multiplyExact(this.numerator, other.denominator) + Math.multiplyExact(other.numerator, this.denominator);
-        long newDenominator = Math.multiplyExact(this.denominator, other.denominator);
+	@Override
+	public Rational add(Rational other)
+	{
+	    // Calcolo del numeratore usando addExact e multiplyExact
+	    long num1 = Math.multiplyExact(this.numerator, other.denominator);
+	    long num2 = Math.multiplyExact(other.numerator, this.denominator);
+	    long newNumerator = Math.addExact(num1, num2);   
+	    long newDenominator = Math.multiplyExact(this.denominator, other.denominator);
 
-        return new Rational(newNumerator, newDenominator);
-    }
-
+	    return new Rational(newNumerator, newDenominator);
+	}
 
     // GroupElement impls
 
@@ -338,5 +341,66 @@ implements FieldElement<Rational>, NormableElement<Real, Rational>, Exponentiabl
         if (absValue < 0) { absValue = -absValue; }
 
         return absValue;
+    }
+
+
+    @Override
+    public Rational valueOf(double value)
+    {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            throw new IllegalArgumentException("Cannot create a Rational number from NaN or Infinity.");
+        }
+
+        if (value == 0.0) {
+            return Rational.ZERO; // 0/1
+        }
+        
+        // --- Standard IEEE 754 (64-bit double) ---
+        long bits = Double.doubleToLongBits(value);
+        
+        // Estrazione di esponente (11 bit) e mantissa (52 bit)
+        int exponent = (int) ((bits >> 52) & 0x7FFL);
+        long mantissa = bits & 0x000FFFFFFFFFFFFL;
+        
+        // Bit di segno: 0 se positivo, diverso da 0 se negativo
+        boolean negative = (bits & 0x8000000000000000L) != 0;
+
+        // Se l'esponente è 0, è un valore denormalizzato. Altrimenti è normalizzato.
+        if (exponent == 0) { 
+            // Denormalizzato: l'esponente è -1022, il bit implicito non è aggiunto
+            exponent = -1022; 
+        } else {
+            // Normalizzato: aggiunge il bit implicito (il 53° bit della mantissa)
+            mantissa |= 0x0010000000000000L; 
+            // Il bias dell'esponente è 1023
+            exponent -= 1023;
+        }
+
+        // Il valore è: mantissa * 2^exponent
+        
+        long num;
+        long den;
+        
+        if (exponent >= 0) {
+            // Il denominatore implicito è 1 (mantissa è già un intero)
+            // num = mantissa * 2^exponent
+            num = mantissa * MathUtils.power(2L, exponent);
+            den = 1L;
+        } else {
+            // L'esponente negativo indica un denominatore potenza di 2
+            // num = mantissa
+            // den = 2^(-exponent)
+            num = mantissa;
+            den = MathUtils.power(2L, -exponent);
+        }
+
+        // 4. Applica il segno
+        if (negative) {
+            num = -num;
+        }
+        
+        // 5. Il costruttore Rational gestisce la semplificazione finale (GCD)
+        // e la normalizzazione del segno, grazie alla tua implementazione esistente.
+        return new Rational(num, den);
     }
 }

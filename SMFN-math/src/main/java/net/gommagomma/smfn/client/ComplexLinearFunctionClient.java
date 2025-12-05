@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.test;
+package net.gommagomma.smfn.client;
 
 import java.awt.Color;
 import java.util.function.BiFunction;
@@ -13,7 +13,7 @@ import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.analysis.functions.LinearFunction;
 
-public class ComplexLinearTestApp
+public class ComplexLinearFunctionClient
 {
     public static void main(String[] args)
     {

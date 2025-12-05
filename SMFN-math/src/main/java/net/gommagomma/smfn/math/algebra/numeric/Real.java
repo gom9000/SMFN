@@ -43,6 +43,14 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
             return false;
         }
 
+        if (Double.isNaN(this.value) && Double.isNaN(other.value)) {
+            return true;
+        }
+
+        if (Double.isInfinite(this.value) && this.value == other.value) {
+            return true;
+        }
+
         return Math.abs(this.value - other.value) < MathConstants.EPSILON;
     }
 

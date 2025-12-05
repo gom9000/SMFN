@@ -12,10 +12,10 @@ net.gommagomma.smfn/
 |   |   |   |   |-- multiplicative/         (...)
 |   |   |   |   \-- capabilities/           (ComparableElement,ExponentiableElement,NormableElement,SqrtableElement)
 |   |   |   |-- structures/                 (AdditiveMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
-|   |   |-- numeric/                        (Natural, Signedint, Rational, Real, Complex)
-|   |   \-- structures/                     (NaturalSemiring, IntegerRing, RationalField, RealField, ComplexField)
+|   |   |-- numeric/                        (Natural, Signedint, ZnElement, Rational, Real, Complex)
+|   |   \-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField)
 |   |-- linearalgebra                       # Vettori, Matrici e Spazi
-|   |   |-- core                   		     # Interfacce per Vettori, Matrici, Spazi
+|   |   |-- core                   		  # Interfacce per Vettori, Matrici, Spazi
 |   |   |   |-- elements/                   (...)
 |   |   |   \-- structures/                 (...)
 |   |   |-- complex                         # Implementazioni per C (ComplexVector, ComplexMatrix, spaces)
@@ -92,21 +92,23 @@ net.gommagomma.smfn/
 - interface Semiring<E extends SemiringElement<E>> extends AlgebraicStructure<E>{}
 - interface Ring<E extends RingElement<E>> extends Semiring<E>, AbelianGroup<E> {}
 - interface CommutativeRing<E extends CommutativeRingElement<E>> extends Ring<E>, CommutativeMultiplicativeMonoid<E> {}
-- interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {E valueOf(double value);}
+- interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {}
 
 ### net.gommagomma.smfn.math.algebra.numeric:
-- final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, ComparableElement<Natural> { /* ... */ }
-- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
-- final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational> { /* ... */ }
+- final class Natural implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>, CreatableFromDouble<Natural> { /* ... */ }
+- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, CreatableFromDouble<SignedInt> { /* ... */ }
+- final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>, CreatableFromDouble<Rational> { /* ... */ }
 - final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Real> { /* ... */ }
 - final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, CreatableFromDouble<Complex> { /* ... */ }
+- public final class ZnElement implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.structures:
-- class NaturalSemiring implements Semiring<Natural> { /* ... */ }
-- class IntegerRing implements CommutativeRing<SignedInt> { /* ... */ }
-- class RationalField implements Field<Rational> { /* ... */ }
-- class RealField implements Field<Real> { /* ... */ }
-- class ComplexField implements Field<Complex> { /* ... */ }
+- final class NaturalSemiring implements Semiring<Natural> { /* ... */ }
+- final class IntegerRing implements CommutativeRing<SignedInt> { /* ... */ }
+- final class RationalField implements Field<Rational> { /* ... */ }
+- final class RealField implements Field<Real> { /* ... */ }
+- final class ComplexField implements Field<Complex> { /* ... */ }
+- final class ZnRing implements CommutativeRing<ZnElement> {}
 
 ## net.gommagomma.smfn.math.linearalgebra
 -----------------------------------------
@@ -174,7 +176,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - final class RealVectorSpace implements HilbertSpace<Real, RealVector> {//...}
 - final class RealMatrixFactory implements FieldMatrixFactory<Real, RealVector, RealMatrix> {}
 - final class RealMatrix extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
-- final class RealMatrixSpace implements MatrixSpace<Real, RealVector, RealMatrix> {//...}
+- final class RealMatrixSpace implements FieldMatrixSpace<Real, RealVector, RealMatrix> {//...}
 - class RealVectorProjection extends AbstractProjectionOperator<Real, RealVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
@@ -182,7 +184,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - final class ComplexVectorSpace implements HilbertSpace<Complex, ComplexVector> {//...}
 - final class ComplexMatrixFactory implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix> {}
 - final class ComplexMatrix implements AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
-- final class ComplexMatrixSpace implements MatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
+- final class ComplexMatrixSpace implements FieldMatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
 - class ComplexVectorProjection extends AbstractProjectionOperator<Complex, ComplexVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.rational:
@@ -202,7 +204,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 ## net.gommagomma.smfn.math.analysis
 ------------------------------------
 ### net.gommagomma.smfn.math.analysis.functions:
-- final class PolynomialFunction<K extends FieldElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
+- final class PolynomialFunction<K extends FieldElement<K>> implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K> {}
 - final class LinearFunction<K extends FieldElement<K>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
 
 ### net.gommagomma.smfn.math.analysis.models:
