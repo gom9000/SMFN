@@ -171,12 +171,14 @@ implements FieldMatrixElement<K, V, M>
 
     @Override
     public M transpose() {
-        K[][] resultData = createMatrixArray(rows, cols);
+    	K[][] resultData = createMatrixArray(cols, rows); 
+        
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 resultData[j][i] = this.data[i][j];
             }
         }
+
         return factory.createMatrix(resultData);
     }
 }
