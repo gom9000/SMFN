@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.algebra.numeric.NaturalFactory;
 
 @DisplayName("NaturalSemiring: Test della Struttura di Semianello (N)")
 class NaturalSemiringTest {
@@ -44,8 +45,8 @@ class NaturalSemiringTest {
     void containsElements() {
         // Un Semianello Naturale contiene tutti gli elementi Naturali non nulli.
         assertTrue(NATURAL_SEMIRING.contains(n(5)), "Contiene 5");
-        assertTrue(NATURAL_SEMIRING.contains(Natural.ZERO), "Contiene ZERO");
-        assertTrue(NATURAL_SEMIRING.contains(Natural.ONE), "Contiene ONE");
+        assertTrue(NATURAL_SEMIRING.contains(NaturalFactory.getInstance().zero()), "Contiene ZERO");
+        assertTrue(NATURAL_SEMIRING.contains(NaturalFactory.getInstance().zero()), "Contiene ONE");
         
         // Non deve contenere null
         assertFalse(NATURAL_SEMIRING.contains(null), "Non contiene null");
@@ -54,10 +55,10 @@ class NaturalSemiringTest {
     @Test
     @DisplayName("Identità Additiva e Moltiplicativa")
     void identities() {
-        assertNaturalEquals(Natural.ZERO, NATURAL_SEMIRING.additiveIdentity(), "Identità Additiva (Zero)");
-        assertNaturalEquals(Natural.ONE, NATURAL_SEMIRING.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
-        assertSame(Natural.ZERO, NATURAL_SEMIRING.additiveIdentity());
-        assertSame(Natural.ONE, NATURAL_SEMIRING.multiplicativeIdentity());
+        assertNaturalEquals(NaturalFactory.getInstance().zero(), NATURAL_SEMIRING.additiveIdentity(), "Identità Additiva (Zero)");
+        assertNaturalEquals(NaturalFactory.getInstance().one(), NATURAL_SEMIRING.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
+        assertSame(NaturalFactory.getInstance().zero(), NATURAL_SEMIRING.additiveIdentity());
+        assertSame(NaturalFactory.getInstance().one(), NATURAL_SEMIRING.multiplicativeIdentity());
     }
 
     // ======================================================================================

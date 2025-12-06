@@ -27,8 +27,8 @@ class SignedIntTest {
         SignedInt twenty = si(20);
         assertEquals(20L, twenty.getValue());
         assertEquals("20", twenty.toString());
-        assertEquals(SignedInt.ZERO, si(0));
-        assertEquals(SignedInt.ONE, si(1));
+        assertEquals(SignedIntFactory.getInstance().zero(), si(0));
+        assertEquals(SignedIntFactory.getInstance().one(), si(1));
     }
 
     @Test
@@ -59,8 +59,8 @@ class SignedIntTest {
         assertTrue(si(0).isZero());
         assertTrue(si(1).isOne());
         
-        assertEquals(SignedInt.ZERO, si(0).getZero());
-        assertEquals(SignedInt.ONE, si(1).getOne());
+        assertEquals(SignedIntFactory.getInstance().zero(), si(0).getZero());
+        assertEquals(SignedIntFactory.getInstance().one(), si(1).getOne());
     }
     
     // ======================================================================================
@@ -142,13 +142,13 @@ class SignedIntTest {
 
         @Test
         void powerZero() {
-            assertEquals(SignedInt.ONE, si(500).power(0));
+            assertEquals(SignedIntFactory.getInstance().one(), si(500).power(0));
         }
 
         @Test
         void zeroPower() {
-            assertEquals(SignedInt.ZERO, si(0).power(5));
-            assertEquals(SignedInt.ONE, si(0).power(0)); // 0^0 = 1 per convenzione
+            assertEquals(SignedIntFactory.getInstance().zero(), si(0).power(5));
+            assertEquals(SignedIntFactory.getInstance().one(), si(0).power(0)); // 0^0 = 1 per convenzione
         }
 
         @Test
@@ -198,7 +198,7 @@ class SignedIntTest {
         @Test
         void quotientDivisionByZero() {
             assertThrows(ArithmeticException.class, () -> 
-                si(10).quotient(SignedInt.ZERO), 
+                si(10).quotient(SignedIntFactory.getInstance().zero()), 
                 "La divisione per zero dovrebbe lanciare un'eccezione"
             );
         }
@@ -224,7 +224,7 @@ class SignedIntTest {
         @Test
         void remainderDivisionByZero() {
             assertThrows(ArithmeticException.class, () -> 
-                si(10).remainder(SignedInt.ZERO), 
+                si(10).remainder(SignedIntFactory.getInstance().zero()), 
                 "La divisione per zero dovrebbe lanciare un'eccezione"
             );
         }
@@ -257,22 +257,22 @@ class SignedIntTest {
     class CreatableFromDoubleTests {
         
         @ParameterizedTest(name = "valueOf({0}) -> {1}")
-        @CsvSource({"10.75, 10", "-3.14, -3", "0.999, 0"})
+        @CsvSource({"10.75, 11", "-3.14, -3", "0.999, 1"})
         void valueOfValid(double input, long expected) {
-            SignedInt result = new SignedInt(0).valueOf(input); // Chiamata tramite istanza dummy
-            assertEquals(si(expected), result);
-            assertEquals(expected, result.getValue());
+            SignedInt result = SignedIntFactory.getInstance().fromDouble(input);
+            assertEquals(si(Math.round(expected)), result);
+            assertEquals(Math.round(expected), result.getValue());
         }
         
         @Test
         void valueOfLongMinValue() {
-            SignedInt result = new SignedInt(0).valueOf((double) Long.MIN_VALUE);
+            SignedInt result = SignedIntFactory.getInstance().fromDouble((double) Long.MIN_VALUE);
             assertEquals(si(Long.MIN_VALUE), result);
         }
 
         @Test
         void valueOfLongMaxValue() {
-            SignedInt result = new SignedInt(0).valueOf((double) Long.MAX_VALUE);
+            SignedInt result =SignedIntFactory.getInstance().fromDouble((double) Long.MAX_VALUE);
             assertEquals(si(Long.MAX_VALUE), result);
         }
 
@@ -286,7 +286,7 @@ class SignedIntTest {
             })
         void valueOfOverflow(double input) {
             assertThrows(ArithmeticException.class, () -> 
-                si(0).valueOf(input), 
+                SignedIntFactory.getInstance().fromDouble(input), 
                 "valueOf dovrebbe lanciare ArithmeticException per overflow double"
             );
         }

@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
 import net.gommagomma.smfn.math.algebra.numeric.ZnElement;
 
 /**
@@ -13,33 +14,31 @@ public final class ZnRing
 implements CommutativeRing<ZnElement>
 {
     private final SignedInt modulus;
-
-    // Cache degli elementi zero e uno per l'efficienza
     private final ZnElement additiveIdentity;
     private final ZnElement multiplicativeIdentity;
-    
+
+
     /**
      * Costruisce l'anello Z/nZ specificando il modulo n.
      * @param modulus Il modulo n (deve essere un intero positivo > 0).
      */
     public ZnRing(SignedInt modulus) {
-        if (modulus.isZero() || modulus.isLessThan(new SignedInt(1))) {
+        if (modulus.isZero() || modulus.isLessThan(SignedIntFactory.getInstance().one())) {
             throw new IllegalArgumentException("Modulus for ZModNRing must be a positive integer > 0.");
         }
         this.modulus = modulus;
-        
-        // Inizializzazione delle identità
-        this.additiveIdentity = new ZnElement(SignedInt.ZERO, this.modulus);
-        this.multiplicativeIdentity = new ZnElement(SignedInt.ONE, this.modulus);
+        this.additiveIdentity = new ZnElement(SignedIntFactory.getInstance().zero(), this.modulus);
+        this.multiplicativeIdentity = new ZnElement(SignedIntFactory.getInstance().one(), this.modulus);
     }
     
+
     /**
      * Restituisce il modulo n che definisce questo anello.
      */
     public SignedInt getModulus() {
         return modulus;
     }
-    
+
     /**
      * Crea un elemento ZModNElement, garantendo che sia ridotto modulo n.
      * Questo metodo funge da "fabbrica" per gli elementi dell'anello.
@@ -50,33 +49,31 @@ implements CommutativeRing<ZnElement>
         return new ZnElement(value, this.modulus);
     }
 
-    // --- AlgebraicStructure impls ---
 
-    @Override
+    @Override // AlgebraicStructure impls
     public String getName() {
         return "Z/" + this.modulus.toString() + "Z Ring";
     }
 
-    @Override
+    @Override // AlgebraicStructure impls
     public boolean contains(ZnElement e) {
         return e.getModulus().isMathematicallyEqualTo(this.modulus);
     }
 
-    // --- CommutativeRing impls ---
 
-    @Override
+    @Override // AdditiveMonoid impls
     public ZnElement additiveIdentity() {
         return this.additiveIdentity;
     }
 
-    @Override
+
+    @Override // MultiplicativeMonoid impls
     public ZnElement multiplicativeIdentity() {
         return this.multiplicativeIdentity;
     }
-    
-    // --- Java Standard impls (opzionali, ma raccomandate) ---
+ 
 
-    @Override
+    @Override // Java Standard impls
     public boolean equals(Object other) {
         if (this == other) return true;
         if (!(other instanceof ZnRing)) return false;
@@ -84,7 +81,7 @@ implements CommutativeRing<ZnElement>
         return this.modulus.isMathematicallyEqualTo(that.modulus);
     }
 
-    @Override
+    @Override // Java Standard impls
     public int hashCode() {
         return java.util.Objects.hash(modulus);
     }

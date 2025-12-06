@@ -15,34 +15,29 @@ public interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends S
         return getVectorFactory().getScalarFactory();
     }
 
-	M createMatrix(int rows, int cols);
 	M createMatrix(K[][] data); 
 	M createZeroMatrix(int rows, int cols); 
 
-	default M createIdentity(int size) {
-        NumericFactory<K> numFactory = getScalarFactory();
-        K zero = numFactory.zero();
-        K one = numFactory.one();
-        
-        M matrix = createMatrix(size, size);
-        // Ciclo per settare la diagonale a 'one' e il resto a 'zero'
-        return matrix;
-    }
+//	default M createIdentity(int size) {
+//        K one = getScalarFactory(.one(); 
+//        M matrix = createZeroMatrix(size, size);
+//        for (int i = 0; i < size; i++) {
+//            matrix.set(i, i, one);
+//        }
+//
+//        return matrix;
+//    }
 
 	default M createMatrix(double[][] data) {
         int rows = data.length;
         if (rows == 0) {
-            return createMatrix(0, 0);
+            return createZeroMatrix(0, 0);
         }
         int cols = data[0].length;
 
         NumericFactory<K> scalarFactory = getScalarFactory();
         
-        // 1. Creiamo l'array bidimensionale di scalari K
-        @SuppressWarnings("unchecked")
         K[][] components = (K[][]) new SemiringElement[rows][cols];
-
-        // 2. Popoliamo la matrice convertendo ogni double
         for (int i = 0; i < rows; i++) {
             if (data[i].length != cols) {
                  throw new IllegalArgumentException("All rows must have the same length.");
@@ -51,8 +46,7 @@ public interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends S
                 components[i][j] = scalarFactory.fromDouble(data[i][j]);
             }
         }
-        
-        // 3. Creiamo la matrice M
+
         return createMatrix(components);
     }
 }

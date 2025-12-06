@@ -2,7 +2,9 @@ package net.gommagomma.smfn.client;
 
 import net.gommagomma.smfn.math.algebra.numeric.ZnElement;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
 import net.gommagomma.smfn.math.algebra.structures.ZnRing;
 
 /**
@@ -25,8 +27,8 @@ public class AlgebraicClient
 
     private static void testSignedInt() {
         // Usa CreatableFromDouble per mostrare il truncamento (troncamento)
-        SignedInt i1 = new SignedInt(0).valueOf(10.75); 
-        SignedInt i2 = new SignedInt(0).valueOf(-3.14); 
+        SignedInt i1 = SignedIntFactory.getInstance().fromDouble(10.75); 
+        SignedInt i2 = SignedIntFactory.getInstance().fromDouble(-3.14); 
         
         // Operazione base
         SignedInt sum = i1.add(i2); 
@@ -41,7 +43,7 @@ public class AlgebraicClient
         Rational r1 = new Rational(1, 3);
         
         // Uso di CreatableFromDouble: converte 0.25 (frazione binaria esatta)
-        Rational r2 = new Rational(0, 1).valueOf(0.25); // 0.25 = 1/4
+        Rational r2 = RationalFactory.getInstance().fromDouble(0.25); // 0.25 = 1/4
 
         // Uso di FieldElement (divisione)
         Rational div = r1.divide(r2);     // (1/3) / (1/4) = 4/3

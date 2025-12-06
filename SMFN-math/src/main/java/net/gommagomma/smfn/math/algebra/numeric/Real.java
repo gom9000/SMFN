@@ -2,7 +2,6 @@ package net.gommagomma.smfn.math.algebra.numeric;
 
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.SqrtableElement;
@@ -11,11 +10,8 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Real
-implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Real>
+implements FieldElement<Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, NormableElement<Real, Real>
 {
-	public static final Real ZERO = new Real(0.0);
-    public static final Real ONE = new Real(1.0);
-
 	private final double value;
 
 
@@ -31,9 +27,12 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     }
 
 
-    // AlgebraicElement impls
+	public Real abs() {
+        return new Real(Math.abs(this.value)); 
+    }
 
-    @Override
+
+    @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(Real other)
     {
     	if (this == other) {
@@ -55,56 +54,46 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     }
 
 
-    @Override
+    @Override // AlgebraicElement impls
     public Real copy()
     {
         return new Real(this.value);
     }
 
 
-	@Override
-	public Real getZero()
-	{
-		return Real.ZERO; 
-	}
-
-
-	@Override
-	public Real getOne() {
-		return Real.ONE; 
-	}
-
-
-    // MonoidElement impls
-
-    @Override
+    @Override // MonoidElement impls
     public Real add(Real other)
     {
         return new Real(this.value + other.value);
     }
 
 
-    // GroupElement impls
+    @Override // MultiplicativeMonoidElement impls
+    public Real multiply(Real other)
+    {
+        return new Real(this.value * other.value);
+    }
 
-    @Override
+	@Override // MonoidElement impls
+	public Real getZero()
+	{
+		return RealFactory.getInstance().zero(); 
+	}
+
+	@Override // MultiplicativeMonoidElement impls
+	public Real getOne() {
+		return RealFactory.getInstance().one(); 
+	}
+
+
+    @Override // GroupElement impls
     public Real negate()
     {
         return new Real(-this.value);
     }
 
 
-    // MultiplicativeMonoidElement impls
-
-    @Override
-    public Real multiply(Real other)
-    {
-        return new Real(this.value * other.value);
-    }
-
-
-    // FieldElement impls
-
-    @Override
+    @Override // FieldElement impls
     public Real inverse()
     {
         if (this.isZero())
@@ -115,7 +104,7 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     }    
 
 
-    @Override
+    @Override // ExponentiableElement impls
     public Real power(int exponent)
     {
         if (this.isZero() && exponent < 0) {
@@ -126,7 +115,7 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     }
 
 
-    @Override
+    @Override // SqrtableElement impls
     public Real sqrt()
     {
         if (this.value < 0) {
@@ -137,23 +126,32 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
     }
 
 
-    @Override
+    @Override // ComparableElement impls
     public int compareTo(Real other)
     {
         return Double.compare(this.value, other.value);
     }
 
+    @Override // ComparableElement impls
+    public double modulus() {
+        return Math.abs(this.value);
+    }
+    
 
-    // Java Standard impls
-
-    @Override
+    @Override // NormableElement impls
+    public Real norm()
+    {
+        return new Real(modulus());
+    }
+ 
+ 
+    @Override // Java Standard impls
     public String toString()
     {
     	return String.valueOf(this.value);
     }
 
-
-    @Override
+    @Override // Java Standard impls
     public final boolean equals(Object other) 
     {
         if (this == other) {
@@ -168,34 +166,9 @@ implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement
         return Double.doubleToLongBits(this.value) == Double.doubleToLongBits(real.value);
     }
 
-
-    @Override
+    @Override // Java Standard impls
     public final int hashCode()
     {
     	return java.util.Objects.hash(this.value);
-    }
-
-
-    @Override
-    public Real norm()
-    {
-        return new Real(modulus());
-    }
-
-
-    @Override
-    public double modulus() {
-        return Math.abs(this.value);
-    }
-
-
-	@Override
-	public Real valueOf(double value) {
-		return new Real(value);
-	}
-
-
-	public Real abs() {
-        return new Real(Math.abs(this.value)); 
     }
 }

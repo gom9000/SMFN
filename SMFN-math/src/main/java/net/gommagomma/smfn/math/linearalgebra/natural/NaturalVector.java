@@ -1,7 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.natural;
 
 import java.util.Arrays;
-import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
@@ -11,6 +10,8 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
 {
     private final Natural[] data;
 
+
+    // helper
     private static int validateAndGetLength(Natural[] components) {
         if (components == null || components.length == 0) {
             throw new IllegalArgumentException("Components array cannot be null or empty.");
@@ -19,44 +20,19 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
     }
 
     
-    public NaturalVector(Natural... components) {
+    NaturalVector(Natural... components) {
     	super(validateAndGetLength(components));
-        // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
         this.data = Arrays.copyOf(components, components.length);
     }
 
-    public NaturalVector(List<Natural> components) {
-        this(components.toArray(new Natural[0]));
-    }
-
-    public NaturalVector(int dimension) {
+    NaturalVector(int dimension) {
     	super(dimension);
     	this.data = new Natural[dimension];
-    	Arrays.fill(this.data, Natural.ZERO);
-    }
-
-    @Override
-    public Natural get(int index) {
-    	if (index < 0 || index >= dimension) { 
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
-        }
-    	return data[index];
-    }
-
-    // Implementazioni di CommutativeMonoidElement<V> (add, getZero, isEqual, copy)
-    @Override
-    public NaturalVector add(NaturalVector other) {
-        if (this.dimension != other.dimension) throw new IllegalArgumentException("Dimensions must match");
-        Natural[] resultData = new Natural[dimension];
-        for (int i = 0; i < dimension; i++) {
-            resultData[i] = this.data[i].add(other.data[i]);
-        }
-        return new NaturalVector(resultData);
+    	Arrays.fill(this.data, NaturalVectorFactory.getInstance().getScalarFactory().zero());
     }
 
 
-    // Implementazioni richieste da AlgebraicElement
-    @Override
+    @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(NaturalVector other)
     { 
     	if (this == other) {
@@ -79,13 +55,33 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
 		return true;
     }
 
-    @Override
+    @Override // AlgebraicElement impls
     public NaturalVector copy() { return new NaturalVector(this.data); }
-    
-    @Override
+
+
+    @Override // AdditiveMonoidElement impls
+    public NaturalVector add(NaturalVector other) {
+        if (this.dimension != other.dimension) throw new IllegalArgumentException("Dimensions must match");
+        Natural[] resultData = new Natural[dimension];
+        for (int i = 0; i < dimension; i++) {
+            resultData[i] = this.data[i].add(other.data[i]);
+        }
+        return new NaturalVector(resultData);
+    }
+
+    @Override // AdditiveMonoidElement impls
     public NaturalVector getZero() { return new NaturalVector(dimension); }
 
-    @Override
+
+    @Override // SemimoduleElement impls
+    public Natural get(int index) {
+    	if (index < 0 || index >= dimension) { 
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+    	return data[index];
+    }
+
+    @Override // SemimoduleElement impls
     public NaturalVector multiplyByScalar(Natural scalar) {
     	Natural[] scaledData = new Natural[dimension];
         for (int i = 0; i < dimension; i++) {
@@ -95,14 +91,12 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
     }
 
 
-    // --- Java Standard impls ---
-
-    @Override
+    @Override // Java Standard impls
     public String toString() {
         return "N^" + dimension + Arrays.toString(data);
     }
-    
-    @Override
+
+    @Override // Java Standard impls
     public final boolean equals(Object other)
     {
     	if (this == other) {
@@ -122,7 +116,7 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
         return Arrays.equals(this.data, that.data);
     }
 
-    @Override
+    @Override // Java Standard impls
     public final int hashCode() {
         return Arrays.hashCode(data);
     }

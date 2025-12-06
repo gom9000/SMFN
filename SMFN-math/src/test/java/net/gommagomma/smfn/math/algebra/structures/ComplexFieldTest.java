@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.utils.MathConstants; // Per EPSILON
+import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 
 @DisplayName("ComplexField: Test della Struttura del Campo (C)")
 class ComplexFieldTest {
 
     private final ComplexField COMPLEX_FIELD = ComplexField.getInstance();
-    private final double EPSILON = MathConstants.EPSILON; // Tolleranza per double
+
     
     // Helper per creare un Complex
     private Complex c(double re, double im) {
@@ -50,7 +50,7 @@ class ComplexFieldTest {
         // Numeri Complessi Finiti
         assertTrue(COMPLEX_FIELD.contains(c(5.0, 2.0)), "Contiene 5 + 2i");
         assertTrue(COMPLEX_FIELD.contains(c(-12.34, 0.0)), "Contiene -12.34");
-        assertTrue(COMPLEX_FIELD.contains(Complex.ZERO), "Contiene 0");
+        assertTrue(COMPLEX_FIELD.contains(ComplexFactory.getInstance().zero()), "Contiene 0");
         
         // Elementi Non Finiti/Non Numerici (Non dovrebbero essere inclusi)
         assertFalse(COMPLEX_FIELD.contains(c(Double.NaN, 1.0)), "Non contiene NaN nella parte Reale");
@@ -61,10 +61,10 @@ class ComplexFieldTest {
     @Test
     @DisplayName("Identità Additiva e Moltiplicativa")
     void identities() {
-        assertComplexEquals(Complex.ZERO, COMPLEX_FIELD.additiveIdentity(), "Identità Additiva (Zero)");
-        assertComplexEquals(Complex.ONE, COMPLEX_FIELD.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
-        assertSame(Complex.ZERO, COMPLEX_FIELD.additiveIdentity());
-        assertSame(Complex.ONE, COMPLEX_FIELD.multiplicativeIdentity());
+        assertComplexEquals(ComplexFactory.getInstance().zero(), COMPLEX_FIELD.additiveIdentity(), "Identità Additiva (Zero)");
+        assertComplexEquals(ComplexFactory.getInstance().one(), COMPLEX_FIELD.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
+        assertSame(ComplexFactory.getInstance().zero(), COMPLEX_FIELD.additiveIdentity());
+        assertSame(ComplexFactory.getInstance().one(), COMPLEX_FIELD.multiplicativeIdentity());
     }
 
     // ======================================================================================

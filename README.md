@@ -6,7 +6,7 @@
 net.gommagomma.smfn/
 |-- math/
 |   |-- algebra/
-|   |   |-- core/                        (AlgebraicElement, AlgebraicStructure, Commutative)
+|   |   |-- core/                           (AlgebraicElement, AlgebraicStructure, Commutative)
 |   |   |   |-- elements/                   (...)
 |   |   |   |   |-- additive/               (...)
 |   |   |   |   |-- multiplicative/         (...)
@@ -60,6 +60,7 @@ net.gommagomma.smfn/
 - interface Commutative {}
 - interface AlgebraicElement<E extends AlgebraicElement<E>> { boolean isMathematicallyEqualTo(E other); E copy();}
 - interface AlgebraicStructure<E extends AlgebraicElement<E>> { String getName(); boolean contains(E e); }
+- interface NumericFactory<E extends SemiringElement<E>> {E zero(); E one(); E fromDouble(double value); E fromLong(long value); E fromInt(int value);}
 - interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);default <V extends AlgebraicElement<V>> MathFunction<V, C> compose(MathFunction<V, D> before)}
 
 ### net.gommagomma.smfn.math.algebra.core.elements.additive:
@@ -84,7 +85,6 @@ net.gommagomma.smfn/
 - interface SqrtableElement<E extends SqrtableElement<E>> extends AlgebraicElement<E> { E sqrt(); }
 - interface ExponentiableElement<E extends ExponentiableElement<E>> extends AlgebraicElement<E> { E power(int exponent);}
 - interface NormableElement<N extends FieldElement<N>, E extends NormableElement<N, E>>  extends AlgebraicElement<E> {N norm();}
-- interface CreatableFromDouble<E extends AlgebraicElement<E>>{ E valueOf(double value);}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}
@@ -98,12 +98,18 @@ net.gommagomma.smfn/
 - interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {}
 
 ### net.gommagomma.smfn.math.algebra.numeric:
-- final class Natural implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>, CreatableFromDouble<Natural> { /* ... */ }
-- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, CreatableFromDouble<SignedInt> { /* ... */ }
-- final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>, CreatableFromDouble<Rational> { /* ... */ }
-- final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, CreatableFromDouble<Real> { /* ... */ }
-- final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, CreatableFromDouble<Complex> { /* ... */ }
-- public final class ZnElement implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement> {}
+- final class Natural implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural> { /* ... */ }
+- class NaturalFactory implements NumericFactory<Natural> {}
+- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
+- class SignedIntFactory implements NumericFactory<SignedInt> {}
+- final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational> { /* ... */ }
+- class RationalFactory implements NumericFactory<Rational> {}
+- final class Real implements FieldElement<Real>, NormableElement<Real, Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real> { /* ... */ }
+- class RealFactory implements NumericFactory<Real> {}
+- final class Complex implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex> { /* ... */ }
+- class ComplexFactory implements NumericFactory<Complex> {}
+- final class ZnElement implements CommutativeRingElement<ZnElement> {}
+- class ZnElementFactory implements NumericFactory<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.structures:
 - final class NaturalSemiring implements Semiring<Natural> { /* ... */ }
@@ -162,6 +168,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.natural:
 - final class NaturalVector extends AbstractRank1Tensor<Natural, NaturalVector> { //... }
+- final class NaturalVectorFactory implements SemimoduleVectorFactory<Natural, NaturalVector> {}
 - final class NaturalSemimodule implements Semimodule<Natural, NaturalVector> {}
 - final class NaturalMatrixFactory implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix> {}
 - final class NaturalMatrix extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixFactory> {}

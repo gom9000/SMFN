@@ -217,19 +217,19 @@ class ZnElementTest {
         @Test
         @DisplayName("valueOf (CreatableFromDouble)")
         void valueOf() {
-            ZnElement ring = z(0, 10);
+            ZnElementFactory ring = new ZnElementFactory(new SignedInt(10));
             
             // Conversione diretta da long
-            ZnElement z1 = ring.valueOf(15.0); // 15 mod 10 = 5
+            ZnElement z1 = ring.fromDouble(15.0); // 15 mod 10 = 5
             assertZnElementEquals(z(5, 10), z1, "15.0 mod 10");
             
             // Valore negativo
-            ZnElement z2 = ring.valueOf(-3.0); // -3 mod 10 = 7
+            ZnElement z2 = ring.fromDouble(-3.0); // -3 mod 10 = 7
             assertZnElementEquals(z(7, 10), z2, "-3.0 mod 10");
             
             // Valori che causano overflow di long (dovrebbe essere gestito da SignedInt, ma qui è intercettato)
             assertThrows(ArithmeticException.class, () -> 
-                ring.valueOf(Double.MAX_VALUE), 
+                ring.fromDouble(Double.MAX_VALUE), 
                 "Valore fuori dal range long."
             );
         }

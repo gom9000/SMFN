@@ -14,17 +14,13 @@ public interface SemimoduleVectorFactory<K extends SemiringElement<K>, V extends
 
     default V createVector(double... data) {
         NumericFactory<K> scalars = getScalarFactory();
-        
-        // 1. Creiamo l'array di scalari K
-        @SuppressWarnings("unchecked")
+
         K[] components = (K[]) new SemiringElement[data.length]; 
 
-        // 2. Usiamo la factory K per convertire ogni double
         for (int i = 0; i < data.length; i++) {
             components[i] = scalars.fromDouble(data[i]);
         }
-        
-        // 3. Creiamo il vettore V
+
         return createVector(components);
     }
 }

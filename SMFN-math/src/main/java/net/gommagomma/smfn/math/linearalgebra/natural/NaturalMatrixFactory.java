@@ -1,50 +1,46 @@
 package net.gommagomma.smfn.math.linearalgebra.natural;
 
+import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.algebra.numeric.NaturalFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.SemiringMatrixFactory;
 
-/**
- * Factory concreta per la creazione di elementi basati sul dominio
- * dei numeri naturali (Natural), che formano un Semianello.
- */
+
 public final class NaturalMatrixFactory
 implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
 {
 	private static final NaturalMatrixFactory INSTANCE = new NaturalMatrixFactory();
+    private final NaturalVectorFactory vectorFactory = NaturalVectorFactory.getInstance();
+    private final NaturalFactory scalarFactory = NaturalFactory.getInstance();
+
 
 	private NaturalMatrixFactory() {}
+	public static NaturalMatrixFactory getInstance() { return INSTANCE; }
 
-	public static NaturalMatrixFactory getInstance() {
-        return INSTANCE;
-    }
 
-    @Override
-    public NaturalMatrix createMatrix(Natural[][] data) {
-        // La factory usa il costruttore della classe concreta
-        return new NaturalMatrix(data);
-    }
+	@Override // SemiringMatrixFactory impls
+    public SemimoduleVectorFactory<Natural, NaturalVector> getVectorFactory() { return this.vectorFactory; }
 
-    @Override
+	@Override // SemiringMatrixFactory impls
+    public NumericFactory<Natural> getScalarFactory() { return this.scalarFactory; }
+
+    @Override // SemiringMatrixFactory impls
+    public NaturalMatrix createMatrix(Natural[][] data) {  return new NaturalMatrix(data); }
+
+    @Override // SemiringMatrixFactory impls
     public NaturalMatrix createZeroMatrix(int rows, int cols) {
-        // La factory usa il costruttore helper della classe concreta
-        return new NaturalMatrix(rows, cols);
+    	if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("Matrix dimensions must be positive.");
+       }
+    	return new NaturalMatrix(rows, cols);
     }
 
-    @Override
-    public NaturalVector createVector(Natural[] data) {
-        // Supponendo che esista un costruttore appropriato per NaturalVector
-        return new NaturalVector(data); 
-    }
-
-    /** Restituisce l'elemento zero dello scalare (Natural 0). */
-    @Override
-    public Natural getZeroScalar() {
-        return Natural.ZERO;
-    }
-
-    /** Restituisce l'elemento uno dello scalare (Natural 1). */
-    @Override
-    public Natural getOneScalar() {
-        return Natural.ONE;
-    }
+//    @Override // SemiringMatrixFactory impls
+//    public NaturalMatrix createMatrix(NaturalVector... rowVectors) {
+//        if (rowVectors == null || rowVectors.length == 0) {
+//             throw new IllegalArgumentException("Row vectors cannot be null or empty.");
+//        }
+//        return new NaturalMatrix(rowVectors); 
+//    }
 }

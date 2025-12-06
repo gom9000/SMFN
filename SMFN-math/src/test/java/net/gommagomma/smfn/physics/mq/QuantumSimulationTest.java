@@ -85,9 +85,9 @@ public class QuantumSimulationTest
     public void testEnergyMeasurementNxN() {
         // Creazione di un Hamiltoniano 3x3 arbitrario (devi assicurarti che sia hermitiano)
         Complex[][] hData = new Complex[][] {
-            {new Complex(2.0), Complex.ZERO, Complex.ZERO},
-            {Complex.ZERO, new Complex(1.0), Complex.ZERO},
-            {Complex.ZERO, Complex.ZERO, new Complex(3.0)}
+            {new Complex(2.0), new Complex(0.0), new Complex(0.0)},
+            {new Complex(0.0), new Complex(1.0), new Complex(0.0)},
+            {new Complex(0.0), new Complex(0.0), new Complex(3.0)}
         };
         
         Observable<Complex, ComplexVector, ?> H = new HamiltonianOperator(hData);

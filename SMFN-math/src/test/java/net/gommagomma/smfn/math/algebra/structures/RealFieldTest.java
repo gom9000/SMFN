@@ -12,13 +12,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.utils.MathConstants; // Assumiamo che contenga EPSILON
+import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
 
 @DisplayName("RealField: Test della Struttura del Campo (Field Axioms)")
 class RealFieldTest {
 
     private final RealField REAL_FIELD = RealField.getInstance();
-    private final double EPSILON = MathConstants.EPSILON; // Tolleranza per double
     
     // Helper per creare un Real
     private Real r(double value) {
@@ -50,7 +49,7 @@ class RealFieldTest {
         // Numeri Reali Finiti
         assertTrue(REAL_FIELD.contains(r(5.0)), "Contiene 5.0");
         assertTrue(REAL_FIELD.contains(r(-12.34)), "Contiene -12.34");
-        assertTrue(REAL_FIELD.contains(Real.ZERO), "Contiene 0");
+        assertTrue(REAL_FIELD.contains(RealFactory.getInstance().zero()), "Contiene 0");
         
         // Elementi Non Finiti (Non dovrebbero essere inclusi in un Campo standard)
         assertFalse(REAL_FIELD.contains(r(Double.NaN)), "Non contiene NaN");
@@ -66,8 +65,8 @@ class RealFieldTest {
     void identities() {
         assertRealEquals(r(0.0), REAL_FIELD.additiveIdentity(), "Identità Additiva (Zero)");
         assertRealEquals(r(1.0), REAL_FIELD.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
-        assertSame(Real.ZERO, REAL_FIELD.additiveIdentity());
-        assertSame(Real.ONE, REAL_FIELD.multiplicativeIdentity());
+        assertSame(RealFactory.getInstance().zero(), REAL_FIELD.additiveIdentity());
+        assertSame(RealFactory.getInstance().one(), REAL_FIELD.multiplicativeIdentity());
     }
 
     // ======================================================================================

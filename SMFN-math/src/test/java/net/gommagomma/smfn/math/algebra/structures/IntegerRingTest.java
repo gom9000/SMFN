@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
 
 @DisplayName("IntegerRing: Test della Struttura di Anello Commutativo (Z)")
 class IntegerRingTest {
@@ -45,7 +46,7 @@ class IntegerRingTest {
         // Un IntegerRing contiene ogni oggetto SignedInt non nullo.
         assertTrue(INTEGER_RING.contains(si(5)), "Contiene 5");
         assertTrue(INTEGER_RING.contains(si(-10)), "Contiene -10");
-        assertTrue(INTEGER_RING.contains(SignedInt.ZERO), "Contiene ZERO");
+        assertTrue(INTEGER_RING.contains(SignedIntFactory.getInstance().zero()), "Contiene ZERO");
         
         // Non deve contenere null
         assertFalse(INTEGER_RING.contains(null), "Non contiene null");
@@ -54,10 +55,10 @@ class IntegerRingTest {
     @Test
     @DisplayName("Identità Additiva e Moltiplicativa")
     void identities() {
-        assertSignedIntEquals(SignedInt.ZERO, INTEGER_RING.additiveIdentity(), "Identità Additiva (Zero)");
-        assertSignedIntEquals(SignedInt.ONE, INTEGER_RING.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
-        assertSame(SignedInt.ZERO, INTEGER_RING.additiveIdentity());
-        assertSame(SignedInt.ONE, INTEGER_RING.multiplicativeIdentity());
+        assertSignedIntEquals(SignedIntFactory.getInstance().zero(), INTEGER_RING.additiveIdentity(), "Identità Additiva (Zero)");
+        assertSignedIntEquals(SignedIntFactory.getInstance().one(), INTEGER_RING.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
+        assertSame(SignedIntFactory.getInstance().zero(), INTEGER_RING.additiveIdentity());
+        assertSame(SignedIntFactory.getInstance().one(), INTEGER_RING.multiplicativeIdentity());
     }
 
     // ======================================================================================

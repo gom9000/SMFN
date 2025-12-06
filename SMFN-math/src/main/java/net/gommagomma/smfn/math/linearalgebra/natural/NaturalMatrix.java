@@ -14,10 +14,8 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
 {
     private static final NaturalMatrixFactory FACTORY_INSTANCE = NaturalMatrixFactory.getInstance();
 
-    /**
-     * Costruttore principale che accetta i dati e la factory.
-     */
-    public NaturalMatrix(Natural[][] data) {
+
+    protected NaturalMatrix(Natural[][] data) {
         super(data, FACTORY_INSTANCE);
     }
 
@@ -25,10 +23,10 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
      * Costruttore per creare una matrice di zeri di dimensioni specifiche.
      * Usato internamente per getZero(), identity(), ecc.
      */
-    NaturalMatrix(int rows, int cols) {
+    protected NaturalMatrix(int rows, int cols) {
     	super(rows, cols, FACTORY_INSTANCE);
     	for (int i = 0; i < rows; i++) {
-    		Arrays.fill(this.data[i], Natural.ZERO);
+    		Arrays.fill(this.data[i], factory.getScalarFactory().zero());
     	}
     }
 
@@ -52,8 +50,7 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
         if (row < 0 || row >= rows) {
             throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
         }
-
-        return factory.createVector(Arrays.copyOf(data[row], cols));
+        return factory.getVectorFactory().createVector(Arrays.copyOf(this.data[row], this.cols));
     }
 
     @Override
@@ -67,7 +64,6 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
         for (int i = 0; i < rows; i++) {
             columnData[i] = data[i][col];
         }
-
-        return factory.createVector(columnData);
+        return factory.getVectorFactory().createVector(columnData);
     }
 }

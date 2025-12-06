@@ -13,6 +13,8 @@ implements ModuleElement<SignedInt, SignedIntVector>
 {
     private final SignedInt[] data;
 
+
+    // helper
     private static int validateAndGetLength(SignedInt[] components) {
         if (components == null || components.length == 0) {
             throw new IllegalArgumentException("Components array cannot be null or empty.");
@@ -20,43 +22,19 @@ implements ModuleElement<SignedInt, SignedIntVector>
         return components.length;
     }
 
-    /**
-     * Costruisce un SignedIntVector da un numero variabile di componenti SignedInt.
-     * Esegue una copia difensiva per garantire l'immutabilità.
-     *
-     * @param components Le componenti del vettore.
-     * @throws IllegalArgumentException se components sono null o vuoti.
-     */
-    public SignedIntVector(SignedInt... components) {
+
+    protected SignedIntVector(SignedInt... components) {
     	super(validateAndGetLength(components));
         // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
         this.data = Arrays.copyOf(components, components.length);
     }
 
-    /**
-     * Costruisce un vettore nullo della dimensione specificata.
-     * @param dimension La dimensione del vettore.
-     */
-    public SignedIntVector(int dimension) {
+    protected SignedIntVector(int dimension) {
     	super(dimension);
         this.data = new SignedInt[dimension];
-        Arrays.fill(this.data, SignedInt.ZERO);
+        Arrays.fill(this.data, SignedIntVectorFactory.zero());
     }
 
-
-	public SignedIntVector(List<SignedInt> components) {
-        this(components.toArray(new SignedInt[0]));
-    }
-
-    /**
-     * Helper statico per creare vettori da array di long primitivi.
-     */
-    public static SignedIntVector fromLongs(long... data) {
-        SignedInt[] intComponents = Arrays.stream(data)
-                                          .mapToObj(SignedInt::new) 
-                                          .toArray(SignedInt[]::new);
-        return new SignedIntVector(intComponents);
-    }
 
     @Override
     public SignedIntVector createNewInstance(SignedInt... components) {

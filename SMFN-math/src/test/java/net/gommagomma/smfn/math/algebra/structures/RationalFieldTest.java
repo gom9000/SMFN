@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
 
 @DisplayName("RationalField: Test della Struttura del Campo (Q)")
 class RationalFieldTest {
@@ -52,7 +53,7 @@ class RationalFieldTest {
         // Un RationalField contiene ogni oggetto Rational non nullo.
         assertTrue(RATIONAL_FIELD.contains(r(1, 2)), "Contiene 1/2");
         assertTrue(RATIONAL_FIELD.contains(r(-5)), "Contiene -5");
-        assertTrue(RATIONAL_FIELD.contains(Rational.ZERO), "Contiene ZERO");
+        assertTrue(RATIONAL_FIELD.contains(RationalFactory.getInstance().zero()), "Contiene ZERO");
         
         // Non deve contenere null
         assertFalse(RATIONAL_FIELD.contains(null), "Non contiene null");
@@ -61,10 +62,10 @@ class RationalFieldTest {
     @Test
     @DisplayName("Identità Additiva e Moltiplicativa")
     void identities() {
-        assertRationalEquals(Rational.ZERO, RATIONAL_FIELD.additiveIdentity(), "Identità Additiva (Zero)");
-        assertRationalEquals(Rational.ONE, RATIONAL_FIELD.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
-        assertSame(Rational.ZERO, RATIONAL_FIELD.additiveIdentity());
-        assertSame(Rational.ONE, RATIONAL_FIELD.multiplicativeIdentity());
+        assertRationalEquals(RationalFactory.getInstance().zero(), RATIONAL_FIELD.additiveIdentity(), "Identità Additiva (Zero)");
+        assertRationalEquals(RationalFactory.getInstance().one(), RATIONAL_FIELD.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
+        assertSame(RationalFactory.getInstance().zero(), RATIONAL_FIELD.additiveIdentity());
+        assertSame(RationalFactory.getInstance().one(), RATIONAL_FIELD.multiplicativeIdentity());
     }
 
     // ======================================================================================

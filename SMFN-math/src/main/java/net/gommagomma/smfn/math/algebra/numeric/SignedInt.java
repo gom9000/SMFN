@@ -1,17 +1,13 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.euclidean.EuclideanDomainElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 
 public final class SignedInt
-implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, EuclideanDomainElement<SignedInt, SignedInt>, CreatableFromDouble<SignedInt>
+implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, EuclideanDomainElement<SignedInt, SignedInt>
 {
-	public static final SignedInt ZERO = new SignedInt(0);
-    public static final SignedInt ONE = new SignedInt(1);
-
 	private final long value;
 
 
@@ -27,9 +23,7 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     }
 
 
-    // AlgebraicElement impls
-
-    @Override
+    @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(SignedInt other)
     {
     	if (this == other) {
@@ -42,31 +36,14 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
         return this.value == other.value;
     }
 
-
-    @Override
+    @Override // AlgebraicElement impls
     public SignedInt copy()
     {
         return new SignedInt(this.value);
     }
 
 
-	@Override
-	public SignedInt getZero()
-	{
-		return SignedInt.ZERO;
-	}
-
-
-	@Override
-	public SignedInt getOne()
-	{
-		return SignedInt.ONE;
-	}
-
-
-    // MonoidElement impls
-
-    @Override
+    @Override // MonoidElement impls
     public SignedInt add(SignedInt other)
     {
         long result = Math.addExact(this.value, other.value);
@@ -74,10 +51,29 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
         return new SignedInt(result);
     }
 
+	@Override // MonoidElement impls
+	public SignedInt getZero()
+	{
+		return SignedIntFactory.getInstance().zero();
+	}
 
-   // GroupElement impls
 
-	@Override
+    @Override // MultiplicativeMonoidElement impls
+    public SignedInt multiply(SignedInt other)
+    {
+        long result = Math.multiplyExact(this.value, other.value);
+
+        return new SignedInt(result);
+    }
+
+	@Override // MultiplicativeMonoidElement impls
+	public SignedInt getOne()
+	{
+		return SignedIntFactory.getInstance().one();
+	}
+
+
+	@Override // GroupElement impls
 	public SignedInt negate()
 	{
 		if (this.value == Long.MIN_VALUE) {
@@ -88,28 +84,17 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
 	}
 
 
-    // MultiplicativeMonoidElement impls
-
-    @Override
-    public SignedInt multiply(SignedInt other)
-    {
-        long result = Math.multiplyExact(this.value, other.value);
-
-        return new SignedInt(result);
-    }
-
-
-    @Override
+    @Override // ExponentiableElement impls
     public SignedInt power(int exponent)
     {
     	if (exponent < 0) {
             throw new ArithmeticException("Cannot raise a SignedInt to a negative power within the ring of integers.");
         }
         if (exponent == 0) {
-            return SignedInt.ONE;
+            return SignedIntFactory.getInstance().one();
         }
         if (this.isZero()) {
-            return SignedInt.ZERO;
+            return SignedIntFactory.getInstance().zero();
         }
 
         long base = this.value;
@@ -129,21 +114,24 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     }
 
 
-    @Override
+    @Override // ComparableElement impls
     public int compareTo(SignedInt other)
     {
         return Long.compare(this.value, other.value);
     }
 
+    @Override // ComparableElement impls
+    public double modulus() {
+        return Math.abs(this.value);
+    }
 
-// --- EuclideanDomainElement impls ---
     
     /**
      * Implementa la funzione norma euclidea v(n) = |n|.
      * Nota: Stiamo usando SignedInt per la norma, assumendo che i valori positivi
      * di SignedInt agiscano come i Naturali (N).
      */
-    @Override
+    @Override // EuclideanDomainElement impls
     public SignedInt normValue() {
         return new SignedInt(Math.abs(this.value));
     }
@@ -151,7 +139,7 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     /**
      * Calcola il quoziente q della Divisione Euclidea: this = q * divisor + remainder.
      */
-    @Override
+    @Override // EuclideanDomainElement impls
     public SignedInt quotient(SignedInt divisor) {
         if (divisor.isZero()) {
             throw new ArithmeticException("Division by zero in Euclidean domain.");
@@ -160,17 +148,9 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
         long a = this.value;
         long b = divisor.value;
 
-        // 1. Ottiene il resto Euclideo normalizzato r, chiamando il metodo remainder.
         SignedInt remainderElement = this.remainder(divisor);
         long r = remainderElement.value; 
-
-        // 2. Calcola il quoziente q usando la formula: q = (a - r) / b
-        //    Questa formula GARANTISCE la coerenza: a = q*b + r.
-        
-        long numerator = Math.subtractExact(a, r); // Per (10, -3), questo è 10 - 1 = 9
-        
-        // Esegui la divisione intera standard di Java.
-        // Per (10, -3), questo è 9 / -3 = -3. (CORRETTO per la verifica)
+        long numerator = Math.subtractExact(a, r);
         long q = numerator / b; 
 
         return new SignedInt(q);
@@ -180,18 +160,14 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
      * Calcola il resto r della Divisione Euclidea: this = q * divisor + remainder.
      * Restituisce r, normalizzato per essere nell'intervallo [0, |divisor| - 1].
      */
-    @Override
+    @Override // EuclideanDomainElement impls
     public SignedInt remainder(SignedInt divisor) {
         if (divisor.isZero()) {
             throw new ArithmeticException("Division by zero in Euclidean domain.");
         }
         
-        // Resto standard di Java (che può essere negativo)
         long rem = this.value % divisor.value;
-        
-        // Normalizzazione del resto per garantire che sia nell'intervallo [0, |divisor| - 1].
         if (rem < 0) {
-            // Aggiunge il modulo assoluto se il resto è negativo.
             rem += Math.abs(divisor.value);
         }
 
@@ -199,16 +175,13 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     }
 
 
-    // Java Standard impls
-
-    @Override
+    @Override // Java Standard impls
     public String toString()
     {
     	return String.valueOf(this.value);
     }
 
-
-    @Override
+    @Override // Java Standard impls
     public final boolean equals(Object other) 
     {
     	if (this == other) {
@@ -223,27 +196,9 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
         return this.value == natural.value;
     }
 
-
-    @Override
+    @Override // Java Standard impls
     public final int hashCode()
     {
         return java.util.Objects.hash(this.value);
     }
-
-
-    @Override
-    public double modulus() {
-        return Math.abs(this.value);
-    }
-
-
-	@Override
-	public SignedInt valueOf(double value) {
-		if (value > Long.MAX_VALUE || value < Long.MIN_VALUE) {
-	        throw new ArithmeticException("Value " + value + " is outside the range of SignedInt (long).");
-	    }
-
-	    return new SignedInt((long) value);
-	}
-
 }

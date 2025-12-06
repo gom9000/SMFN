@@ -24,8 +24,8 @@ class NaturalTest {
     @Test
     @DisplayName("Costruttore, Getter e Costanti")
     void constructorAndBasicProps() {
-        assertEquals(0L, Natural.ZERO.getValue());
-        assertEquals(1L, Natural.ONE.getValue());
+        assertEquals(0L, NaturalFactory.getInstance().zero().getValue());
+        assertEquals(1L, NaturalFactory.getInstance().one().getValue());
         assertEquals(123L, n(123L).getValue());
 
         // Test IllegalArgumentException per valori negativi
@@ -62,8 +62,8 @@ class NaturalTest {
     @Test
     @DisplayName("getZero, getOne")
     void identityElements() {
-        assertEquals(Natural.ZERO, n(5).getZero());
-        assertEquals(Natural.ONE, n(5).getOne());
+        assertEquals(NaturalFactory.getInstance().zero(), n(5).getZero());
+        assertEquals(NaturalFactory.getInstance().one(), n(5).getOne());
     }
 
     // ======================================================================================
@@ -84,7 +84,7 @@ class NaturalTest {
         @DisplayName("Overflow in Addizione")
         void addOverflow() {
             Natural max = n(Long.MAX_VALUE);
-            Natural one = Natural.ONE;
+            Natural one = NaturalFactory.getInstance().one();
 
             // Math.addExact lancia ArithmeticException se si verifica un overflow
             assertThrows(ArithmeticException.class, () -> 
@@ -187,16 +187,16 @@ class NaturalTest {
         @ParameterizedTest
         @ValueSource(doubles = {123.0, 99999.0, 0.0, 5.5, 123.99999})
         void valueOfValid(double input) {
-            Natural result = n(0).valueOf(input); 
+            Natural result = NaturalFactory.getInstance().fromDouble(input); 
             // La conversione a long tronca la parte decimale
-            assertEquals((long) input, result.getValue());
+            assertEquals(Math.round(input), result.getValue());
         }
 
         @ParameterizedTest
         @ValueSource(doubles = {-1.0, -0.0001, -123.45})
         void valueOfNegativeThrowsException(double input) {
             assertThrows(IllegalArgumentException.class, () -> 
-                n(0).valueOf(input), 
+                NaturalFactory.getInstance().fromDouble(input), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per valori negativi."
             );
         }
@@ -209,7 +209,7 @@ class NaturalTest {
             double overflowValue = 9.223372036854776E18 * 2.0; 
             
             assertThrows(ArithmeticException.class, () -> 
-                n(0).valueOf(overflowValue), 
+                NaturalFactory.getInstance().fromDouble(overflowValue), 
                 "valueOf dovrebbe lanciare ArithmeticException per overflow."
             );
         }
@@ -219,11 +219,11 @@ class NaturalTest {
         void valueOfNonFinite() {
             // NaN e Infinity non sono numeri Naturali validi
             assertThrows(IllegalArgumentException.class, () -> 
-                n(0).valueOf(Double.NaN), 
+                NaturalFactory.getInstance().fromDouble(Double.NaN), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per NaN."
             );
             assertThrows(IllegalArgumentException.class, () -> 
-                n(0).valueOf(Double.POSITIVE_INFINITY), 
+                NaturalFactory.getInstance().fromDouble(Double.POSITIVE_INFINITY), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per Infinity."
             );
         }

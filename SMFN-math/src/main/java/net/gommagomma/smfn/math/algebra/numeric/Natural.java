@@ -1,19 +1,16 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 
 public final class Natural
-implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>, CreatableFromDouble<Natural>
+implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>
 {
-	
-
 	private final long value;
 
 
-    protected Natural(long value)
+    public Natural(long value)
     {
         if (value < 0) {
             throw new IllegalArgumentException("Natural numbers cannot be negative.");
@@ -28,9 +25,7 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
     }
 
 
-    // AlgebraicElement impls
-
-    @Override
+    @Override  // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(Natural other)
     {
     	if (this == other) {
@@ -43,31 +38,14 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
         return this.value == other.value;
     }
 
-
-    @Override
+    @Override // AlgebraicElement impls
     public Natural copy()
     {
         return new Natural(this.value);
     }
 
 
-	@Override
-	public Natural getZero()
-	{
-		return NaturalFactory.getInstance().zero();
-	}
-
-
-	@Override
-	public Natural getOne()
-	{
-		return NaturalFactory.getInstance().one();
-	}
-
-
-    // MonoidElement impls
-
-    @Override
+    @Override // MonoidElement impls
     public Natural add(Natural other)
     {
         long result = Math.addExact(this.value, other.value); 
@@ -75,10 +53,14 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
         return new Natural(result);
     }
 
+	@Override // MonoidElement impls
+	public Natural getZero()
+	{
+		return NaturalFactory.getInstance().zero();
+	}
 
-    // MultiplicativeMonoidElement impls
 
-    @Override
+    @Override // MultiplicativeMonoidElement impls
     public Natural multiply(Natural other)
     {
         long result = Math.multiplyExact(this.value, other.value);
@@ -86,8 +68,14 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
         return new Natural(result);
     }
 
+	@Override // MultiplicativeMonoidElement impls
+	public Natural getOne()
+	{
+		return NaturalFactory.getInstance().one();
+	}
 
-    @Override
+
+    @Override // ExponentiableElement impls
     public Natural power(int exponent)
     {
         if (exponent < 0) {
@@ -115,23 +103,25 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
     }
 
 
-    @Override
+    @Override // ComparableElement impls
     public int compareTo(Natural other)
     {
         return Long.compare(this.value, other.value);
     }
 
+    @Override // ComparableElement impls
+    public double modulus() {
+        return this.value;
+    }
 
-    // Java Standard impls
 
-    @Override
+    @Override // Java Standard impls
     public String toString()
     {
     	return String.valueOf(this.value);
     }
 
-
-    @Override
+    @Override // Java Standard impls
     public final boolean equals(Object other) 
     {
     	if (this == other) {
@@ -146,34 +136,9 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
         return this.value == natural.value;
     }
 
-
-    @Override
+    @Override // Java Standard impls
     public final int hashCode()
     {
         return java.util.Objects.hash(this.value);
     }
-
-
-    @Override
-    public double modulus() {
-        return this.value;
-    }
-
-
-	@Override
-	public Natural valueOf(double value) {
-		if (Double.isNaN(value) || Double.isInfinite(value)) {
-	        throw new IllegalArgumentException("Cannot create a Natural number from a non-finite value: " + value);
-	    }
-
-		if (value < 0.0) {
-	        throw new IllegalArgumentException("Cannot create a Natural number from a negative value: " + value);
-	    }
-	    
-	    if (value > Long.MAX_VALUE) {
-	        throw new ArithmeticException("Value " + value + " is outside the range of Natural (long).");
-	    }
-
-	    return new Natural((long) value);
-	}
 }

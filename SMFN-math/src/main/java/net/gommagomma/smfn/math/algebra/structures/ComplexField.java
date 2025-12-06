@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 
 
 public final class ComplexField
@@ -10,20 +11,18 @@ implements Field<Complex>
 {
 	public static final ComplexField INSTANCE = new ComplexField();
 
+
     private ComplexField() {}
+    public static ComplexField getInstance() { return INSTANCE; }
 
-    public static ComplexField getInstance() {
-        return INSTANCE;
-    }
 
-	@Override
+	@Override // AlgebraicStructure impls
 	public String getName()
 	{
 		return "Complex Field (C)";
 	}
 
-
-	@Override
+	@Override // AlgebraicStructure impls
 	public boolean contains(Complex e)
 	{
 		if (e == null) {
@@ -35,16 +34,16 @@ implements Field<Complex>
 	}
 
 
-	@Override
+	@Override // AdditiveMonoid impls
 	public Complex additiveIdentity()
 	{
-		return Complex.ZERO;
+		return ComplexFactory.getInstance().zero();
 	}
 
 
-	@Override
+	@Override // MultiplicativeMonoid impls
 	public Complex multiplicativeIdentity()
 	{
-		return Complex.ONE;
+		return ComplexFactory.getInstance().one();
 	}
 }

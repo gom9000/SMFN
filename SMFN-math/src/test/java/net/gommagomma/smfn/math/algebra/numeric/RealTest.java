@@ -40,8 +40,8 @@ class RealTest {
         assertEquals(Math.PI, pi.getValue(), TOLERANCE);
         assertEquals("3.141592653589793", pi.toString()); // Dipende dalla precisione Java
 
-        assertEquals(0.0, Real.ZERO.getValue(), 0);
-        assertEquals(1.0, Real.ONE.getValue(), 0);
+        assertEquals(0.0, RealFactory.getInstance().zero().getValue(), 0);
+        assertEquals(1.0, RealFactory.getInstance().one().getValue(), 0);
         
         Real copy = pi.copy();
         assertRealEquals(pi, copy);
@@ -96,8 +96,8 @@ class RealTest {
         
         @Test
         void identityAndInverse() {
-            assertRealEquals(r(5.0), r(5.0).add(Real.ZERO));
-            assertRealEquals(Real.ZERO, r(5.0).add(r(5.0).negate()));
+            assertRealEquals(r(5.0), r(5.0).add(RealFactory.getInstance().zero()));
+            assertRealEquals(RealFactory.getInstance().zero(), r(5.0).add(r(5.0).negate()));
         }
     }
 
@@ -120,15 +120,15 @@ class RealTest {
         @Test
         void inverseOfZeroThrowsException() {
             assertThrows(ArithmeticException.class, () -> 
-                Real.ZERO.inverse(), 
+                RealFactory.getInstance().zero().inverse(), 
                 "L'inverso di zero dovrebbe lanciare ArithmeticException"
             );
         }
 
         @Test
         void identity() {
-            assertRealEquals(r(7.5), r(7.5).multiply(Real.ONE));
-            assertRealEquals(Real.ONE, r(7.5).multiply(r(7.5).inverse()));
+            assertRealEquals(r(7.5), r(7.5).multiply(RealFactory.getInstance().one()));
+            assertRealEquals(RealFactory.getInstance().one(), r(7.5).multiply(r(7.5).inverse()));
         }
     }
 
@@ -145,7 +145,7 @@ class RealTest {
         @Test
         void powerZeroNegativeExponentThrowsException() {
             assertThrows(ArithmeticException.class, () -> 
-                Real.ZERO.power(-1), 
+                RealFactory.getInstance().zero().power(-1), 
                 "Zero elevato a potenza negativa dovrebbe lanciare ArithmeticException"
             );
         }
@@ -246,16 +246,16 @@ class RealTest {
         @ParameterizedTest
         @ValueSource(doubles = {123.45, -99.99, 0.0, Math.PI})
         void valueOfValid(double input) {
-            Real result = r(0.0).valueOf(input); // Chiamata tramite istanza
+            Real result = RealFactory.getInstance().fromDouble(input); // Chiamata tramite istanza
             assertEquals(input, result.getValue(), 0);
         }
         
         @Test
         void valueOfSpecialValues() {
-            assertRealEquals(r(Double.MAX_VALUE), r(0.0).valueOf(Double.MAX_VALUE));
-            assertRealEquals(r(Double.MIN_VALUE), r(0.0).valueOf(Double.MIN_VALUE));
-            assertRealEquals(r(Double.NaN), r(0.0).valueOf(Double.NaN));
-            assertRealEquals(r(Double.POSITIVE_INFINITY), r(0.0).valueOf(Double.POSITIVE_INFINITY));
+            assertRealEquals(r(Double.MAX_VALUE), RealFactory.getInstance().fromDouble(Double.MAX_VALUE));
+            assertRealEquals(r(Double.MIN_VALUE), RealFactory.getInstance().fromDouble(Double.MIN_VALUE));
+            assertRealEquals(r(Double.NaN), RealFactory.getInstance().fromDouble(Double.NaN));
+            assertRealEquals(r(Double.POSITIVE_INFINITY), RealFactory.getInstance().fromDouble(Double.POSITIVE_INFINITY));
         }
     }
 }

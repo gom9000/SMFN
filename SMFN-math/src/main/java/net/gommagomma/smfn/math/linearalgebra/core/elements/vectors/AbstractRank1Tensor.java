@@ -22,30 +22,28 @@ implements SemimoduleElement<K, V>
      }
 
 
-     @Override
+     @Override // SemimoduleElement impls
      public int dimension() {
          return this.dimension;
      }
 
 
-     // TensorElement impls
-
- 	@Override
+ 	@Override // TensorElement impls
  	public int getRank() {
  		return 1;
  	}
 
- 	@Override
+ 	@Override // TensorElement impls
  	public int[] getShape() {
  		return new int[] { this.dimension };
  	}
 
- 	@Override
+ 	@Override // TensorElement impls
  	public long size() {
  		return this.dimension;
  	}
 
- 	@Override
+ 	@Override // TensorElement impls
  	public final K get(int... indices) {
  		if (indices.length != getRank()) {
  			throw new IllegalArgumentException("Indices length must match the Tensor Rank (1).");

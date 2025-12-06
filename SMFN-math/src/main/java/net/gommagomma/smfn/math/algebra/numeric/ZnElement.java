@@ -1,6 +1,5 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 
 
@@ -9,10 +8,11 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.Commutative
  * Implementa CommutativeRingElement direttamente, senza l'astrazione Ideal/QuotientRing.
  */
 public final class ZnElement 
-implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement>
+implements CommutativeRingElement<ZnElement>
 {
     private final SignedInt value; 
     private final SignedInt modulus;
+
 
     /**
      * Costruisce un nuovo elemento modulare [value] mod n.
@@ -27,6 +27,7 @@ implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement>
         this.value = value.mod(modulus);
     }
 
+
     /**
      * Restituisce il valore del rappresentante canonico [0, n-1].
      */
@@ -34,9 +35,13 @@ implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement>
         return value;
     }
 
-    // AlgebraicElement impls
 
-    @Override
+    public SignedInt getModulus() {
+        return modulus;
+    }
+
+
+    @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(ZnElement other) {
         if (!this.modulus.isMathematicallyEqualTo(other.modulus)) {
              return false;
@@ -45,81 +50,64 @@ implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement>
         return this.value.isMathematicallyEqualTo(other.value);
     }
 
-    @Override
+    @Override // AlgebraicElement impls
     public ZnElement copy() {
         return new ZnElement(this.value, this.modulus); 
     }
-    
-    // CommutativeRingElement impls
 
-    @Override
+
+    @Override // CommutativeRingElement impls
     public ZnElement getZero() {
         return new ZnElement(new SignedInt(0), this.modulus);
     }
-
-    @Override
-    public ZnElement getOne() {
-        return new ZnElement(new SignedInt(1), this.modulus);
-    }
     
-    @Override
+    @Override // CommutativeRingElement impls
     public boolean isZero() {
         return this.value.isMathematicallyEqualTo(getZero().value);
     }
-    
-    // AdditiveMonoidElement impls
 
-    @Override
+
+    @Override // AdditiveMonoidElement impls
     public ZnElement add(ZnElement other) {
         if (!this.modulus.isMathematicallyEqualTo(other.modulus)) {
             throw new IllegalArgumentException("Cannot add elements from different modulus rings.");
         }
         // [a] + [b] = [a + b] mod n
         SignedInt sum = this.value.add(other.value);
-        return new ZnElement(sum, this.modulus); // Il costruttore normalizza
+        return new ZnElement(sum, this.modulus);
     }
 
-    // GroupElement impls
 
-    @Override
+    @Override // GroupElement impls
     public ZnElement negate() {
         // [a] -> [-a] mod n
         SignedInt negatedValue = this.value.negate();
-        return new ZnElement(negatedValue, this.modulus); // Il costruttore normalizza
+        return new ZnElement(negatedValue, this.modulus);
     }
-    
-    // MultiplicativeMonoidElement impls
 
-    @Override
+
+    @Override // MultiplicativeMonoidElement impls
     public ZnElement multiply(ZnElement other) {
         if (!this.modulus.isMathematicallyEqualTo(other.modulus)) {
             throw new IllegalArgumentException("Cannot multiply elements from different modulus rings.");
         }
         // [a] * [b] = [a * b] mod n
         SignedInt product = this.value.multiply(other.value);
-        return new ZnElement(product, this.modulus); // Il costruttore normalizza
+        return new ZnElement(product, this.modulus); 
     }
 
-    
-    // CreatableFromDouble impls
-
-    @Override
-    public ZnElement valueOf(double value) {
-    	if (value > Long.MAX_VALUE || value < Long.MIN_VALUE) {
-	        throw new ArithmeticException("Value " + value + " is outside the range of SignedInt (long).");
-	    }
-        SignedInt intValue = new SignedInt((long) value);
-        return new ZnElement(intValue, this.modulus);
+    @Override // MultiplicativeMonoidElement impls
+    public ZnElement getOne() {
+        return new ZnElement(new SignedInt(1), this.modulus);
     }
-    
-    // Java Standard impls
 
-    @Override
+
+    @Override // Java Standard impls
     public String toString() {
         return "[" + this.value.toString() + " mod " + this.modulus.toString() + "]";
     }
 
-    @Override
+    @Override // Java Standard impls
     public final boolean equals(Object other) {
         if (this == other) return true;
         if (!(other instanceof ZnElement)) return false;
@@ -127,13 +115,8 @@ implements CommutativeRingElement<ZnElement>, CreatableFromDouble<ZnElement>
         return this.value.equals(that.value) && this.modulus.equals(that.modulus);
     }
 
-    @Override
+    @Override // Java Standard impls
     public final int hashCode() {
         return java.util.Objects.hash(this.value, this.modulus);
-    }
-
-
-    public SignedInt getModulus() {
-        return modulus;
     }
 }

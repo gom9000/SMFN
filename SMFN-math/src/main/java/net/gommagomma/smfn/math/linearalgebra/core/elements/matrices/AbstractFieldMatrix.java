@@ -39,9 +39,7 @@ implements FieldMatrixElement<K, V, M>
     protected abstract Comparator<K> getMagnitudeComparator();
 
 
-    // --- Implementazioni di MatrixElement
-
-    @Override
+    @Override // FieldMatrixElement impls
     public K determinant() {
         if (getColumns() != getRows()) {
             throw new IllegalArgumentException("Matrix must be square to calculate the determinant.");
@@ -56,7 +54,7 @@ implements FieldMatrixElement<K, V, M>
             System.arraycopy(this.data[i], 0, A[i], 0, n);
         }
 
-        K det = factory.getOneScalar();
+        K det = factory.getScalarFactory().one();
         int sign = 1;
 
         for (int i = 0; i < n; i++) {
@@ -76,8 +74,8 @@ implements FieldMatrixElement<K, V, M>
             }
             
             // Confronto con l'elemento zero della factory
-            if (A[i][i].isMathematicallyEqualTo(factory.getZeroScalar())) {
-                return factory.getZeroScalar();
+            if (A[i][i].isMathematicallyEqualTo(factory.getScalarFactory().zero())) {
+                return factory.getScalarFactory().zero();
             }
             
             for (int k = i + 1; k < n; k++) {
@@ -97,14 +95,14 @@ implements FieldMatrixElement<K, V, M>
         return det;
     }
 
-    @Override
+    @Override // FieldMatrixElement impls
     public M inverse() {
         if (getColumns() != getRows()) {
             throw new IllegalArgumentException("Inverse can only be calculated for square matrices.");
         }
         int n = getRows();
-        K zero = factory.getZeroScalar();
-        K one = factory.getOneScalar();
+        K zero = factory.getScalarFactory().zero();
+        K one = factory.getScalarFactory().one();
         Comparator<K> comparator = getMagnitudeComparator();
 
         // Matrice aumentata [A | I]
@@ -169,7 +167,7 @@ implements FieldMatrixElement<K, V, M>
         return factory.createMatrix(inverseData);
     }
 
-    @Override
+    @Override // FieldMatrixElement impls
     public M transpose() {
     	K[][] resultData = createMatrixArray(cols, rows); 
         
@@ -178,7 +176,6 @@ implements FieldMatrixElement<K, V, M>
                 resultData[j][i] = this.data[i][j];
             }
         }
-
         return factory.createMatrix(resultData);
     }
 }

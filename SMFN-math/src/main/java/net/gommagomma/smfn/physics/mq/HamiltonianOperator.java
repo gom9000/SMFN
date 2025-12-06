@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.physics.mq;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexMatrix;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
@@ -9,7 +10,8 @@ import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
  * Rappresenta un operatore Hamiltoniano (energia) implementato usando la composizione.
  * Contiene una ComplexMatrix internamente.
  */
-final class HamiltonianOperator implements Observable<Complex, ComplexVector, HamiltonianOperator>
+final class HamiltonianOperator
+implements Observable<Complex, ComplexVector, HamiltonianOperator>
 {
     private final ComplexMatrix matrix;
 
@@ -18,7 +20,6 @@ final class HamiltonianOperator implements Observable<Complex, ComplexVector, Ha
      * @param data I dati della matrice NxN.
      */
     public HamiltonianOperator(Complex[][] data) {
-        // Inizializza la matrice interna
         this.matrix = new ComplexMatrix(data);
     }
 
@@ -46,7 +47,7 @@ final class HamiltonianOperator implements Observable<Complex, ComplexVector, Ha
          
          Complex[] resultData = new Complex[this.matrix.getRows()];
          for (int i = 0; i < this.matrix.getRows(); i++) {
-             Complex sum = Complex.ZERO;
+             Complex sum = ComplexFactory.getInstance().zero();
              for (int j = 0; j < this.matrix.getColumns(); j++) {
                  sum = sum.add(this.matrix.get(i, j).multiply(vector.get(j)));
              }

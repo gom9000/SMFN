@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
 
 
 public final class RationalField
@@ -10,36 +11,34 @@ implements Field<Rational>
 {
 	public static final RationalField INSTANCE = new RationalField();
 
-    private RationalField() {}
 
-    public static RationalField getInstance() {
-        return INSTANCE;
-    }
-    
-	@Override
+    private RationalField() {}
+    public static RationalField getInstance() { return INSTANCE; }
+
+
+	@Override // AlgebraicStructure impls
 	public String getName()
 	{
 		return "Rational Field (Q)";
 	}
 
-
-	@Override
+	@Override // AlgebraicStructure impls
 	public boolean contains(Rational e)
 	{
 		return (e != null);
 	}
 
 
-	@Override
+	@Override // AdditiveMonoid impls
 	public Rational additiveIdentity()
 	{
-		return Rational.ZERO;
+		return RationalFactory.getInstance().zero();
 	}
 
 
-	@Override
+	@Override // MultiplicativeMonoid impls
 	public Rational multiplicativeIdentity()
 	{
-		return Rational.ONE;
+		return RationalFactory.getInstance().one();
 	}
 }

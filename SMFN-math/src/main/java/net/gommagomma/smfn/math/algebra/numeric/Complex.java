@@ -3,27 +3,18 @@ package net.gommagomma.smfn.math.algebra.numeric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.CreatableFromDouble;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.SqrtableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Complex
-implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, CreatableFromDouble<Complex>
+implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, NormableElement<Real, Complex>
 {
-	public static final Complex ZERO = new Complex(0.0, 0.0);
-    public static final Complex ONE = new Complex(1.0, 0.0);
-
     private final double real;
     private final double imaginary;
 
 
-    /**
-     * Constructs a new complex number with the given real and imaginary parts.
-     * @param real the real part of the complex number
-     * @param imaginary the imaginary part of the complex number
-     */
     public Complex(double real, double imaginary)
     {
         this.real = real;
@@ -31,49 +22,56 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
     }
 
 
-    /**
-     * Constructs a new complex number with the given real part.
-     * @param real the real part of the complex number
-     */
     public Complex(double real)
     {
         this(real, 0.0);
     }
 
 
-    /**
-     * Constructs a new complex number with the given Real.
-     * @param real the real part of the complex number
-     */
     public Complex(Real real)
     {
         this(real.getValue(), 0.0);
     }
 
 
-    /**
-     * Returns the real part of this complex number.
-     * @return the real part of this complex number
-     */
     public double getRe()
     {
     	return this.real;
     }
 
 
-    /**
-     * Returns the imaginary part of this complex number.
-     * @return the imaginary part of this complex number
-     */
     public double getIm()
     {
     	return this.imaginary;
     }
 
 
-    // AlgebraicElement impls
+    public double modulus()
+    {
+        return Math.sqrt(real * real + imaginary * imaginary);
+    }
 
-    @Override
+    public double modulusSquared()
+    {
+        return real * real + imaginary * imaginary;
+    }
+ 
+    public Complex conjugate()
+    {
+    	return new Complex(real, -imaginary);
+    }
+
+    /**
+     * Calcola l'argomento (fase) del numero complesso in radianti.
+     * Restituisce un valore nell'intervallo (-pi, pi].
+     * @return L'angolo in radianti.
+     */
+    public double argument() {
+        return Math.atan2(imaginary, real);
+    }
+
+
+    @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(Complex other)
     {
     	if (this == other) {
@@ -87,49 +85,27 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
             && (Math.abs(this.imaginary - other.imaginary) < MathConstants.EPSILON);
     }
 
-
-    @Override
+    @Override // AlgebraicElement impls
     public Complex copy()
     {
         return new Complex(this.real, this.imaginary);
     }
 
 
-	@Override
-	public Complex getZero()
-	{
-		return Complex.ZERO; 
-	}
-
-
-	@Override
-	public Complex getOne()
-	{
-		return Complex.ONE;
-	}
-
-
-    // MonoidElement impls
-
-    @Override
+    @Override // MonoidElement impls
     public Complex add(Complex other)
     {
         return new Complex(this.real + other.real, this.imaginary + other.imaginary);
     }
 
-
-    // GroupElement impls
-
-    @Override
-    public Complex negate()
-    {
-        return new Complex(-this.real, -this.imaginary);
-    }
+	@Override // MonoidElement impls
+	public Complex getZero()
+	{
+		return ComplexFactory.getInstance().zero(); 
+	}
 
 
-    // MultiplicativeMonoidElement impls
-
-    @Override
+    @Override // MultiplicativeMonoidElement impls
     public Complex multiply(Complex other)
     {
         double newReal = this.real * other.real - this.imaginary * other.imaginary;
@@ -137,10 +113,21 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
         return new Complex(newReal, newImaginary);
     }
 
+	@Override // MultiplicativeMonoidElement impls
+	public Complex getOne()
+	{
+		return ComplexFactory.getInstance().one();
+	}
 
-    // FieldElement impls
 
-    @Override
+    @Override // GroupElement impls
+    public Complex negate()
+    {
+        return new Complex(-this.real, -this.imaginary);
+    }
+
+
+    @Override // FieldElement impls
     public Complex inverse()
     {
         double modSq = modulusSquared();
@@ -153,26 +140,7 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
     }
 
 
-    /**
-     * Calcola il modulo (valore assoluto) del numero complesso.
-     * |z| = sqrt(a^2 + b^2)
-     */
-    public double modulus()
-    {
-        return Math.sqrt(real * real + imaginary * imaginary);
-    }
-
-
-    /**
-     * Calcola il quadrato del modulo.
-     */
-    public double modulusSquared()
-    {
-        return real * real + imaginary * imaginary;
-    }
-
-
-    @Override
+    @Override // ExponentiableElement impls
     public Complex power(int exponent)
     {
         if (this.isZero() && exponent < 0) {
@@ -180,12 +148,12 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
         }
 
         if (exponent == 0) {
-            return Complex.ONE;
+            return ComplexFactory.getInstance().one();
         }
 
         Complex base = this;
         int exp = Math.abs(exponent);
-        Complex result = Complex.ONE;
+        Complex result = ComplexFactory.getInstance().one();
 
         while (exp > 0)
         {
@@ -200,11 +168,11 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
     }
 
 
-    @Override
+    @Override // SqrtableElement impls
     public Complex sqrt()
     {
         if (this.isZero()) {
-            return Complex.ZERO;
+            return ComplexFactory.getInstance().zero();
         }
 
         double magnitude = this.modulus();
@@ -221,15 +189,14 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
     }
 
 
-    public Complex conjugate()
+    @Override // NormableElement impls
+    public Real norm()
     {
-    	return new Complex(real, -imaginary);
+        return RealFactory.getInstance().fromDouble(this.modulus());
     }
 
 
-    // Java Standard impls
-
-    @Override
+    @Override // Java Standard impls
     public String toString()
     {
         if (imaginary == 0) {
@@ -248,8 +215,7 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
         return real + imSign + imStr;
     }
 
-
-    @Override
+    @Override // Java Standard impls
     public final boolean equals(Object other)
     {
     	if (this == other) {
@@ -265,39 +231,9 @@ implements FieldElement<Complex>, NormableElement<Real, Complex>, ExponentiableE
         		Double.doubleToLongBits(this.imaginary) == Double.doubleToLongBits(complex.imaginary);
     }
 
-
-    /**
-     * Returns a hash code value for the object, based on the exact internal
-     * double values of the real and imaginary parts.
-     *
-     * @return A hash code value for this object.
-     */
-    @Override
+    @Override // Java Standard impls
     public final int hashCode()
     {
     	return java.util.Objects.hash(this.real, this.imaginary);
     }
-
-
-    @Override
-    public Real norm()
-    {
-        return new Real(this.modulus());
-    }
-
-
-    /**
-     * Calcola l'argomento (fase) del numero complesso in radianti.
-     * Restituisce un valore nell'intervallo (-pi, pi].
-     * @return L'angolo in radianti.
-     */
-    public double argument() {
-        return Math.atan2(imaginary, real);
-    }
-
-
-	@Override
-	public Complex valueOf(double value) {
-		return new Complex(value, 0.0);
-	}
 }
