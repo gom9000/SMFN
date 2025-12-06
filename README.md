@@ -270,14 +270,12 @@ implements ODESolver<K, T> {}
 
 
 
-TODO:
+# TODO:
 - public class Point<K extends FieldElement<K>, V extends VectorElement<K, V>>
 implements AlgebraicElement<Point<K, V>>
 
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
-
-- metti a fattor comune i costruttori di abstractRank1Tensor (i costruttori dei figli ovviamente);
 
 - Suggerimento: Vincola l'interfaccia HermitianOperator in modo più stretto, non solo a VectorElement, ma a InnerProductSpaceElement.
 // Vincolo più stretto per i problemi di MQ:
@@ -294,13 +292,10 @@ public interface HermitianOperator<K extends FieldElement<K> & NormableElement<R
 - interfaccia ScalarFactory !!! (ScalarFactory -> SemimoduleVectorFactory -> SemiringMatrixFactory)
 e centralizza lì la costruzione di tutti gli elementi
 public interface ScalarFactory<K extends SemiringElement<K>> {
-    
     /** Restituisce l'identità additiva (Zero) dello scalare K. */
     K getZeroScalar();
-    
     /** Restituisce l'identità moltiplicativa (Uno) dello scalare K. */
     K getOneScalar();
-    
     /** * Crea un nuovo elemento K partendo da un primitivo double.
      * Questo è il metodo statico 'valueOf()' che mancava. 
      */
