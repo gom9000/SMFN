@@ -18,6 +18,9 @@ implements SemimoduleVectorFactory<Natural, NaturalVector>
 
 
     @Override // SemimoduleVectorFactory impls
+    public Class<Natural> getScalarClass() { return Natural.class; }
+
+    @Override // SemimoduleVectorFactory impls
     public NumericFactory<Natural> getScalarFactory() { return this.scalarFactory; }
 
     @Override // SemimoduleVectorFactory impls

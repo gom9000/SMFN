@@ -166,16 +166,4 @@ implements FieldMatrixElement<K, V, M>
         // 3. Utilizziamo la factory per creare una nuova istanza M finale e immutabile
         return factory.createMatrix(inverseData);
     }
-
-    @Override // FieldMatrixElement impls
-    public M transpose() {
-    	K[][] resultData = createMatrixArray(cols, rows); 
-        
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                resultData[j][i] = this.data[i][j];
-            }
-        }
-        return factory.createMatrix(resultData);
-    }
 }

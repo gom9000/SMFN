@@ -19,7 +19,7 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
         return components.length;
     }
 
-    
+
     NaturalVector(Natural... components) {
     	super(validateAndGetLength(components));
         this.data = Arrays.copyOf(components, components.length);

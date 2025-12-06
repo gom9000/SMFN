@@ -29,6 +29,29 @@ implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
     public NaturalMatrix createMatrix(Natural[][] data) {  return new NaturalMatrix(data); }
 
     @Override // SemiringMatrixFactory impls
+    public NaturalMatrix createMatrix(double[][] data) {
+        int rows = data.length;
+        if (rows == 0) {
+            return createZeroMatrix(0, 0); 
+        }
+        int cols = data[0].length;
+
+        NaturalFactory scalarFactory = (NaturalFactory) getScalarFactory();
+        Natural[][] components = new Natural[rows][cols]; 
+        
+        for (int i = 0; i < rows; i++) {
+            if (data[i].length != cols) {
+                throw new IllegalArgumentException("All rows must have the same length.");
+            }
+            for (int j = 0; j < cols; j++) {
+                components[i][j] = scalarFactory.fromDouble(data[i][j]);
+            }
+        }
+
+        return createMatrix(components);
+    }
+
+    @Override // SemiringMatrixFactory impls
     public NaturalMatrix createZeroMatrix(int rows, int cols) {
     	if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("Matrix dimensions must be positive.");

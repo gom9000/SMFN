@@ -17,6 +17,7 @@ extends AlgebraicElement<M>, CommutativeMonoidElement<M>
 
     M multiply(M other); 
     M multiplyByScalar(K scalar);
+    M transpose();
 
     V multiply(V vector);	
 }

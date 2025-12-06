@@ -120,7 +120,18 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
 
     @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(M other) {
-        if (this.rows != other.getRows() || this.cols != other.getColumns()) return false;
+    	if (this == other) {
+            return true;
+        }
+        
+        if (other == null) {
+            return false;
+        }
+        
+        if (!this.isStructuralyEqualTo(other)) {
+            return false;
+        }
+
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 if (!this.data[i][j].isMathematicallyEqualTo(other.get(i, j))) {
@@ -202,6 +213,19 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
         }
         return factory.createMatrix(resultData);
     }
+
+    @Override // SemiringMatrixElement impls
+    public M transpose() {
+    	K[][] resultData = createMatrixArray(cols, rows); 
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                resultData[j][i] = this.data[i][j];
+            }
+        }
+        return factory.createMatrix(resultData);
+    }
+
 
     @Override // SemiringMatrixElement impls
     public V multiply(V vector) {

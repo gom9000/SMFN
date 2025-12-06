@@ -1,7 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.signedint;
 
 import java.util.Arrays;
-import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
@@ -23,27 +22,19 @@ implements ModuleElement<SignedInt, SignedIntVector>
     }
 
 
-    protected SignedIntVector(SignedInt... components) {
+    SignedIntVector(SignedInt... components) {
     	super(validateAndGetLength(components));
-        // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
         this.data = Arrays.copyOf(components, components.length);
     }
 
-    protected SignedIntVector(int dimension) {
+    SignedIntVector(int dimension) {
     	super(dimension);
         this.data = new SignedInt[dimension];
-        Arrays.fill(this.data, SignedIntVectorFactory.zero());
+        Arrays.fill(this.data, SignedIntVectorFactory.getInstance().getScalarFactory().zero());
     }
 
 
-    @Override
-    public SignedIntVector createNewInstance(SignedInt... components) {
-        return new SignedIntVector(components);
-    }
-
-    // --- Implementazione di AlgebraicElement e AdditiveMonoidElement ---
-
-    @Override
+    @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(SignedIntVector other)
     {
     	if (this == other) {
@@ -66,22 +57,13 @@ implements ModuleElement<SignedInt, SignedIntVector>
 		return true;
     }
 
-    @Override
+    @Override // AlgebraicElement impls
     public SignedIntVector copy() {
         return new SignedIntVector(this.data);
     }
 
-	@Override
-	public SignedIntVector getZero()
-	{
-		// Restituisce un nuovo vettore nullo della stessa dimensione
-		return new SignedIntVector(dimension);
-	}
 
-    
-    // --- Implementazione di AbelianGroupElement (add, negate) ---
-
-    @Override
+    @Override // AdditiveMonoidElement impls
     public SignedIntVector add(SignedIntVector other) {
         if (this.dimension != other.dimension) {
             throw new IllegalArgumentException("Vectors must have the same dimension to add.");
@@ -92,8 +74,14 @@ implements ModuleElement<SignedInt, SignedIntVector>
         }
         return new SignedIntVector(resultData);
     }
+
+	@Override // AdditiveMonoidElement impls
+	public SignedIntVector getZero() {
+		return new SignedIntVector(dimension);
+	}
+
     
-    @Override
+    @Override // GroupElement impls
     public SignedIntVector negate() {
         SignedInt[] negatedData = new SignedInt[dimension];
         for (int i = 0; i < dimension; i++) {
@@ -102,9 +90,8 @@ implements ModuleElement<SignedInt, SignedIntVector>
         return new SignedIntVector(negatedData);
     }
 
-    // --- Implementazione di VectorElement
 
-    @Override
+    @Override // SemimoduleElement impls
     public SignedIntVector multiplyByScalar(SignedInt scalar) {
         SignedInt[] scaledData = new SignedInt[dimension];
         for (int i = 0; i < dimension; i++) {
@@ -113,23 +100,18 @@ implements ModuleElement<SignedInt, SignedIntVector>
         return new SignedIntVector(scaledData);
     }
 
-    // --- Implementazione di SpaceElement/VectorElement (utilità) ---
-
-
-    @Override
+    @Override // SemimoduleElement impls
     public SignedInt get(int index) {
         return this.data[index];
     }
 
-    
-    // --- Java Standard impls ---
 
-    @Override
+    @Override // Java Standard impls
     public String toString() {
         return "Z^" + dimension + Arrays.toString(data);
     }
     
-    @Override
+    @Override // Java Standard impls
     public final boolean equals(Object other)
     {
     	if (this == other) {
@@ -149,7 +131,7 @@ implements ModuleElement<SignedInt, SignedIntVector>
         return Arrays.equals(this.data, that.data);
     }
 
-    @Override
+    @Override // Java Standard impls
     public final int hashCode() {
         return Arrays.hashCode(data);
     }

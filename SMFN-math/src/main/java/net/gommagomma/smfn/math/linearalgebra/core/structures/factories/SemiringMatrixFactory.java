@@ -15,6 +15,7 @@ public interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends S
         return getVectorFactory().getScalarFactory();
     }
 
+	M createMatrix(double[][] data);
 	M createMatrix(K[][] data); 
 	M createZeroMatrix(int rows, int cols); 
 
@@ -28,25 +29,25 @@ public interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends S
 //        return matrix;
 //    }
 
-	default M createMatrix(double[][] data) {
-        int rows = data.length;
-        if (rows == 0) {
-            return createZeroMatrix(0, 0);
-        }
-        int cols = data[0].length;
-
-        NumericFactory<K> scalarFactory = getScalarFactory();
-        
-        K[][] components = (K[][]) new SemiringElement[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            if (data[i].length != cols) {
-                 throw new IllegalArgumentException("All rows must have the same length.");
-            }
-            for (int j = 0; j < cols; j++) {
-                components[i][j] = scalarFactory.fromDouble(data[i][j]);
-            }
-        }
-
-        return createMatrix(components);
-    }
+//	default M createMatrix(double[][] data) {
+//        int rows = data.length;
+//        if (rows == 0) {
+//            return createZeroMatrix(0, 0);
+//        }
+//        int cols = data[0].length;
+//
+//        NumericFactory<K> scalarFactory = getScalarFactory();
+//        
+//        K[][] components = (K[][]) new SemiringElement[rows][cols];
+//        for (int i = 0; i < rows; i++) {
+//            if (data[i].length != cols) {
+//                 throw new IllegalArgumentException("All rows must have the same length.");
+//            }
+//            for (int j = 0; j < cols; j++) {
+//                components[i][j] = scalarFactory.fromDouble(data[i][j]);
+//            }
+//        }
+//
+//        return createMatrix(components);
+//    }
 }

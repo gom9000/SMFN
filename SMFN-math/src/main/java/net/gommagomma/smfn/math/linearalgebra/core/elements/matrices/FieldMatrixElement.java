@@ -9,5 +9,4 @@ extends RingMatrixElement<K, V, M>
 {
     K determinant();
     M inverse();
-    M transpose();
 }
