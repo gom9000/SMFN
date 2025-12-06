@@ -8,13 +8,12 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringEle
 public final class Natural
 implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>, CreatableFromDouble<Natural>
 {
-	public static final Natural ZERO = new Natural(0);
-    public static final Natural ONE = new Natural(1);
+	
 
 	private final long value;
 
 
-    public Natural(long value)
+    protected Natural(long value)
     {
         if (value < 0) {
             throw new IllegalArgumentException("Natural numbers cannot be negative.");
@@ -55,14 +54,14 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
 	@Override
 	public Natural getZero()
 	{
-		return Natural.ZERO;
+		return NaturalFactory.getInstance().zero();
 	}
 
 
 	@Override
 	public Natural getOne()
 	{
-		return Natural.ONE;
+		return NaturalFactory.getInstance().one();
 	}
 
 
@@ -95,10 +94,10 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
             throw new ArithmeticException("Cannot raise a Natural number to a negative power.");
         }
         if (exponent == 0) {
-            return Natural.ONE;
+            return getOne();
         }
         if (this.isZero()) {
-            return Natural.ZERO;
+            return getZero();
         }
 
         long base = this.value;
