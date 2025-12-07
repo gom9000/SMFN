@@ -143,9 +143,15 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
     }
 
     @Override // AlgebraicElement impls
-    public M copy()
-    {
-        return factory.createMatrix(this.data);
+    public M copy() {
+        K[][] resultData = createMatrixArray(rows, cols); 
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                resultData[i][j] = this.data[i][j].copy(); 
+            }
+        }
+        return factory.createMatrix(resultData);
     }
 
 
