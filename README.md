@@ -6,13 +6,14 @@
 net.gommagomma.smfn/
 |-- math/
 |   |-- algebra/
-|   |   |-- core/                           (AlgebraicElement, AlgebraicStructure, Commutative)
+|   |   |-- core/                           (AlgebraicElement, AlgebraicStructure, Commutative, NumericFactory, MathFunction)
 |   |   |   |-- elements/                   (...)
 |   |   |   |   |-- additive/               (...)
 |   |   |   |   |-- multiplicative/         (...)
+|   |   |   |   |-- tensors/                (TensorElement)
 |   |   |   |   \-- capabilities/           (ComparableElement,ExponentiableElement,NormableElement,SqrtableElement)
-|   |   |   |-- structures/                 (AdditiveMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
-|   |   |-- numeric/                        (Natural, Signedint, ZnElement, Rational, Real, Complex)
+|   |   |   |-- structures/                 (AdditiveMonoid,MultiplicativeMonoid,ComutativeMultiplicativeMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
+|   |   |-- numeric/                        (Natural, NaturalFactory, Signedint, SignedintFactory, ZnElement, ZnElementFactory, Rational, RationalFactory, Real, RealFactory, Complex, ComplexFactory)
 |   |   \-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField)
 |   |-- linearalgebra                       # Vettori, Matrici e Spazi
 |   |   |-- core                   		  # Interfacce per Vettori, Matrici, Spazi
@@ -60,7 +61,7 @@ net.gommagomma.smfn/
 - interface Commutative {}
 - interface AlgebraicElement<E extends AlgebraicElement<E>> { boolean isMathematicallyEqualTo(E other); E copy();}
 - interface AlgebraicStructure<E extends AlgebraicElement<E>> { String getName(); boolean contains(E e); }
-- interface NumericFactory<E extends SemiringElement<E>> {E zero(); E one(); E fromDouble(double value); E fromLong(long value); E fromInt(int value);}
+- interface NumericFactory<E extends SemiringElement<E>> {E zero(); E one(); E of(double value); E of(long value); E of(int value);}
 - interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);default <V extends AlgebraicElement<V>> MathFunction<V, C> compose(MathFunction<V, D> before)}
 
 ### net.gommagomma.smfn.math.algebra.core.elements.additive:
@@ -100,7 +101,7 @@ net.gommagomma.smfn/
 ### net.gommagomma.smfn.math.algebra.numeric:
 - final class Natural implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural> { /* ... */ }
 - class NaturalFactory implements NumericFactory<Natural> {}
-- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt> { /* ... */ }
+- final class SignedInt implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, EuclideanDomainElement<SignedInt, SignedInt> { /* ... */ }
 - class SignedIntFactory implements NumericFactory<SignedInt> {}
 - final class Rational implements FieldElement<Rational>, NormableElement<Real, Rational>, ExponentiableElement<Rational>, ComparableElement<Rational> { /* ... */ }
 - class RationalFactory implements NumericFactory<Rational> {}

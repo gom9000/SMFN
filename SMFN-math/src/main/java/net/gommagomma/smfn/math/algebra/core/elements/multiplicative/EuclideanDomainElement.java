@@ -1,7 +1,6 @@
-package net.gommagomma.smfn.math.algebra.core.elements.euclidean;
+package net.gommagomma.smfn.math.algebra.core.elements.multiplicative;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 
 
 /**
