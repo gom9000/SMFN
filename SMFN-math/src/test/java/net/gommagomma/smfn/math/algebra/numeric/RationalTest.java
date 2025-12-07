@@ -341,13 +341,13 @@ class RationalTest {
         @Test
         void valueOfExactPowersOfTwo() {
             // 0.5 = 1/2
-            assertRationalEquals(r(1, 2), RationalFactory.getInstance().fromDouble(0.5), "0.5");
+            assertRationalEquals(r(1, 2), RationalFactory.getInstance().of(0.5), "0.5");
             // 0.25 = 1/4
-            assertRationalEquals(r(1, 4), RationalFactory.getInstance().fromDouble(0.25), "0.25");
+            assertRationalEquals(r(1, 4), RationalFactory.getInstance().of(0.25), "0.25");
             // 0.125 = 1/8
-            assertRationalEquals(r(1, 8), RationalFactory.getInstance().fromDouble(0.125), "0.125");
+            assertRationalEquals(r(1, 8), RationalFactory.getInstance().of(0.125), "0.125");
             // 5.0 = 5
-            assertRationalEquals(r(5), RationalFactory.getInstance().fromDouble(5.0), "5.0");
+            assertRationalEquals(r(5), RationalFactory.getInstance().of(5.0), "5.0");
         }
         
         @Test
@@ -357,46 +357,46 @@ class RationalTest {
             // La rappresentazione IEEE 754 di 0.5 è 1/2.
             
             // Per -0.5:
-            Rational result_half = RationalFactory.getInstance().fromDouble(-0.5);
+            Rational result_half = RationalFactory.getInstance().of(-0.5);
             assertEquals(-1L, result_half.getNumerator());
             assertEquals(2L, result_half.getDenominator());
             
             // Per -3.0:
-            assertRationalEquals(r(-3), RationalFactory.getInstance().fromDouble(-3.0), "-3.0");
+            assertRationalEquals(r(-3), RationalFactory.getInstance().of(-3.0), "-3.0");
         }
         
         @Test
         void valueOfWithSimplification() {
             // 0.75 = 3/4
-            assertRationalEquals(r(3, 4), RationalFactory.getInstance().fromDouble(0.75), "0.75 (3/4)");
+            assertRationalEquals(r(3, 4), RationalFactory.getInstance().of(0.75), "0.75 (3/4)");
             // 0.4 = 2/5 (Non è una potenza di 2, ma è una frazione esatta in IEEE 754)
             // (0.4 è rappresentato in binario come 0.011001100..., ma il double approssima 
             // a una frazione con denominatore potenza di 2. Il tuo algoritmo lo cattura.)
-            assertRationalEquals(r(1801439850948199L, 4503599627370496L).copy(), RationalFactory.getInstance().fromDouble(0.4), "0.4 (approx)");
+            assertRationalEquals(r(1801439850948199L, 4503599627370496L).copy(), RationalFactory.getInstance().of(0.4), "0.4 (approx)");
             
             // Questo test è problematico a causa della precisione. Concentriamoci su quelli che funzionano esatti.
             // 0.75 è (1/2 + 1/4) = 3/4. Bit: 0x3FE8000000000000L. Exp=1022-1023=-1. Mantissa=1.1 -> 1 * 2^-1 + 1 * 2^-2.
             // Il tuo algoritmo dovrebbe produrre una frazione con denominatore potenza di 2.
             // 0.75 -> 3/4 è esatto.
             // 1.5 -> 3/2 è esatto.
-            assertRationalEquals(r(3, 2), RationalFactory.getInstance().fromDouble(1.5), "1.5");
+            assertRationalEquals(r(3, 2), RationalFactory.getInstance().of(1.5), "1.5");
         }
 
         @Test
         void valueOfNonFiniteThrowsException() {
             assertThrows(IllegalArgumentException.class, () -> 
-                RationalFactory.getInstance().fromDouble(Double.NaN), 
+                RationalFactory.getInstance().of(Double.NaN), 
                 "valueOf NaN."
             );
             assertThrows(IllegalArgumentException.class, () -> 
-                RationalFactory.getInstance().fromDouble(Double.POSITIVE_INFINITY), 
+                RationalFactory.getInstance().of(Double.POSITIVE_INFINITY), 
                 "valueOf Infinity."
             );
         }
         
         @Test
         void valueOfZero() {
-            assertRationalEquals(RationalFactory.getInstance().zero(), RationalFactory.getInstance().fromDouble(0.0), "valueOf 0.0");
+            assertRationalEquals(RationalFactory.getInstance().zero(), RationalFactory.getInstance().of(0.0), "valueOf 0.0");
         }
     }
     

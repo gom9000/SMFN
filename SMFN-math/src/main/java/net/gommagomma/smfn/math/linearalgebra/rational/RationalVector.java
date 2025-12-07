@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
@@ -17,6 +18,8 @@ implements InnerProductSpaceElement<Rational, RationalVector>
 {
     private final Rational[] data;
 
+
+    // helper
     private static int validateAndGetLength(Rational[] components) {
         if (components == null || components.length == 0) {
             throw new IllegalArgumentException("Components array cannot be null or empty.");
@@ -25,43 +28,19 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     }
 
 
-    /**
-     * Costruisce un RationalVector da un numero variabile di componenti Rational.
-     * @param components Le componenti del vettore.
-     */
     public RationalVector(Rational... components) {
     	super(validateAndGetLength(components));
-        // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
         this.data = Arrays.copyOf(components, components.length);
     }
-    
-    /**
-     * Costruisce un vettore nullo della dimensione specificata.
-     */
+
     public RationalVector(int dimension) {
         super(dimension);
         this.data = new Rational[dimension];
-        Arrays.fill(this.data, Rational.ZERO);
+        Arrays.fill(this.data, RationalFactory.getInstance().zero());
     }
 
-    /**
-     * Helper statico per creare vettori da array di long primitivi (visti come razionali a denominatore 1).
-     */
-    public static RationalVector fromLongs(long... data) {
-        Rational[] rationalComponents = Arrays.stream(data)
-                                          .mapToObj(Rational::new) 
-                                          .toArray(Rational[]::new);
-        return new RationalVector(rationalComponents);
-    }
 
-    @Override
-    public RationalVector createNewInstance(Rational... components) {
-        return new RationalVector(components);
-    }
-
-    // --- Implementazioni di AlgebraicElement e AdditiveMonoidElement ---
-
-    @Override
+    @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(RationalVector other)
     {
     	if (this == other) {
@@ -72,10 +51,6 @@ implements InnerProductSpaceElement<Rational, RationalVector>
             return false;
         }
 
-		if (this.dimension != other.dimension) {
-			return false;
-		}
-
 		for (int ii = 0; ii < dimension; ii++) {
 			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
 				return false;
@@ -84,17 +59,13 @@ implements InnerProductSpaceElement<Rational, RationalVector>
 		return true;
     }
 
-    @Override
+    @Override // AlgebraicElement impls
     public RationalVector copy() {
         return new RationalVector(this.data);
     }
 
-	@Override
-	public RationalVector getZero() {
-		return new RationalVector(dimension);
-	}
 
-    @Override
+    @Override // AdditiveMonoidElement impls
     public RationalVector add(RationalVector other) {
         if (this.dimension != other.dimension) throw new IllegalArgumentException("Dimensions must match.");
         Rational[] resultData = new Rational[dimension];
@@ -103,8 +74,14 @@ implements InnerProductSpaceElement<Rational, RationalVector>
         }
         return new RationalVector(resultData);
     }
-    
-    @Override
+
+	@Override // AdditiveMonoidElement impls
+	public RationalVector getZero() {
+		return new RationalVector(dimension);
+	}
+
+
+    @Override // GroupElement impls
     public RationalVector negate() {
         Rational[] negatedData = new Rational[dimension];
         for (int i = 0; i < dimension; i++) {
@@ -114,9 +91,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     }
 
 
-    // VectorElement impls
-
-    @Override
+    @Override // SemimoduleElement impls
     public RationalVector multiplyByScalar(Rational scalar) {
         Rational[] scaledData = new Rational[dimension];
         for (int i = 0; i < dimension; i++) {
@@ -125,42 +100,38 @@ implements InnerProductSpaceElement<Rational, RationalVector>
         return new RationalVector(scaledData);
     }
 
+    @Override // SemimoduleElement impls
+    public Rational get(int index) { return this.data[index]; }
 
-    // --- Implementazione di NormedVectorElement (norm) ---
 
-    @Override
+    @Override // InnerProductSpaceElement impls
     public Rational dotProduct(RationalVector other) {
         if (this.dimension != other.dimension) {
             throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
         }
-        Rational result = Rational.ZERO; // Assumendo esista
+        Rational result = RationalFactory.getInstance().zero();
         for (int i = 0; i < dimension; i++) {
             result = result.add(this.data[i].multiply(other.data[i]));
         }
         return result;
     }
 
-    @Override
+    @Override // NormableElement impls
     public Real norm() {
         Rational normSquaredRational = this.dotProduct(this);
         double normValue = Math.sqrt((double)normSquaredRational.getNumerator() / normSquaredRational.getDenominator());
 
         return new Real(normValue);
     }
-    
-    // --- Implementazione di SpaceElement/VectorElement (utilità) ---
 
-    @Override public Rational get(int index) { return this.data[index]; }
 
-    
-    // --- Java Standard impls ---
-
-    @Override
+    @Override // Java Standard impls
     public String toString() {
         return "Q^" + dimension + Arrays.toString(data);
     }
     
-    @Override public final boolean equals(Object other)
+    @Override // Java Standard impls
+    public final boolean equals(Object other)
     {
     	if (this == other) {
             return true;
@@ -179,7 +150,8 @@ implements InnerProductSpaceElement<Rational, RationalVector>
         return Arrays.equals(this.data, that.data);
     }
     
-    @Override public final int hashCode() {
+    @Override // Java Standard impls
+    public final int hashCode() {
         return Arrays.hashCode(data);
     }
 }

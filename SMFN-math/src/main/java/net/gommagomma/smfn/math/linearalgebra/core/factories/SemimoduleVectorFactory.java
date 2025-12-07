@@ -1,7 +1,5 @@
 package net.gommagomma.smfn.math.linearalgebra.core.factories;
 
-import java.lang.reflect.Array;
-
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
@@ -12,18 +10,12 @@ public interface SemimoduleVectorFactory<K extends SemiringElement<K>, V extends
     NumericFactory<K> getScalarFactory();
     Class<K> getScalarClass();
 
-    V createVector(int dimension);
     V createVector(K[] data);
+    V createVector(double[] data);
+    V createVector(long[] data);
+    V createVector(int[] data);
+    V createZeroVector(int dimension);
 
-    default V createVector(double... data) {
-        NumericFactory<K> scalars = getScalarFactory();
-
-        K[] components = (K[]) Array.newInstance(getScalarClass(), data.length); 
-
-        for (int i = 0; i < data.length; i++) {
-            components[i] = scalars.fromDouble(data[i]);
-        }
-
-        return createVector(components);
-    }
+    default K getZeroScalar() { return getScalarFactory().zero(); }
+    default K getOneScalar() { return getScalarFactory().one(); }
 }

@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.numeric.NaturalFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.SemiringMatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.factories.SemiringMatrixFactory;
 
 
 public final class NaturalMatrixFactory
@@ -25,8 +25,9 @@ implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
 	@Override // SemiringMatrixFactory impls
     public NumericFactory<Natural> getScalarFactory() { return this.scalarFactory; }
 
+
     @Override // SemiringMatrixFactory impls
-    public NaturalMatrix createMatrix(Natural[][] data) {  return new NaturalMatrix(data); }
+    public NaturalMatrix createMatrix(Natural[][] data) { return new NaturalMatrix(data); }
 
     @Override // SemiringMatrixFactory impls
     public NaturalMatrix createMatrix(double[][] data) {
@@ -44,7 +45,7 @@ implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
                 throw new IllegalArgumentException("All rows must have the same length.");
             }
             for (int j = 0; j < cols; j++) {
-                components[i][j] = scalarFactory.fromDouble(data[i][j]);
+                components[i][j] = scalarFactory.of(data[i][j]);
             }
         }
 

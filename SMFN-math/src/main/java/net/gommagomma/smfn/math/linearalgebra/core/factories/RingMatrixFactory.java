@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.linearalgebra.core.structures.factories;
+package net.gommagomma.smfn.math.linearalgebra.core.factories;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.RingElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.RingMatrixElement;

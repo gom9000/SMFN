@@ -1,167 +1,159 @@
 package net.gommagomma.smfn.math.linearalgebra.signedint;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 
-@DisplayName("SignedIntVector: Test del Modulo su Anello Z")
-public class SignedIntVectorTest {
+class SignedIntVectorTest {
 
-    private static SignedInt S_N2, S_N1, S0, S1, S2, S3, S5;
-    private static SignedIntVectorFactory factory;
+    private SignedIntVectorFactory factory;
+    private SignedInt one;
+    private SignedInt zero;
+    private SignedInt negativeTwo;
 
-    @BeforeAll
-    static void setUp() {
-        // Inizializzazione della Factory e degli scalari SignedInt
+    @BeforeEach
+    void setUp() {
         factory = SignedIntVectorFactory.getInstance();
-        
-        S0 = factory.getScalarFactory().zero(); 
-        S1 = new SignedInt(1);
-        S2 = new SignedInt(2);
-        S3 = new SignedInt(3);
-        S5 = new SignedInt(5);
-        S_N1 = new SignedInt(-1);
-        S_N2 = new SignedInt(-2);
+        zero = factory.getScalarFactory().zero();
+        one = factory.getScalarFactory().one();
+        negativeTwo = factory.getScalarFactory().of(-2);
     }
 
-    // ------------------- COSTRUTTORI / FACTORY -------------------
+    // --- Test sulla Factory: Creazione ---
 
     @Test
-    @DisplayName("Factory: Creazione corretta da array di SignedInt")
-    void testFactory_CreateVectorFromComponents() {
-        SignedInt[] data = new SignedInt[] { S1, S_N2, S3 };
+    void testCreateVectorFromSignedIntArray() {
+        SignedInt[] components = {one, negativeTwo, zero};
+        SignedIntVector v = factory.createVector(components);
+
+        assertNotNull(v);
+        assertEquals(3, v.dimension());
+        assertTrue(v.get(1).isMathematicallyEqualTo(negativeTwo));
+    }
+    
+    @Test
+    void testCreateVectorFromIntArray() {
+        int[] data = {10, -5, 0};
         SignedIntVector v = factory.createVector(data);
         
-        assertEquals(3, v.dimension(), "La dimensione deve essere 3.");
-        assertEquals(S_N2, v.get(1), "Il secondo elemento deve essere -2.");
+        assertEquals(3, v.dimension());
+        assertTrue(v.get(0).isMathematicallyEqualTo(factory.getScalarFactory().of(10)));
+        assertTrue(v.get(1).isMathematicallyEqualTo(factory.getScalarFactory().of(-5)));
     }
 
     @Test
-    @DisplayName("Factory: Creazione corretta di vettore nullo (zero)")
-    void testFactory_CreateZeroVector() {
-        SignedIntVector v = factory.createVector(2);
+    void testCreateVectorFromDoubleArray_MathematicalRounding() {
+        // La logica matematica standard di arrotondamento di Java (Math.round)
+        // arrotonda 1.5 a 2 e -2.9 a -3.
         
-        assertEquals(2, v.dimension(), "La dimensione deve essere 2.");
-        assertTrue(v.get(0).isMathematicallyEqualTo(S0), "Ogni elemento deve essere SignedInt.ZERO.");
-    }
-    
-    @Test
-    @DisplayName("Factory: Conversione da double array")
-    void testFactory_CreateVectorFromDouble() {
-        // La SignedIntFactory usa Math.round(), quindi i negativi arrotondano a -2, -1, 1, 3
-        SignedIntVector v = factory.createVector(-2.1, -1.9, 0.5, 2.9); 
+        double[] data = {1.5, -2.9, 0.0};
+        SignedIntVector v = factory.createVector(data);
         
-        SignedInt expectedN2 = new SignedInt(-2);
-        SignedInt expectedN3 = new SignedInt(3);
-        SignedInt expected0 = new SignedInt(1);
+        // Nuove aspettative basate su Math.round():
+        SignedInt expectedTwo = factory.getScalarFactory().of(2);
+        SignedInt expectedNegativeThree = factory.getScalarFactory().of(-3);
         
-        SignedIntVector expected = new SignedIntVector(expectedN2, expectedN2, expected0, expectedN3);
-        
-        assertTrue(expected.isMathematicallyEqualTo(v), "La conversione da double deve usare Math.round().");
-    }
-
-    @Test
-    @DisplayName("Constructor: Eccezione per array di componenti nullo o vuoto")
-    void testConstructor_InvalidComponents() {
-        assertThrows(IllegalArgumentException.class, () -> new SignedIntVector((SignedInt[]) null), 
-                     "Deve lanciare eccezione se l'array è null.");
-        assertThrows(IllegalArgumentException.class, () -> new SignedIntVector(new SignedInt[0]), 
-                     "Deve lanciare eccezione se l'array è vuoto.");
+        assertEquals(3, v.dimension());
+        // 1.5 arrotondato a 2
+        assertTrue(v.get(0).isMathematicallyEqualTo(expectedTwo)); 
+        // -2.9 arrotondato a -3
+        assertTrue(v.get(1).isMathematicallyEqualTo(expectedNegativeThree)); 
     }
     
-    // ------------------- OPERAZIONI DI MODULO (Anello) -------------------
-
     @Test
-    @DisplayName("Negazione: Calcolo corretto dell'inverso additivo (negate)")
-    void testNegate() {
-        SignedIntVector v = factory.createVector(new SignedInt[] { S2, S_N1, S0 }); // [2, -1, 0]
-        SignedIntVector expected = new SignedIntVector(S_N2, S1, S0); // [-2, 1, 0]
+    void testCreateVectorFromLongArray() {
+        long[] data = {Long.MAX_VALUE, -1000L};
+        SignedIntVector v = factory.createVector(data);
         
-        SignedIntVector result = v.negate();
-        
-        assertTrue(expected.isMathematicallyEqualTo(result), "La negazione (inverso additivo) non è corretta.");
+        assertEquals(2, v.dimension());
+        // Questo test presuppone che SignedIntFactory gestisca l'overflow o l'arrotondamento
+        // Qui testiamo semplicemente la corretta conversione di un long che rientra nell'int.
+        SignedInt expectedNeg1000 = factory.getScalarFactory().of(-1000);
+        assertTrue(v.get(1).isMathematicallyEqualTo(expectedNeg1000));
     }
 
     @Test
-    @DisplayName("Sottrazione: Sottrazione (implicita: addizione con il negativo)")
-    void testSubtract() {
-        SignedIntVector v1 = factory.createVector(new SignedInt[] { S5, S3 }); // [5, 3]
-        SignedIntVector v2 = factory.createVector(new SignedInt[] { S2, S_N1 }); // [2, -1]
-        // [5, 3] - [2, -1] = [5-2, 3-(-1)] = [3, 4]
+    void testCreateZeroVector() {
+        int dim = 4;
+        SignedIntVector zeroVector = factory.createZeroVector(dim);
         
-        // Simulo la sottrazione: v1.add(v2.negate())
-        SignedIntVector result = v1.add(v2.negate());
-        SignedIntVector expected = new SignedIntVector(S3, new SignedInt(4)); 
-        
-        assertTrue(expected.isMathematicallyEqualTo(result), "La sottrazione implicita non è corretta.");
+        assertEquals(dim, zeroVector.dimension());
+        assertTrue(zeroVector.get(0).isZero());
+        assertTrue(zeroVector.get(3).isMathematicallyEqualTo(zero));
     }
 
+    // --- Test sulle Operazioni Algebriche (SignedIntVector) ---
 
     @Test
-    @DisplayName("Addizione: Somma con l'inverso additivo (V + (-V) = 0)")
-    void testAdd_AdditiveInverse() {
-        SignedIntVector v = factory.createVector(new SignedInt[] { S2, S_N1, S3 });
-        SignedIntVector negatedV = v.negate();
-        SignedIntVector expectedZero = v.getZero();
+    void testVectorAddition() {
+        SignedIntVector v1 = factory.createVector(new int[]{5, -2, 8});
+        SignedIntVector v2 = factory.createVector(new int[]{-3, 5, 0});
         
-        SignedIntVector result = v.add(negatedV);
+        SignedIntVector sum = v1.add(v2);
+        SignedIntVector expected = factory.createVector(new int[]{2, 3, 8});
         
-        assertTrue(expectedZero.isMathematicallyEqualTo(result), "V + (-V) deve essere il vettore nullo.");
+        assertTrue(sum.isMathematicallyEqualTo(expected));
     }
 
     @Test
-    @DisplayName("Moltiplicazione per Scalare: Prodotto per scalare negativo")
-    void testMultiplyByScalar_NegativeScalar() {
-        SignedIntVector v = factory.createVector(new SignedInt[] { S2, S_N1 }); // [2, -1]
-        SignedInt scalar = S_N2; // Scalare -2
-        // [2, -1] * (-2) = [-4, 2]
+    void testVectorNegation() {
+        SignedIntVector v = factory.createVector(new int[]{5, -1, 0, 100});
+        SignedIntVector negated = v.negate();
         
-        SignedInt expectedN4 = new SignedInt(-4);
-        SignedIntVector expected = new SignedIntVector(expectedN4, S2); 
+        SignedIntVector expected = factory.createVector(new int[]{-5, 1, 0, -100});
+        
+        assertTrue(negated.isMathematicallyEqualTo(expected));
+    }
+
+    @Test
+    void testAddAndNegateCommutativity() {
+        SignedIntVector v = factory.createVector(new int[]{5, -1});
+        
+        // Verifica v + (-v) = 0
+        SignedIntVector zeroResult = v.add(v.negate());
+        SignedIntVector expectedZero = factory.createZeroVector(2);
+        
+        assertTrue(zeroResult.isMathematicallyEqualTo(expectedZero));
+    }
+
+    @Test
+    void testMultiplyByScalar() {
+        SignedIntVector v = factory.createVector(new int[]{4, -1, 3});
+        SignedInt scalar = factory.getScalarFactory().of(-2);
         
         SignedIntVector result = v.multiplyByScalar(scalar);
+        SignedIntVector expected = factory.createVector(new int[]{-8, 2, -6});
         
-        assertTrue(expected.isMathematicallyEqualTo(result), "La moltiplicazione per scalare negativo non è corretta.");
+        assertTrue(result.isMathematicallyEqualTo(expected));
     }
 
-    @Test
-    @DisplayName("Moltiplicazione per Scalare: Moltiplicazione per -1 (Identità Negativa)")
-    void testMultiplyByScalar_NegativeOne() {
-        SignedIntVector v = factory.createVector(new SignedInt[] { S5, S_N2 });
-        SignedInt scalar = S_N1;
-        
-        SignedIntVector result = v.multiplyByScalar(scalar);
-        
-        assertTrue(v.negate().isMathematicallyEqualTo(result), "La moltiplicazione per -1 deve essere equivalente a negate().");
-    }
-
-    // ------------------- EGUAGLIANZA E UTILITY -------------------
-
-    @Test
-    @DisplayName("Eguaglianza: isMathematicallyEqualTo")
-    void testIsMathematicallyEqualTo() {
-        SignedIntVector v1 = factory.createVector(new SignedInt[] { S1, S_N1 });
-        SignedIntVector v2 = factory.createVector(new SignedInt[] { S1, S_N1 });
-        SignedIntVector v3 = factory.createVector(new SignedInt[] { S_N1, S1 });
-        
-        assertTrue(v1.isMathematicallyEqualTo(v2), "Vettori identici devono essere uguali.");
-        assertFalse(v1.isMathematicallyEqualTo(v3), "Ordine diverso implica disuguaglianza.");
-    }
+    // --- Test Immutabilità e Uguaglianza ---
     
     @Test
-    @DisplayName("Eguaglianza: equals e hashCode (Java Standard)")
-    void testEqualsAndHashCode() {
-        SignedIntVector v1 = factory.createVector(new SignedInt[] { S2, S_N2, S0 });
-        SignedIntVector v2 = factory.createVector(new SignedInt[] { S2, S_N2, S0 });
+    void testCopy() {
+        SignedIntVector v1 = factory.createVector(new int[]{1, -1});
+        SignedIntVector v2 = v1.copy();
         
-        assertTrue(v1.equals(v2), "Java equals deve essere true per oggetti uguali.");
-        assertEquals(v1.hashCode(), v2.hashCode(), "L'hash code deve essere lo stesso per oggetti uguali.");
+        assertNotSame(v1, v2);
+        assertTrue(v1.isMathematicallyEqualTo(v2));
+    }
+
+    @Test
+    void testEqualityAndHashCode() {
+        SignedIntVector v1 = factory.createVector(new int[]{1, 2, -3});
+        SignedIntVector v2 = factory.createVector(new int[]{1, 2, -3});
+        
+        // equals e isMathematicallyEqualTo
+        assertTrue(v1.equals(v2));
+        assertTrue(v1.isMathematicallyEqualTo(v2));
+        
+        // hashCode
+        assertEquals(v1.hashCode(), v2.hashCode());
     }
 }

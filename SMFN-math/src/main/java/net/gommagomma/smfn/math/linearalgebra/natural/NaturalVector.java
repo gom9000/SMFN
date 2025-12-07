@@ -43,10 +43,6 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
             return false;
         }
 
-		if (this.dimension != other.dimension) {
-			return false;
-		}
-
 		for (int ii = 0; ii < dimension; ii++) {
 			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
 				return false;

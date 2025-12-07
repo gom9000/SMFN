@@ -278,6 +278,9 @@ implements ODESolver<K, T> {}
 
 
 # TODO:
+
+- introduzione delle matrici quadrate (come anello moltiplicativo);
+
 - public class Point<K extends FieldElement<K>, V extends VectorElement<K, V>>
 implements AlgebraicElement<Point<K, V>>
 

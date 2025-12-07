@@ -21,17 +21,17 @@ implements NumericFactory<Real>
     public Real one() { return ONE; }
 
     @Override // NumericFactory impls
-    public Real fromDouble(double value) {
+    public Real of(double value) {
         return new Real(value);
     }
 
     @Override // NumericFactory impls
-    public Real fromLong(long value) {
+    public Real of(long value) {
         return new Real(value);
     }
 
     @Override // NumericFactory impls
-    public Real fromInt(int value) {
+    public Real of(int value) {
         return new Real(value);
     }
 }

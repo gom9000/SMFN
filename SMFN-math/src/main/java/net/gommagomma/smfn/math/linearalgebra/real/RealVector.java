@@ -1,9 +1,9 @@
 package net.gommagomma.smfn.math.linearalgebra.real;
 
 import java.util.Arrays;
-import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 
@@ -13,6 +13,8 @@ implements InnerProductSpaceElement<Real, RealVector>
 {
 	private final Real[] data;
 
+
+	// helper
     private static int validateAndGetLength(Real[] components) {
         if (components == null || components.length == 0) {
             throw new IllegalArgumentException("Components array cannot be null or empty.");
@@ -21,57 +23,19 @@ implements InnerProductSpaceElement<Real, RealVector>
     }
 
 
-	/**
-	 * Costruttore principale per creare un RealVector da un array di componenti.
-	 * @param components Un array di componenti Real. L'array viene copiato internamente per garantire l'immutabilità.
-	 */
 	public RealVector(Real... components) {
 		super(validateAndGetLength(components));
-        // Copia difensiva: garantisce che il vettore interno non sia modificabile dall'esterno
         this.data = Arrays.copyOf(components, components.length);
 	}
 
-	public RealVector(List<Real> components) {
-        this(components.toArray(new Real[0]));
-    }
-
-	/**
-	 * Costruttore per creare un vettore nullo di una data dimensione.
-	 * @param dimension La dimensione del vettore.
-	 */
 	public RealVector(int dimension) {
 		super(dimension);
 		this.data = new Real[dimension];
-		Arrays.fill(this.data, Real.ZERO);
+		Arrays.fill(this.data, RealVectorFactory.getInstance().getScalarFactory().zero());
 	}
 
-	/**
-	 * Helper statico per creare vettori da array di double primitivi.
-	 * @param data L'array di double.
-	 * @return Una nuova istanza di RealVector.
-	 */
-	public static RealVector fromDoubles(double... data) {
-		Real[] realComponents = Arrays.stream(data)
-				.mapToObj(Real::new) 
-				.toArray(Real[]::new);
-		return new RealVector(realComponents);
-	}
 
-	/**
-	 * Converte una lista in un array per uniformità con il costruttore principale.
-	 */
-	public static RealVector fromList(List<Real> components) {
-		return new RealVector(components.toArray(new Real[0]));
-	}
-
-	@Override
-    public RealVector createNewInstance(Real... components) {
-        return new RealVector(components);
-    }
-
-	// --- Implementazione di AlgebraicElement e AdditiveMonoidElement ---
-
-	@Override
+	@Override // AlgebraicElement impls
 	public boolean isMathematicallyEqualTo(RealVector other)
 	{
 		if (this == other) {
@@ -82,10 +46,6 @@ implements InnerProductSpaceElement<Real, RealVector>
             return false;
         }
 
-		if (this.dimension != other.dimension) {
-			return false;
-		}
-
 		for (int ii = 0; ii < dimension; ii++) {
 			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
 				return false;
@@ -94,21 +54,13 @@ implements InnerProductSpaceElement<Real, RealVector>
 		return true;
 	}
 
-	@Override
+	@Override // AlgebraicElement impls
 	public RealVector copy() {
 		return new RealVector(this.data); 
 	}
 
-	@Override
-	public RealVector getZero()
-	{
-		return new RealVector(dimension);
-	}
 
-
-	// --- Implementazione di AbelianGroupElement (add, negate) ---
-
-	@Override
+	@Override // AdditiveMonoidElement impls
 	public RealVector add(RealVector other) {
 		if (this.dimension != other.dimension) {
 			throw new IllegalArgumentException("Vectors must have the same dimension to add.");
@@ -120,7 +72,14 @@ implements InnerProductSpaceElement<Real, RealVector>
 		return new RealVector(resultData);
 	}
 
-	@Override
+	@Override // AdditiveMonoidElement impls
+	public RealVector getZero()
+	{
+		return new RealVector(dimension);
+	}
+
+
+	@Override // GroupElement impls
 	public RealVector negate() {
 		Real[] negatedData = new Real[dimension];
 		for (int i = 0; i < dimension; i++) {
@@ -130,9 +89,7 @@ implements InnerProductSpaceElement<Real, RealVector>
 	}
 
 
-	// VectorElement impls
-
-	@Override
+	@Override // SemimoduleElement impls
 	public RealVector multiplyByScalar(Real scalar) {
 		Real[] scaledData = new Real[dimension];
 		for (int i = 0; i < dimension; i++) {
@@ -141,42 +98,36 @@ implements InnerProductSpaceElement<Real, RealVector>
 		return new RealVector(scaledData);
 	}
 
-	// --- Implementazione di Normable<Real, RealVector> (norm) ---
+	@Override // SemimoduleElement impls
+	public Real get(int index) {
+		return this.data[index];
+	}
 
-	@Override
+
+	@Override // InnerProductSpaceElement impls
 	public Real dotProduct(RealVector other) {
 		if (this.dimension != other.dimension) {
 			throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
 		}
-		Real result = Real.ZERO;
+		Real result = RealFactory.getInstance().zero();
 		for (int i = 0; i < dimension; i++) {
 			result = result.add(this.get(i).multiply(other.get(i)));
 		}
 		return result;
 	}
 
-	@Override
+	@Override // NormableElement impls
 	public Real norm() {
 		return this.dotProduct(this).sqrt(); 
 	}
+	
 
-	// --- Implementazione di SpaceElement/VectorElement (utilità) ---
-
-	@Override
-	public Real get(int index) {
-		return this.data[index];
-	}
-
-
-	// --- Java Standard impls ---
-
-	@Override
+	@Override // Java Standard impls
 	public String toString() {
 		return "R^" + dimension + Arrays.toString(data);
 	}
 
-
-	@Override
+	@Override // Java Standard impls
 	public final boolean equals(Object other)
 	{
 		if (this == other) {
@@ -196,8 +147,7 @@ implements InnerProductSpaceElement<Real, RealVector>
         return Arrays.equals(this.data, that.data);
 	}
 
-
-	@Override
+	@Override // Java Standard impls
 	public final int hashCode() {
 		return Arrays.hashCode(data);
 	}

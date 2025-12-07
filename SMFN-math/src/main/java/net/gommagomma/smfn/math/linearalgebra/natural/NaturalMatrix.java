@@ -19,32 +19,21 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
         super(data, FACTORY_INSTANCE);
     }
 
-    /**
-     * Costruttore per creare una matrice di zeri di dimensioni specifiche.
-     * Usato internamente per getZero(), identity(), ecc.
-     */
     protected NaturalMatrix(int rows, int cols) {
     	super(rows, cols, FACTORY_INSTANCE);
-    	for (int i = 0; i < rows; i++) {
-    		Arrays.fill(this.data[i], factory.getScalarFactory().zero());
-    	}
+//    	for (int i = 0; i < rows; i++) {
+//    		Arrays.fill(this.data[i], factory.getScalarFactory().zero());
+//    	}
     }
 
-    /**
-     * Restituisce la classe runtime dello scalare K (Natural).
-     * Essenziale per la reflection nell'AbstractMatrix.
-     */
-    @Override
+
+    @Override // AbstractSemiringMatrix impls
     protected Class<Natural> getScalarClass() {
         return Natural.class;
     }
 
-    @Override
-    public NaturalMatrix getZero() {
-        return factory.createZeroMatrix(rows, cols);
-    }
 
-    @Override
+    @Override // SemiringMatrixElement impls
     public NaturalVector getRowVector(int row)
     {
         if (row < 0 || row >= rows) {
@@ -53,7 +42,7 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
         return factory.getVectorFactory().createVector(Arrays.copyOf(this.data[row], this.cols));
     }
 
-    @Override
+    @Override // SemiringMatrixElement impls
     public NaturalVector getColumnVector(int col)
     {
         if (col < 0 || col >= cols) {

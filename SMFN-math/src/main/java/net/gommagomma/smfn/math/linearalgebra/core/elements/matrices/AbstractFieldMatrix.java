@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.FieldMatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.factories.FieldMatrixFactory;
 
 
 public abstract class AbstractFieldMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, F extends FieldMatrixFactory<K, V, M>>

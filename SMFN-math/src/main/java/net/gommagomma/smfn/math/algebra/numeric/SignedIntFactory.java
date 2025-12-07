@@ -21,29 +21,25 @@ implements NumericFactory<SignedInt>
     public SignedInt one() { return ONE; }
 
     @Override // NumericFactory impls
-	public SignedInt fromDouble(double value) {
+	public SignedInt of(double value) {
     	if (Double.isNaN(value) || Double.isInfinite(value)) {
 	        throw new IllegalArgumentException("Cannot create a SignedInt number from a non-finite value: " + value);
 	    }
         if (value > Long.MAX_VALUE) {
 	        throw new ArithmeticException("Value " + value + " is outside the range of SignedInt (long).");
 	    }
-
         long roundedValue = Math.round(value);
-//        if (Math.abs(value - roundedValue) > MathConstants.EPSILON) {
-//            throw new IllegalArgumentException("Cannot create SignedInt from non-integer value: " + value);
-//        }
 
 		return new SignedInt(roundedValue);
 	}
 
 	@Override // NumericFactory impls
-	public SignedInt fromLong(long value) {
+	public SignedInt of(long value) {
 		return new SignedInt(value);
 	}
 
 	@Override // NumericFactory impls
-	public SignedInt fromInt(int value) {
+	public SignedInt of(int value) {
 		return new SignedInt(value);
 	}
 

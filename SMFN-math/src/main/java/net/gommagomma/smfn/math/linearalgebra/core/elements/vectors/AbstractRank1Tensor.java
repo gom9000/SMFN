@@ -29,7 +29,7 @@ implements SemimoduleElement<K, V>
 
 
  	@Override // TensorElement impls
- 	public int getRank() {
+ 	public int rank() {
  		return 1;
  	}
 
@@ -45,7 +45,7 @@ implements SemimoduleElement<K, V>
 
  	@Override // TensorElement impls
  	public final K get(int... indices) {
- 		if (indices.length != getRank()) {
+ 		if (indices.length != rank()) {
  			throw new IllegalArgumentException("Indices length must match the Tensor Rank (1).");
  		}
 

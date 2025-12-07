@@ -26,7 +26,7 @@ implements NumericFactory<ZnElement>
     public ZnElement one() { return ONE; }
 
     @Override // NumericFactory impls
-	public ZnElement fromDouble(double value) {
+	public ZnElement of(double value) {
     	if (Double.isNaN(value) || Double.isInfinite(value)) {
 	        throw new IllegalArgumentException("Cannot create a SignedInt number from a non-finite value: " + value);
 	    }
@@ -39,19 +39,19 @@ implements NumericFactory<ZnElement>
 //            throw new IllegalArgumentException("Cannot create SignedInt from non-integer value: " + value);
 //        }
 
-        SignedInt signedInt = SignedIntFactory.getInstance().fromDouble(value);
+        SignedInt signedInt = SignedIntFactory.getInstance().of(value);
         return new ZnElement(signedInt, this.modulus);
 	}
 
 	@Override // NumericFactory impls
-	public ZnElement fromLong(long value) {
-		SignedInt signedInt = SignedIntFactory.getInstance().fromLong(value);
+	public ZnElement of(long value) {
+		SignedInt signedInt = SignedIntFactory.getInstance().of(value);
 		return new ZnElement(signedInt, this.modulus);
 	}
 
 	@Override // NumericFactory impls
-	public ZnElement fromInt(int value) {
-		SignedInt signedInt = SignedIntFactory.getInstance().fromInt(value);
+	public ZnElement of(int value) {
+		SignedInt signedInt = SignedIntFactory.getInstance().of(value);
 		return new ZnElement(signedInt, this.modulus);
 	}
 }

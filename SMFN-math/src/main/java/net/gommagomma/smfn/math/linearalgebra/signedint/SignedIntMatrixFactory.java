@@ -1,7 +1,10 @@
 package net.gommagomma.smfn.math.linearalgebra.signedint;
 
+import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.RingMatrixFactory;
+import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.factories.RingMatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
 
 /**
@@ -12,37 +15,26 @@ public final class SignedIntMatrixFactory
 implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix>
 {
 	private static final SignedIntMatrixFactory INSTANCE = new SignedIntMatrixFactory();
+	private final SignedIntVectorFactory vectorFactory = SignedIntVectorFactory.getInstance();
+    private final SignedIntFactory scalarFactory = SignedIntFactory.getInstance();
+
 
     private SignedIntMatrixFactory() {}
+    public static SignedIntMatrixFactory getInstance() { return INSTANCE; }
 
-    public static SignedIntMatrixFactory getInstance() {
-        return INSTANCE;
-    }
 
-    @Override
-    public SignedIntMatrix createMatrix(SignedInt[][] data) {
-        return new SignedIntMatrix(data);
-    }
+    @Override // SemiringMatrixFactory impls
+    public SemimoduleVectorFactory<SignedInt, SignedIntVector> getVectorFactory() { return this.vectorFactory; }
 
-    @Override
+	@Override // SemiringMatrixFactory impls
+    public NumericFactory<SignedInt> getScalarFactory() { return this.scalarFactory; }
+
+
+    @Override // SemiringMatrixFactory impls
+    public SignedIntMatrix createMatrix(SignedInt[][] data) { return new SignedIntMatrix(data); }
+
+    @Override // SemiringMatrixFactory impls
     public SignedIntMatrix createZeroMatrix(int rows, int cols) {
         return new SignedIntMatrix(rows, cols);
-    }
-
-    @Override
-    public SignedIntVector createVector(SignedInt[] data) {
-        return new SignedIntVector(data); 
-    }
-    
-    /** Restituisce l'elemento zero dello scalare (int 0). */
-    @Override
-    public SignedInt getZeroScalar() {
-        return SignedInt.ZERO;
-    }
-
-    /** Restituisce l'elemento uno dello scalare (int 1). */
-    @Override
-    public SignedInt getOneScalar() {
-        return SignedInt.ONE;
     }
 }

@@ -187,7 +187,7 @@ class NaturalTest {
         @ParameterizedTest
         @ValueSource(doubles = {123.0, 99999.0, 0.0, 5.5, 123.99999})
         void valueOfValid(double input) {
-            Natural result = NaturalFactory.getInstance().fromDouble(input); 
+            Natural result = NaturalFactory.getInstance().of(input); 
             // La conversione a long tronca la parte decimale
             assertEquals(Math.round(input), result.getValue());
         }
@@ -196,7 +196,7 @@ class NaturalTest {
         @ValueSource(doubles = {-1.0, -0.0001, -123.45})
         void valueOfNegativeThrowsException(double input) {
             assertThrows(IllegalArgumentException.class, () -> 
-                NaturalFactory.getInstance().fromDouble(input), 
+                NaturalFactory.getInstance().of(input), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per valori negativi."
             );
         }
@@ -209,7 +209,7 @@ class NaturalTest {
             double overflowValue = 9.223372036854776E18 * 2.0; 
             
             assertThrows(ArithmeticException.class, () -> 
-                NaturalFactory.getInstance().fromDouble(overflowValue), 
+                NaturalFactory.getInstance().of(overflowValue), 
                 "valueOf dovrebbe lanciare ArithmeticException per overflow."
             );
         }
@@ -219,11 +219,11 @@ class NaturalTest {
         void valueOfNonFinite() {
             // NaN e Infinity non sono numeri Naturali validi
             assertThrows(IllegalArgumentException.class, () -> 
-                NaturalFactory.getInstance().fromDouble(Double.NaN), 
+                NaturalFactory.getInstance().of(Double.NaN), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per NaN."
             );
             assertThrows(IllegalArgumentException.class, () -> 
-                NaturalFactory.getInstance().fromDouble(Double.POSITIVE_INFINITY), 
+                NaturalFactory.getInstance().of(Double.POSITIVE_INFINITY), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per Infinity."
             );
         }

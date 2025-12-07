@@ -246,16 +246,16 @@ class RealTest {
         @ParameterizedTest
         @ValueSource(doubles = {123.45, -99.99, 0.0, Math.PI})
         void valueOfValid(double input) {
-            Real result = RealFactory.getInstance().fromDouble(input); // Chiamata tramite istanza
+            Real result = RealFactory.getInstance().of(input); // Chiamata tramite istanza
             assertEquals(input, result.getValue(), 0);
         }
         
         @Test
         void valueOfSpecialValues() {
-            assertRealEquals(r(Double.MAX_VALUE), RealFactory.getInstance().fromDouble(Double.MAX_VALUE));
-            assertRealEquals(r(Double.MIN_VALUE), RealFactory.getInstance().fromDouble(Double.MIN_VALUE));
-            assertRealEquals(r(Double.NaN), RealFactory.getInstance().fromDouble(Double.NaN));
-            assertRealEquals(r(Double.POSITIVE_INFINITY), RealFactory.getInstance().fromDouble(Double.POSITIVE_INFINITY));
+            assertRealEquals(r(Double.MAX_VALUE), RealFactory.getInstance().of(Double.MAX_VALUE));
+            assertRealEquals(r(Double.MIN_VALUE), RealFactory.getInstance().of(Double.MIN_VALUE));
+            assertRealEquals(r(Double.NaN), RealFactory.getInstance().of(Double.NaN));
+            assertRealEquals(r(Double.POSITIVE_INFINITY), RealFactory.getInstance().of(Double.POSITIVE_INFINITY));
         }
     }
 }

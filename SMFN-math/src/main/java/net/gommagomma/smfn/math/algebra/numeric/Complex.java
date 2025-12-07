@@ -192,7 +192,7 @@ implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement
     @Override // NormableElement impls
     public Real norm()
     {
-        return RealFactory.getInstance().fromDouble(this.modulus());
+        return RealFactory.getInstance().of(this.modulus());
     }
 
 

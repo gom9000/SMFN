@@ -283,7 +283,7 @@ class ComplexTest {
         @ParameterizedTest(name = "valueOf({0})")
         @CsvSource({"10.0", "-5.5", "0.0"})
         void valueOf(double input) {
-            Complex result = ComplexFactory.getInstance().fromDouble(input);
+            Complex result = ComplexFactory.getInstance().of(input);
             assertComplexEquals(c(input, 0.0), result, "valueOf deve creare un numero reale");
         }
         

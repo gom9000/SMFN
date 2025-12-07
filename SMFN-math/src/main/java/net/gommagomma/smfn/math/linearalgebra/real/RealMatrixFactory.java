@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.real;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.FieldMatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.factories.FieldMatrixFactory;
 
 
 public final class RealMatrixFactory

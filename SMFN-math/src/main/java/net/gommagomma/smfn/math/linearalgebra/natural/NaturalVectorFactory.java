@@ -24,8 +24,41 @@ implements SemimoduleVectorFactory<Natural, NaturalVector>
     public NumericFactory<Natural> getScalarFactory() { return this.scalarFactory; }
 
     @Override // SemimoduleVectorFactory impls
-    public NaturalVector createVector(int dimension) { return new NaturalVector(dimension); }
-    
+    public NaturalVector createZeroVector(int dimension) { return new NaturalVector(dimension); }
+
     @Override // SemimoduleVectorFactory impls
     public NaturalVector createVector(Natural[] data) { return new NaturalVector(data); }
+
+    @Override // SemimoduleVectorFactory impls
+	public NaturalVector createVector(double[] data) {
+        Natural[] components = new Natural[data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            components[i] = scalarFactory.of(data[i]); 
+        }
+ 
+        return createVector(components);
+	}
+
+    @Override // SemimoduleVectorFactory impls
+    public NaturalVector createVector(long[] data) {
+        Natural[] components = new Natural[data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            components[i] = scalarFactory.of(data[i]); 
+        }
+ 
+        return createVector(components);
+    }
+
+    @Override // SemimoduleVectorFactory impls
+    public NaturalVector createVector(int[] data) {
+        Natural[] components = new Natural[data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            components[i] = scalarFactory.of(data[i]); 
+        }
+ 
+        return createVector(components);
+    }
 }

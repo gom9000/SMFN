@@ -13,16 +13,11 @@ extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIn
 {
     private static final SignedIntMatrixFactory FACTORY_INSTANCE = SignedIntMatrixFactory.getInstance();
 
-    /**
-     * Costruttore principale che accetta i dati e la factory.
-     */
+
     public SignedIntMatrix(SignedInt[][] data) {
         super(data, FACTORY_INSTANCE);
     }
 
-    /**
-     * Costruttore per creare una matrice zero/vuota.
-     */
     public SignedIntMatrix(int rows, int cols) {
         super(rows, cols, FACTORY_INSTANCE);
     }

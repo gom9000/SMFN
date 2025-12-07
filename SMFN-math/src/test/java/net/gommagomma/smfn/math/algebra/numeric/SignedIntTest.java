@@ -259,20 +259,20 @@ class SignedIntTest {
         @ParameterizedTest(name = "valueOf({0}) -> {1}")
         @CsvSource({"10.75, 11", "-3.14, -3", "0.999, 1"})
         void valueOfValid(double input, long expected) {
-            SignedInt result = SignedIntFactory.getInstance().fromDouble(input);
+            SignedInt result = SignedIntFactory.getInstance().of(input);
             assertEquals(si(Math.round(expected)), result);
             assertEquals(Math.round(expected), result.getValue());
         }
         
         @Test
         void valueOfLongMinValue() {
-            SignedInt result = SignedIntFactory.getInstance().fromDouble((double) Long.MIN_VALUE);
+            SignedInt result = SignedIntFactory.getInstance().of((double) Long.MIN_VALUE);
             assertEquals(si(Long.MIN_VALUE), result);
         }
 
         @Test
         void valueOfLongMaxValue() {
-            SignedInt result =SignedIntFactory.getInstance().fromDouble((double) Long.MAX_VALUE);
+            SignedInt result =SignedIntFactory.getInstance().of((double) Long.MAX_VALUE);
             assertEquals(si(Long.MAX_VALUE), result);
         }
 
@@ -286,7 +286,7 @@ class SignedIntTest {
             })
         void valueOfOverflow(double input) {
             assertThrows(ArithmeticException.class, () -> 
-                SignedIntFactory.getInstance().fromDouble(input), 
+                SignedIntFactory.getInstance().of(input), 
                 "valueOf dovrebbe lanciare ArithmeticException per overflow double"
             );
         }

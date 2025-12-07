@@ -21,7 +21,7 @@ implements NumericFactory<Natural>
     public Natural one() { return ONE; }
 
     @Override // NumericFactory impls
-    public Natural fromDouble(double value) {
+    public Natural of(double value) {
     	if (Double.isNaN(value) || Double.isInfinite(value)) {
 	        throw new IllegalArgumentException("Cannot create a Natural number from a non-finite value: " + value);
 	    }
@@ -33,15 +33,12 @@ implements NumericFactory<Natural>
 	    }
 
         long roundedValue = Math.round(value);
-//        if (Math.abs(value - roundedValue) > MathConstants.EPSILON) {
-//            throw new IllegalArgumentException("Cannot create Natural from non-integer value: " + value);
-//        }
         
         return new Natural(roundedValue);
     }
 
     @Override // NumericFactory impls
-    public Natural fromLong(long value) {
+    public Natural of(long value) {
         if (value < 0) {
             throw new IllegalArgumentException("Cannot create Natural from negative integer: " + value);
         }
@@ -49,7 +46,7 @@ implements NumericFactory<Natural>
     }
 
     @Override // NumericFactory impls
-    public Natural fromInt(int value) {
+    public Natural of(int value) {
         if (value < 0) {
             throw new IllegalArgumentException("Cannot create Natural from negative integer: " + value);
         }

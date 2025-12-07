@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.core.elements.matrices;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.RingElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.ModuleElement;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.factories.RingMatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.factories.RingMatrixFactory;
 
 
 /**

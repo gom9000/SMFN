@@ -45,10 +45,6 @@ implements ModuleElement<SignedInt, SignedIntVector>
             return false;
         }
 
-		if (this.dimension != other.dimension) {
-			return false;
-		}
-
 		for (int ii = 0; ii < dimension; ii++) {
 			if (!this.data[ii].isMathematicallyEqualTo(other.data[ii])) {
 				return false;
@@ -58,9 +54,7 @@ implements ModuleElement<SignedInt, SignedIntVector>
     }
 
     @Override // AlgebraicElement impls
-    public SignedIntVector copy() {
-        return new SignedIntVector(this.data);
-    }
+    public SignedIntVector copy() { return new SignedIntVector(this.data); }
 
 
     @Override // AdditiveMonoidElement impls

@@ -21,17 +21,17 @@ implements NumericFactory<Complex>
     public Complex one() { return ONE; }
 
     @Override // NumericFactory impls
-    public Complex fromDouble(double value) {
+    public Complex of(double value) {
         return new Complex(value);
     }
 
     @Override // NumericFactory impls
-    public Complex fromLong(long value) {
+    public Complex of(long value) {
         return new Complex(value);
     }
 
     @Override // NumericFactory impls
-    public Complex fromInt(int value) {
+    public Complex of(int value) {
         return new Complex(value);
     }
 }

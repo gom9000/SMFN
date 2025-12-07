@@ -16,7 +16,7 @@ public interface TensorElement<K extends SemiringElement<K>>
      * Esempio: Rango 1 = Vettore, Rango 2 = Matrice.
      * @return Il rango del tensore.
      */
-    int getRank();
+    int rank();
 
     /**
      * Restituisce la 'shape' del Tensore, ovvero un array di interi che

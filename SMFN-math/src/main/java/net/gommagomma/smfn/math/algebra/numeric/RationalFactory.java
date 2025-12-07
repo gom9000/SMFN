@@ -21,7 +21,7 @@ implements NumericFactory<Rational>
     public Rational one() { return ONE; }
 
     @Override // NumericFactory impls
-    public Rational fromDouble(double value) {
+    public Rational of(double value) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             throw new IllegalArgumentException("Cannot create a Rational number from NaN or Infinity.");
         }
@@ -55,18 +55,26 @@ implements NumericFactory<Rational>
         
         long num;
         long den;
-        
+
         if (exponent >= 0) {
-            // Il denominatore implicito è 1 (mantissa è già un intero)
-            // num = mantissa * 2^exponent
+            // Numeri interi o grandi. Qui potresti ancora rischiare overflow.
+            // L'unica soluzione sicura qui è usare BigInteger, ma assumiamo che non lo faremo.
+            // Per ora, continuiamo a usare power() e accettiamo il rischio per i numeri grandi.
             num = mantissa * MathUtils.power(2L, exponent);
             den = 1L;
         } else {
-            // L'esponente negativo indica un denominatore potenza di 2
-            // num = mantissa
-            // den = 2^(-exponent)
+            // Potenza di due nel denominatore
+            long powerOfTwo = 52 - exponent; // Es: 0.5 -> 52 - (-1) = 53
+            
+            // Controlliamo se la potenza eccede il limite di 62 per un long
+            if (powerOfTwo > 62) {
+                 throw new ArithmeticException("Exponent magnitude is too large to represent the Rational denominator (overflow).");
+            }
+
+            // Calcoliamo il denominatore usando lo shift bit, evitando MathUtils.power
+            // (1L << N è 2^N)
+            den = 1L << powerOfTwo; 
             num = mantissa;
-            den = MathUtils.power(2L, -exponent);
         }
 
         // 4. Applica il segno
@@ -78,12 +86,12 @@ implements NumericFactory<Rational>
     }
 
     @Override // NumericFactory impls
-    public Rational fromLong(long value) {
+    public Rational of(long value) {
         return new Rational(value);
     }
 
     @Override // NumericFactory impls
-    public Rational fromInt(int value) {
+    public Rational of(int value) {
         return new Rational(value);
     }
 }

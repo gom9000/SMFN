@@ -13,11 +13,11 @@ public interface NumericFactory<E extends SemiringElement<E>>
     E one();
 
     /** Crea un nuovo elemento E partendo da un primitivo double. */
-    E fromDouble(double value);
+    E of(double value);
 
     /** Crea un nuovo elemento E partendo da un primitivo long. */
-    E fromLong(long value);
+    E of(long value);
 
     /** Crea un nuovo elemento E partendo da un primitivo int. */
-    E fromInt(int value);
+    E of(int value);
 }
