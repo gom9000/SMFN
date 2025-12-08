@@ -33,7 +33,8 @@ implements RingMatrixElement<K, V, M>
         super(rows, cols, factory);
     }
 
-    @Override
+
+    @Override // AdditiveMonoidElement impls
     public M negate() {
         K[][] resultData = createMatrixArray(rows, cols);
 		for (int i = 0; i < rows; i++) {

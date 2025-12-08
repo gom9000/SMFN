@@ -14,30 +14,15 @@ extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIn
     private static final SignedIntMatrixFactory FACTORY_INSTANCE = SignedIntMatrixFactory.getInstance();
 
 
-    public SignedIntMatrix(SignedInt[][] data) {
-        super(data, FACTORY_INSTANCE);
-    }
+    SignedIntMatrix(SignedInt[][] data) { super(data, FACTORY_INSTANCE); }
+    SignedIntMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE); }
 
-    public SignedIntMatrix(int rows, int cols) {
-        super(rows, cols, FACTORY_INSTANCE);
-    }
 
-    /**
-     * Restituisce la classe runtime dello scalare K (SignedInt).
-     * Essenziale per la reflection nell'AbstractMatrix.
-     */
-    @Override
-    protected Class<SignedInt> getScalarClass() {
-        return SignedInt.class;
-    }
+    @Override // AbstractSemiringMatrix impls
+    protected Class<SignedInt> getScalarClass() { return SignedInt.class; }
 
-    @Override
-    public SignedIntMatrix getZero() {
-        // Delega la creazione della matrice zero alla factory
-        return factory.createZeroMatrix(rows, cols);
-    }
 
-    @Override
+    @Override // SemiringMatrixElement impls
     public SignedIntVector getRowVector(int row)
     {
         if (row < 0 || row >= rows) {
@@ -47,7 +32,7 @@ extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIn
         return factory.createVector(Arrays.copyOf(data[row], cols));
     }
 
-    @Override
+    @Override // SemiringMatrixElement impls
     public SignedIntVector getColumnVector(int col)
     {
         if (col < 0 || col >= cols) {

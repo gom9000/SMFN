@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
-public class ComplexVectorFactory
+public final class ComplexVectorFactory
 implements SemimoduleVectorFactory<Complex, ComplexVector>
 {
     private static final ComplexVectorFactory INSTANCE = new ComplexVectorFactory();

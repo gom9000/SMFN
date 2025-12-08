@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
-public class SignedIntVectorFactory
+public final class SignedIntVectorFactory
 implements SemimoduleVectorFactory<SignedInt, SignedIntVector>
 {
     private static final SignedIntVectorFactory INSTANCE = new SignedIntVectorFactory();

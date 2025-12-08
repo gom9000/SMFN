@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
-public class RationalVectorFactory
+public final class RationalVectorFactory
 implements SemimoduleVectorFactory<Rational, RationalVector>
 {
     private static final RationalVectorFactory INSTANCE = new RationalVectorFactory();

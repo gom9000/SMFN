@@ -16,39 +16,15 @@ extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMa
 	private static final RationalMatrixFactory FACTORY_INSTANCE = RationalMatrixFactory.getInstance();
 
 
-	/**
-     * Costruttore principale per creare un RationalMatrix da un array bidimensionale di componenti.
-     * @param data L'array di componenti Real.
-     */
-	public RationalMatrix(Rational[][] data) {
-        super(data, FACTORY_INSTANCE);
-    }
-    
-	/**
-     * Costruttore per creare una matrice di zeri di dimensioni specifiche.
-     * Usato internamente per getZero(), identity(), ecc.
-     */
-	RationalMatrix(int rows, int cols) {
-		super(rows, cols, FACTORY_INSTANCE);
-		for (int i = 0; i < rows; i++) {
-			Arrays.fill(this.data[i], Rational.ZERO);
-		}
-	}
-
-    @Override
-    protected Class<Rational> getScalarClass() {
-        return Rational.class;
-    }
-
-    @Override
-    protected Comparator<Rational> getMagnitudeComparator() {
-        return Comparator.naturalOrder(); 
-    }
+	RationalMatrix(Rational[][] data) { super(data, FACTORY_INSTANCE); }
+	RationalMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE); }
 
 
-    // MatrixElement impls
+    @Override // AbstractSemiringMatrix impls
+    protected Class<Rational> getScalarClass() { return Rational.class; }
 
-    @Override
+
+    @Override // SemiringMatrixElement impls
     public RationalVector getRowVector(int row)
     {
     	if (row < 0 || row >= rows) {
@@ -58,7 +34,7 @@ extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMa
         return factory.createVector(Arrays.copyOf(data[row], cols));
 	}
 
-	@Override
+	@Override // SemiringMatrixElement impls
 	public RationalVector getColumnVector(int col)
 	{
 		if (col < 0 || col >= cols) {
@@ -74,19 +50,8 @@ extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMa
 	}
 
 
-	// Helper Methods
-
-    public static RationalMatrix identity(int size)
-    {
-        if (size <= 0) {
-            throw new IllegalArgumentException("Dimension must be positive.");
-        }
-
-        RationalMatrix identityMatrix = new RationalMatrix(size, size);
-        for (int i = 0; i < size; i++) {
-             identityMatrix.data[i][i] = Rational.ONE;
-        }
-
-        return identityMatrix; 
+    @Override // AbstractFieldMatrix impls
+    protected Comparator<Rational> getMagnitudeComparator() {
+        return Comparator.naturalOrder(); 
     }
 }

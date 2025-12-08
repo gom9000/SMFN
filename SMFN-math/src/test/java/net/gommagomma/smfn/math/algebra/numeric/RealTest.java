@@ -16,7 +16,7 @@ class RealTest {
 
     // TOLERANZA: Usata per assertEquals(double, double, delta)
     // Assumiamo che MathConstants.EPSILON sia ragionevole (es. 1e-15).
-    private static final double TOLERANCE = 1e-12; 
+    private static final double EPSILON = MathConstants.EPSILON; 
 
     // Helper per una creazione rapida e confronto
     private Real r(double value) {
@@ -37,7 +37,7 @@ class RealTest {
     @DisplayName("Costruttore, Getter, Costanti e Copia")
     void constructorAndBasicProps() {
         Real pi = r(Math.PI);
-        assertEquals(Math.PI, pi.getValue(), TOLERANCE);
+        assertEquals(Math.PI, pi.getValue(), EPSILON);
         assertEquals("3.141592653589793", pi.toString()); // Dipende dalla precisione Java
 
         assertEquals(0.0, RealFactory.getInstance().zero().getValue(), 0);
@@ -52,8 +52,8 @@ class RealTest {
     @DisplayName("isMathematicallyEqualTo (Tolleranza)")
     void mathematicalEquality() {
         Real a = r(10.0);
-        Real b = r(10.0 + (TOLERANCE / 2.0)); // Entro la tolleranza
-        Real c = r(10.0 + (TOLERANCE * 2.0)); // Fuori dalla tolleranza
+        Real b = r(10.0 + (EPSILON / 2.0)); // Entro la tolleranza
+        Real c = r(10.0 + (EPSILON * 2.0)); // Fuori dalla tolleranza
 
         assertTrue(a.isMathematicallyEqualTo(a));
         assertTrue(a.isMathematicallyEqualTo(b));
@@ -204,12 +204,6 @@ class RealTest {
             
             assertEquals(10.5, positive.modulus(), 0);
             assertEquals(10.5, negative.modulus(), 0);
-        }
-        
-        @Test
-        void absMethod() {
-            assertRealEquals(r(10.5), r(10.5).abs());
-            assertRealEquals(r(10.5), r(-10.5).abs());
         }
     }
     

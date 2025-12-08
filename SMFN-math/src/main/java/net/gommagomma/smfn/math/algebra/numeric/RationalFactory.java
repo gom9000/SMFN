@@ -29,7 +29,15 @@ implements NumericFactory<Rational>
         if (value == 0.0) {
             return zero();
         }
-        
+
+        if (value == Math.floor(value)) {
+            try {
+                return of((long) value); 
+            } catch (ArithmeticException e) {
+                throw new ArithmeticException("Integer value " + value + " is outside the Long range.");
+            }
+        }
+
         // --- Standard IEEE 754 (64-bit double) ---
         long bits = Double.doubleToLongBits(value);
         

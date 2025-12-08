@@ -31,6 +31,7 @@ implements FieldMatrixElement<K, V, M>
     	super(rows, cols, factory);
     }
 
+
     /**
      * Restituisce un comparatore per confrontare la magnitudo (es. valore assoluto) degli scalari K, 
      * necessario per il pivoting negli algoritmi come l'eliminazione gaussiana.

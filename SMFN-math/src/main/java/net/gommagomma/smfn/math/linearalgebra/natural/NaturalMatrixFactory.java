@@ -53,18 +53,56 @@ implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
     }
 
     @Override // SemiringMatrixFactory impls
+    public NaturalMatrix createMatrix(long[][] data) {
+        int rows = data.length;
+        if (rows == 0) {
+            return createZeroMatrix(0, 0); 
+        }
+        int cols = data[0].length;
+
+        NaturalFactory scalarFactory = (NaturalFactory) getScalarFactory();
+        Natural[][] components = new Natural[rows][cols]; 
+        
+        for (int i = 0; i < rows; i++) {
+            if (data[i].length != cols) {
+                throw new IllegalArgumentException("All rows must have the same length.");
+            }
+            for (int j = 0; j < cols; j++) {
+                components[i][j] = scalarFactory.of(data[i][j]); 
+            }
+        }
+
+        return createMatrix(components);
+    }
+
+    @Override // SemiringMatrixFactory impls
+    public NaturalMatrix createMatrix(int[][] data) {
+        int rows = data.length;
+        if (rows == 0) {
+            return createZeroMatrix(0, 0); 
+        }
+        int cols = data[0].length;
+
+        NaturalFactory scalarFactory = (NaturalFactory) getScalarFactory();
+        Natural[][] components = new Natural[rows][cols]; 
+        
+        for (int i = 0; i < rows; i++) {
+            if (data[i].length != cols) {
+                throw new IllegalArgumentException("All rows must have the same length.");
+            }
+            for (int j = 0; j < cols; j++) {
+                components[i][j] = scalarFactory.of(data[i][j]); 
+            }
+        }
+
+        return createMatrix(components);
+    }
+
+    @Override // SemiringMatrixFactory impls
     public NaturalMatrix createZeroMatrix(int rows, int cols) {
     	if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("Matrix dimensions must be positive.");
        }
     	return new NaturalMatrix(rows, cols);
     }
-
-//    @Override // SemiringMatrixFactory impls
-//    public NaturalMatrix createMatrix(NaturalVector... rowVectors) {
-//        if (rowVectors == null || rowVectors.length == 0) {
-//             throw new IllegalArgumentException("Row vectors cannot be null or empty.");
-//        }
-//        return new NaturalMatrix(rowVectors); 
-//    }
 }

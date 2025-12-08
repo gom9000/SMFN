@@ -27,11 +27,6 @@ implements FieldElement<Real>, ExponentiableElement<Real>, SqrtableElement<Real>
     }
 
 
-	public Real abs() {
-        return new Real(Math.abs(this.value)); 
-    }
-
-
     @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(Real other)
     {

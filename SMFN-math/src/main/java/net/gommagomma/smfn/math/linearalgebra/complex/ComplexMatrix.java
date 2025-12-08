@@ -16,34 +16,17 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
 	private static final ComplexMatrixFactory FACTORY_INSTANCE = ComplexMatrixFactory.getInstance();
 
 
-	/**
-     * Costruttore principale per creare un ComplexMatrix da un array bidimensionale di componenti.
-     * @param data L'array di componenti Complex.
-     */
-    public ComplexMatrix(Complex[][] data) {
-        super(data, FACTORY_INSTANCE);
-    }
+    public ComplexMatrix(Complex[][] data) { super(data, FACTORY_INSTANCE); }
+    ComplexMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE); }
 
-    /**
-     * Costruttore per creare una matrice di zeri di dimensioni specifiche.
-     * Usato internamente per getZero(), identity(), ecc.
-     */
-    ComplexMatrix(int rows, int cols) {
-        super(rows, cols, FACTORY_INSTANCE);
-        for (int i = 0; i < rows; i++) {
-             java.util.Arrays.fill(this.data[i], Complex.ZERO); 
-         }
-    }
 
-    @Override
-    protected Comparator<Complex> getMagnitudeComparator() {
-        return Comparator.comparingDouble(Complex::modulus); 
+    @Override // SemiringMatrixElement impls
+    protected Class<Complex> getScalarClass() {
+        return Complex.class;
     }
 
 
-    // MatrixElement impls
-
-    @Override
+    @Override  // SemiringMatrixElement impls
     public ComplexVector getRowVector(int row)
     {
     	if (row < 0 || row >= rows) {
@@ -53,7 +36,7 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
         return factory.createVector(Arrays.copyOf(data[row], cols));
 	}
 
-	@Override
+	@Override  // SemiringMatrixElement impls
 	public ComplexVector getColumnVector(int col)
 	{
         if (col < 0 || col >= cols) {
@@ -69,25 +52,13 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
 	}
 
 
-	// Helper Methods
-
-    public static ComplexMatrix identity(int size)
-    {
-        if (size <= 0) {
-            throw new IllegalArgumentException("Dimension must be positive.");
-        }
-
-        ComplexMatrix identityMatrix = new ComplexMatrix(size, size);
-        for (int i = 0; i < size; i++) {
-             identityMatrix.data[i][i] = Complex.ONE;
-        }
-
-        return identityMatrix; 
+    @Override // AbstractFieldMatrix impls
+    protected Comparator<Complex> getMagnitudeComparator() {
+        return Comparator.comparingDouble(Complex::modulus); 
     }
 
 
 	// Specific Methods
-
     public ComplexMatrix conjugateTranspose()
     {
         Complex[][] resultData = new Complex[cols][rows];
@@ -98,11 +69,5 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
 		}
 
 		return new ComplexMatrix(resultData);
-    }
-
-
-    @Override
-    protected Class<Complex> getScalarClass() {
-        return Complex.class;
     }
 }

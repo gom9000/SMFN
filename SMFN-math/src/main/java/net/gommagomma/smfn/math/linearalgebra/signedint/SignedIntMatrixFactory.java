@@ -34,6 +34,75 @@ implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix>
     public SignedIntMatrix createMatrix(SignedInt[][] data) { return new SignedIntMatrix(data); }
 
     @Override // SemiringMatrixFactory impls
+    public SignedIntMatrix createMatrix(double[][] data) {
+        int rows = data.length;
+        if (rows == 0) {
+            return createZeroMatrix(0, 0); 
+        }
+        int cols = data[0].length;
+
+        SignedIntFactory scalarFactory = (SignedIntFactory) getScalarFactory();
+        SignedInt[][] components = new SignedInt[rows][cols]; 
+        
+        for (int i = 0; i < rows; i++) {
+            if (data[i].length != cols) {
+                throw new IllegalArgumentException("All rows must have the same length.");
+            }
+            for (int j = 0; j < cols; j++) {
+                components[i][j] = scalarFactory.of(data[i][j]);
+            }
+        }
+
+        return createMatrix(components);
+    }
+
+    @Override // SemiringMatrixFactory impls
+    public SignedIntMatrix createMatrix(long[][] data) {
+        int rows = data.length;
+        if (rows == 0) {
+            return createZeroMatrix(0, 0); 
+        }
+        int cols = data[0].length;
+
+        SignedIntFactory scalarFactory = (SignedIntFactory) getScalarFactory();
+        SignedInt[][] components = new SignedInt[rows][cols]; 
+        
+        for (int i = 0; i < rows; i++) {
+            if (data[i].length != cols) {
+                throw new IllegalArgumentException("All rows must have the same length.");
+            }
+            for (int j = 0; j < cols; j++) {
+                components[i][j] = scalarFactory.of(data[i][j]); 
+            }
+        }
+
+        return createMatrix(components);
+    }
+
+    @Override // SemiringMatrixFactory impls
+    public SignedIntMatrix createMatrix(int[][] data) {
+        int rows = data.length;
+        if (rows == 0) {
+            return createZeroMatrix(0, 0); 
+        }
+        int cols = data[0].length;
+
+        SignedIntFactory scalarFactory = (SignedIntFactory) getScalarFactory();
+        SignedInt[][] components = new SignedInt[rows][cols]; 
+        
+        for (int i = 0; i < rows; i++) {
+            if (data[i].length != cols) {
+                throw new IllegalArgumentException("All rows must have the same length.");
+            }
+            for (int j = 0; j < cols; j++) {
+                components[i][j] = scalarFactory.of(data[i][j]); 
+            }
+        }
+
+        return createMatrix(components);
+    }
+
+    @Override // SemiringMatrixFactory impls
     public SignedIntMatrix createZeroMatrix(int rows, int cols) {
         return new SignedIntMatrix(rows, cols);
     }

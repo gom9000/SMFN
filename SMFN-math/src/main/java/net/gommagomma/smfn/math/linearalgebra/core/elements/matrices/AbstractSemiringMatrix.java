@@ -88,7 +88,6 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
      * Metodo helper per creare un array K[][] in modo sicuro (senza unchecked cast warnings)
      * utilizzando la reflection e la classe K ottenuta da getScalarClass().
      */
-    @SuppressWarnings("unchecked")
     protected K[][] createMatrixArray(int rows, int cols)
     {
         return (K[][]) Array.newInstance(getScalarClass(), rows, cols);
@@ -248,7 +247,6 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
         for (int i = 0; i < this.rows; i++) {
             K sum = zero;
             for (int j = 0; j < this.cols; j++) {
-                // Nota: vector.get(j) funziona perché V estende SemimoduleElement<K, ?>
                 sum = sum.add(this.data[i][j].multiply(vector.get(j)));
             }
             resultData[i] = sum;

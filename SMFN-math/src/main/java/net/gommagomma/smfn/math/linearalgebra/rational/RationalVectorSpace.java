@@ -3,10 +3,10 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.VectorSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.InnerProductSpace;
 
 public final class RationalVectorSpace
-implements VectorSpace<Rational, RationalVector>
+implements InnerProductSpace<Rational, RationalVector>
 {    
     private static final RationalVectorSpace INSTANCE = new RationalVectorSpace();
 

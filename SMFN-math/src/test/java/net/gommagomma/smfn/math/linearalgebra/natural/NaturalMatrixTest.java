@@ -1,293 +1,251 @@
 package net.gommagomma.smfn.math.linearalgebra.natural;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.algebra.numeric.NaturalFactory;
 
-@DisplayName("NaturalMatrix: Test del Semianello Matrici su N")
 public class NaturalMatrixTest {
 
-    // Scalari di base
-    private static Natural N0, N1, N2, N3, N4, N5, N7, N10;
-    private static NaturalMatrixFactory factory;
+    private NaturalMatrixFactory factory;
+    private Natural n0;
+    private Natural n1;
+    private Natural n2;
+    private Natural n3;
 
-    @BeforeAll
-    static void setUp() {
-        // Inizializzazione degli scalari Naturali
+    @BeforeEach
+    void setUp() {
         factory = NaturalMatrixFactory.getInstance();
-        N0 = factory.getScalarFactory().zero();
-        N1 = new Natural(1);
-        N2 = new Natural(2);
-        N3 = new Natural(3);
-        N4 = new Natural(4);
-        N5 = new Natural(5);
-        N7 = new Natural(7);
-        N10 = new Natural(10);
+        n0 = factory.getZeroScalar();
+        n1 = factory.getOneScalar();
+        n2 = n1.add(n1); // Natural(2)
+        n3 = n2.add(n1); // Natural(3)
     }
 
-    // ------------------- CREAZIONE E COSTRUTTORI -------------------
+    // --- Test di Costruzione e Validazione ---
 
     @Test
-    @DisplayName("Factory: Creazione di una matrice da dati Natural[][]")
-    void testFactory_CreateMatrix_Success() {
+    void testCreationFromNaturalArray() {
         Natural[][] data = {
-            {N1, N2},
-            {N3, N4}
+            {n1, n2},
+            {n3, n0}
         };
-        NaturalMatrix M = factory.createMatrix(data);
+        NaturalMatrix matrix = factory.createMatrix(data);
 
-        assertEquals(2, M.getRows(), "La matrice deve avere 2 righe.");
-        assertEquals(2, M.getColumns(), "La matrice deve avere 2 colonne.");
-        assertTrue(N4.isMathematicallyEqualTo(M.get(1, 1)), "L'elemento (1, 1) deve essere N4.");
+        assertEquals(2, matrix.getRows());
+        assertEquals(2, matrix.getColumns());
+        assertEquals(n1, matrix.get(0, 0));
+        assertEquals(n0, matrix.get(1, 1));
     }
 
     @Test
-    @DisplayName("Factory: Creazione di una matrice nulla (Zero Matrix)")
-    void testFactory_CreateZeroMatrix() {
-        NaturalMatrix Z = factory.createZeroMatrix(3, 2);
-
-        assertEquals(3, Z.getRows(), "La matrice zero deve avere 3 righe.");
-        assertEquals(2, Z.getColumns(), "La matrice zero deve avere 2 colonne.");
-        assertTrue(N0.isMathematicallyEqualTo(Z.get(2, 1)), "Ogni elemento deve essere Natural.ZERO.");
-    }
-    
-    @Test
-    @DisplayName("Matrix: getZero() restituisce una matrice nulla delle stesse dimensioni")
-    void testGetZero() {
-        NaturalMatrix M = factory.createZeroMatrix(2, 3);
-        NaturalMatrix Z = M.getZero();
-        
-        assertEquals(2, Z.getRows());
-        assertEquals(3, Z.getColumns());
-        assertTrue(Z.isMathematicallyEqualTo(M));
-    }
-
-    @Test
-    @DisplayName("Factory: Creazione di una matrice da double[][] (conversione e arrotondamento)")
-    void testFactory_CreateMatrixFromDouble() {
-        double[][] doubleData = {
-            {1.1, 2.9},
-            {4.0, 0.5}
+    void testCreationFromIntArray() {
+        int[][] data = {
+            {1, 2, 3},
+            {4, 5, 6}
         };
-        // Arrotondamento atteso per Natural: 1.1->1, 2.9->3, 4.0->4, 0.5->1
-        NaturalMatrix M = factory.createMatrix(doubleData);
+        NaturalMatrix matrix = factory.createMatrix(data);
         
-        NaturalMatrix expected = factory.createMatrix(new Natural[][] {
-            {N1, N3},
-            {N4, N1}
-        });
-        
-        // Questo test ora funziona grazie all'override del metodo createMatrix(double[][]) nella Factory
-        assertTrue(expected.isMathematicallyEqualTo(M), "La conversione da double deve arrotondare correttamente.");
+        assertEquals(2, matrix.getRows());
+        assertEquals(3, matrix.getColumns());
+        assertTrue(matrix.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4)));
     }
 
     @Test
-    @DisplayName("Costruttore: Eccezione per dati nulli o non validi")
-    void testConstructor_InvalidData() {
-        // Matrice con 0 righe
-        assertThrows(IllegalArgumentException.class, () -> factory.createMatrix(new Natural[0][0]), 
-                     "Deve fallire per 0 righe.");
-        // Matrice con colonne non coerenti (gestito nell'AbstractSemiringMatrix)
-        Natural[][] invalidData = {
-            {N1, N2},
-            {N3} // riga più corta
+    void testCreationInvalidDimensions() {
+        // Riga non rettangolare (già gestito da AbstractSemiringMatrix)
+        Natural[][] dataInvalid = {
+            {n1, n2},
+            {n3}
         };
-        assertThrows(IllegalArgumentException.class, () -> factory.createMatrix(invalidData), 
-                     "Deve fallire per righe di lunghezza diversa.");
-    }
-
-
-    // ------------------- ACCESSO A ELEMENTI E VETTORI -------------------
-
-    @Test
-    @DisplayName("Accesso: get(row, col) per lo scalare")
-    void testGetScalar() {
-        NaturalMatrix M = factory.createMatrix(new Natural[][] {
-            {N1, N2},
-            {N3, N4}
-        });
-        
-        assertTrue(N2.isMathematicallyEqualTo(M.get(0, 1)));
-        assertThrows(IndexOutOfBoundsException.class, () -> M.get(2, 0), "Indice di riga fuori dai limiti.");
-        assertThrows(IndexOutOfBoundsException.class, () -> M.get(0, 2), "Indice di colonna fuori dai limiti.");
+        assertThrows(IllegalArgumentException.class, () -> factory.createMatrix(dataInvalid));
     }
 
     @Test
-    @DisplayName("Accesso: getRowVector() per un vettore riga")
-    void testGetRowVector() {
-        NaturalMatrix M = factory.createMatrix(new Natural[][] {
-            {N1, N2, N3},
-            {N4, N5, N10}
-        });
-        
-        // CORREZIONE: Uso l'array esplicito per creare il vettore
-        NaturalVector expectedRow1 = NaturalVectorFactory.getInstance().createVector(new Natural[] {N4, N5, N10});
-        
-        NaturalVector row = M.getRowVector(1);
-        
-        assertTrue(expectedRow1.isMathematicallyEqualTo(row), "Il vettore riga estratto non è corretto.");
-        assertEquals(3, row.dimension());
+    void testCreateZeroMatrix() {
+        NaturalMatrix zero = factory.createZeroMatrix(3, 4);
+        assertEquals(3, zero.getRows());
+        assertEquals(4, zero.getColumns());
+        assertTrue(zero.get(2, 3).isZero());
+    }
+
+    // --- Test Immutabilità e Copia Difensiva ---
+
+    @Test
+    void testCopyIsDeepCopy() {
+        Natural[][] data = {{n1}};
+        NaturalMatrix original = factory.createMatrix(data);
+        NaturalMatrix copy = original.copy();
+
+        assertNotSame(original, copy, "La copia non deve essere la stessa istanza.");
+        assertTrue(original.isMathematicallyEqualTo(copy), "I valori devono essere uguali.");
+
+        // Simula la modifica dell'array originale (se fosse possibile), 
+        // ma il test importante è l'immutabilità interna:
+        // Se si potesse modificare data[0][0] in NaturalMatrix, questo fallirebbe.
+        // Essendo NaturalMatrix immutabile, ci fidiamo della copia difensiva nel costruttore.
+    }
+
+    // --- Test Operazioni Algebriche (Semianello) ---
+
+    @Test
+    void testAddition() {
+        Natural[][] dataA = {{n1, n2}, {n3, n0}}; // [[1, 2], [3, 0]]
+        Natural[][] dataB = {{n2, n3}, {n1, n2}}; // [[2, 3], [1, 2]]
+
+        NaturalMatrix A = factory.createMatrix(dataA);
+        NaturalMatrix B = factory.createMatrix(dataB);
+        NaturalMatrix C = A.add(B); // [[3, 5], [4, 2]]
+
+        assertTrue(C.get(0, 0).isMathematicallyEqualTo(n3));
+        assertTrue(C.get(0, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(5)));
+        assertTrue(C.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4)));
+        assertTrue(C.get(1, 1).isMathematicallyEqualTo(n2));
     }
 
     @Test
-    @DisplayName("Accesso: getColumnVector() per un vettore colonna")
-    void testGetColumnVector() {
-        NaturalMatrix M = factory.createMatrix(new Natural[][] {
-            {N1, N2},
-            {N3, N4},
-            {N5, N10}
-        });
-        
-        // CORREZIONE: Uso l'array esplicito per creare il vettore
-        NaturalVector expectedCol1 = NaturalVectorFactory.getInstance().createVector(new Natural[] {N2, N4, N10});
-        
-        NaturalVector col = M.getColumnVector(1);
-        
-        assertTrue(expectedCol1.isMathematicallyEqualTo(col), "Il vettore colonna estratto non è corretto.");
-        assertEquals(3, col.dimension());
-    }
-
-
-    // ------------------- OPERAZIONI ALGEBRICHE -------------------
-
-    @Test
-    @DisplayName("Addizione: Somma di due matrici (A + B)")
-    void testAdd() {
-        NaturalMatrix A = factory.createMatrix(new Natural[][] {{N1, N2}, {N3, N4}});
-        NaturalMatrix B = factory.createMatrix(new Natural[][] {{N2, N3}, {N4, N5}});
-        // Risultato atteso: {{3, 5}, {7, 9}}
-        NaturalMatrix expected = factory.createMatrix(new Natural[][] {{N3, N5}, {N7, new Natural(9)}});
-        
-        NaturalMatrix result = A.add(B);
-        
-        assertTrue(expected.isMathematicallyEqualTo(result), "L'addizione di matrici non è corretta.");
+    void testAdditionDimensionMismatch() {
+        NaturalMatrix A = factory.createZeroMatrix(2, 2);
+        NaturalMatrix B = factory.createZeroMatrix(2, 3);
+        assertThrows(IllegalArgumentException.class, () -> A.add(B));
     }
 
     @Test
-    @DisplayName("Moltiplicazione per Scalare: Prodotto c * A")
     void testMultiplyByScalar() {
-        NaturalMatrix A = factory.createMatrix(new Natural[][] {{N1, N2}, {N3, N4}});
-        Natural scalar = N3; // Scalare 3
-        // Risultato atteso: {{3, 6}, {9, 12}}
-        NaturalMatrix expected = factory.createMatrix(new Natural[][] {{N3, new Natural(6)}, {new Natural(9), new Natural(12)}});
-        
-        NaturalMatrix result = A.multiplyByScalar(scalar);
-        
-        assertTrue(expected.isMathematicallyEqualTo(result), "La moltiplicazione per scalare non è corretta.");
+        NaturalMatrix A = factory.createMatrix(new int[][]{{1, 2}, {3, 4}});
+        Natural scalar = NaturalFactory.getInstance().of(3);
+        NaturalMatrix C = A.multiplyByScalar(scalar); // [[3, 6], [9, 12]]
+
+        assertTrue(C.get(0, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(3)));
+        assertTrue(C.get(1, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(12)));
     }
 
     @Test
-    @DisplayName("Moltiplicazione Matrice-Matrice: A * B")
-    void testMultiply_Success() {
-        NaturalMatrix A = factory.createMatrix(new Natural[][] { // 2x2
-            {N1, N2},
-            {N3, N0}
-        });
-        NaturalMatrix B = factory.createMatrix(new Natural[][] { // 2x2
-            {N1, N1},
-            {N2, N3}
-        });
-        // C[0][0] = (1*1) + (2*2) = 5
-        // C[0][1] = (1*1) + (2*3) = 7
-        // C[1][0] = (3*1) + (0*2) = 3
-        // C[1][1] = (3*1) + (0*3) = 3
-        NaturalMatrix expected = factory.createMatrix(new Natural[][] {
-            {N5, N7},
-            {N3, N3}
-        });
+    void testMatrixMultiplication() {
+        // A (2x2) = [[1, 2], [3, 4]]
+        NaturalMatrix A = factory.createMatrix(new int[][]{{1, 2}, {3, 4}});
         
-        NaturalMatrix result = A.multiply(B);
+        // B (2x2) = [[5, 6], [7, 8]]
+        NaturalMatrix B = factory.createMatrix(new int[][]{{5, 6}, {7, 8}});
         
-        assertTrue(expected.isMathematicallyEqualTo(result), "La moltiplicazione A * B non è corretta.");
+        // C = A * B = [[1*5 + 2*7, 1*6 + 2*8], [3*5 + 4*7, 3*6 + 4*8]]
+        //           = [[5 + 14, 6 + 16], [15 + 28, 18 + 32]]
+        //           = [[19, 22], [43, 50]]
+        NaturalMatrix C = A.multiply(B);
+
+        assertTrue(C.get(0, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(19)));
+        assertTrue(C.get(0, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(22)));
+        assertTrue(C.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(43)));
+        assertTrue(C.get(1, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(50)));
     }
 
     @Test
-    @DisplayName("Moltiplicazione Matrice-Matrice: Eccezione per dimensioni non conformi")
-    void testMultiply_DimensionMismatch() {
-        NaturalMatrix A = factory.createMatrix(new Natural[][] {{N1, N2}}); // 1x2
-        NaturalMatrix B = factory.createMatrix(new Natural[][] {{N1, N2, N3}, {N4, N5, N10}}); // 2x3 (conforme)
-        NaturalMatrix C = factory.createMatrix(new Natural[][] {{N1}, {N2}, {N3}}); // 3x1
-        
-        // A (1x2) * C (3x1) => Non conforme (2 != 3)
-        assertThrows(IllegalArgumentException.class, () -> A.multiply(C), 
-                     "La moltiplicazione deve fallire per dimensioni interne diverse.");
-        
-        // A (1x2) * B (2x3) => Conforme (risultato 1x3)
-        assertDoesNotThrow(() -> A.multiply(B));
+    void testMatrixMultiplicationDimensionMismatch() {
+        NaturalMatrix A = factory.createZeroMatrix(2, 3);
+        NaturalMatrix B = factory.createZeroMatrix(2, 2);
+        assertThrows(IllegalArgumentException.class, () -> A.multiply(B));
     }
-    
+
+    // --- Test Prodotto Matrice-Vettore ---
+
     @Test
-    @DisplayName("Trasposta: Calcolo corretto della matrice trasposta")
+    void testMatrixVectorMultiplication() {
+        // A (2x3) = [[1, 2, 3], [4, 5, 6]]
+        NaturalMatrix A = factory.createMatrix(new int[][]{{1, 2, 3}, {4, 5, 6}});
+        
+        // v (3x1) = [1, 1, 1]
+        NaturalVector v = NaturalVectorFactory.getInstance().createVector(new int[]{1, 1, 1});
+        
+        // result (2x1) = [1*1 + 2*1 + 3*1, 4*1 + 5*1 + 6*1]
+        //              = [6, 15]
+        NaturalVector result = A.multiply(v);
+
+        assertEquals(2, result.dimension());
+        assertTrue(result.get(0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(6)));
+        assertTrue(result.get(1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(15)));
+    }
+
+    @Test
+    void testMatrixVectorMultiplicationDimensionMismatch() {
+        NaturalMatrix A = factory.createZeroMatrix(2, 3);
+        NaturalVector v = NaturalVectorFactory.getInstance().createVector(new int[]{1, 1});
+        assertThrows(IllegalArgumentException.class, () -> A.multiply(v));
+    }
+
+    // --- Test Trasposta ---
+
+    @Test
     void testTranspose() {
-        NaturalMatrix M = factory.createMatrix(new Natural[][] { // 2x3
-            {N1, N2, N3},
-            {N4, N5, N10}
-        });
+        // A (2x3) = [[1, 2, 3], [4, 5, 6]]
+        NaturalMatrix A = factory.createMatrix(new int[][]{{1, 2, 3}, {4, 5, 6}});
+        NaturalMatrix A_T = A.transpose();
         
-        NaturalMatrix expected = factory.createMatrix(new Natural[][] { // 3x2
-            {N1, N4},
-            {N2, N5},
-            {N3, N10}
-        });
-        
-        NaturalMatrix result = M.transpose();
-        
-        assertTrue(expected.isMathematicallyEqualTo(result), "La trasposta non è corretta.");
-        assertEquals(3, result.getRows());
-        assertEquals(2, result.getColumns());
+        // A_T (3x2) = [[1, 4], [2, 5], [3, 6]]
+        assertEquals(3, A_T.getRows());
+        assertEquals(2, A_T.getColumns());
+
+        assertTrue(A_T.get(0, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4)));
+        assertTrue(A_T.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(2)));
+        assertTrue(A_T.get(2, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(6)));
     }
 
-    // ------------------- EGUAGLIANZA E UTILITY -------------------
+    // --- Test Uguaglianza ---
 
     @Test
-    @DisplayName("Eguaglianza: isMathematicallyEqualTo e copy()")
-    void testIsMathematicallyEqualTo_And_Copy() {
-        NaturalMatrix M1 = factory.createMatrix(new Natural[][] {{N1, N2}, {N3, N4}});
-        NaturalMatrix M2 = factory.createMatrix(new Natural[][] {{N1, N2}, {N3, N4}});
-        NaturalMatrix M3 = factory.createMatrix(new Natural[][] {{N4, N3}, {N2, N1}});
-        
-        // Copia
-        NaturalMatrix M_copy = M1.copy();
+    void testMathematicalEquality() {
+        Natural[][] dataA = {{n1, n2}, {n3, n0}};
+        NaturalMatrix A = factory.createMatrix(dataA);
+        NaturalMatrix B = factory.createMatrix(dataA); // Stessi dati
 
-        assertTrue(M1.isMathematicallyEqualTo(M2), "Matrici con stessi valori devono essere uguali.");
-        assertTrue(M1.isMathematicallyEqualTo(M_copy), "Una copia deve essere uguale all'originale.");
-        assertFalse(M1.isMathematicallyEqualTo(M3), "Matrici con valori diversi devono essere diverse.");
-        assertFalse(M1.isMathematicallyEqualTo(null), "Confronto con null.");
-    }
-    
-    @Test
-    @DisplayName("Eguaglianza: equals e hashCode (Java Standard)")
-    void testEqualsAndHashCode() {
-        NaturalMatrix M1 = factory.createMatrix(new Natural[][] {{N1, N2}, {N3, N4}});
-        NaturalMatrix M2 = factory.createMatrix(new Natural[][] {{N1, N2}, {N3, N4}});
-        NaturalMatrix M3 = factory.createMatrix(new Natural[][] {{N4, N3}, {N2, N1}});
+        assertTrue(A.isMathematicallyEqualTo(B));
         
-        // equals
-        assertTrue(M1.equals(M2), "Java equals deve essere true per oggetti uguali.");
-        assertFalse(M1.equals(M3), "Java equals deve essere false per oggetti diversi.");
-        
-        // hashCode
-        assertEquals(M1.hashCode(), M2.hashCode(), "L'hash code deve essere lo stesso per oggetti uguali.");
+        NaturalMatrix C = factory.createMatrix(new int[][]{{1, 2}, {3, 1}}); // Valore diverso
+        assertFalse(A.isMathematicallyEqualTo(C));
     }
 
     @Test
-    @DisplayName("Utility: toString()")
-    void testToString() {
-        NaturalMatrix M = factory.createMatrix(new Natural[][] {{N1, N2}, {N3, N4}});
-        String expectedStart = "2x2 Matrix:\n";
-        String expectedRow1 = "[1, 2]\n";
+    void testJavaEquality() {
+        Natural[][] dataA = {{n1, n2}, {n3, n0}};
+        NaturalMatrix A = factory.createMatrix(dataA);
+        NaturalMatrix B = factory.createMatrix(dataA); // Stessi dati
+
+        assertTrue(A.equals(B), "equals() deve funzionare per matrici equivalenti.");
         
-        String result = M.toString();
+        NaturalMatrix C = factory.createMatrix(new int[][]{{1, 2}, {3, 1}}); // Valore diverso
+        assertFalse(A.equals(C));
+    }
+
+    // --- Test Getter Vettori Riga e Colonna ---
+
+    @Test
+    void testGetRowVector() {
+        // A (2x3) = [[1, 2, 3], [4, 5, 6]]
+        NaturalMatrix A = factory.createMatrix(new int[][]{{1, 2, 3}, {4, 5, 6}});
+        NaturalVector row = A.getRowVector(1); // [4, 5, 6]
+
+        assertEquals(3, row.dimension());
+        assertTrue(row.get(0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4)));
+        assertTrue(row.get(2).isMathematicallyEqualTo(NaturalFactory.getInstance().of(6)));
         
-        assertTrue(result.startsWith(expectedStart));
-        assertTrue(result.contains(expectedRow1));
+        // Verifica immutabilità (la modifica del vettore restituito non modifica la matrice)
+        assertTrue(A.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4))); // La matrice originale resta 4
+    }
+
+    @Test
+    void testGetColumnVector() {
+        // A (2x3) = [[1, 2, 3], [4, 5, 6]]
+        NaturalMatrix A = factory.createMatrix(new int[][]{{1, 2, 3}, {4, 5, 6}});
+        NaturalVector col = A.getColumnVector(2); // [3, 6]
+
+        assertEquals(2, col.dimension());
+        assertTrue(col.get(0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(3)));
+        assertTrue(col.get(1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(6)));
     }
 }

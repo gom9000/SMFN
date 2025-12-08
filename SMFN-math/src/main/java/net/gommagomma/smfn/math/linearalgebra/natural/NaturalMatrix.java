@@ -15,22 +15,12 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
     private static final NaturalMatrixFactory FACTORY_INSTANCE = NaturalMatrixFactory.getInstance();
 
 
-    protected NaturalMatrix(Natural[][] data) {
-        super(data, FACTORY_INSTANCE);
-    }
-
-    protected NaturalMatrix(int rows, int cols) {
-    	super(rows, cols, FACTORY_INSTANCE);
-//    	for (int i = 0; i < rows; i++) {
-//    		Arrays.fill(this.data[i], factory.getScalarFactory().zero());
-//    	}
-    }
+    NaturalMatrix(Natural[][] data) { super(data, FACTORY_INSTANCE); }
+    NaturalMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE); }
 
 
     @Override // AbstractSemiringMatrix impls
-    protected Class<Natural> getScalarClass() {
-        return Natural.class;
-    }
+    protected Class<Natural> getScalarClass() { return Natural.class; }
 
 
     @Override // SemiringMatrixElement impls

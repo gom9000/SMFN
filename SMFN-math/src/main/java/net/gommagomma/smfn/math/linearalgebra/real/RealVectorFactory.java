@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
-public class RealVectorFactory
+public final class RealVectorFactory
 implements SemimoduleVectorFactory<Real, RealVector>
 {
     private static final RealVectorFactory INSTANCE = new RealVectorFactory();

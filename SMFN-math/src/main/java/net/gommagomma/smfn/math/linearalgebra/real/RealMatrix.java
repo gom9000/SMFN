@@ -13,47 +13,15 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
     private static final RealMatrixFactory FACTORY_INSTANCE = RealMatrixFactory.getInstance();
 
 
-    /**
-     * Costruttore principale per creare un RealMatrix da un array bidimensionale di componenti.
-     * @param data L'array di componenti Real.
-     */
-    public RealMatrix(Real[][] data) {
-        super(data, FACTORY_INSTANCE);
-    }
-    
-    /**
-     * Costruttore per creare una matrice di zeri di dimensioni specifiche.
-     * Usato internamente per getZero(), identity(), ecc.
-     */
-    RealMatrix(int rows, int cols) {
-    	super(rows, cols, FACTORY_INSTANCE);
-    	for (int i = 0; i < rows; i++) {
-    		Arrays.fill(this.data[i], Real.ZERO);
-    	}
-    }
-
-    /**
-     * Restituisce la classe runtime dello scalare K (Field).
-     * Essenziale per la reflection nell'AbstractMatrix.
-     */
-    @Override
-    protected Class<Real> getScalarClass() {
-        return Real.class;
-    }
-
-    @Override
-    protected Comparator<Real> getMagnitudeComparator() {
-    	return (r1, r2) -> {
-            double abs1 = r1.abs().getValue();
-            double abs2 = r2.abs().getValue();            
-            return Double.compare(abs1, abs2);
-        };
-    }
+    public RealMatrix(Real[][] data) { super(data, FACTORY_INSTANCE); }
+    RealMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE);}
 
 
-    // MatrixElement impls
-    
-    @Override
+    @Override // AbstractSemiringMatrix impls
+    protected Class<Real> getScalarClass() { return Real.class; }
+
+
+    @Override // SemiringMatrixElement impls
     public RealVector getRowVector(int row)
     {
         if (row < 0 || row >= rows) {
@@ -63,7 +31,7 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
         return factory.createVector(Arrays.copyOf(data[row], cols));
     }
 
-    @Override
+    @Override // SemiringMatrixElement impls
     public RealVector getColumnVector(int col)
     {
         if (col < 0 || col >= cols) {
@@ -79,40 +47,12 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
     }
 
 
-    // Helper Methods
-
-    /**
-     * Helper statico per creare matrici da array di double primitivi.
-     */
-    public static RealMatrix fromDoubles(double[][] data)
-    {
-        int rows = data.length;
-        int cols = data.length == 0 ? 0 : data[0].length;
-        Real[][] realData = new Real[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            if (data[i].length != cols) {
-                 throw new IllegalArgumentException("All rows must have the same number of columns.");
-            }
-            for (int j = 0; j < cols; j++) {
-                realData[i][j] = new Real(data[i][j]);
-            }
-        }
-
-        return new RealMatrix(realData);
-    }
-
-
-    public static RealMatrix identity(int size)
-    {
-        if (size <= 0) {
-            throw new IllegalArgumentException("Dimension must be positive.");
-        }
-
-        RealMatrix identityMatrix = new RealMatrix(size, size);
-        for (int i = 0; i < size; i++) {
-             identityMatrix.data[i][i] = Real.ONE;
-        }
-
-        return identityMatrix; 
+    @Override // AbstractFieldMatrix impls
+    protected Comparator<Real> getMagnitudeComparator() {
+    	return (r1, r2) -> {
+            double abs1 = r1.norm().getValue();
+            double abs2 = r2.norm().getValue();            
+            return Double.compare(abs1, abs2);
+        };
     }
 }
