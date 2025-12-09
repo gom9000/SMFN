@@ -64,31 +64,14 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
     protected abstract Class<K> getScalarClass();
 
 
-    public final boolean isStructuralyEqualTo(M other)
-    {
-        if (this.rows != other.getRows() || this.cols != other.getColumns()) {
-        	return false;
-        }
-        
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (!this.data[i][j].equals(other.get(i, j))) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-
     // Helpers
 
     /**
      * Metodo helper per creare un array K[][] in modo sicuro (senza unchecked cast warnings)
      * utilizzando la reflection e la classe K ottenuta da getScalarClass().
      */
-    protected K[][] createMatrixArray(int rows, int cols)
+    @SuppressWarnings("unchecked")
+	protected K[][] createMatrixArray(int rows, int cols)
     {
         return (K[][]) Array.newInstance(getScalarClass(), rows, cols);
     }
@@ -130,7 +113,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
             return false;
         }
         
-        if (!this.isStructuralyEqualTo(other)) {
+        if (this.rows != other.getRows() || this.cols != other.getColumns()) {
             return false;
         }
 
@@ -235,12 +218,12 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
     }
 
 
-    @Override // SemiringMatrixElement impls
+	@Override // SemiringMatrixElement impls
     public V multiply(V vector) {
         if (this.cols != vector.dimension()) {
              throw new IllegalArgumentException("Matrix columns must match vector dimension for multiplication.");
         }
-        
+        @SuppressWarnings("unchecked")
         K[] resultData = (K[]) Array.newInstance(getScalarClass(), this.rows);
         K zero = factory.getScalarFactory().zero();
 
@@ -304,9 +287,22 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
             return false;
         }
 
-        M castedOther = (M) other; 
+        @SuppressWarnings("unchecked")
+		M castedOther = (M) other; 
 
-        return this.isStructuralyEqualTo(castedOther);
+        if (this.rows != castedOther.getRows() || this.cols != castedOther.getColumns()) {
+            return false;
+        }
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (!this.data[i][j].equals(castedOther.get(i, j))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override  // Java Standard impls
@@ -316,5 +312,4 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
         result = 31 * result + Arrays.deepHashCode(data); 
         return result;
     }
-
 }

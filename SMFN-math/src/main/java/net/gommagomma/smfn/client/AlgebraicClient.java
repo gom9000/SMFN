@@ -1,10 +1,10 @@
 package net.gommagomma.smfn.client;
 
-import net.gommagomma.smfn.math.algebra.numeric.ZnElement;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
+import net.gommagomma.smfn.math.algebra.numeric.ZnElement;
 import net.gommagomma.smfn.math.algebra.structures.ZnRing;
 
 /**
@@ -41,7 +41,7 @@ public class AlgebraicClient
     private static void testRational() {
         // Uso del costruttore base
         Rational r1 = new Rational(1, 3);
-        
+
         // Uso di CreatableFromDouble: converte 0.25 (frazione binaria esatta)
         Rational r2 = RationalFactory.getInstance().of(0.25); // 0.25 = 1/4
 
@@ -53,6 +53,12 @@ public class AlgebraicClient
         System.out.println("r2 (valueOf 0.25): " + r2);
         System.out.println("Divisione (1/3 / 1/4): " + div); // Risultato atteso: 4/3
         System.out.println("Inverso di r2: " + inv);        // Risultato atteso: 4
+
+        System.out.println(RationalFactory.getInstance().of(0.1));
+        System.out.println(RationalFactory.getInstance().of(0.9));
+        System.out.println(RationalFactory.getInstance().of(0.75));
+        System.out.println(RationalFactory.getInstance().of(2.5));
+        System.out.println(RationalFactory.getInstance().of(1.5));
     }
 
     private static void testZnRing() {

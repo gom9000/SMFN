@@ -372,7 +372,7 @@ class RationalTest {
             // 0.4 = 2/5 (Non è una potenza di 2, ma è una frazione esatta in IEEE 754)
             // (0.4 è rappresentato in binario come 0.011001100..., ma il double approssima 
             // a una frazione con denominatore potenza di 2. Il tuo algoritmo lo cattura.)
-            assertRationalEquals(r(1801439850948199L, 4503599627370496L).copy(), RationalFactory.getInstance().of(0.4), "0.4 (approx)");
+            assertRationalEquals(r(3602879701896397L, 9007199254740992L).copy(), RationalFactory.getInstance().of(0.4), "0.4 (approx)");
             
             // Questo test è problematico a causa della precisione. Concentriamoci su quelli che funzionano esatti.
             // 0.75 è (1/2 + 1/4) = 3/4. Bit: 0x3FE8000000000000L. Exp=1022-1023=-1. Mantissa=1.1 -> 1 * 2^-1 + 1 * 2^-2.

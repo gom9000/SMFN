@@ -43,7 +43,10 @@ implements NumericFactory<Rational>
         
         // Estrazione di esponente (11 bit) e mantissa (52 bit)
         int exponent = (int) ((bits >> 52) & 0x7FFL);
-        long mantissa = bits & 0x000FFFFFFFFFFFFL;
+        
+        long fractionalMask = (1L << 52) - 1; // 0x000FFFFFFFFFFFFL     
+        long mantissa = bits & fractionalMask;
+        //long mantissa = bits & 0x000FFFFFFFFFFFFL;
         
         // Bit di segno: 0 se positivo, diverso da 0 se negativo
         boolean negative = (bits & 0x8000000000000000L) != 0;
@@ -65,11 +68,12 @@ implements NumericFactory<Rational>
         long den;
 
         if (exponent >= 0) {
-            // Numeri interi o grandi. Qui potresti ancora rischiare overflow.
-            // L'unica soluzione sicura qui è usare BigInteger, ma assumiamo che non lo faremo.
-            // Per ora, continuiamo a usare power() e accettiamo il rischio per i numeri grandi.
-            num = mantissa * MathUtils.power(2L, exponent);
-            den = 1L;
+        	// Calcolo del numeratore (Mantissa * 2^Exponent)
+            num = Math.multiplyExact(mantissa, MathUtils.power(2L, exponent));
+            
+            // Il denominatore corretto è 2^52 (la scala della mantissa)
+            // 2^52 = 4503599627370496L
+            den = 1L << 52; // Usiamo 1L << 52 per coerenza
         } else {
             // Potenza di due nel denominatore
             long powerOfTwo = 52 - exponent; // Es: 0.5 -> 52 - (-1) = 53
