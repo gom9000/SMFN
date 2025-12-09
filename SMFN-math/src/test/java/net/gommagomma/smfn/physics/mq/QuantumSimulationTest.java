@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
@@ -124,8 +125,8 @@ public class QuantumSimulationTest
         ComplexVector psi_initial = new ComplexVector(new Complex(1.0), new Complex(0.0));
 
         // 4. Configura il solutore (come nel punto 2)
-        Field<Complex> complexField = ComplexField.getInstance();
-        ODESolver<Complex, ComplexVector> mqSolver = new RungeKutta4Solver<>(complexField);
+        ComplexFactory scalarFactory = ComplexFactory.getInstance();
+        ODESolver<Complex, ComplexVector> mqSolver = new RungeKutta4Solver<>(scalarFactory);
 
         // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2, con passo dt=0.0001
         Real startTime = new Real(0.0);
@@ -138,7 +139,7 @@ public class QuantumSimulationTest
         // 6. Verifica il risultato atteso
         // Con questo Hx e questo tempo finale (PI), lo stato dovrebbe essere |giù> = (0, 1)
         ComplexVector expected_final = new ComplexVector(new Complex(0.0), new Complex(0.0, -1.0));
-        System.out.println("psi final = " + psi_final + ", psi expected = " + expected_final);
+        //System.out.println("psi final = " + psi_final + ", psi expected = " + expected_final);
         assertTrue(psi_final.isMathematicallyEqualTo(expected_final), "Lo stato finale doveva essere |giù>, psi=" + psi_final);
     }
 
@@ -160,7 +161,8 @@ public class QuantumSimulationTest
         Field<Complex> complexField = ComplexField.getInstance();
         
         // Inizializziamo l'EmbeddedRK23Solver passando solo il Field<Complex>
-        IntervalSolver<Complex, ComplexVector> mqSolver = new EmbeddedRK23Solver<>(complexField);
+        ComplexFactory scalarFactory = ComplexFactory.getInstance();
+        IntervalSolver<Complex, ComplexVector> mqSolver = new EmbeddedRK23Solver<>(scalarFactory);
 
         // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2
         Real startTime = new Real(0.0);

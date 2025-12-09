@@ -247,7 +247,7 @@ implements NumericalDifferentiator<K> {}
 
 ### net.gommagomma.smfn.math.analysis.solvers.ode:
 - interface ODESolver<K extends FieldElement<K>, T extends VectorElement<K, T>> extends IntervalSolver<K, T> {T step(DynamicSystem<K, T> system, T currentState, Real currentTime, Real deltaTime);}
-- class RungeKutta4Solver<K extends FieldElement<K> & CreatableFromDouble<K>, T extends VectorElement<K, T>> 
+- class RungeKutta4Solver<K extends FieldElement<K>, T extends VectorElement<K, T>> 
 implements ODESolver<K, T> {}
 
 ### net.gommagomma.smfn.math.analysis.fractals;
