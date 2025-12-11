@@ -287,6 +287,14 @@ implements ODESolver<K, T> {}
 
 # TODO:
 
+- Unifica le factory e le strutture:
+final class RationalField 
+    implements Field<Rational>, NumericFactory<Rational> { 
+    // ...
+    @Override
+    public Rational zero() { /* ... */ } // Factory Method
+}
+
 - introduzione delle matrici quadrate (come anello moltiplicativo);
 
 - public class Point<K extends FieldElement<K>, V extends VectorElement<K, V>>
@@ -294,47 +302,8 @@ implements AlgebraicElement<Point<K, V>>
 
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
-
-- Suggerimento: Vincola l'interfaccia HermitianOperator in modo più stretto, non solo a VectorElement, ma a InnerProductSpaceElement.
-// Vincolo più stretto per i problemi di MQ:
-public interface HermitianOperator<K extends FieldElement<K> & NormableElement<Real, K>, 
-                                  V extends InnerProductSpaceElement<K, V>, 
-                                  O extends HermitianOperator<K, V, O>> 
-    extends LinearOperator<K, V, O> {
-
-    Real expectationValue(V state); // Funziona solo se il prodotto scalare è definito
-}
-
 - Polinomi: Evaluatable<X, X>  - interfaccia chiave che definisca il concetto di "radice" (valutazione)
-
-- interfaccia ScalarFactory !!! (ScalarFactory -> SemimoduleVectorFactory -> SemiringMatrixFactory)
-e centralizza lì la costruzione di tutti gli elementi
-public interface ScalarFactory<K extends SemiringElement<K>> {
-    /** Restituisce l'identità additiva (Zero) dello scalare K. */
-    K getZeroScalar();
-    /** Restituisce l'identità moltiplicativa (Uno) dello scalare K. */
-    K getOneScalar();
-    /** * Crea un nuovo elemento K partendo da un primitivo double.
-     * Questo è il metodo statico 'valueOf()' che mancava. 
-     */
-    K createScalar(double value);
-}
-public interface SemimoduleVectorFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> 
-    extends ScalarFactory<K> // Eredita le capacità di creazione di K
-{
-    /** Crea un nuovo elemento vettore V a partire da un array di scalari K. */
-    V createVector(K[] data);
-}
-public interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>
-extends ScalarFactory<K> // Eredita getZeroScalar(), getOneScalar(), createScalar(double)
-{ 
-    M createMatrix(K[][] data); 
-    M createZeroMatrix(int rows, int cols); 
-    V createVector(K[] data); 
-    
-    // NOTA: getZeroScalar() e getOneScalar() sono stati rimossi da qui
-    // e ora sono ereditati da ScalarFactory.
-}
+- Polynomial Ring: Hai PolynomialFunction che implementa CommutativeRingElement<Polynomial<K>>. Questa classe probabilmente rappresenta solo il polinomio come funzione. Manca la classe Polynomial<K> che rappresenta il Polinomio stesso (l'anello dei polinomi K[x]). Questo è cruciale per la Fattorizzazione, il Calcolo degli Autovalori (attraverso il polinomio caratteristico) e la teoria dei Campi.
 
 - ComplexVector: Dot Product
 Stai calcolando <v,w>=SOMMA(v(i) x w(i)\). Questa è la convenzione standard dei Matematici (lineare nel primo argomento, antilineare nel secondo).
@@ -354,12 +323,6 @@ if (real >= 0) {
     realPart = Math.abs(imaginary) / (2.0 * t);
     imaginaryPart = (imaginary >= 0) ? t : -t;
 }
-- Rational.valueOf(double) : 
- Se questo è l'intento (esattezza bit-a-bit): L'implementazione è perfetta.
- Se l'intento è "trova la frazione più vicina": Spesso nelle librerie scientifiche si usa l'algoritmo delle Frazioni Continue per  convertire 0.100000001 in 1/10.
- Suggerimento: Potresti voler aggiungere un metodo statico alternativo: Rational.approximate(double val, double epsilon).
-
-- Soluzione Architetturale: Nelle implementazioni concrete (es. RealMatrix), considera di usare internamente double[] o double[][] primitivi per lo storage, e crea gli oggetti Real "on the fly" solo quando richiesti tramite get(row, col).
 
 - Soluzione Architetturale: Nelle implementazioni concrete (es. RealMatrix), considera di usare internamente double[] o double[][] primitivi per lo storage, e crea gli oggetti Real "on the fly" solo quando richiesti tramite get(row, col).
 
@@ -374,8 +337,16 @@ interface AffineTransform<K extends FieldElement<K>, V extends VectorElement<K, 
 }
 impl (in linearalgebra.real):
 class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
+- Suggerimento: Vincola l'interfaccia HermitianOperator in modo più stretto, non solo a VectorElement, ma a InnerProductSpaceElement.
+// Vincolo più stretto per i problemi di MQ:
+public interface HermitianOperator<K extends FieldElement<K> & NormableElement<Real, K>, 
+                                  V extends InnerProductSpaceElement<K, V>, 
+                                  O extends HermitianOperator<K, V, O>> 
+    extends LinearOperator<K, V, O> {
 
-- Polynomial Ring: Hai PolynomialFunction che implementa CommutativeRingElement<Polynomial<K>>. Questa classe probabilmente rappresenta solo il polinomio come funzione. Manca la classe Polynomial<K> che rappresenta il Polinomio stesso (l'anello dei polinomi K[x]). Questo è cruciale per la Fattorizzazione, il Calcolo degli Autovalori (attraverso il polinomio caratteristico) e la teoria dei Campi.
+    Real expectationValue(V state); // Funziona solo se il prodotto scalare è definito
+}
+
 
 - struttura mq
 |   |-- mq/                                  
