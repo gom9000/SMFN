@@ -14,7 +14,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * @param <K> Il tipo di campo (es. Complex, Real) per gli scalari del sistema.
  * @param <T> Il tipo di vettore (es. ComplexVector) che rappresenta lo stato del sistema.
  */
-public class RungeKutta4Solver<K extends FieldElement<K>, T extends VectorElement<K, T>> 
+public class RungeKutta4Solver<K extends FieldElement<K, ?>, T extends VectorElement<K, T>> 
 implements ODESolver<K, T>
 {
 	private final NumericFactory<K> scalarFactory;

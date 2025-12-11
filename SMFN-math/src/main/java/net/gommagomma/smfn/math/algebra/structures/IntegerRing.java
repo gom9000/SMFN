@@ -1,13 +1,13 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
-import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
+import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class IntegerRing
-implements CommutativeRing<SignedInt>
+implements EuclideanDomain<SignedInt, SignedInt>
 {
 	public static final IntegerRing INSTANCE = new IntegerRing();
 

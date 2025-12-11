@@ -5,14 +5,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 
 class RationalVectorTest {
 
     private RationalVectorFactory factory;
-    private RationalFactory scalarFactory;
+    private NumericFactory<Rational> scalarFactory;
     private final double TOLERANCE = 1e-9; 
     
     // Metodo helper per creare razionali direttamente, assumendo l'uso di un costruttore (num, den)
@@ -24,7 +24,7 @@ class RationalVectorTest {
     @BeforeEach
     void setUp() {
         factory = RationalVectorFactory.getInstance();
-        scalarFactory = (RationalFactory) factory.getScalarFactory();
+        scalarFactory = factory.getScalarFactory();
         
         // Assicuriamo che la factory usi 'of' se hai completato il refactoring in RationalVectorFactory
         // (Il codice fornito usava 'to', ma la tua intenzione era 'of')

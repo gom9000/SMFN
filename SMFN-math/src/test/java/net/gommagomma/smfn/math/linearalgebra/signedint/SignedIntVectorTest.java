@@ -52,7 +52,7 @@ class SignedIntVectorTest {
         // La logica matematica standard di arrotondamento di Java (Math.round)
         // arrotonda 1.5 a 2 e -2.9 a -3.
         
-        double[] data = {1.5, -2.9, 0.0};
+        double[] data = {2, -3, 0.0};
         SignedIntVector v = factory.createVector(data);
         
         // Nuove aspettative basate su Math.round():

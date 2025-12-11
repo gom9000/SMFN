@@ -1,7 +1,6 @@
 package net.gommagomma.smfn.physics.mq;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexMatrix;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
@@ -47,7 +46,7 @@ implements Observable<Complex, ComplexVector, HamiltonianOperator>
          
          Complex[] resultData = new Complex[this.matrix.getRows()];
          for (int i = 0; i < this.matrix.getRows(); i++) {
-             Complex sum = ComplexFactory.getInstance().zero();
+             Complex sum = Complex.ZERO;
              for (int j = 0; j < this.matrix.getColumns(); j++) {
                  sum = sum.add(this.matrix.get(i, j).multiply(vector.get(j)));
              }

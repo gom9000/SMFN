@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.algebra.numeric.NaturalFactory;
+import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
 
 public class NaturalMatrixTest {
 
@@ -55,7 +55,7 @@ public class NaturalMatrixTest {
         
         assertEquals(2, matrix.getRows());
         assertEquals(3, matrix.getColumns());
-        assertTrue(matrix.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4)));
+        assertTrue(matrix.get(1, 0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(4)));
     }
 
     @Test
@@ -105,8 +105,8 @@ public class NaturalMatrixTest {
         NaturalMatrix C = A.add(B); // [[3, 5], [4, 2]]
 
         assertTrue(C.get(0, 0).isMathematicallyEqualTo(n3));
-        assertTrue(C.get(0, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(5)));
-        assertTrue(C.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4)));
+        assertTrue(C.get(0, 1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(5)));
+        assertTrue(C.get(1, 0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(4)));
         assertTrue(C.get(1, 1).isMathematicallyEqualTo(n2));
     }
 
@@ -120,11 +120,11 @@ public class NaturalMatrixTest {
     @Test
     void testMultiplyByScalar() {
         NaturalMatrix A = factory.createMatrix(new int[][]{{1, 2}, {3, 4}});
-        Natural scalar = NaturalFactory.getInstance().of(3);
+        Natural scalar = NaturalSemiring.getInstance().of(3);
         NaturalMatrix C = A.multiplyByScalar(scalar); // [[3, 6], [9, 12]]
 
-        assertTrue(C.get(0, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(3)));
-        assertTrue(C.get(1, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(12)));
+        assertTrue(C.get(0, 0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(3)));
+        assertTrue(C.get(1, 1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(12)));
     }
 
     @Test
@@ -140,10 +140,10 @@ public class NaturalMatrixTest {
         //           = [[19, 22], [43, 50]]
         NaturalMatrix C = A.multiply(B);
 
-        assertTrue(C.get(0, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(19)));
-        assertTrue(C.get(0, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(22)));
-        assertTrue(C.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(43)));
-        assertTrue(C.get(1, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(50)));
+        assertTrue(C.get(0, 0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(19)));
+        assertTrue(C.get(0, 1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(22)));
+        assertTrue(C.get(1, 0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(43)));
+        assertTrue(C.get(1, 1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(50)));
     }
 
     @Test
@@ -168,8 +168,8 @@ public class NaturalMatrixTest {
         NaturalVector result = A.multiply(v);
 
         assertEquals(2, result.dimension());
-        assertTrue(result.get(0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(6)));
-        assertTrue(result.get(1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(15)));
+        assertTrue(result.get(0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(6)));
+        assertTrue(result.get(1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(15)));
     }
 
     @Test
@@ -191,9 +191,9 @@ public class NaturalMatrixTest {
         assertEquals(3, A_T.getRows());
         assertEquals(2, A_T.getColumns());
 
-        assertTrue(A_T.get(0, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4)));
-        assertTrue(A_T.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(2)));
-        assertTrue(A_T.get(2, 1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(6)));
+        assertTrue(A_T.get(0, 1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(4)));
+        assertTrue(A_T.get(1, 0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(2)));
+        assertTrue(A_T.get(2, 1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(6)));
     }
 
     // --- Test Uguaglianza ---
@@ -231,11 +231,11 @@ public class NaturalMatrixTest {
         NaturalVector row = A.getRowVector(1); // [4, 5, 6]
 
         assertEquals(3, row.dimension());
-        assertTrue(row.get(0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4)));
-        assertTrue(row.get(2).isMathematicallyEqualTo(NaturalFactory.getInstance().of(6)));
+        assertTrue(row.get(0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(4)));
+        assertTrue(row.get(2).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(6)));
         
         // Verifica immutabilità (la modifica del vettore restituito non modifica la matrice)
-        assertTrue(A.get(1, 0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(4))); // La matrice originale resta 4
+        assertTrue(A.get(1, 0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(4))); // La matrice originale resta 4
     }
 
     @Test
@@ -245,7 +245,7 @@ public class NaturalMatrixTest {
         NaturalVector col = A.getColumnVector(2); // [3, 6]
 
         assertEquals(2, col.dimension());
-        assertTrue(col.get(0).isMathematicallyEqualTo(NaturalFactory.getInstance().of(3)));
-        assertTrue(col.get(1).isMathematicallyEqualTo(NaturalFactory.getInstance().of(6)));
+        assertTrue(col.get(0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(3)));
+        assertTrue(col.get(1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(6)));
     }
 }

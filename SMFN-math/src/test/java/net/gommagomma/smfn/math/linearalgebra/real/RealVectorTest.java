@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
 
 class RealVectorTest {
 
     private RealVectorFactory factory;
-    private RealFactory scalarFactory;
+    private NumericFactory<Real> scalarFactory;
     // Tolleranza per confronti di numeri reali in virgola mobile (double)
     private final double TOLERANCE = 1e-9; 
 
@@ -19,7 +19,7 @@ class RealVectorTest {
     void setUp() {
         factory = RealVectorFactory.getInstance();
         // Cast sicuro, dato che la factory restituisce RealFactory in questo contesto
-        scalarFactory = (RealFactory) factory.getScalarFactory(); 
+        scalarFactory = factory.getScalarFactory(); 
     }
 
     // --- Test sulla Factory: Creazione e Conversione ---

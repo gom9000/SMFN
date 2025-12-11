@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
 
 
 // K = Tipo scalare (FieldElement), V = Tipo vettore (VectorElement)
-public interface IntervalSolver<K extends FieldElement<K>, V extends VectorElement<K, V>> 
+public interface IntervalSolver<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> 
 extends Solver<V, V>
 {
     V integrate(DynamicSystem<K, V> system, 

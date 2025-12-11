@@ -18,7 +18,7 @@ implements FieldMatrixSpace<Rational, RationalVector, RationalMatrix>
     }
 
     @Override
-    public Field<Rational> getScalarStructure() {
+    public Field<Rational, ?> getScalarStructure() {
         return RationalField.getInstance();
     }
 

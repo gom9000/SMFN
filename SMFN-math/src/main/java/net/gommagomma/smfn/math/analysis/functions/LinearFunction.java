@@ -10,7 +10,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElemen
  * 
  * @param <K> Il tipo di campo dei coefficienti (es. Real, Rational, Complex)
  */
-public final class LinearFunction<K extends FieldElement<K>>
+public final class LinearFunction<K extends FieldElement<K, ?>>
 implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>
 {
     private final K m; // Coefficiente angolare

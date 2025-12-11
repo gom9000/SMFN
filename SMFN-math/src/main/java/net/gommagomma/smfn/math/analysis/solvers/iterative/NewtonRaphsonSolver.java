@@ -10,7 +10,7 @@ import net.gommagomma.smfn.math.analysis.solvers.differential.NumericalDifferent
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
 
 
-public class NewtonRaphsonSolver<K extends FieldElement<K>>
+public class NewtonRaphsonSolver<K extends FieldElement<K, ?>>
 implements IterativeSolver<K, K>
 {
     @Override
@@ -42,7 +42,7 @@ implements IterativeSolver<K, K>
     /**
      * Crea un sistema iterativo per Newton-Raphson data la funzione f(x) e la sua derivata f'(x).
      */
-    public static <K extends FieldElement<K>> IterativeSystem<K> createSystem(
+    public static <K extends FieldElement<K, ?>> IterativeSystem<K> createSystem(
         MathFunction<K, K> function, 
         MathFunction<K, K> derivative
     ) {
@@ -64,7 +64,7 @@ implements IterativeSolver<K, K>
     /**
      * Crea un sistema iterativo per Newton-Raphson usando la differenziazione numerica.
      */
-    public static <K extends FieldElement<K>> IterativeSystem<K> createSystemNumerical(
+    public static <K extends FieldElement<K, ?>> IterativeSystem<K> createSystemNumerical(
         MathFunction<K, K> function,
         NumericalDifferentiator<K> differentiator,
         K stepSizeH 

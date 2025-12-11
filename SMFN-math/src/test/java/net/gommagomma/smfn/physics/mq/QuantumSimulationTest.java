@@ -21,7 +21,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
 public class QuantumSimulationTest
 {
 	// Helper method generico per calcolare il valore di aspettazione di qualsiasi Observable
-    private <K extends FieldElement<K>, V extends VectorElement<K, V>> 
+    private <K extends FieldElement<K, ?>, V extends VectorElement<K, V>> 
             Real measureExpectation(Observable<K, V, ?> observable, V state) {
         // Chiama il metodo ereditato da HermitianOperator
         return observable.expectationValue(state); 
@@ -157,7 +157,7 @@ public class QuantumSimulationTest
         ComplexVector psi_initial = new ComplexVector(new Complex(1.0), new Complex(0.0));
 
         // 4. Configura il solutore (ORA ADATTIVO)
-        Field<Complex> complexField = ComplexField.getInstance();
+        Field<Complex, ?> complexField = ComplexField.getInstance();
         
         // Inizializziamo l'EmbeddedRK23Solver passando solo il Field<Complex>
         ComplexField scalarFactory = ComplexField.getInstance();

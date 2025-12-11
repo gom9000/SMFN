@@ -8,14 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 public class ComplexMatrixTest {
 
     private ComplexMatrixFactory matrixFactory;
-    private ComplexFactory complexFactory;
+    private NumericFactory<Complex> complexFactory;
     private static final double EPSILON = MathConstants.EPSILON;
 
     // Helper method per creare Complex facilmente
@@ -31,7 +31,7 @@ public class ComplexMatrixTest {
     @BeforeEach
     void setUp() {
         matrixFactory = ComplexMatrixFactory.getInstance();
-        complexFactory = ComplexFactory.getInstance();
+        complexFactory = matrixFactory.getScalarFactory();
     }
 
     // ========================================================================

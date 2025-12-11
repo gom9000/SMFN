@@ -17,7 +17,7 @@ implements FieldMatrixSpace<Real, RealVector, RealMatrix>
     }
 
     @Override
-    public Field<Real> getScalarStructure() {
+    public Field<Real, ?> getScalarStructure() {
         return RealField.getInstance();
     }
     

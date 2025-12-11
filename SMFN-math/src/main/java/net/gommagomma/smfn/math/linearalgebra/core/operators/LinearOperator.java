@@ -14,7 +14,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * @param <V> L'elemento dello spazio vettoriale.
  * @param <O> L'operatore stesso (vincolo ricorsivo).
  */
-public interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> 
+public interface LinearOperator<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> 
 extends MathFunction<V, V>
 {
     /**

@@ -2,11 +2,12 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 
 
 public final class RealField
-implements Field<Real>
+implements Field<Real, Natural>
 {
 	public static final RealField INSTANCE = new RealField();
 

@@ -5,6 +5,6 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.FieldMatrix
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
 
-public interface FieldMatrixFactory<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
+public interface FieldMatrixFactory<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
 extends RingMatrixFactory<K, V, M>
 {}

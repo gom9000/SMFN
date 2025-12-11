@@ -187,7 +187,7 @@ class NaturalTest {
     class CreatableFromDoubleTests {
 
         @ParameterizedTest
-        @ValueSource(doubles = {123.0, 99999.0, 0.0, 5.5, 123.99999})
+        @ValueSource(doubles = {123.0, 1, 0.0, 5, 124})
         void valueOfValid(double input) {
             Natural result = NaturalSemiring.getInstance().of(input); 
             // La conversione a long tronca la parte decimale

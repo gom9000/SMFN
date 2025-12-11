@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.MathFunction;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 
 
-public class CentralDifferenceDifferentiator<K extends FieldElement<K>> 
+public class CentralDifferenceDifferentiator<K extends FieldElement<K, ?>> 
 implements NumericalDifferentiator<K>
 {
     @Override

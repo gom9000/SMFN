@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Real;
  * Rappresenta un elemento in uno spazio con prodotto interno (Inner Product Space).
  * Estende NormedVectorElement, poiché un prodotto interno induce naturalmente una norma.
  */
-public interface InnerProductSpaceElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>>
+public interface InnerProductSpaceElement<K extends FieldElement<K, ?> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>>
 extends NormedVectorElement<K, V>
 {
     /**

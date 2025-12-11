@@ -7,7 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
+import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
+
 
 public class SignedIntMatrixTest {
 
@@ -22,8 +23,8 @@ public class SignedIntMatrixTest {
         factory = SignedIntMatrixFactory.getInstance();
         si_0 = factory.getScalarFactory().zero();
         si_1 = factory.getScalarFactory().one();
-        si_3 = SignedIntFactory.getInstance().of(3);
-        si_neg2 = SignedIntFactory.getInstance().of(-2);
+        si_3 = IntegerRing.getInstance().of(3);
+        si_neg2 = IntegerRing.getInstance().of(-2);
     }
 
     // --- Test di Costruzione e Validazione ---
@@ -38,7 +39,7 @@ public class SignedIntMatrixTest {
 
         assertEquals(2, matrix.getRows());
         assertEquals(2, matrix.getColumns());
-        assertTrue(matrix.get(0, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(-2)));
+        assertTrue(matrix.get(0, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(-2)));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class SignedIntMatrixTest {
         
         assertEquals(2, matrix.getRows());
         assertEquals(2, matrix.getColumns());
-        assertTrue(matrix.get(0, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(-5)));
+        assertTrue(matrix.get(0, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(-5)));
     }
     
     // Assumendo la Factory modificata per validare l'input double come intero
@@ -62,7 +63,7 @@ public class SignedIntMatrixTest {
             {0.0, 5.0}
         };
         SignedIntMatrix matrix = factory.createMatrix(data);
-        assertTrue(matrix.get(1, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(5)));
+        assertTrue(matrix.get(1, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(5)));
     }
    
 
@@ -76,10 +77,10 @@ public class SignedIntMatrixTest {
         // Negate(A) = [[-1, 2], [-3, 0]]
         SignedIntMatrix negatedA = A.negate();
 
-        assertTrue(negatedA.get(0, 0).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(-1)));
-        assertTrue(negatedA.get(0, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(2)));
-        assertTrue(negatedA.get(1, 0).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(-3)));
-        assertTrue(negatedA.get(1, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(0)));
+        assertTrue(negatedA.get(0, 0).isMathematicallyEqualTo(IntegerRing.getInstance().of(-1)));
+        assertTrue(negatedA.get(0, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(2)));
+        assertTrue(negatedA.get(1, 0).isMathematicallyEqualTo(IntegerRing.getInstance().of(-3)));
+        assertTrue(negatedA.get(1, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(0)));
     }
     
     @Test
@@ -92,10 +93,10 @@ public class SignedIntMatrixTest {
         // C = A - B = [[5-1, 2-(-3)], [1-2, 0-1]] = [[4, 5], [-1, -1]]
         SignedIntMatrix C = A.subtract(B);
 
-        assertTrue(C.get(0, 0).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(4)));
-        assertTrue(C.get(0, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(5)));
-        assertTrue(C.get(1, 0).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(-1)));
-        assertTrue(C.get(1, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(-1)));
+        assertTrue(C.get(0, 0).isMathematicallyEqualTo(IntegerRing.getInstance().of(4)));
+        assertTrue(C.get(0, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(5)));
+        assertTrue(C.get(1, 0).isMathematicallyEqualTo(IntegerRing.getInstance().of(-1)));
+        assertTrue(C.get(1, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(-1)));
     }
 
 
@@ -117,10 +118,10 @@ public class SignedIntMatrixTest {
         //           = [[5, -1], [6, 8]]
         SignedIntMatrix C = A.multiply(B);
 
-        assertTrue(C.get(0, 0).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(5)));
-        assertTrue(C.get(0, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(-1)));
-        assertTrue(C.get(1, 0).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(6)));
-        assertTrue(C.get(1, 1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(8)));
+        assertTrue(C.get(0, 0).isMathematicallyEqualTo(IntegerRing.getInstance().of(5)));
+        assertTrue(C.get(0, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(-1)));
+        assertTrue(C.get(1, 0).isMathematicallyEqualTo(IntegerRing.getInstance().of(6)));
+        assertTrue(C.get(1, 1).isMathematicallyEqualTo(IntegerRing.getInstance().of(8)));
     }
 
     @Test
@@ -137,7 +138,7 @@ public class SignedIntMatrixTest {
         SignedIntVector result = A.multiply(v);
 
         assertEquals(2, result.dimension());
-        assertTrue(result.get(0).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(7)));
-        assertTrue(result.get(1).isMathematicallyEqualTo(SignedIntFactory.getInstance().of(11)));
+        assertTrue(result.get(0).isMathematicallyEqualTo(IntegerRing.getInstance().of(7)));
+        assertTrue(result.get(1).isMathematicallyEqualTo(IntegerRing.getInstance().of(11)));
     }
 }

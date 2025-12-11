@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElemen
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 
 
-public interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>>
+public interface NormedVectorElement<K extends FieldElement<K, ?> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>>
 extends VectorElement<K, V>, NormableElement<Real, V>
 {
     default Real distanceTo(V other) {

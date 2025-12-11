@@ -18,7 +18,7 @@ implements HilbertSpace<Complex, ComplexVector>
     }
 
     @Override
-    public Field<Complex> getScalarStructure() {
+    public Field<Complex, ?> getScalarStructure() {
         return ComplexField.getInstance();
     }
 

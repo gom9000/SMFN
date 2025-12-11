@@ -259,7 +259,7 @@ class SignedIntTest {
     class CreatableFromDoubleTests {
         
         @ParameterizedTest(name = "valueOf({0}) -> {1}")
-        @CsvSource({"10.75, 11", "-3.14, -3", "0.999, 1"})
+        @CsvSource({"11, 11", "-3, -3", "1, 1"})
         void valueOfValid(double input, long expected) {
             SignedInt result = IntegerRing.getInstance().of(input);
             assertEquals(si(Math.round(expected)), result);

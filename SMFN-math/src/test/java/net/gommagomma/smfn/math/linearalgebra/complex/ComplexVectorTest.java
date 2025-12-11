@@ -6,15 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 class ComplexVectorTest {
 
     private ComplexVectorFactory factory;
-    private ComplexFactory scalarFactory;
+    private NumericFactory<Complex> scalarFactory;
     private Complex i; // Unità immaginaria (0 + 1i)
     private Complex onePlusI; // 1 + i
     private Complex twoMinusI; // 2 - i
@@ -23,7 +23,7 @@ class ComplexVectorTest {
     @BeforeEach
     void setUp() {
         factory = ComplexVectorFactory.getInstance();
-        scalarFactory = (ComplexFactory) factory.getScalarFactory();
+        scalarFactory = factory.getScalarFactory();
         
         // Assumiamo che Complex abbia un metodo statico/factory per creare da parti reali/immaginarie
         // che non è esposto nella factory che hai fornito. Lo usiamo per creare i test case complessi:

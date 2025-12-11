@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElemen
  * Interfaccia per i metodi di differenziazione numerica.
  * Calcola un'approssimazione della derivata di una funzione in un punto.
  */
-public interface NumericalDifferentiator<K extends FieldElement<K>>
+public interface NumericalDifferentiator<K extends FieldElement<K, ?>>
 {    
     /**
      * Calcola la derivata approssimata di f(x) nel punto x.

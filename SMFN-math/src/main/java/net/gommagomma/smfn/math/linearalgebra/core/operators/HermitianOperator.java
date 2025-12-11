@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * Rappresenta un operatore Hermitiano (o autoaggiunto).
  * Una proprietà matematica richiesta dagli osservabili fisici.
  */
-public interface HermitianOperator<K extends FieldElement<K>, 
+public interface HermitianOperator<K extends FieldElement<K, ?>, 
                             V extends VectorElement<K, V>, 
                             O extends HermitianOperator<K, V, O>> 
        extends LinearOperator<K, V, O> 

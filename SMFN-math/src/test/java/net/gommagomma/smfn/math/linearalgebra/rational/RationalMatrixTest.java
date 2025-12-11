@@ -7,13 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
+
 
 public class RationalMatrixTest {
 
     private RationalMatrixFactory factory;
-    private RationalFactory scalarFactory;
+    private NumericFactory<Rational> scalarFactory;
     private Rational r0;
     private Rational r1;
     private Rational r2;
@@ -22,7 +23,7 @@ public class RationalMatrixTest {
     @BeforeEach
     void setUp() {
         factory = RationalMatrixFactory.getInstance();
-        scalarFactory = (RationalFactory) factory.getScalarFactory();
+        scalarFactory =  factory.getScalarFactory();
         r0 = scalarFactory.zero();
         r1 = scalarFactory.one();
         r2 = new Rational(2);
@@ -124,8 +125,8 @@ public class RationalMatrixTest {
     void testInverse_2x2() {
         // A = [[2, 1], [4, 3]]
         // det(A) = 2. 
-        // A⁻¹ = (1/det(A)) * [[3, -1], [-4, 2]] 
-        // A⁻¹ = 1/2 * [[3, -1], [-4, 2]] = [[3/2, -1/2], [-2, 1]]
+        // Aâ�»Â¹ = (1/det(A)) * [[3, -1], [-4, 2]] 
+        // Aâ�»Â¹ = 1/2 * [[3, -1], [-4, 2]] = [[3/2, -1/2], [-2, 1]]
         RationalMatrix A = factory.createMatrix(new int[][]{{2, 1}, {4, 3}});
         RationalMatrix A_inv = A.inverse();
         
@@ -138,10 +139,10 @@ public class RationalMatrixTest {
         assertTrue(A_inv.get(1, 0).isMathematicallyEqualTo(r_neg_2));
         assertTrue(A_inv.get(1, 1).isMathematicallyEqualTo(r1));
 
-        // Verifica: A * A⁻¹ deve essere la matrice identità
+        // Verifica: A * Aâ�»Â¹ deve essere la matrice identitÃ 
         RationalMatrix Identity = A.multiply(A_inv);
         RationalMatrix expectedIdentity = factory.createMatrix(new double[][]{{1.0, 0.0}, {0.0, 1.0}});
-        assertTrue(Identity.isMathematicallyEqualTo(expectedIdentity), "A * A⁻¹ deve essere la matrice identità.");
+        assertTrue(Identity.isMathematicallyEqualTo(expectedIdentity), "A * Aâ�»Â¹ deve essere la matrice identitÃ .");
     }
 
     @Test
@@ -149,7 +150,7 @@ public class RationalMatrixTest {
         // Matrice singolare: det(A) = 1*4 - 2*2 = 0
         RationalMatrix Singular = factory.createMatrix(new int[][]{{1, 2}, {2, 4}});
         
-        // Invert() dovrebbe lanciare una eccezione se il determinante è zero
+        // Invert() dovrebbe lanciare una eccezione se il determinante Ã¨ zero
         assertThrows(ArithmeticException.class, () -> Singular.inverse(), 
                      "L'inversione di una matrice singolare deve lanciare un'eccezione.");
     }

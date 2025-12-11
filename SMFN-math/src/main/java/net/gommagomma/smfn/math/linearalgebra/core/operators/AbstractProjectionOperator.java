@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProduct
 /**
  * Operatore di proiezione generico che funziona su qualsiasi spazio con prodotto interno.
  */
-public abstract class AbstractProjectionOperator<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> 
+public abstract class AbstractProjectionOperator<K extends FieldElement<K, ?> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> 
 implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>>
 {
     protected final V direction; // Il vettore normalizzato su cui proiettare

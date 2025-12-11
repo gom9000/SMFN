@@ -17,7 +17,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.NormedVector
  * @param <K> Il tipo di campo (es. Complex, Real) per gli scalari del sistema. Deve essere Normable.
  * @param <T> Il tipo di vettore (es. ComplexVector) che rappresenta lo stato del sistema. Deve essere NormedVector.
  */
-public class EmbeddedRK23Solver<K extends FieldElement<K> & NormableElement<Real, K>, T extends NormedVectorElement<K, T>> 
+public class EmbeddedRK23Solver<K extends FieldElement<K, ?> & NormableElement<Real, K>, T extends NormedVectorElement<K, T>> 
 implements IntervalSolver<K, T>
 {
 	private final NumericFactory<K> scalarFactory;
