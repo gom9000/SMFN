@@ -1,6 +1,5 @@
 package net.gommagomma.smfn.math.algebra.core.elements.additive;
 
-//GroupElement estende MonoidElement e aggiunge l'inverso additivo (negazione)
 public interface GroupElement<E extends GroupElement<E>>
 extends AdditiveMonoidElement<E>
 {

@@ -87,9 +87,7 @@ implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K>
 	@Override
 	@SuppressWarnings("unchecked")
 	public PolynomialFunction<K> getZero() {
-        K zero = zeroScalar.getZero();
-        // Chiamiamo createNewInstance su un'istanza esistente (coefficients)
-        VectorElement<K, ?> zeroVector = this.coefficients.createNewInstance(zero); 
+        VectorElement<K, ?> zeroVector = this.coefficients.getZero(); 
         return new PolynomialFunction<>(zeroVector);
 	}
 

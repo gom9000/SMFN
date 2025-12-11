@@ -3,7 +3,6 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 
 
 public final class ComplexField
@@ -37,13 +36,29 @@ implements Field<Complex>
 	@Override // AdditiveMonoid impls
 	public Complex additiveIdentity()
 	{
-		return ComplexFactory.getInstance().zero();
+		return Complex.ZERO;
 	}
 
 
 	@Override // MultiplicativeMonoid impls
 	public Complex multiplicativeIdentity()
 	{
-		return ComplexFactory.getInstance().one();
+		return Complex.ONE;
 	}
+
+
+    @Override // NumericFactory impls
+    public Complex of(double value) {
+        return new Complex(value);
+    }
+
+    @Override // NumericFactory impls
+    public Complex of(long value) {
+        return new Complex(value);
+    }
+
+    @Override // NumericFactory impls
+    public Complex of(int value) {
+        return new Complex(value);
+    }
 }

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
@@ -125,7 +124,7 @@ public class QuantumSimulationTest
         ComplexVector psi_initial = new ComplexVector(new Complex(1.0), new Complex(0.0));
 
         // 4. Configura il solutore (come nel punto 2)
-        ComplexFactory scalarFactory = ComplexFactory.getInstance();
+        ComplexField scalarFactory = ComplexField.getInstance();
         ODESolver<Complex, ComplexVector> mqSolver = new RungeKutta4Solver<>(scalarFactory);
 
         // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2, con passo dt=0.0001
@@ -161,7 +160,7 @@ public class QuantumSimulationTest
         Field<Complex> complexField = ComplexField.getInstance();
         
         // Inizializziamo l'EmbeddedRK23Solver passando solo il Field<Complex>
-        ComplexFactory scalarFactory = ComplexFactory.getInstance();
+        ComplexField scalarFactory = ComplexField.getInstance();
         IntervalSolver<Complex, ComplexVector> mqSolver = new EmbeddedRK23Solver<>(scalarFactory);
 
         // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2

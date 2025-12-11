@@ -11,6 +11,9 @@ import net.gommagomma.smfn.math.utils.MathUtils;
 public final class Rational
 implements FieldElement<Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>, NormableElement<Real, Rational>
 {
+	public static final Rational ZERO = new Rational(0, 1);
+    public static final Rational ONE = new Rational(1, 1);
+
 	private final long numerator;
     private final long denominator;
 
@@ -107,7 +110,7 @@ implements FieldElement<Rational>, ExponentiableElement<Rational>, ComparableEle
 	@Override // MonoidElement impls
 	public Rational getZero()
 	{
-		return RationalFactory.getInstance().zero();
+		return ZERO;
 	}
 
 
@@ -123,7 +126,7 @@ implements FieldElement<Rational>, ExponentiableElement<Rational>, ComparableEle
 	@Override // MultiplicativeMonoidElement impls
 	public Rational getOne()
 	{
-		return RationalFactory.getInstance().one();
+		return ONE;
 	}
 
 
@@ -153,12 +156,12 @@ implements FieldElement<Rational>, ExponentiableElement<Rational>, ComparableEle
         }
 
         if (exponent == 0) {
-            return RationalFactory.getInstance().one();
+            return ONE;
         }
 
         Rational base = this;
         int exp = Math.abs(exponent);
-        Rational result = RationalFactory.getInstance().one();
+        Rational result = ONE;
 
         while (exp > 0)
         {

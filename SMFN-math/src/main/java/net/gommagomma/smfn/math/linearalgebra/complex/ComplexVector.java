@@ -3,8 +3,8 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 
@@ -108,9 +108,9 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
         if (this.dimension != other.dimension) {
             throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
         }
-        
+
         // Prodotto scalare hermitiano: V1 . V2 = Somma( V1[i] * coniugato(V2[i]) )
-        Complex result = ComplexFactory.getInstance().zero();
+        Complex result = ComplexField.getInstance().zero();
         for (int i = 0; i < dimension; i++) {
             Complex conjugatedOther = other.data[i].conjugate(); 
             Complex product = this.data[i].multiply(conjugatedOther);

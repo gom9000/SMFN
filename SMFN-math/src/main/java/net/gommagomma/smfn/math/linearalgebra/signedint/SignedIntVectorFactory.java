@@ -2,14 +2,14 @@ package net.gommagomma.smfn.math.linearalgebra.signedint;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
+import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
 public final class SignedIntVectorFactory
 implements SemimoduleVectorFactory<SignedInt, SignedIntVector>
 {
     private static final SignedIntVectorFactory INSTANCE = new SignedIntVectorFactory();
-    private final SignedIntFactory scalarFactory = SignedIntFactory.getInstance();
+    private final IntegerRing scalarFactory = IntegerRing.getInstance();
 
 
     private SignedIntVectorFactory() {}

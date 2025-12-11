@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
+
 
 @DisplayName("RealField: Test della Struttura del Campo (Field Axioms)")
 class RealFieldTest {
@@ -32,14 +32,14 @@ class RealFieldTest {
     }
 
     // ======================================================================================
-    // 1. PROPRIETÀ BASE DELLA STRUTTURA
+    // 1. PROPRIETÃ€ BASE DELLA STRUTTURA
     // ======================================================================================
 
     @Test
-    @DisplayName("Proprietà Statiche e Naming")
+    @DisplayName("ProprietÃ  Statiche e Naming")
     void basicProperties() {
         assertNotNull(REAL_FIELD, "L'istanza non deve essere null.");
-        assertEquals("Real Field (R)", REAL_FIELD.getName(), "Il nome del campo non è corretto.");
+        assertEquals("Real Field (R)", REAL_FIELD.getName(), "Il nome del campo non Ã¨ corretto.");
         assertEquals(REAL_FIELD, RealField.getInstance(), "Deve essere singleton.");
     }
 
@@ -49,7 +49,7 @@ class RealFieldTest {
         // Numeri Reali Finiti
         assertTrue(REAL_FIELD.contains(r(5.0)), "Contiene 5.0");
         assertTrue(REAL_FIELD.contains(r(-12.34)), "Contiene -12.34");
-        assertTrue(REAL_FIELD.contains(RealFactory.getInstance().zero()), "Contiene 0");
+        assertTrue(REAL_FIELD.contains(RealField.getInstance().zero()), "Contiene 0");
         
         // Elementi Non Finiti (Non dovrebbero essere inclusi in un Campo standard)
         assertFalse(REAL_FIELD.contains(r(Double.NaN)), "Non contiene NaN");
@@ -61,16 +61,16 @@ class RealFieldTest {
     }
 
     @Test
-    @DisplayName("Identità Additiva e Moltiplicativa")
+    @DisplayName("IdentitÃ  Additiva e Moltiplicativa")
     void identities() {
-        assertRealEquals(r(0.0), REAL_FIELD.additiveIdentity(), "Identità Additiva (Zero)");
-        assertRealEquals(r(1.0), REAL_FIELD.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
-        assertSame(RealFactory.getInstance().zero(), REAL_FIELD.additiveIdentity());
-        assertSame(RealFactory.getInstance().one(), REAL_FIELD.multiplicativeIdentity());
+        assertRealEquals(r(0.0), REAL_FIELD.additiveIdentity(), "IdentitÃ  Additiva (Zero)");
+        assertRealEquals(r(1.0), REAL_FIELD.multiplicativeIdentity(), "IdentitÃ  Moltiplicativa (One)");
+        assertSame(RealField.getInstance().zero(), REAL_FIELD.additiveIdentity());
+        assertSame(RealField.getInstance().one(), REAL_FIELD.multiplicativeIdentity());
     }
 
     // ======================================================================================
-    // 2. VERIFICA DEGLI ASSIOMI DI CAMPO (PROPRIETÀ FUNZIONALI)
+    // 2. VERIFICA DEGLI ASSIOMI DI CAMPO (PROPRIETÃ€ FUNZIONALI)
     // ======================================================================================
     
     // Usiamo tre valori generici
@@ -90,13 +90,13 @@ class RealFieldTest {
         @Test
         @DisplayName("G1: Chiusura (Closure)")
         void closure() {
-            // (a + b) è un Real finito
+            // (a + b) Ã¨ un Real finito
             Real result = a.add(b);
-            assertTrue(REAL_FIELD.contains(result), "(a + b) è chiuso");
+            assertTrue(REAL_FIELD.contains(result), "(a + b) Ã¨ chiuso");
         }
 
         @Test
-        @DisplayName("G2: Associatività")
+        @DisplayName("G2: AssociativitÃ ")
         void associativity() {
             // (a + b) + c == a + (b + c)
             Real left = a.add(b).add(c);
@@ -105,7 +105,7 @@ class RealFieldTest {
         }
         
         @Test
-        @DisplayName("G3: Identità Additiva (Zero)")
+        @DisplayName("G3: IdentitÃ  Additiva (Zero)")
         void identity() {
             // a + 0 == a
             assertRealEquals(a, a.add(ZERO), "a + 0 == a");
@@ -122,7 +122,7 @@ class RealFieldTest {
         }
         
         @Test
-        @DisplayName("G5: Commutatività")
+        @DisplayName("G5: CommutativitÃ ")
         void commutativity() {
             // a + b == b + a
             assertRealEquals(a.add(b), b.add(a), "L'addizione deve essere commutativa.");
@@ -138,13 +138,13 @@ class RealFieldTest {
         @Test
         @DisplayName("M1: Chiusura")
         void closure() {
-            // (a * b) è un Real finito
+            // (a * b) Ã¨ un Real finito
             Real result = a.multiply(b);
-            assertTrue(REAL_FIELD.contains(result), "(a * b) è chiuso");
+            assertTrue(REAL_FIELD.contains(result), "(a * b) Ã¨ chiuso");
         }
 
         @Test
-        @DisplayName("M2: Associatività")
+        @DisplayName("M2: AssociativitÃ ")
         void associativity() {
             // (a * b) * c == a * (b * c)
             Real left = a.multiply(b).multiply(c);
@@ -153,7 +153,7 @@ class RealFieldTest {
         }
         
         @Test
-        @DisplayName("M3: Identità Moltiplicativa (Uno)")
+        @DisplayName("M3: IdentitÃ  Moltiplicativa (Uno)")
         void identity() {
             // a * 1 == a
             assertRealEquals(a, a.multiply(ONE), "a * 1 == a");
@@ -164,13 +164,13 @@ class RealFieldTest {
         @Test
         @DisplayName("M4: Inverso Moltiplicativo (Reciproco)")
         void inverse() {
-            // Per tutti gli a != 0, a * a⁻¹ == 1
+            // Per tutti gli a != 0, a * aâ�»Â¹ == 1
             Real invA = a.inverse();
-            assertRealEquals(ONE, a.multiply(invA), "a * a⁻¹ == 1 (per a = 5.0)");
+            assertRealEquals(ONE, a.multiply(invA), "a * aâ�»Â¹ == 1 (per a = 5.0)");
             
             // Test di un altro valore (b != 0)
             Real invB = b.inverse();
-            assertRealEquals(ONE, b.multiply(invB), "b * b⁻¹ == 1 (per b = -3.5)");
+            assertRealEquals(ONE, b.multiply(invB), "b * bâ�»Â¹ == 1 (per b = -3.5)");
         }
         
         @Test
@@ -183,21 +183,21 @@ class RealFieldTest {
         }
         
         @Test
-        @DisplayName("M5: Commutatività")
+        @DisplayName("M5: CommutativitÃ ")
         void commutativity() {
             // a * b == b * a
             assertRealEquals(a.multiply(b), b.multiply(a), "La moltiplicazione deve essere commutativa.");
         }
     }
 
-    // --- ASSIOMA DI DISTRIBUTIVITÀ (Assioma D) ---
+    // --- ASSIOMA DI DISTRIBUTIVITÃ€ (Assioma D) ---
 
     @Nested
     @DisplayName("Assioma Distributivo")
     class DistributiveAxiom {
         
         @Test
-        @DisplayName("D: Distributività della moltiplicazione sull'addizione")
+        @DisplayName("D: DistributivitÃ  della moltiplicazione sull'addizione")
         void distributivity() {
             // a * (b + c) == (a * b) + (a * c)
             Real left = a.multiply(b.add(c));

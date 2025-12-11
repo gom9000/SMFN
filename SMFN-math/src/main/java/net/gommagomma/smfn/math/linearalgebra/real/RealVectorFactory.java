@@ -2,14 +2,14 @@ package net.gommagomma.smfn.math.linearalgebra.real;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
 public final class RealVectorFactory
 implements SemimoduleVectorFactory<Real, RealVector>
 {
     private static final RealVectorFactory INSTANCE = new RealVectorFactory();
-    private final RealFactory scalarFactory = RealFactory.getInstance();
+    private final RealField scalarFactory = RealField.getInstance();
 
 
     private RealVectorFactory() {}

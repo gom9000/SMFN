@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
+import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.FieldMatrixFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
@@ -12,7 +12,7 @@ implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix>
 {
     private static final ComplexMatrixFactory INSTANCE = new ComplexMatrixFactory();
     private final ComplexVectorFactory vectorFactory = ComplexVectorFactory.getInstance();
-    private final ComplexFactory scalarFactory = ComplexFactory.getInstance();
+    private final ComplexField scalarFactory = ComplexField.getInstance();
 
 
     private ComplexMatrixFactory() {}
@@ -39,7 +39,6 @@ implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix>
         }
         int cols = data[0].length;
 
-        ComplexFactory scalarFactory = (ComplexFactory) getScalarFactory();
         Complex[][] components = new Complex[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -62,7 +61,6 @@ implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix>
         }
         int cols = data[0].length;
 
-        ComplexFactory scalarFactory = (ComplexFactory) getScalarFactory();
         Complex[][] components = new Complex[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -85,7 +83,6 @@ implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix>
         }
         int cols = data[0].length;
 
-        ComplexFactory scalarFactory = (ComplexFactory) getScalarFactory();
         Complex[][] components = new Complex[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {

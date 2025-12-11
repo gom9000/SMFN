@@ -3,8 +3,8 @@
 package net.gommagomma.smfn.math.analysis.fractals;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
-import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
+import net.gommagomma.smfn.math.algebra.structures.ComplexField;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.models.IterativeSystem;
 import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceTest;
@@ -56,7 +56,7 @@ implements IterativeSolver<Complex, Integer>
         	return current.modulusSquared() > DIVERGENCE_RADIUS_SQ;
         };        
 
-        ConvergenceParameters params = new ConvergenceParameters(RealFactory.getInstance().zero(), maxIterations);
-        return solve(ComplexFactory.getInstance().zero(), system, divergenceTest, params, null);
+        ConvergenceParameters params = new ConvergenceParameters(RealField.getInstance().zero(), maxIterations);
+        return solve(ComplexField.getInstance().zero(), system, divergenceTest, params, null);
     }
 }

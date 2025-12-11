@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,8 +41,8 @@ class RealTest {
         assertEquals(Math.PI, pi.getValue(), EPSILON);
         assertEquals("3.141592653589793", pi.toString()); // Dipende dalla precisione Java
 
-        assertEquals(0.0, RealFactory.getInstance().zero().getValue(), 0);
-        assertEquals(1.0, RealFactory.getInstance().one().getValue(), 0);
+        assertEquals(0.0, RealField.getInstance().zero().getValue(), 0);
+        assertEquals(1.0, RealField.getInstance().one().getValue(), 0);
         
         Real copy = pi.copy();
         assertRealEquals(pi, copy);
@@ -96,8 +97,8 @@ class RealTest {
         
         @Test
         void identityAndInverse() {
-            assertRealEquals(r(5.0), r(5.0).add(RealFactory.getInstance().zero()));
-            assertRealEquals(RealFactory.getInstance().zero(), r(5.0).add(r(5.0).negate()));
+            assertRealEquals(r(5.0), r(5.0).add(RealField.getInstance().zero()));
+            assertRealEquals(RealField.getInstance().zero(), r(5.0).add(r(5.0).negate()));
         }
     }
 
@@ -120,15 +121,15 @@ class RealTest {
         @Test
         void inverseOfZeroThrowsException() {
             assertThrows(ArithmeticException.class, () -> 
-                RealFactory.getInstance().zero().inverse(), 
+            RealField.getInstance().zero().inverse(), 
                 "L'inverso di zero dovrebbe lanciare ArithmeticException"
             );
         }
 
         @Test
         void identity() {
-            assertRealEquals(r(7.5), r(7.5).multiply(RealFactory.getInstance().one()));
-            assertRealEquals(RealFactory.getInstance().one(), r(7.5).multiply(r(7.5).inverse()));
+            assertRealEquals(r(7.5), r(7.5).multiply(RealField.getInstance().one()));
+            assertRealEquals(RealField.getInstance().one(), r(7.5).multiply(r(7.5).inverse()));
         }
     }
 
@@ -145,7 +146,7 @@ class RealTest {
         @Test
         void powerZeroNegativeExponentThrowsException() {
             assertThrows(ArithmeticException.class, () -> 
-                RealFactory.getInstance().zero().power(-1), 
+            RealField.getInstance().zero().power(-1), 
                 "Zero elevato a potenza negativa dovrebbe lanciare ArithmeticException"
             );
         }
@@ -240,16 +241,16 @@ class RealTest {
         @ParameterizedTest
         @ValueSource(doubles = {123.45, -99.99, 0.0, Math.PI})
         void valueOfValid(double input) {
-            Real result = RealFactory.getInstance().of(input); // Chiamata tramite istanza
+            Real result = RealField.getInstance().of(input); // Chiamata tramite istanza
             assertEquals(input, result.getValue(), 0);
         }
         
         @Test
         void valueOfSpecialValues() {
-            assertRealEquals(r(Double.MAX_VALUE), RealFactory.getInstance().of(Double.MAX_VALUE));
-            assertRealEquals(r(Double.MIN_VALUE), RealFactory.getInstance().of(Double.MIN_VALUE));
-            assertRealEquals(r(Double.NaN), RealFactory.getInstance().of(Double.NaN));
-            assertRealEquals(r(Double.POSITIVE_INFINITY), RealFactory.getInstance().of(Double.POSITIVE_INFINITY));
+            assertRealEquals(r(Double.MAX_VALUE), RealField.getInstance().of(Double.MAX_VALUE));
+            assertRealEquals(r(Double.MIN_VALUE), RealField.getInstance().of(Double.MIN_VALUE));
+            assertRealEquals(r(Double.NaN), RealField.getInstance().of(Double.NaN));
+            assertRealEquals(r(Double.POSITIVE_INFINITY), RealField.getInstance().of(Double.POSITIVE_INFINITY));
         }
     }
 }

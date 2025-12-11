@@ -12,6 +12,9 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 public final class Real
 implements FieldElement<Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, NormableElement<Real, Real>
 {
+	public static final Real ZERO = new Real(0.0);
+    public static final Real ONE = new Real(1.0);
+
 	private final double value;
 
 
@@ -72,12 +75,12 @@ implements FieldElement<Real>, ExponentiableElement<Real>, SqrtableElement<Real>
 	@Override // MonoidElement impls
 	public Real getZero()
 	{
-		return RealFactory.getInstance().zero(); 
+		return ZERO; 
 	}
 
 	@Override // MultiplicativeMonoidElement impls
 	public Real getOne() {
-		return RealFactory.getInstance().one(); 
+		return ONE; 
 	}
 
 
@@ -102,7 +105,7 @@ implements FieldElement<Real>, ExponentiableElement<Real>, SqrtableElement<Real>
     @Override // ExponentiableElement impls
     public Real power(int exponent)
     {
-        if (this.isZero() && exponent < 0) {
+        if (this.isZero() && exponent < 0.0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }
 
@@ -113,7 +116,7 @@ implements FieldElement<Real>, ExponentiableElement<Real>, SqrtableElement<Real>
     @Override // SqrtableElement impls
     public Real sqrt()
     {
-        if (this.value < 0) {
+        if (this.value < 0.0) {
             throw new ArithmeticException("Cannot take the square root of a negative real number.");
         }
 

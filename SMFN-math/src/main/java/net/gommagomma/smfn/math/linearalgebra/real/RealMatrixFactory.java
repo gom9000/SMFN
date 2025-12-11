@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.real;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.FieldMatrixFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
@@ -12,7 +12,7 @@ implements FieldMatrixFactory<Real, RealVector, RealMatrix>
 {
     private static final RealMatrixFactory INSTANCE = new RealMatrixFactory();
     private final RealVectorFactory vectorFactory = RealVectorFactory.getInstance();
-    private final RealFactory scalarFactory = RealFactory.getInstance();
+    private final RealField scalarFactory = RealField.getInstance();
 
 
     private RealMatrixFactory() {}
@@ -39,7 +39,6 @@ implements FieldMatrixFactory<Real, RealVector, RealMatrix>
         }
         int cols = data[0].length;
 
-        RealFactory scalarFactory = (RealFactory) getScalarFactory();
         Real[][] components = new Real[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -62,7 +61,6 @@ implements FieldMatrixFactory<Real, RealVector, RealMatrix>
         }
         int cols = data[0].length;
 
-        RealFactory scalarFactory = (RealFactory) getScalarFactory();
         Real[][] components = new Real[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -85,7 +83,6 @@ implements FieldMatrixFactory<Real, RealVector, RealMatrix>
         }
         int cols = data[0].length;
 
-        RealFactory scalarFactory = (RealFactory) getScalarFactory();
         Real[][] components = new Real[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {

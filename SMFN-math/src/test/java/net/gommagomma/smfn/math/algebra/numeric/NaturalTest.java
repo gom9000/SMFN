@@ -7,6 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Natural: Test delle proprietà di Semianello e Overflow")
@@ -24,8 +26,8 @@ class NaturalTest {
     @Test
     @DisplayName("Costruttore, Getter e Costanti")
     void constructorAndBasicProps() {
-        assertEquals(0L, NaturalFactory.getInstance().zero().getValue());
-        assertEquals(1L, NaturalFactory.getInstance().one().getValue());
+        assertEquals(0L, NaturalSemiring.getInstance().zero().getValue());
+        assertEquals(1L, NaturalSemiring.getInstance().one().getValue());
         assertEquals(123L, n(123L).getValue());
 
         // Test IllegalArgumentException per valori negativi
@@ -62,8 +64,8 @@ class NaturalTest {
     @Test
     @DisplayName("getZero, getOne")
     void identityElements() {
-        assertEquals(NaturalFactory.getInstance().zero(), n(5).getZero());
-        assertEquals(NaturalFactory.getInstance().one(), n(5).getOne());
+        assertEquals(NaturalSemiring.getInstance().zero(), n(5).getZero());
+        assertEquals(NaturalSemiring.getInstance().one(), n(5).getOne());
     }
 
     // ======================================================================================
@@ -84,7 +86,7 @@ class NaturalTest {
         @DisplayName("Overflow in Addizione")
         void addOverflow() {
             Natural max = n(Long.MAX_VALUE);
-            Natural one = NaturalFactory.getInstance().one();
+            Natural one = NaturalSemiring.getInstance().one();
 
             // Math.addExact lancia ArithmeticException se si verifica un overflow
             assertThrows(ArithmeticException.class, () -> 
@@ -187,7 +189,7 @@ class NaturalTest {
         @ParameterizedTest
         @ValueSource(doubles = {123.0, 99999.0, 0.0, 5.5, 123.99999})
         void valueOfValid(double input) {
-            Natural result = NaturalFactory.getInstance().of(input); 
+            Natural result = NaturalSemiring.getInstance().of(input); 
             // La conversione a long tronca la parte decimale
             assertEquals(Math.round(input), result.getValue());
         }
@@ -196,7 +198,7 @@ class NaturalTest {
         @ValueSource(doubles = {-1.0, -0.0001, -123.45})
         void valueOfNegativeThrowsException(double input) {
             assertThrows(IllegalArgumentException.class, () -> 
-                NaturalFactory.getInstance().of(input), 
+            NaturalSemiring.getInstance().of(input), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per valori negativi."
             );
         }
@@ -209,7 +211,7 @@ class NaturalTest {
             double overflowValue = 9.223372036854776E18 * 2.0; 
             
             assertThrows(ArithmeticException.class, () -> 
-                NaturalFactory.getInstance().of(overflowValue), 
+            NaturalSemiring.getInstance().of(overflowValue), 
                 "valueOf dovrebbe lanciare ArithmeticException per overflow."
             );
         }
@@ -219,11 +221,11 @@ class NaturalTest {
         void valueOfNonFinite() {
             // NaN e Infinity non sono numeri Naturali validi
             assertThrows(IllegalArgumentException.class, () -> 
-                NaturalFactory.getInstance().of(Double.NaN), 
+            NaturalSemiring.getInstance().of(Double.NaN), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per NaN."
             );
             assertThrows(IllegalArgumentException.class, () -> 
-                NaturalFactory.getInstance().of(Double.POSITIVE_INFINITY), 
+            NaturalSemiring.getInstance().of(Double.POSITIVE_INFINITY), 
                 "valueOf dovrebbe lanciare IllegalArgumentException per Infinity."
             );
         }

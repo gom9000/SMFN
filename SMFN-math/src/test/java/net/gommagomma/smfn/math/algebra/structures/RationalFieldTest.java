@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
+
 
 @DisplayName("RationalField: Test della Struttura del Campo (Q)")
 class RationalFieldTest {
@@ -36,14 +36,14 @@ class RationalFieldTest {
     }
 
     // ======================================================================================
-    // 1. PROPRIETÀ BASE DELLA STRUTTURA
+    // 1. PROPRIETÃ€ BASE DELLA STRUTTURA
     // ======================================================================================
 
     @Test
-    @DisplayName("Proprietà Statiche e Identità")
+    @DisplayName("ProprietÃ  Statiche e IdentitÃ ")
     void basicProperties() {
         assertNotNull(RATIONAL_FIELD, "L'istanza non deve essere null.");
-        assertEquals("Rational Field (Q)", RATIONAL_FIELD.getName(), "Il nome del campo non è corretto.");
+        assertEquals("Rational Field (Q)", RATIONAL_FIELD.getName(), "Il nome del campo non Ã¨ corretto.");
         assertSame(RationalField.INSTANCE, RATIONAL_FIELD, "Deve essere singleton.");
     }
 
@@ -53,23 +53,23 @@ class RationalFieldTest {
         // Un RationalField contiene ogni oggetto Rational non nullo.
         assertTrue(RATIONAL_FIELD.contains(r(1, 2)), "Contiene 1/2");
         assertTrue(RATIONAL_FIELD.contains(r(-5)), "Contiene -5");
-        assertTrue(RATIONAL_FIELD.contains(RationalFactory.getInstance().zero()), "Contiene ZERO");
+        assertTrue(RATIONAL_FIELD.contains(RationalField.getInstance().zero()), "Contiene ZERO");
         
         // Non deve contenere null
         assertFalse(RATIONAL_FIELD.contains(null), "Non contiene null");
     }
 
     @Test
-    @DisplayName("Identità Additiva e Moltiplicativa")
+    @DisplayName("IdentitÃ  Additiva e Moltiplicativa")
     void identities() {
-        assertRationalEquals(RationalFactory.getInstance().zero(), RATIONAL_FIELD.additiveIdentity(), "Identità Additiva (Zero)");
-        assertRationalEquals(RationalFactory.getInstance().one(), RATIONAL_FIELD.multiplicativeIdentity(), "Identità Moltiplicativa (One)");
-        assertSame(RationalFactory.getInstance().zero(), RATIONAL_FIELD.additiveIdentity());
-        assertSame(RationalFactory.getInstance().one(), RATIONAL_FIELD.multiplicativeIdentity());
+        assertRationalEquals(RationalField.getInstance().zero(), RATIONAL_FIELD.additiveIdentity(), "IdentitÃ  Additiva (Zero)");
+        assertRationalEquals(RationalField.getInstance().one(), RATIONAL_FIELD.multiplicativeIdentity(), "IdentitÃ  Moltiplicativa (One)");
+        assertSame(RationalField.getInstance().zero(), RATIONAL_FIELD.additiveIdentity());
+        assertSame(RationalField.getInstance().one(), RATIONAL_FIELD.multiplicativeIdentity());
     }
 
     // ======================================================================================
-    // 2. VERIFICA DEGLI ASSIOMI DI CAMPO (PROPRIETÀ FUNZIONALI)
+    // 2. VERIFICA DEGLI ASSIOMI DI CAMPO (PROPRIETÃ€ FUNZIONALI)
     // ======================================================================================
     
     // Usiamo tre valori razionali generici
@@ -91,12 +91,12 @@ class RationalFieldTest {
         void closure() {
             // (1/2 + 5/6) = 8/6 = 4/3
             Rational result = a.add(c); 
-            assertTrue(RATIONAL_FIELD.contains(result), "(a + c) è chiuso");
+            assertTrue(RATIONAL_FIELD.contains(result), "(a + c) Ã¨ chiuso");
             assertRationalEquals(r(4, 3), result, "Verifica calcolo di chiusura");
         }
 
         @Test
-        @DisplayName("Associatività")
+        @DisplayName("AssociativitÃ ")
         void associativity() {
             // (a + b) + c == a + (b + c)
             Rational left = a.add(b).add(c);
@@ -105,7 +105,7 @@ class RationalFieldTest {
         }
         
         @Test
-        @DisplayName("Identità Additiva (Zero)")
+        @DisplayName("IdentitÃ  Additiva (Zero)")
         void identity() {
             // a + 0 == a
             assertRationalEquals(a, a.add(ZERO), "a + 0 == a");
@@ -125,7 +125,7 @@ class RationalFieldTest {
         }
         
         @Test
-        @DisplayName("Commutatività")
+        @DisplayName("CommutativitÃ ")
         void commutativity() {
             // a + b == b + a
             assertRationalEquals(a.add(b), b.add(a), "L'addizione deve essere commutativa.");
@@ -143,12 +143,12 @@ class RationalFieldTest {
         void closure() {
             // (1/2 * 5/6) = 5/12
             Rational result = a.multiply(c);
-            assertTrue(RATIONAL_FIELD.contains(result), "(a * c) è chiuso");
+            assertTrue(RATIONAL_FIELD.contains(result), "(a * c) Ã¨ chiuso");
             assertRationalEquals(r(5, 12), result, "Verifica calcolo di chiusura");
         }
 
         @Test
-        @DisplayName("Associatività")
+        @DisplayName("AssociativitÃ ")
         void associativity() {
             // (a * b) * c == a * (b * c)
             Rational left = a.multiply(b).multiply(c);
@@ -157,7 +157,7 @@ class RationalFieldTest {
         }
         
         @Test
-        @DisplayName("Identità Moltiplicativa (Uno)")
+        @DisplayName("IdentitÃ  Moltiplicativa (Uno)")
         void identity() {
             // a * 1 == a
             assertRationalEquals(a, a.multiply(ONE), "a * 1 == a");
@@ -168,13 +168,13 @@ class RationalFieldTest {
         @Test
         @DisplayName("Inverso Moltiplicativo (Reciproco)")
         void inverse() {
-            // a * a⁻¹ == 1
+            // a * aâ�»Â¹ == 1
             Rational invA = a.inverse(); // 2/1
-            assertRationalEquals(ONE, a.multiply(invA), "a * a⁻¹ == 1 (per a = 1/2)");
+            assertRationalEquals(ONE, a.multiply(invA), "a * aâ�»Â¹ == 1 (per a = 1/2)");
             
-            // b * b⁻¹ == 1
+            // b * bâ�»Â¹ == 1
             Rational invB = b.inverse(); // -4/3
-            assertRationalEquals(ONE, b.multiply(invB), "b * b⁻¹ == 1 (per b = -3/4)");
+            assertRationalEquals(ONE, b.multiply(invB), "b * bâ�»Â¹ == 1 (per b = -3/4)");
         }
         
         @Test
@@ -187,21 +187,21 @@ class RationalFieldTest {
         }
         
         @Test
-        @DisplayName("Commutatività")
+        @DisplayName("CommutativitÃ ")
         void commutativity() {
             // a * b == b * a
             assertRationalEquals(a.multiply(b), b.multiply(a), "La moltiplicazione deve essere commutativa.");
         }
     }
 
-    // --- ASSIOMA DI DISTRIBUTIVITÀ ---
+    // --- ASSIOMA DI DISTRIBUTIVITÃ€ ---
 
     @Nested
     @DisplayName("Assioma Distributivo")
     class DistributiveAxiom {
         
         @Test
-        @DisplayName("Distributività della moltiplicazione sull'addizione")
+        @DisplayName("DistributivitÃ  della moltiplicazione sull'addizione")
         void distributivity() {
             // a * (b + c) == (a * b) + (a * c)
             Rational left = a.multiply(b.add(c));

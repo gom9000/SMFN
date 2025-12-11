@@ -5,12 +5,16 @@ import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.SqrtableElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Complex
 implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, NormableElement<Real, Complex>
 {
+	public static final Complex ZERO = new Complex(0.0, 0.0);
+    public static final Complex ONE = new Complex(1.0, 0.0);
+
     private final double real;
     private final double imaginary;
 
@@ -101,7 +105,7 @@ implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement
 	@Override // MonoidElement impls
 	public Complex getZero()
 	{
-		return ComplexFactory.getInstance().zero(); 
+		return ZERO; 
 	}
 
 
@@ -116,7 +120,7 @@ implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement
 	@Override // MultiplicativeMonoidElement impls
 	public Complex getOne()
 	{
-		return ComplexFactory.getInstance().one();
+		return ONE;
 	}
 
 
@@ -148,12 +152,12 @@ implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement
         }
 
         if (exponent == 0) {
-            return ComplexFactory.getInstance().one();
+            return ONE;
         }
 
         Complex base = this;
         int exp = Math.abs(exponent);
-        Complex result = ComplexFactory.getInstance().one();
+        Complex result = ONE;
 
         while (exp > 0)
         {
@@ -172,7 +176,7 @@ implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement
     public Complex sqrt()
     {
         if (this.isZero()) {
-            return ComplexFactory.getInstance().zero();
+            return ZERO;
         }
 
         double magnitude = this.modulus();
@@ -192,7 +196,7 @@ implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement
     @Override // NormableElement impls
     public Real norm()
     {
-        return RealFactory.getInstance().of(this.modulus());
+        return RealField.getInstance().of(this.modulus());
     }
 
 

@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.natural;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.algebra.numeric.NaturalFactory;
+import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemiringMatrixFactory;
 
@@ -12,7 +12,7 @@ implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
 {
 	private static final NaturalMatrixFactory INSTANCE = new NaturalMatrixFactory();
     private final NaturalVectorFactory vectorFactory = NaturalVectorFactory.getInstance();
-    private final NaturalFactory scalarFactory = NaturalFactory.getInstance();
+    private final NaturalSemiring scalarFactory = NaturalSemiring.getInstance();
 
 
 	private NaturalMatrixFactory() {}
@@ -37,7 +37,6 @@ implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
         }
         int cols = data[0].length;
 
-        NaturalFactory scalarFactory = (NaturalFactory) getScalarFactory();
         Natural[][] components = new Natural[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -60,7 +59,6 @@ implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
         }
         int cols = data[0].length;
 
-        NaturalFactory scalarFactory = (NaturalFactory) getScalarFactory();
         Natural[][] components = new Natural[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -83,7 +81,6 @@ implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix>
         }
         int cols = data[0].length;
 
-        NaturalFactory scalarFactory = (NaturalFactory) getScalarFactory();
         Natural[][] components = new Natural[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {

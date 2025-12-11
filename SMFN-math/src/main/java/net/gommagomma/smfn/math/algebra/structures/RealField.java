@@ -3,7 +3,6 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
 
 
 public final class RealField
@@ -17,14 +16,12 @@ implements Field<Real>
 
 
 	@Override // AlgebraicStructure impls
-	public String getName()
-	{
+	public String getName()	{
 		return "Real Field (R)";
 	}
 
 	@Override // AlgebraicStructure impls
-	public boolean contains(Real e)
-	{
+	public boolean contains(Real e)	{
 		if (e == null) {
             return false;
         }
@@ -34,15 +31,29 @@ implements Field<Real>
 
 
 	@Override // AdditiveMonoid impls
-	public Real additiveIdentity()
-	{
-		return RealFactory.getInstance().zero();
+	public Real additiveIdentity() {
+		return Real.ZERO;
 	}
 
 
 	@Override // MultiplicativeMonoid impls
-	public Real multiplicativeIdentity()
-	{
-		return RealFactory.getInstance().one();
+	public Real multiplicativeIdentity() {
+		return Real.ONE;
 	}
+
+
+	@Override // NumericFactory impls
+    public Real of(double value) {
+        return new Real(value);
+    }
+
+    @Override // NumericFactory impls
+    public Real of(long value) {
+        return new Real(value); 
+    }
+
+    @Override // NumericFactory impls
+    public Real of(int value) {
+        return new Real(value);
+    }
 }

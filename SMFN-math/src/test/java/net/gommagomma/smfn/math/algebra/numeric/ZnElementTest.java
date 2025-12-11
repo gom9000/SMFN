@@ -10,6 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.structures.ZnRing;
+
 @DisplayName("ZnElement: Test dell'Aritmetica Modulare (Z/nZ)")
 class ZnElementTest {
 
@@ -217,7 +219,7 @@ class ZnElementTest {
         @Test
         @DisplayName("valueOf (CreatableFromDouble)")
         void valueOf() {
-            ZnElementFactory ring = new ZnElementFactory(new SignedInt(10));
+            ZnRing ring = new ZnRing(new SignedInt(10));
             
             // Conversione diretta da long
             ZnElement z1 = ring.of(15.0); // 15 mod 10 = 5

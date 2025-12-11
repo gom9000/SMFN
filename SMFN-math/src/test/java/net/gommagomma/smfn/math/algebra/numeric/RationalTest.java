@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 @DisplayName("Rational: Test delle proprietà di Campo, Normalizzazione e Conversione")
@@ -89,8 +90,8 @@ class RationalTest {
         @Test
         @DisplayName("Costanti e Copia")
         void constantsAndCopy() {
-            assertEquals(0L, RationalFactory.getInstance().zero().getNumerator());
-            assertEquals(1L, RationalFactory.getInstance().one().getNumerator());
+            assertEquals(0L, RationalField.getInstance().zero().getNumerator());
+            assertEquals(1L, RationalField.getInstance().one().getNumerator());
             
             Rational z = r(3, 7);
             Rational copy = z.copy();
@@ -118,7 +119,7 @@ class RationalTest {
             assertRationalEquals(r(1, 2), r(1, 4).add(r(1, 4)), "1/4 + 1/4");
             
             // 1/2 + (-1/2) = 0
-            assertRationalEquals(RationalFactory.getInstance().zero(), r(1, 2).add(r(-1, 2)), "1/2 + (-1/2)");
+            assertRationalEquals(RationalField.getInstance().zero(), r(1, 2).add(r(-1, 2)), "1/2 + (-1/2)");
         }
         
         @Test
@@ -182,7 +183,7 @@ class RationalTest {
         @Test
         void inverseOfZeroThrowsException() {
             assertThrows(ArithmeticException.class, () -> 
-                RationalFactory.getInstance().zero().inverse(), 
+            RationalField.getInstance().zero().inverse(), 
                 "L'inverso di zero deve lanciare ArithmeticException."
             );
         }
@@ -235,13 +236,13 @@ class RationalTest {
         
         @Test
         void powerZero() {
-            assertRationalEquals(RationalFactory.getInstance().one(), r(100, 5).power(0), "z^0");
+            assertRationalEquals(RationalField.getInstance().one(), r(100, 5).power(0), "z^0");
         }
         
         @Test
         void powerZeroNegativeExponentThrowsException() {
             assertThrows(ArithmeticException.class, () -> 
-                RationalFactory.getInstance().zero().power(-1), 
+            RationalField.getInstance().zero().power(-1), 
                 "Zero elevato a potenza negativa."
             );
         }
@@ -341,13 +342,13 @@ class RationalTest {
         @Test
         void valueOfExactPowersOfTwo() {
             // 0.5 = 1/2
-            assertRationalEquals(r(1, 2), RationalFactory.getInstance().of(0.5), "0.5");
+            assertRationalEquals(r(1, 2), RationalField.getInstance().of(0.5), "0.5");
             // 0.25 = 1/4
-            assertRationalEquals(r(1, 4), RationalFactory.getInstance().of(0.25), "0.25");
+            assertRationalEquals(r(1, 4), RationalField.getInstance().of(0.25), "0.25");
             // 0.125 = 1/8
-            assertRationalEquals(r(1, 8), RationalFactory.getInstance().of(0.125), "0.125");
+            assertRationalEquals(r(1, 8), RationalField.getInstance().of(0.125), "0.125");
             // 5.0 = 5
-            assertRationalEquals(r(5), RationalFactory.getInstance().of(5.0), "5.0");
+            assertRationalEquals(r(5), RationalField.getInstance().of(5.0), "5.0");
         }
         
         @Test
@@ -357,46 +358,46 @@ class RationalTest {
             // La rappresentazione IEEE 754 di 0.5 è 1/2.
             
             // Per -0.5:
-            Rational result_half = RationalFactory.getInstance().of(-0.5);
+            Rational result_half = RationalField.getInstance().of(-0.5);
             assertEquals(-1L, result_half.getNumerator());
             assertEquals(2L, result_half.getDenominator());
             
             // Per -3.0:
-            assertRationalEquals(r(-3), RationalFactory.getInstance().of(-3.0), "-3.0");
+            assertRationalEquals(r(-3), RationalField.getInstance().of(-3.0), "-3.0");
         }
         
         @Test
         void valueOfWithSimplification() {
             // 0.75 = 3/4
-            assertRationalEquals(r(3, 4), RationalFactory.getInstance().of(0.75), "0.75 (3/4)");
+            assertRationalEquals(r(3, 4), RationalField.getInstance().of(0.75), "0.75 (3/4)");
             // 0.4 = 2/5 (Non è una potenza di 2, ma è una frazione esatta in IEEE 754)
             // (0.4 è rappresentato in binario come 0.011001100..., ma il double approssima 
             // a una frazione con denominatore potenza di 2. Il tuo algoritmo lo cattura.)
-            assertRationalEquals(r(3602879701896397L, 9007199254740992L).copy(), RationalFactory.getInstance().of(0.4), "0.4 (approx)");
+            assertRationalEquals(r(3602879701896397L, 9007199254740992L).copy(), RationalField.getInstance().of(0.4), "0.4 (approx)");
             
             // Questo test è problematico a causa della precisione. Concentriamoci su quelli che funzionano esatti.
             // 0.75 è (1/2 + 1/4) = 3/4. Bit: 0x3FE8000000000000L. Exp=1022-1023=-1. Mantissa=1.1 -> 1 * 2^-1 + 1 * 2^-2.
             // Il tuo algoritmo dovrebbe produrre una frazione con denominatore potenza di 2.
             // 0.75 -> 3/4 è esatto.
             // 1.5 -> 3/2 è esatto.
-            assertRationalEquals(r(3, 2), RationalFactory.getInstance().of(1.5), "1.5");
+            assertRationalEquals(r(3, 2), RationalField.getInstance().of(1.5), "1.5");
         }
 
         @Test
         void valueOfNonFiniteThrowsException() {
             assertThrows(IllegalArgumentException.class, () -> 
-                RationalFactory.getInstance().of(Double.NaN), 
+            RationalField.getInstance().of(Double.NaN), 
                 "valueOf NaN."
             );
             assertThrows(IllegalArgumentException.class, () -> 
-                RationalFactory.getInstance().of(Double.POSITIVE_INFINITY), 
+            RationalField.getInstance().of(Double.POSITIVE_INFINITY), 
                 "valueOf Infinity."
             );
         }
         
         @Test
         void valueOfZero() {
-            assertRationalEquals(RationalFactory.getInstance().zero(), RationalFactory.getInstance().of(0.0), "valueOf 0.0");
+            assertRationalEquals(RationalField.getInstance().zero(), RationalField.getInstance().of(0.0), "valueOf 0.0");
         }
     }
     

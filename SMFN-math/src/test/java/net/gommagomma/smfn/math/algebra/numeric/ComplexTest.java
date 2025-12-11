@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,8 +48,8 @@ class ComplexTest {
         assertEquals(6.0, z3.getRe());
         assertEquals(0.0, z3.getIm());
 
-        assertComplexEquals(c(0.0, 0.0), ComplexFactory.getInstance().zero(), "Verifica ZERO");
-        assertComplexEquals(c(1.0, 0.0), ComplexFactory.getInstance().one(), "Verifica ONE");
+        assertComplexEquals(c(0.0, 0.0), ComplexField.getInstance().zero(), "Verifica ZERO");
+        assertComplexEquals(c(1.0, 0.0), ComplexField.getInstance().one(), "Verifica ONE");
     }
 
     @Test
@@ -107,7 +108,7 @@ class ComplexTest {
         @Test
         void negate() {
             assertComplexEquals(c(-3.5, 4.5), c(3.5, -4.5).negate(), "Negazione");
-            assertComplexEquals(ComplexFactory.getInstance().zero(), c(3.0, 4.0).add(c(3.0, 4.0).negate()), "Addizione con Inverso");
+            assertComplexEquals(ComplexField.getInstance().zero(), c(3.0, 4.0).add(c(3.0, 4.0).negate()), "Addizione con Inverso");
         }
     }
 
@@ -139,13 +140,13 @@ class ComplexTest {
             assertComplexEquals(c(rExp, iExp), inverse, "Inverso");
             
             // Verifica Proprietà di Campo
-            assertComplexEquals(ComplexFactory.getInstance().one(), z.multiply(inverse), "z * z^-1 deve essere 1");
+            assertComplexEquals(ComplexField.getInstance().one(), z.multiply(inverse), "z * z^-1 deve essere 1");
         }
 
         @Test
         void inverseOfZeroThrowsException() {
             assertThrows(ArithmeticException.class, () -> 
-                ComplexFactory.getInstance().zero().inverse(), 
+            ComplexField.getInstance().zero().inverse(), 
                 "L'inverso di zero deve lanciare ArithmeticException."
             );
         }
@@ -165,7 +166,7 @@ class ComplexTest {
             
             assertEquals(25.0, z.modulusSquared(), TOLERANCE, "|3-4i|^2");
             assertEquals(5.0, z.modulus(), TOLERANCE, "|3-4i|");
-            assertEquals(0.0, ComplexFactory.getInstance().zero().modulus(), 0);
+            assertEquals(0.0, ComplexField.getInstance().zero().modulus(), 0);
         }
         
         @Test
@@ -190,7 +191,7 @@ class ComplexTest {
         
         @Test
         void sqrtOfZero() {
-            assertComplexEquals(ComplexFactory.getInstance().zero(), ComplexFactory.getInstance().zero().sqrt(), "Radice di Zero");
+            assertComplexEquals(ComplexField.getInstance().zero(), ComplexField.getInstance().zero().sqrt(), "Radice di Zero");
         }
 
         @Test
@@ -255,13 +256,13 @@ class ComplexTest {
         
         @Test
         void powerZero() {
-            assertComplexEquals(ComplexFactory.getInstance().one(), c(10.0, -5.0).power(0), "z^0");
+            assertComplexEquals(ComplexField.getInstance().one(), c(10.0, -5.0).power(0), "z^0");
         }
 
         @Test
         void powerZeroNegativeExponentThrowsException() {
             assertThrows(ArithmeticException.class, () -> 
-                ComplexFactory.getInstance().zero().power(-1), 
+            ComplexField.getInstance().zero().power(-1), 
                 "Zero elevato a potenza negativa"
             );
         }
@@ -283,7 +284,7 @@ class ComplexTest {
         @ParameterizedTest(name = "valueOf({0})")
         @CsvSource({"10.0", "-5.5", "0.0"})
         void valueOf(double input) {
-            Complex result = ComplexFactory.getInstance().of(input);
+            Complex result = ComplexField.getInstance().of(input);
             assertComplexEquals(c(input, 0.0), result, "valueOf deve creare un numero reale");
         }
         

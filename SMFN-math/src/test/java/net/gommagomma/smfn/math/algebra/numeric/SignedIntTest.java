@@ -7,6 +7,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("SignedInt: Test delle proprietà algebriche e di Dominio Euclideo")
@@ -27,8 +29,8 @@ class SignedIntTest {
         SignedInt twenty = si(20);
         assertEquals(20L, twenty.getValue());
         assertEquals("20", twenty.toString());
-        assertEquals(SignedIntFactory.getInstance().zero(), si(0));
-        assertEquals(SignedIntFactory.getInstance().one(), si(1));
+        assertEquals(IntegerRing.getInstance().zero(), si(0));
+        assertEquals(IntegerRing.getInstance().one(), si(1));
     }
 
     @Test
@@ -59,8 +61,8 @@ class SignedIntTest {
         assertTrue(si(0).isZero());
         assertTrue(si(1).isOne());
         
-        assertEquals(SignedIntFactory.getInstance().zero(), si(0).getZero());
-        assertEquals(SignedIntFactory.getInstance().one(), si(1).getOne());
+        assertEquals(IntegerRing.getInstance().zero(), si(0).getZero());
+        assertEquals(IntegerRing.getInstance().one(), si(1).getOne());
     }
     
     // ======================================================================================
@@ -142,13 +144,13 @@ class SignedIntTest {
 
         @Test
         void powerZero() {
-            assertEquals(SignedIntFactory.getInstance().one(), si(500).power(0));
+            assertEquals(IntegerRing.getInstance().one(), si(500).power(0));
         }
 
         @Test
         void zeroPower() {
-            assertEquals(SignedIntFactory.getInstance().zero(), si(0).power(5));
-            assertEquals(SignedIntFactory.getInstance().one(), si(0).power(0)); // 0^0 = 1 per convenzione
+            assertEquals(IntegerRing.getInstance().zero(), si(0).power(5));
+            assertEquals(IntegerRing.getInstance().one(), si(0).power(0)); // 0^0 = 1 per convenzione
         }
 
         @Test
@@ -198,7 +200,7 @@ class SignedIntTest {
         @Test
         void quotientDivisionByZero() {
             assertThrows(ArithmeticException.class, () -> 
-                si(10).quotient(SignedIntFactory.getInstance().zero()), 
+                si(10).quotient(IntegerRing.getInstance().zero()), 
                 "La divisione per zero dovrebbe lanciare un'eccezione"
             );
         }
@@ -224,7 +226,7 @@ class SignedIntTest {
         @Test
         void remainderDivisionByZero() {
             assertThrows(ArithmeticException.class, () -> 
-                si(10).remainder(SignedIntFactory.getInstance().zero()), 
+                si(10).remainder(IntegerRing.getInstance().zero()), 
                 "La divisione per zero dovrebbe lanciare un'eccezione"
             );
         }
@@ -259,20 +261,20 @@ class SignedIntTest {
         @ParameterizedTest(name = "valueOf({0}) -> {1}")
         @CsvSource({"10.75, 11", "-3.14, -3", "0.999, 1"})
         void valueOfValid(double input, long expected) {
-            SignedInt result = SignedIntFactory.getInstance().of(input);
+            SignedInt result = IntegerRing.getInstance().of(input);
             assertEquals(si(Math.round(expected)), result);
             assertEquals(Math.round(expected), result.getValue());
         }
         
         @Test
         void valueOfLongMinValue() {
-            SignedInt result = SignedIntFactory.getInstance().of((double) Long.MIN_VALUE);
+            SignedInt result = IntegerRing.getInstance().of((double) Long.MIN_VALUE);
             assertEquals(si(Long.MIN_VALUE), result);
         }
 
         @Test
         void valueOfLongMaxValue() {
-            SignedInt result =SignedIntFactory.getInstance().of((double) Long.MAX_VALUE);
+            SignedInt result =IntegerRing.getInstance().of((double) Long.MAX_VALUE);
             assertEquals(si(Long.MAX_VALUE), result);
         }
 
@@ -286,7 +288,7 @@ class SignedIntTest {
             })
         void valueOfOverflow(double input) {
             assertThrows(ArithmeticException.class, () -> 
-                SignedIntFactory.getInstance().of(input), 
+            IntegerRing.getInstance().of(input), 
                 "valueOf dovrebbe lanciare ArithmeticException per overflow double"
             );
         }

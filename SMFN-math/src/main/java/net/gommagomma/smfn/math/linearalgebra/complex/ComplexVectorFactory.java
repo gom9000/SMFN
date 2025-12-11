@@ -2,14 +2,14 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.ComplexFactory;
+import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
 public final class ComplexVectorFactory
 implements SemimoduleVectorFactory<Complex, ComplexVector>
 {
     private static final ComplexVectorFactory INSTANCE = new ComplexVectorFactory();
-    private final ComplexFactory scalarFactory = ComplexFactory.getInstance();
+    private final ComplexField scalarFactory = ComplexField.getInstance();
 
 
     private ComplexVectorFactory() {}

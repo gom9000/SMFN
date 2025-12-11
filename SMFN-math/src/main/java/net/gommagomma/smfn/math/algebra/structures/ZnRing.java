@@ -2,8 +2,8 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
 import net.gommagomma.smfn.math.algebra.numeric.ZnElement;
+import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * Rappresenta la struttura dell'Anello Commutativo Z/nZ (ZModNRing).
@@ -23,12 +23,12 @@ implements CommutativeRing<ZnElement>
      * @param modulus Il modulo n (deve essere un intero positivo > 0).
      */
     public ZnRing(SignedInt modulus) {
-        if (modulus.isZero() || modulus.isLessThan(SignedIntFactory.getInstance().one())) {
+        if (modulus.isZero() || modulus.isLessThan(SignedInt.ONE)) {
             throw new IllegalArgumentException("Modulus for ZModNRing must be a positive integer > 0.");
         }
         this.modulus = modulus;
-        this.additiveIdentity = new ZnElement(SignedIntFactory.getInstance().zero(), this.modulus);
-        this.multiplicativeIdentity = new ZnElement(SignedIntFactory.getInstance().one(), this.modulus);
+        this.additiveIdentity = new ZnElement(SignedInt.ZERO, this.modulus);
+        this.multiplicativeIdentity = new ZnElement(SignedInt.ONE, this.modulus);
     }
     
 
@@ -48,6 +48,37 @@ implements CommutativeRing<ZnElement>
     public ZnElement getElement(SignedInt value) {
         return new ZnElement(value, this.modulus);
     }
+
+
+    @Override // NumericFactory impls
+	public ZnElement of(double value) {
+    	if (Double.isNaN(value) || Double.isInfinite(value)) {
+	        throw new IllegalArgumentException("Cannot create a SignedInt number from a non-finite value: " + value);
+	    }
+        if (value > Long.MAX_VALUE) {
+	        throw new ArithmeticException("Value " + value + " is outside the range of SignedInt (long).");
+	    }
+
+        long roundedValue = Math.round(value);
+        if (Math.abs(value - roundedValue) > MathConstants.EPSILON) {
+            throw new IllegalArgumentException("Cannot convert non-integer value " + value + " to integer type.");
+        }
+
+        SignedInt signedInt = IntegerRing.getInstance().of(value);
+        return new ZnElement(signedInt, this.modulus);
+	}
+
+	@Override // NumericFactory impls
+	public ZnElement of(long value) {
+		SignedInt signedInt = IntegerRing.getInstance().of(value);
+		return new ZnElement(signedInt, this.modulus);
+	}
+
+	@Override // NumericFactory impls
+	public ZnElement of(int value) {
+		SignedInt signedInt = IntegerRing.getInstance().of(value);
+		return new ZnElement(signedInt, this.modulus);
+	}
 
 
     @Override // AlgebraicStructure impls

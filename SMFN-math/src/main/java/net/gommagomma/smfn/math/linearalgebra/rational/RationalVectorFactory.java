@@ -2,14 +2,14 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
+import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
 public final class RationalVectorFactory
 implements SemimoduleVectorFactory<Rational, RationalVector>
 {
     private static final RationalVectorFactory INSTANCE = new RationalVectorFactory();
-    private final RationalFactory scalarFactory = RationalFactory.getInstance();
+    private final RationalField scalarFactory = RationalField.getInstance();
 
 
     private RationalVectorFactory() {}

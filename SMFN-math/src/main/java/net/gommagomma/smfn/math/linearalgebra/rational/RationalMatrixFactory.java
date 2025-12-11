@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
+import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.FieldMatrixFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
@@ -12,7 +12,7 @@ implements FieldMatrixFactory<Rational, RationalVector, RationalMatrix>
 {
     private static final RationalMatrixFactory INSTANCE = new RationalMatrixFactory();
     private final RationalVectorFactory vectorFactory = RationalVectorFactory.getInstance();
-    private final RationalFactory scalarFactory = RationalFactory.getInstance();
+    private final RationalField scalarFactory = RationalField.getInstance();
 
 
     private RationalMatrixFactory() {}
@@ -39,7 +39,6 @@ implements FieldMatrixFactory<Rational, RationalVector, RationalMatrix>
         }
         int cols = data[0].length;
 
-        RationalFactory scalarFactory = (RationalFactory) getScalarFactory();
         Rational[][] components = new Rational[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -62,7 +61,6 @@ implements FieldMatrixFactory<Rational, RationalVector, RationalMatrix>
         }
         int cols = data[0].length;
 
-        RationalFactory scalarFactory = (RationalFactory) getScalarFactory();
         Rational[][] components = new Rational[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -85,7 +83,6 @@ implements FieldMatrixFactory<Rational, RationalVector, RationalMatrix>
         }
         int cols = data[0].length;
 
-        RationalFactory scalarFactory = (RationalFactory) getScalarFactory();
         Rational[][] components = new Rational[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {

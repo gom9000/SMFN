@@ -7,6 +7,9 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringEle
 public final class Natural
 implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural>
 {
+	public static final Natural ZERO = new Natural(0);
+    public static final Natural ONE = new Natural(1);
+
 	private final long value;
 
 
@@ -56,7 +59,7 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
 	@Override // MonoidElement impls
 	public Natural getZero()
 	{
-		return NaturalFactory.getInstance().zero();
+		return ZERO;
 	}
 
 
@@ -71,7 +74,7 @@ implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableEl
 	@Override // MultiplicativeMonoidElement impls
 	public Natural getOne()
 	{
-		return NaturalFactory.getInstance().one();
+		return ONE;
 	}
 
 

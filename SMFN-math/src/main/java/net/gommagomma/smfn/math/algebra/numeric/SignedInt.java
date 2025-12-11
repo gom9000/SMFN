@@ -8,6 +8,9 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.EuclideanDo
 public final class SignedInt
 implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, EuclideanDomainElement<SignedInt, SignedInt>
 {
+	public static final SignedInt ZERO = new SignedInt(0);
+    public static final SignedInt ONE = new SignedInt(1);
+
 	private final long value;
 
 
@@ -54,7 +57,7 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
 	@Override // MonoidElement impls
 	public SignedInt getZero()
 	{
-		return SignedIntFactory.getInstance().zero();
+		return ZERO;
 	}
 
 
@@ -69,7 +72,7 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
 	@Override // MultiplicativeMonoidElement impls
 	public SignedInt getOne()
 	{
-		return SignedIntFactory.getInstance().one();
+		return ONE;
 	}
 
 
@@ -91,10 +94,10 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
             throw new ArithmeticException("Cannot raise a SignedInt to a negative power within the ring of integers.");
         }
         if (exponent == 0) {
-            return SignedIntFactory.getInstance().one();
+            return ONE;
         }
         if (this.isZero()) {
-            return SignedIntFactory.getInstance().zero();
+            return ZERO;
         }
 
         long base = this.value;

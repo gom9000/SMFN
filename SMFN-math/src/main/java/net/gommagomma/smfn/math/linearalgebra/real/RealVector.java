@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.real;
 import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.numeric.RealFactory;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 
@@ -109,7 +109,7 @@ implements InnerProductSpaceElement<Real, RealVector>
 		if (this.dimension != other.dimension) {
 			throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
 		}
-		Real result = RealFactory.getInstance().zero();
+		Real result = RealField.getInstance().zero();
 		for (int i = 0; i < dimension; i++) {
 			result = result.add(this.get(i).multiply(other.get(i)));
 		}

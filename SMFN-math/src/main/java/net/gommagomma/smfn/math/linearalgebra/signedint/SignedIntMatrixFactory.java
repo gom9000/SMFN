@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.signedint;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.algebra.numeric.SignedIntFactory;
+import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.RingMatrixFactory;
 import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
 
@@ -16,7 +16,7 @@ implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix>
 {
 	private static final SignedIntMatrixFactory INSTANCE = new SignedIntMatrixFactory();
 	private final SignedIntVectorFactory vectorFactory = SignedIntVectorFactory.getInstance();
-    private final SignedIntFactory scalarFactory = SignedIntFactory.getInstance();
+    private final IntegerRing scalarFactory = IntegerRing.getInstance();
 
 
     private SignedIntMatrixFactory() {}
@@ -41,7 +41,6 @@ implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix>
         }
         int cols = data[0].length;
 
-        SignedIntFactory scalarFactory = (SignedIntFactory) getScalarFactory();
         SignedInt[][] components = new SignedInt[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -64,7 +63,6 @@ implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix>
         }
         int cols = data[0].length;
 
-        SignedIntFactory scalarFactory = (SignedIntFactory) getScalarFactory();
         SignedInt[][] components = new SignedInt[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
@@ -87,7 +85,6 @@ implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix>
         }
         int cols = data[0].length;
 
-        SignedIntFactory scalarFactory = (SignedIntFactory) getScalarFactory();
         SignedInt[][] components = new SignedInt[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {

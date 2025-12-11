@@ -3,8 +3,8 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 import java.util.Arrays;
 
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.RationalFactory;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 
@@ -36,7 +36,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     public RationalVector(int dimension) {
         super(dimension);
         this.data = new Rational[dimension];
-        Arrays.fill(this.data, RationalFactory.getInstance().zero());
+        Arrays.fill(this.data, RationalField.getInstance().zero());
     }
 
 
@@ -109,7 +109,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
         if (this.dimension != other.dimension) {
             throw new IllegalArgumentException("Vectors must have the same dimension for dot product.");
         }
-        Rational result = RationalFactory.getInstance().zero();
+        Rational result = RationalField.getInstance().zero();
         for (int i = 0; i < dimension; i++) {
             result = result.add(this.data[i].multiply(other.data[i]));
         }

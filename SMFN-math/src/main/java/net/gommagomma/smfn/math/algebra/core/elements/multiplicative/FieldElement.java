@@ -1,6 +1,5 @@
 package net.gommagomma.smfn.math.algebra.core.elements.multiplicative;
 
-//Campo: Anello commutativo + Inverso Moltiplicativo
 public interface FieldElement<E extends FieldElement<E>>
 extends CommutativeRingElement<E>
 {
