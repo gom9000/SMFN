@@ -30,7 +30,7 @@ implements ModuleElement<SignedInt, SignedIntVector>
     SignedIntVector(int dimension) {
     	super(dimension);
         this.data = new SignedInt[dimension];
-        Arrays.fill(this.data, SignedIntVectorFactory.getInstance().getScalarFactory().zero());
+        Arrays.fill(this.data, getZero());
     }
 
 

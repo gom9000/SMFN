@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.MathFunction;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
-import net.gommagomma.smfn.math.linearalgebra.core.factories.SemimoduleVectorFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.factories.VectorElementFactory;
 
 
 /**
@@ -18,7 +18,7 @@ implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K>
 {
     // Usiamo un VectorElement per archiviare i coefficienti [c0, c1, ..., cn]
     private final VectorElement<K, ? extends VectorElement<K, ?>> coefficients;
-    private final SemimoduleVectorFactory<K, ?> vectorFactory;
+    private final VectorElementFactory<K, ?> vectorFactory;
     private final int degree;
     private final K zeroScalar; 
 
@@ -28,7 +28,7 @@ implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K>
      * Il coefficiente a indice 0 è il termine costante.
      * @param coeffs Un vettore di coefficienti.
      */
-    public PolynomialFunction(VectorElement<K, ? extends VectorElement<K, ?>> coeffs, SemimoduleVectorFactory<K, ?> factory)
+    public PolynomialFunction(VectorElement<K, ? extends VectorElement<K, ?>> coeffs, VectorElementFactory<K, ?> factory)
     {
         if (coeffs == null || coeffs.dimension() == 0) {
             throw new IllegalArgumentException("I coefficienti non possono essere nulli o vuoti.");

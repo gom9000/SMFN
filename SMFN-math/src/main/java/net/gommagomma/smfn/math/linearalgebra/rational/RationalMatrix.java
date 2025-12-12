@@ -11,13 +11,10 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFie
  * Aderisce all'interfaccia Matrix<Rational, RationalVector, RationalMatrix>.
  */
 public final class RationalMatrix
-extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory>
+extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixSpace>
 {    
-	private static final RationalMatrixFactory FACTORY_INSTANCE = RationalMatrixFactory.getInstance();
-
-
-	RationalMatrix(Rational[][] data) { super(data, FACTORY_INSTANCE); }
-	RationalMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE); }
+	RationalMatrix(Rational[][] data, RationalMatrixSpace matrixStructure) { super(data, matrixStructure); }
+	RationalMatrix(int rows, int cols, RationalMatrixSpace matrixStructure) { super(rows, cols, matrixStructure); }
 
 
     @Override // AbstractSemiringMatrix impls
@@ -31,7 +28,7 @@ extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMa
             throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
         }
 
-        return factory.createVector(Arrays.copyOf(data[row], cols));
+        return matrixStructure.getVectorStructure().createVector(Arrays.copyOf(data[row], cols));
 	}
 
 	@Override // SemiringMatrixElement impls
@@ -46,7 +43,7 @@ extends AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMa
             columnData[i] = data[i][col];
         }
 
-        return factory.createVector(columnData);
+        return matrixStructure.getVectorStructure().createVector(columnData);
 	}
 
 

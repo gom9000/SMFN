@@ -28,7 +28,7 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
     NaturalVector(int dimension) {
     	super(dimension);
     	this.data = new Natural[dimension];
-    	Arrays.fill(this.data, NaturalVectorFactory.getInstance().getScalarFactory().zero());
+    	Arrays.fill(this.data, getZero());
     }
 
 

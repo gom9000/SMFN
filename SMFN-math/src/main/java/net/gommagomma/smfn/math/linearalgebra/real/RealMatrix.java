@@ -8,13 +8,10 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFie
 
 
 public final class RealMatrix 
-extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
+extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixSpace>
 {
-    private static final RealMatrixFactory FACTORY_INSTANCE = RealMatrixFactory.getInstance();
-
-
-    public RealMatrix(Real[][] data) { super(data, FACTORY_INSTANCE); }
-    RealMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE);}
+    RealMatrix(Real[][] data, RealMatrixSpace matrixStructure) { super(data, matrixStructure); }
+    RealMatrix(int rows, int cols, RealMatrixSpace matrixStructure) { super(rows, cols, matrixStructure);}
 
 
     @Override // AbstractSemiringMatrix impls
@@ -28,7 +25,7 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
             throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
         }
 
-        return factory.createVector(Arrays.copyOf(data[row], cols));
+        return matrixStructure.getVectorStructure().createVector(Arrays.copyOf(data[row], cols));
     }
 
     @Override // SemiringMatrixElement impls
@@ -43,7 +40,7 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory>
             columnData[i] = data[i][col];
         }
 
-        return factory.createVector(columnData);
+        return matrixStructure.getVectorStructure().createVector(columnData);
     }
 
 

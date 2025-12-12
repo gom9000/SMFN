@@ -36,7 +36,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
     public RationalVector(int dimension) {
         super(dimension);
         this.data = new Rational[dimension];
-        Arrays.fill(this.data, RationalField.getInstance().zero());
+        Arrays.fill(this.data, getZero());
     }
 
 

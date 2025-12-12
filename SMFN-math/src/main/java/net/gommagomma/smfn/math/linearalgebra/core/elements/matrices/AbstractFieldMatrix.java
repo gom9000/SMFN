@@ -5,30 +5,19 @@ import java.util.Comparator;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
-import net.gommagomma.smfn.math.linearalgebra.core.factories.FieldMatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
 
 
-public abstract class AbstractFieldMatrix<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, F extends FieldMatrixFactory<K, V, M>>
-extends AbstractRingMatrix<K, V, M, F>
+public abstract class AbstractFieldMatrix<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, S extends FieldMatrixSpace<K, V, M>>
+extends AbstractRingMatrix<K, V, M, S>
 implements FieldMatrixElement<K, V, M>
 {
-    /**
-     * Costruttore principale.
-     * @param data I dati della matrice.
-     * @param factory La factory specifica per il tipo K (Field).
-     */
-    protected AbstractFieldMatrix(K[][] data, F factory) {
-        super(data, factory);
+    protected AbstractFieldMatrix(K[][] data, S matrixStructure) {
+        super(data, matrixStructure);
     }
 
-    /**
-     * Costruttore helper per creare matrici vuote/zero.
-     * @param rows Il numero di righe.
-     * @param cols Il numero di colonne.
-     * @param factory La factory specifica per il tipo K (Field).
-     */
-    protected AbstractFieldMatrix(int rows, int cols, F factory) {
-    	super(rows, cols, factory);
+    protected AbstractFieldMatrix(int rows, int cols, S matrixStructure) {
+    	super(rows, cols, matrixStructure);
     }
 
 
@@ -55,7 +44,7 @@ implements FieldMatrixElement<K, V, M>
             System.arraycopy(this.data[i], 0, A[i], 0, n);
         }
 
-        K det = factory.getScalarFactory().one();
+        K det = matrixStructure.getScalarStructure().one();
         int sign = 1;
 
         for (int i = 0; i < n; i++) {
@@ -75,8 +64,8 @@ implements FieldMatrixElement<K, V, M>
             }
             
             // Confronto con l'elemento zero della factory
-            if (A[i][i].isMathematicallyEqualTo(factory.getScalarFactory().zero())) {
-                return factory.getScalarFactory().zero();
+            if (A[i][i].isMathematicallyEqualTo(matrixStructure.getScalarStructure().zero())) {
+                return matrixStructure.getScalarStructure().zero();
             }
             
             for (int k = i + 1; k < n; k++) {
@@ -102,8 +91,8 @@ implements FieldMatrixElement<K, V, M>
             throw new IllegalArgumentException("Inverse can only be calculated for square matrices.");
         }
         int n = getRows();
-        K zero = factory.getScalarFactory().zero();
-        K one = factory.getScalarFactory().one();
+        K zero = matrixStructure.getScalarStructure().zero();
+        K one = matrixStructure.getScalarStructure().one();
         Comparator<K> comparator = getMagnitudeComparator();
 
         // Matrice aumentata [A | I]
@@ -165,6 +154,6 @@ implements FieldMatrixElement<K, V, M>
         }
 
         // 3. Utilizziamo la factory per creare una nuova istanza M finale e immutabile
-        return factory.createMatrix(inverseData);
+        return matrixStructure.createMatrix(inverseData);
     }
 }

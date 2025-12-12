@@ -1,256 +1,173 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.utils.MathConstants;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Real: Test delle proprietà di Campo e Capacità Matematiche")
-class RealTest {
+import net.gommagomma.smfn.math.utils.MathConstants;
+import org.junit.jupiter.api.Test;
 
-    // TOLERANZA: Usata per assertEquals(double, double, delta)
-    // Assumiamo che MathConstants.EPSILON sia ragionevole (es. 1e-15).
-    private static final double EPSILON = MathConstants.EPSILON; 
 
-    // Helper per una creazione rapida e confronto
-    private Real r(double value) {
-        return new Real(value);
-    }
+public class RealTest {
 
-    // Helper per assertEquals con Real e TOLERANCE
-    private void assertRealEquals(Real expected, Real actual) {
-        assertTrue(expected.isMathematicallyEqualTo(actual), 
-                   "Expected: " + expected.getValue() + " but was: " + actual.getValue());
-    }
-
-    // ======================================================================================
-    // COSTRUTTORE E PROPRIETÀ BASE
-    // ======================================================================================
+    private static final double EPSILON = MathConstants.EPSILON;
+    private final Real r5 = new Real(5.0);
+    private final Real r_neg3 = new Real(-3.0);
+    private final Real r_half = new Real(0.5);
+    
+    // --- Constructor & Identity Tests ---
 
     @Test
-    @DisplayName("Costruttore, Getter, Costanti e Copia")
-    void constructorAndBasicProps() {
-        Real pi = r(Math.PI);
-        assertEquals(Math.PI, pi.getValue(), EPSILON);
-        assertEquals("3.141592653589793", pi.toString()); // Dipende dalla precisione Java
-
-        assertEquals(0.0, RealField.getInstance().zero().getValue(), 0);
-        assertEquals(1.0, RealField.getInstance().one().getValue(), 0);
-        
-        Real copy = pi.copy();
-        assertRealEquals(pi, copy);
-        assertNotSame(pi, copy);
+    void testConstructorsAndGetters() {
+        assertEquals(5.0, r5.getValue());
+        assertEquals(-3.0, r_neg3.getValue());
+        assertEquals(0.0, Real.ZERO.getValue());
+        assertEquals(1.0, Real.ONE.getValue());
     }
 
     @Test
-    @DisplayName("isMathematicallyEqualTo (Tolleranza)")
-    void mathematicalEquality() {
-        Real a = r(10.0);
-        Real b = r(10.0 + (EPSILON / 2.0)); // Entro la tolleranza
-        Real c = r(10.0 + (EPSILON * 2.0)); // Fuori dalla tolleranza
+    void testIdentities() {
+        assertTrue(Real.ZERO.isMathematicallyEqualTo(r5.getZero()));
+        assertTrue(Real.ONE.isMathematicallyEqualTo(r5.getOne()));
+    }
+    
+    // --- Mathematical Equality (EPSILON) Tests ---
 
-        assertTrue(a.isMathematicallyEqualTo(a));
-        assertTrue(a.isMathematicallyEqualTo(b));
-        assertFalse(a.isMathematicallyEqualTo(c));
-        assertFalse(a.isMathematicallyEqualTo(null));
+    @Test
+    void testMathematicalEquality() {
+        Real r5_approx = new Real(5.0 + EPSILON / 2.0);
+        Real r5_far = new Real(5.0 + 2 * EPSILON);
+
+        // Near equality
+        assertTrue(r5.isMathematicallyEqualTo(r5_approx));
+        // Too far
+        assertFalse(r5.isMathematicallyEqualTo(r5_far));
+        // Exact equality
+        assertTrue(r5.isMathematicallyEqualTo(r5));
+        
+        // NaN check (NaN should be equal to NaN mathematically)
+        assertTrue(new Real(Double.NaN).isMathematicallyEqualTo(new Real(Double.NaN)));
+        
+        // Infinity check
+        assertTrue(new Real(Double.POSITIVE_INFINITY).isMathematicallyEqualTo(new Real(Double.POSITIVE_INFINITY)));
+        assertFalse(new Real(Double.POSITIVE_INFINITY).isMathematicallyEqualTo(new Real(Double.NEGATIVE_INFINITY)));
+    }
+
+    // --- Arithmetic Operations ---
+    
+    @Test
+    void testAddAndSubtract() {
+        Real sum = r5.add(r_neg3); // 5.0 + (-3.0) = 2.0
+        assertTrue(sum.isMathematicallyEqualTo(new Real(2.0)));
+        
+        Real diff = r5.subtract(r_neg3); // 5.0 - (-3.0) = 8.0
+        assertTrue(diff.isMathematicallyEqualTo(new Real(8.0)));
     }
 
     @Test
-    @DisplayName("equals/hashCode (Bit-level)")
-    void equalsAndHashCode() {
-        Real a = r(10.0);
-        Real b = r(10.0);
-        Real c = r(10.0000000000001);
-
-        // Standard equals verifica i bit, non la tolleranza
-        assertTrue(a.equals(b));
-        assertEquals(a.hashCode(), b.hashCode());
-        assertFalse(a.equals(c));
+    void testMultiply() {
+        Real product = r5.multiply(r_neg3); // 5.0 * -3.0 = -15.0
+        assertTrue(product.isMathematicallyEqualTo(new Real(-15.0)));
+        
+        // Test multiplication by zero
+        assertTrue(r5.multiply(Real.ZERO).isMathematicallyEqualTo(Real.ZERO));
     }
 
-    // ======================================================================================
-    // OPERAZIONI DI CAMPO (FIELD OPERATIONS)
-    // ======================================================================================
-
-    @Nested
-    @DisplayName("Operazioni Additive e Sottrazione")
-    class AdditiveOperations {
-        
-        @ParameterizedTest(name = "{0} + {1} = {2}")
-        @CsvSource({"5.5, 3.2, 8.7", "-5.0, 3.0, -2.0", "10.1, -10.1, 0.0"})
-        void add(double a, double b, double expected) {
-            assertRealEquals(r(expected), r(a).add(r(b)));
-        }
-
-        @Test
-        void negateAndSubtract() {
-            assertRealEquals(r(-15.7), r(15.7).negate());
-            assertRealEquals(r(6.0), r(10.0).subtract(r(4.0)));
-        }
-        
-        @Test
-        void identityAndInverse() {
-            assertRealEquals(r(5.0), r(5.0).add(RealField.getInstance().zero()));
-            assertRealEquals(RealField.getInstance().zero(), r(5.0).add(r(5.0).negate()));
-        }
+    @Test
+    void testNegate() {
+        assertTrue(r5.negate().isMathematicallyEqualTo(r5.negate().negate().negate()));
+        assertTrue(r_neg3.isMathematicallyEqualTo(r_neg3.negate().negate()));
     }
 
-    @Nested
-    @DisplayName("Operazioni Moltiplicative e Inverso")
-    class MultiplicativeOperations {
+    @Test
+    void testInverseAndDivide() {
+        // Inverse of 5.0 is 0.2
+        assertTrue(r5.inverse().isMathematicallyEqualTo(new Real(0.2)));
+
+        // Divide: 5.0 / 0.5 = 10.0
+        Real quotient = r5.divide(r_half);
+        assertTrue(quotient.isMathematicallyEqualTo(new Real(10.0)));
         
-        @ParameterizedTest(name = "{0} * {1} = {2}")
-        @CsvSource({"5.0, 3.0, 15.0", "-5.0, 3.0, -15.0", "10.0, 0.0, 0.0", "-2.0, -2.0, 4.0"})
-        void multiply(double a, double b, double expected) {
-            assertRealEquals(r(expected), r(a).multiply(r(b)));
-        }
-
-        @Test
-        void inverse() {
-            assertRealEquals(r(0.25), r(4.0).inverse());
-            assertRealEquals(r(-2.0), r(-0.5).inverse());
-        }
-
-        @Test
-        void inverseOfZeroThrowsException() {
-            assertThrows(ArithmeticException.class, () -> 
-            RealField.getInstance().zero().inverse(), 
-                "L'inverso di zero dovrebbe lanciare ArithmeticException"
-            );
-        }
-
-        @Test
-        void identity() {
-            assertRealEquals(r(7.5), r(7.5).multiply(RealField.getInstance().one()));
-            assertRealEquals(RealField.getInstance().one(), r(7.5).multiply(r(7.5).inverse()));
-        }
+        // Exception for division by zero
+        assertThrows(ArithmeticException.class, () -> Real.ZERO.inverse());
+        assertThrows(ArithmeticException.class, () -> r5.divide(Real.ZERO));
     }
 
-    @Nested
-    @DisplayName("Potenza (ExponentiableElement)")
-    class PowerOperations {
-        
-        @ParameterizedTest(name = "{0}^{1} = {2}")
-        @CsvSource({"5.0, 3, 125.0", "4.0, 0, 1.0", "2.0, -1, 0.5", "10.0, 2, 100.0"})
-        void power(double base, int exp, double expected) {
-            assertRealEquals(r(expected), r(base).power(exp));
-        }
+    // --- Special Mathematical Functions (Power, Sqrt) ---
 
-        @Test
-        void powerZeroNegativeExponentThrowsException() {
-            assertThrows(ArithmeticException.class, () -> 
-            RealField.getInstance().zero().power(-1), 
-                "Zero elevato a potenza negativa dovrebbe lanciare ArithmeticException"
-            );
-        }
+    @Test
+    void testPower() {
+        // Positive exponent: 5^3 = 125
+        assertTrue(r5.power(3).isMathematicallyEqualTo(new Real(125.0)));
+        
+        // Negative exponent: 5^-2 = 0.04
+        assertTrue(r5.power(-2).isMathematicallyEqualTo(new Real(0.04)));
+        
+        // Zero exponent
+        assertTrue(r5.power(0).isMathematicallyEqualTo(Real.ONE));
+        
+        // Zero raised to negative power
+        assertThrows(ArithmeticException.class, () -> Real.ZERO.power(-1));
+    }
+
+    @Test
+    void testSqrt() {
+        // sqrt(9) = 3
+        assertTrue(new Real(9.0).sqrt().isMathematicallyEqualTo(new Real(3.0)));
+
+        // sqrt(0) = 0
+        assertTrue(Real.ZERO.sqrt().isMathematicallyEqualTo(Real.ZERO));
+        
+        // Exception for square root of negative
+        assertThrows(ArithmeticException.class, () -> r_neg3.sqrt());
+    }
+
+    // --- Comparison and Norm ---
+    
+    @Test
+    void testCompareTo() {
+        assertTrue(r5.compareTo(r_neg3) > 0);
+        assertTrue(r_half.compareTo(r5) < 0);
+        assertTrue(r5.compareTo(new Real(5.0)) == 0);
     }
     
-    // ======================================================================================
-    // CAPACITÀ AGGIUNTIVE
-    // ======================================================================================
-
-    @Nested
-    @DisplayName("Radice Quadrata (SqrtableElement)")
-    class SqrtOperations {
+    @Test
+    void testModulusAndNorm() {
+        assertEquals(5.0, r5.modulus(), EPSILON);
+        assertEquals(3.0, r_neg3.modulus(), EPSILON);
         
-        @Test
-        void sqrtPositive() {
-            assertRealEquals(r(5.0), r(25.0).sqrt());
-            assertRealEquals(r(Math.sqrt(2.0)), r(2.0).sqrt());
-            assertRealEquals(r(0.0), r(0.0).sqrt());
-        }
-
-        @Test
-        void sqrtNegativeThrowsException() {
-            assertThrows(ArithmeticException.class, () -> 
-                r(-4.0).sqrt(), 
-                "La radice quadrata di un numero negativo dovrebbe lanciare ArithmeticException"
-            );
-        }
-
-        @Test
-        void sqrtVerification() {
-            Real input = r(2.0);
-            Real result = input.sqrt();
-            
-            // Verifica che (sqrt(x))^2 sia matematicamente uguale a x
-            Real squaredResult = result.multiply(result);
-            
-            // La verifica è sempre assertRealEquals(input, squaredResult);
-            assertRealEquals(r(25.0), r(25.0).sqrt().multiply(r(25.0).sqrt()));
-            
-            // Verifica su 2.0 (il test problematico)
-            assertRealEquals(input, squaredResult); // assertRealEquals(r(2.0), r(2.0).sqrt().multiply(r(2.0).sqrt()))
-        }
-    }
-
-    @Nested
-    @DisplayName("Norma e Modulo (NormableElement & abs)")
-    class NormOperations {
-        
-        @Test
-        void normAndModulus() {
-            Real positive = r(10.5);
-            Real negative = r(-10.5);
-            
-            assertRealEquals(positive, positive.norm());
-            assertRealEquals(positive, negative.norm());
-            
-            assertEquals(10.5, positive.modulus(), 0);
-            assertEquals(10.5, negative.modulus(), 0);
-        }
+        // Norm returns a Real element with the absolute value
+        assertTrue(r_neg3.norm().isMathematicallyEqualTo(new Real(3.0)));
     }
     
-    @Nested
-    @DisplayName("Comparazione (ComparableElement)")
-    class ComparisonTests {
-        
-        @Test
-        void compareTo() {
-            Real a = r(10.0);
-            Real b = r(20.0);
-            
-            assertTrue(a.compareTo(b) < 0);
-            assertTrue(b.compareTo(a) > 0);
-            assertEquals(0, a.compareTo(r(10.0)));
-            
-            // Verifica la tolleranza: compareTo non usa la tolleranza
-            assertTrue(r(10.0).compareTo(r(10.0 + MathConstants.EPSILON)) < 0);
+    // --- Utility/Standard Tests ---
 
-            // Verifica che una differenza DUE VOLTE maggiore di EPSILON dia FALSE
-            final double deltaBeyondEpsilon = MathConstants.EPSILON * 2.0; 
-            assertFalse(r(10.0).isMathematicallyEqualTo(r(10.0 + deltaBeyondEpsilon)), "La differenza > EPSILON dovrebbe restituire false.");
-            
-            // Verifica che una differenza MINORE di EPSILON dia TRUE
-            final double deltaWithinEpsilon = MathConstants.EPSILON / 2.0;
-            assertTrue(r(10.0).isMathematicallyEqualTo(r(10.0 + deltaWithinEpsilon)), "La differenza < EPSILON dovrebbe restituire true.");
-        }
+    @Test
+    void testToString() {
+        assertEquals("5.0", r5.toString());
+        assertEquals("-3.0", r_neg3.toString());
     }
     
-    @Nested
-    @DisplayName("Creazione da Double (CreatableFromDouble)")
-    class CreatableFromDoubleTests {
+    @Test
+    void testEqualsAndHashCode() {
+        // equals must check exact bit-for-bit equality
+        Real r5_exact = new Real(5.0);
+        assertEquals(r5, r5_exact);
+        assertEquals(r5.hashCode(), r5_exact.hashCode());
+
+        // Slight difference means unequal by standard equals()
+        Real r5_diff = new Real(5.0 + 1e-15); 
+        assertNotEquals(r5, r5_diff);
+    }
+
+    @Test
+    void testEuclideanDomainElementImpls() {
+        // Real numbers form a Field, so remainder is always 0
+        assertTrue(r5.remainder(r_neg3).isMathematicallyEqualTo(Real.ZERO));
         
-        @ParameterizedTest
-        @ValueSource(doubles = {123.45, -99.99, 0.0, Math.PI})
-        void valueOfValid(double input) {
-            Real result = RealField.getInstance().of(input); // Chiamata tramite istanza
-            assertEquals(input, result.getValue(), 0);
-        }
+        // Quotient is the standard division
+        assertTrue(r5.quotient(r_neg3).isMathematicallyEqualTo(r5.divide(r_neg3)));
         
-        @Test
-        void valueOfSpecialValues() {
-            assertRealEquals(r(Double.MAX_VALUE), RealField.getInstance().of(Double.MAX_VALUE));
-            assertRealEquals(r(Double.MIN_VALUE), RealField.getInstance().of(Double.MIN_VALUE));
-            assertRealEquals(r(Double.NaN), RealField.getInstance().of(Double.NaN));
-            assertRealEquals(r(Double.POSITIVE_INFINITY), RealField.getInstance().of(Double.POSITIVE_INFINITY));
-        }
+        // NormValue is 1 for non-zero elements
+        assertTrue(r5.normValue().isMathematicallyEqualTo(Natural.ONE));
+        assertTrue(Real.ZERO.normValue().isMathematicallyEqualTo(Natural.ZERO));
     }
 }

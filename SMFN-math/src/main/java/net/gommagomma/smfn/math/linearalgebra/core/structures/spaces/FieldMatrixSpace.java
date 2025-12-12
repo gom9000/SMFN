@@ -11,4 +11,7 @@ extends RingMatrixModule<K, V, M>
 {
 	@Override
 	Field<K, ?> getScalarStructure();
+
+	@Override
+	VectorSpace<K, V> getVectorStructure();
 }

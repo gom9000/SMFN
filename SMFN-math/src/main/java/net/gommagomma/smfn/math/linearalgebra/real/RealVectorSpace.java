@@ -11,35 +11,75 @@ implements HilbertSpace<Real, RealVector>
 {
     private static final RealVectorSpace INSTANCE = new RealVectorSpace();
 
-    private RealVectorSpace() { /* singleton */ }
 
-    public static RealVectorSpace getInstance()
-    {
-        return INSTANCE;
-    }
+    private RealVectorSpace() {}
+    public static RealVectorSpace getInstance() { return INSTANCE; }
 
-    @Override
-    public Field<Real, ?> getScalarStructure()
-    {
-        return RealField.getInstance();
-    }
 
-    @Override
+    @Override // AlgebraicStructure impls
     public String getName() {
         return "Real Vector Space (R^n)";
     }
 
-    @Override
+    @Override // AlgebraicStructure impls
     public boolean contains(RealVector v)
     {
         return true;
     }
 
-    @Override
+
+    @Override // VectorSpace impls
+    public Field<Real, ?> getScalarStructure()
+    {
+        return RealField.getInstance();
+    }
+
+
+    @Override // InnerProductSpace impls
     public Real distance(RealVector v1, RealVector v2)
     {
         RealVector difference = v1.subtract(v2);
 
         return difference.norm(); 
+    }
+
+
+    @Override // VectorElementFactory impls
+    public RealVector createZeroVector(int dimension) { return new RealVector(dimension); }
+
+    @Override // VectorElementFactory impls
+    public RealVector createVector(Real[] data) { return new RealVector(data); }
+
+    @Override // VectorElementFactory impls
+	public RealVector createVector(double[] data) {
+    	Real[] components = new Real[data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            components[i] = getScalarStructure().of(data[i]); 
+        }
+ 
+        return createVector(components);
+	}
+
+    @Override // VectorElementFactory impls
+    public RealVector createVector(long[] data) {
+    	Real[] components = new Real[data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            components[i] = getScalarStructure().of(data[i]); 
+        }
+ 
+        return createVector(components);
+    }
+
+    @Override // VectorElementFactory impls
+    public RealVector createVector(int[] data) {
+    	Real[] components = new Real[data.length];
+
+        for (int i = 0; i < data.length; i++) {
+            components[i] = getScalarStructure().of(data[i]); 
+        }
+ 
+        return createVector(components);
     }
 }

@@ -6,31 +6,24 @@ import java.util.Arrays;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
-import net.gommagomma.smfn.math.linearalgebra.core.factories.SemiringMatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.SemiringMatrixSemimodule;
 
-
-public abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, F extends SemiringMatrixFactory<K, V, M>>
+public abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, S extends SemiringMatrixSemimodule<K, V, M>>
 implements SemiringMatrixElement<K, V, M>, TensorElement<K>
 {
     protected final K[][] data;
     protected final int rows;
     protected final int cols;
-    protected final F factory;
+    protected final S matrixStructure;
 
 
-    /**
-     * Costruttore principale per AbstractSemiringMatrix.
-     * Gestisce la validazione e la copia difensiva dei dati forniti.
-     * @param data I dati della matrice (K[][]).
-     * @param factory La factory specifica per il tipo K.
-     */
-    protected AbstractSemiringMatrix(K[][] data, F factory)
+    protected AbstractSemiringMatrix(K[][] data, S matrixStructure)
     {
         if (data == null || data.length == 0 || data[0] == null || data[0].length == 0) {
             throw new IllegalArgumentException("Matrix data cannot be null or empty.");
         }
 
-        this.factory = factory;
+        this.matrixStructure = matrixStructure;
         this.rows = data.length;
         this.cols = data[0].length;
         this.data = copyAndValidateData(data);
@@ -42,17 +35,17 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
      * @param cols Il numero di colonne.
      * @param factory La factory specifica per il tipo K.
      */
-    protected AbstractSemiringMatrix(int rows, int cols, F factory)
+    protected AbstractSemiringMatrix(int rows, int cols, S matrixStructure)
     {
         if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("Dimensions must be positive.");
         }
         this.rows = rows;
         this.cols = cols;
-        this.factory = factory;
+        this.matrixStructure = matrixStructure;
         this.data = createMatrixArray(rows, cols);
         for (int i = 0; i < rows; i++) {
-		    Arrays.fill(this.data[i], factory.getScalarFactory().zero());
+		    Arrays.fill(this.data[i], matrixStructure.getScalarStructure().zero());
 	    }
     }
 
@@ -136,7 +129,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
                 resultData[i][j] = this.data[i][j].copy(); 
             }
         }
-        return factory.createMatrix(resultData);
+        return matrixStructure.createMatrix(resultData);
     }
 
 
@@ -149,12 +142,12 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
                 resultData[i][j] = this.data[i][j].add(other.get(i, j));
             }
         }
-        return factory.createMatrix(resultData);
+        return matrixStructure.createMatrix(resultData);
     }
 
     @Override // AdditiveMonoidElement impls
     public M getZero() {
-         return factory.createZeroMatrix(this.rows, this.cols);
+         return matrixStructure.createZeroMatrix(this.rows, this.cols);
     }
 
 
@@ -180,7 +173,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
                 resultData[i][j] = this.data[i][j].multiply(scalar);
             }
         }
-        return factory.createMatrix(resultData);
+        return matrixStructure.createMatrix(resultData);
     }
     
     @Override // SemiringMatrixElement impls
@@ -191,7 +184,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
         int resultRows = this.rows;
         int resultCols = other.getColumns();
         K[][] resultData = createMatrixArray(resultRows, resultCols);
-        K zero = factory.getScalarFactory().zero();
+        K zero = matrixStructure.getScalarStructure().zero();
 
         for (int i = 0; i < resultRows; i++) {
             for (int j = 0; j < resultCols; j++) {
@@ -202,7 +195,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
                 resultData[i][j] = sum;
             }
         }
-        return factory.createMatrix(resultData);
+        return matrixStructure.createMatrix(resultData);
     }
 
     @Override // SemiringMatrixElement impls
@@ -214,7 +207,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
                 resultData[j][i] = this.data[i][j];
             }
         }
-        return factory.createMatrix(resultData);
+        return matrixStructure.createMatrix(resultData);
     }
 
 
@@ -225,7 +218,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
         }
         @SuppressWarnings("unchecked")
         K[] resultData = (K[]) Array.newInstance(getScalarClass(), this.rows);
-        K zero = factory.getScalarFactory().zero();
+        K zero = matrixStructure.getScalarStructure().zero();
 
         for (int i = 0; i < this.rows; i++) {
             K sum = zero;
@@ -234,7 +227,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
             }
             resultData[i] = sum;
         }
-		return factory.getVectorFactory().createVector(resultData);
+		return matrixStructure.getVectorStructure().createVector(resultData);
     }
 
 

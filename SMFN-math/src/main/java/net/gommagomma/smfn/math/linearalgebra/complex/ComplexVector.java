@@ -32,7 +32,7 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
     public ComplexVector(int dimension) {
 		super(dimension);
 		this.data = new Complex[dimension];
-		Arrays.fill(this.data, ComplexVectorFactory.getInstance().getScalarFactory().zero());
+		Arrays.fill(this.data, getZero());
 	}
 
 

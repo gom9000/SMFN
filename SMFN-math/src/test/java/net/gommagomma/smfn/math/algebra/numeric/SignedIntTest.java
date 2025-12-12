@@ -186,14 +186,23 @@ class SignedIntTest {
             assertEquals(si(0), si(0).normValue());
         }
 
+        /**
+         * Test del quoziente (quotient) della divisione Euclidea.
+         * La definizione è q = floor(a / b) (arrotonda verso -infinito, non verso zero)
+         * Esempio: -10 / 3 = -3.33... -> -4
+         */
         @ParameterizedTest(name = "{0} / {1} = {2} (quotient)")
         @CsvSource({
-            "10, 3, 3",     
-            "10, -3, -3",   // AGGIORNATO da -4 a -3
-            "-10, 3, -4",   
-            "-10, -3, 4"    // AGGIORNATO da 3 a 4
+            "10, 3, 3",     // 10 = 3*3 + 1
+            "10, -3, -3",   // 10 = (-3)*(-3) + 1
+            "-10, 3, -4",   // -10 = (-4)*3 + 2 (Garantisce resto >= 0)
+            "-10, -3, 4"    // -10 = 4*(-3) + 2 (Garantisce resto >= 0)
         })
         void quotient(long dividend, long divisor, long expected) {
+            // Nota: L'implementazione corretta del quotient deve arrotondare verso zero in Java per la divisione Euclidea.
+            // La riga sotto verifica l'arrotondamento di Java, che spesso differisce dal quoziente Euclideo matematico (q=floor(a/b)).
+            // Tuttavia, per l'implementazione del remainder normalizzato (>= 0), il quoziente deve essere adjusted.
+            // Se si usa Math.floor(a/b), i risultati attesi sono corretti per la divisione Euclidea, come specificato nel test.
             assertEquals(si(expected), si(dividend).quotient(si(divisor)));
         }
 
@@ -205,12 +214,18 @@ class SignedIntTest {
             );
         }
 
+        /**
+         * Test del resto (remainder) normalizzato.
+         * La definizione Euclidea richiede: 0 <= |resto| < |divisore|
+         * e l'implementazione comunemente usata in algebra è resto >= 0.
+         * Esempio: -10 mod 3 = 2. (-10 = -4*3 + 2)
+         */
         @ParameterizedTest(name = "{0} % {1} = {2} (remainder normalizzato)")
         @CsvSource({
-            "10, 3, 1",    // 10 = 3*3 + 1
-            "10, -3, 1",   // 10 = (-3)*(-3) + 1. (10 % -3 = 1 in Java)
-            "-10, 3, 2",   // -10 = (-4)*3 + 2. (Garantisce resto >= 0)
-            "-10, -3, 2"   // -10 = 4*(-3) + 2. (Garantisce resto >= 0)
+            "10, 3, 1",    
+            "10, -3, 1",   
+            "-10, 3, 2",   
+            "-10, -3, 2"   
         })
         void remainderNormalised(long dividend, long divisor, long expectedRemainder) {
             assertEquals(si(expectedRemainder), si(dividend).remainder(si(divisor)));
@@ -251,7 +266,7 @@ class SignedIntTest {
     }
 
     // ======================================================================================
-    // CAPACITÀ: CREATABLEFROMDOUBLE
+    // CAPACITÀ: CREATABLEFROMDOUBLE (Attraverso IntegerRing)
     // ======================================================================================
 
     @Nested
@@ -259,7 +274,7 @@ class SignedIntTest {
     class CreatableFromDoubleTests {
         
         @ParameterizedTest(name = "valueOf({0}) -> {1}")
-        @CsvSource({"11, 11", "-3, -3", "1, 1"})
+        @CsvSource({"11.0, 11", "-3.0, -3", "1.0, 1"})
         void valueOfValid(double input, long expected) {
             SignedInt result = IntegerRing.getInstance().of(input);
             assertEquals(si(Math.round(expected)), result);
@@ -279,12 +294,11 @@ class SignedIntTest {
         }
 
         @ParameterizedTest
-        //@ValueSource(doubles = {9.223372036854776E18, -9.223372036854776E18}) // Valori appena fuori MAX/MIN
         @ValueSource(doubles = {
-                9.223372036854776E18 + 500.0, // Valore leggermente superiore a MAX_VALUE (per forzare il confronto)
-                -9.223372036854776E18 - 500.0, // Valore leggermente inferiore a MIN_VALUE
+                9.223372036854776E18 + 500.0, // Appena fuori MAX_VALUE
+                -9.223372036854776E18 - 500.0, // Appena fuori MIN_VALUE
                 Double.MAX_VALUE,
-                Double.MIN_VALUE // Controlliamo anche questo caso
+                Double.MIN_VALUE 
             })
         void valueOfOverflow(double input) {
             assertThrows(ArithmeticException.class, () -> 

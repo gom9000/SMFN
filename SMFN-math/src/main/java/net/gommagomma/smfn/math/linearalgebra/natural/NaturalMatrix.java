@@ -10,13 +10,10 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractSem
  * Rappresenta una matrice i cui elementi sono numeri naturali (Natural).
  */
 public final class NaturalMatrix 
-extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixFactory>
+extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixSemimodule>
 {
-    private static final NaturalMatrixFactory FACTORY_INSTANCE = NaturalMatrixFactory.getInstance();
-
-
-    NaturalMatrix(Natural[][] data) { super(data, FACTORY_INSTANCE); }
-    NaturalMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE); }
+    NaturalMatrix(Natural[][] data, NaturalMatrixSemimodule matrixStructure) { super(data, matrixStructure); }
+    NaturalMatrix(int rows, int cols, NaturalMatrixSemimodule matrixStructure) { super(rows, cols, matrixStructure); }
 
 
     @Override // AbstractSemiringMatrix impls
@@ -29,7 +26,7 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
         if (row < 0 || row >= rows) {
             throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
         }
-        return factory.getVectorFactory().createVector(Arrays.copyOf(this.data[row], this.cols));
+        return matrixStructure.getVectorStructure().createVector(Arrays.copyOf(this.data[row], this.cols));
     }
 
     @Override // SemiringMatrixElement impls
@@ -43,6 +40,6 @@ extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMat
         for (int i = 0; i < rows; i++) {
             columnData[i] = data[i][col];
         }
-        return factory.getVectorFactory().createVector(columnData);
+        return matrixStructure.getVectorStructure().createVector(columnData);
     }
 }

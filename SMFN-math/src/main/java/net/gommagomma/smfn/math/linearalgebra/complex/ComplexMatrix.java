@@ -11,13 +11,10 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFie
  * Aderisce all'interfaccia Matrix<Complex, ComplexVector, ComplexMatrix>.
  */
 public final class ComplexMatrix
-extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory>
+extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixSpace>
 {    
-	private static final ComplexMatrixFactory FACTORY_INSTANCE = ComplexMatrixFactory.getInstance();
-
-
-    public ComplexMatrix(Complex[][] data) { super(data, FACTORY_INSTANCE); }
-    ComplexMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE); }
+    public ComplexMatrix(Complex[][] data, ComplexMatrixSpace matrixStructure) { super(data, matrixStructure); }
+    ComplexMatrix(int rows, int cols, ComplexMatrixSpace matrixStructure) { super(rows, cols, matrixStructure); }
 
 
     @Override // SemiringMatrixElement impls
@@ -33,7 +30,7 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
             throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
         }
 
-        return factory.createVector(Arrays.copyOf(data[row], cols));
+        return matrixStructure.getVectorStructure().createVector(Arrays.copyOf(data[row], cols));
 	}
 
 	@Override  // SemiringMatrixElement impls
@@ -48,7 +45,7 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
             columnData[i] = data[i][col];
         }
 
-        return factory.createVector(columnData);
+        return matrixStructure.getVectorStructure().createVector(columnData);
 	}
 
 
@@ -67,7 +64,6 @@ extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrix
 				resultData[j][i] = this.data[i][j].conjugate();
 			}
 		}
-
-		return new ComplexMatrix(resultData);
+		return new ComplexMatrix(resultData, new ComplexMatrixSpace(cols, rows));
     }
 }

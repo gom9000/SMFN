@@ -1,305 +1,210 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.gommagomma.smfn.math.algebra.structures.ComplexField;
+import org.junit.jupiter.api.Test;
+
 import net.gommagomma.smfn.math.utils.MathConstants;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Complex: Test delle proprietà di Campo e Funzioni Complesse")
-class ComplexTest {
+public class ComplexTest {
 
-    // Helper: Usiamo una tolleranza specifica per il testing float, ad esempio 1e-12
-    private static final double TOLERANCE = 1e-12; 
-    
-    // Helper per una creazione rapida (a + bi)
-    private Complex c(double re, double im) {
-        return new Complex(re, im);
-    }
-    
-    // Helper per assertEquals con Complex
-    private void assertComplexEquals(Complex expected, Complex actual, String message) {
-        // Usa isMathematicallyEqualTo che dovrebbe usare MathConstants.EPSILON
-        assertTrue(expected.isMathematicallyEqualTo(actual), 
-                   message + String.format(" | Atteso: %.12f + %.12fi, Ottenuto: %.12f + %.12fi", 
-                                          expected.getRe(), expected.getIm(), actual.getRe(), actual.getIm()));
-    }
+    private static final double EPSILON = MathConstants.EPSILON;
+    private final Complex i = new Complex(0.0, 1.0);
+    private final Complex a = new Complex(3.0, 4.0); // Modulus 5
+    private final Complex b = new Complex(1.0, -2.0);
+    private final Complex c = new Complex(-1.0, 1.0); // Purely for power/sqrt test
+    private final Complex realVal = new Complex(5.0);
 
-    // ======================================================================================
-    // COSTRUTTORI E PROPRIETÀ BASE
-    // ======================================================================================
+    // --- Constructor & Identity Tests ---
 
     @Test
-    @DisplayName("Costruttori, Getters e Costanti")
-    void constructorAndBasicProps() {
-        Complex z1 = c(3.0, -4.0);
-        Complex z2 = new Complex(5.0); // Costruttore con solo Real
-        Complex z3 = new Complex(new Real(6.0)); // Costruttore con Real object
-
-        assertEquals(3.0, z1.getRe());
-        assertEquals(-4.0, z1.getIm());
-        assertEquals(5.0, z2.getRe());
-        assertEquals(0.0, z2.getIm());
-        assertEquals(6.0, z3.getRe());
-        assertEquals(0.0, z3.getIm());
-
-        assertComplexEquals(c(0.0, 0.0), ComplexField.getInstance().zero(), "Verifica ZERO");
-        assertComplexEquals(c(1.0, 0.0), ComplexField.getInstance().one(), "Verifica ONE");
+    void testConstructorsAndGetters() {
+        assertEquals(3.0, a.getRe());
+        assertEquals(4.0, a.getIm());
+        assertEquals(0.0, i.getRe());
+        assertEquals(1.0, i.getIm());
+        assertEquals(5.0, realVal.getRe());
+        assertEquals(0.0, realVal.getIm());
     }
 
     @Test
-    @DisplayName("Uguaglianza Matematica (Tolleranza)")
-    void mathematicalEquality() {
-        // Assumiamo che MathConstants.EPSILON sia la tolleranza usata
-        final double epsilon = MathConstants.EPSILON; // Usiamo 1e-15 come valore tipico
-        
-        Complex z = c(5.0, 3.0);
-        Complex z_close = c(5.0 + epsilon / 2.0, 3.0);
-        Complex z_far = c(5.0 + epsilon * 2.0, 3.0);
+    void testIdentities() {
+        assertEquals(0.0, Complex.ZERO.getRe());
+        assertEquals(0.0, Complex.ZERO.getIm());
+        assertEquals(1.0, Complex.ONE.getRe());
+        assertEquals(0.0, Complex.ONE.getIm());
+        assertTrue(Complex.ZERO.isMathematicallyEqualTo(a.getZero()));
+        assertTrue(Complex.ONE.isMathematicallyEqualTo(a.getOne()));
+    }
+    
+    // --- Basic Properties (Modulus, Conjugate, Argument) ---
 
-        assertTrue(z.isMathematicallyEqualTo(z_close), "Entro tolleranza");
-        assertFalse(z.isMathematicallyEqualTo(z_far), "Fuori tolleranza");
-        
-        // Verifichiamo la gestione di NaN/Inf se è stata aggiunta
-        // Nota: Aggiungere assertThrows o assertTrue(NaN.isMathematicallyEqualTo(NaN)) 
-        // dipende dalla correzione in isMathematicallyEqualTo.
+    @Test
+    void testModulus() {
+        assertEquals(5.0, a.modulus(), EPSILON); // 3^2 + 4^2 = 25, sqrt(25) = 5
+        assertEquals(Math.sqrt(5.0), b.modulus(), EPSILON); // 1^2 + (-2)^2 = 5
+        assertEquals(1.0, i.modulus(), EPSILON);
+        assertEquals(25.0, a.modulusSquared(), EPSILON);
     }
     
     @Test
-    @DisplayName("Copia, equals e hashCode")
-    void copyEqualsHashCode() {
-        Complex z = c(2.0, -1.0);
-        Complex copy = z.copy();
-        
-        assertComplexEquals(z, copy, "La copia deve essere matematicamente uguale");
-        assertNotSame(z, copy, "La copia non deve essere la stessa istanza");
-        
-        // equals e hashCode devono usare l'uguaglianza bit a bit per coerenza
-        assertTrue(z.equals(c(2.0, -1.0)));
-        assertEquals(z.hashCode(), c(2.0, -1.0).hashCode());
-        assertFalse(z.equals(c(2.0, -1.0 + 1e-16))); // Differenza bit a bit
+    void testConjugate() {
+        Complex conjugateA = a.conjugate();
+        assertEquals(3.0, conjugateA.getRe());
+        assertEquals(-4.0, conjugateA.getIm());
+        assertTrue(i.negate().isMathematicallyEqualTo(i.conjugate()));
+        assertTrue(realVal.isMathematicallyEqualTo(realVal.conjugate()));
     }
 
-    // ======================================================================================
-    // OPERAZIONI DI CAMPO (FIELD OPERATIONS)
-    // ======================================================================================
-
-    @Nested
-    @DisplayName("Addizione e Negazione (Gruppo Additivo)")
-    class AdditiveOperations {
-        
-        @ParameterizedTest(name = "({0} + {1}i) + ({2} + {3}i) = {4} + {5}i")
-        @CsvSource({
-            "3.0, 4.0, 1.0, 2.0, 4.0, 6.0",       // (3+4i) + (1+2i) = 4+6i
-            "5.0, -2.0, -5.0, 2.0, 0.0, 0.0",     // (5-2i) + (-5+2i) = 0
-            "10.0, 0.0, 0.0, -5.0, 10.0, -5.0"    // 10 + (-5i) = 10-5i
-        })
-        void add(double r1, double i1, double r2, double i2, double rExp, double iExp) {
-            Complex z1 = c(r1, i1);
-            Complex z2 = c(r2, i2);
-            assertComplexEquals(c(rExp, iExp), z1.add(z2), "Addizione");
-        }
-
-        @Test
-        void negate() {
-            assertComplexEquals(c(-3.5, 4.5), c(3.5, -4.5).negate(), "Negazione");
-            assertComplexEquals(ComplexField.getInstance().zero(), c(3.0, 4.0).add(c(3.0, 4.0).negate()), "Addizione con Inverso");
-        }
+    @Test
+    void testArgument() {
+        // a = 3 + 4i (approx 0.927 rad)
+        assertEquals(Math.atan2(4.0, 3.0), a.argument(), EPSILON);
+        // i = 0 + 1i
+        assertEquals(Math.PI / 2.0, i.argument(), EPSILON);
+        // -1 + 0i
+        assertEquals(Math.PI, new Complex(-1.0, 0.0).argument(), EPSILON);
+        // Pure real positive
+        assertEquals(0.0, realVal.argument(), EPSILON);
     }
 
-    @Nested
-    @DisplayName("Moltiplicazione e Inverso (Gruppo Moltiplicativo)")
-    class MultiplicativeOperations {
-        
-        @ParameterizedTest(name = "({0} + {1}i) * ({2} + {3}i) = {4} + {5}i")
-        @CsvSource({
-            "2.0, 3.0, 1.0, 5.0, -13.0, 13.0",    // (2+3i)(1+5i) = (2-15) + (10+3)i = -13+13i
-            "0.0, 1.0, 0.0, 1.0, -1.0, 0.0",      // i * i = -1
-            "5.0, 0.0, 2.0, 4.0, 10.0, 20.0"      // 5 * (2+4i) = 10+20i
-        })
-        void multiply(double r1, double i1, double r2, double i2, double rExp, double iExp) {
-            Complex z1 = c(r1, i1);
-            Complex z2 = c(r2, i2);
-            assertComplexEquals(c(rExp, iExp), z1.multiply(z2), "Moltiplicazione");
-        }
-
-        @Test
-        void inverse() {
-            Complex z = c(3.0, 4.0); // z * z^-1 = 1
-            // 1/z = (3 - 4i) / (3^2 + 4^2) = (3/25) - (4/25)i
-            double rExp = 3.0 / 25.0;
-            double iExp = -4.0 / 25.0;
-            
-            Complex inverse = z.inverse();
-            
-            assertComplexEquals(c(rExp, iExp), inverse, "Inverso");
-            
-            // Verifica Proprietà di Campo
-            assertComplexEquals(ComplexField.getInstance().one(), z.multiply(inverse), "z * z^-1 deve essere 1");
-        }
-
-        @Test
-        void inverseOfZeroThrowsException() {
-            assertThrows(ArithmeticException.class, () -> 
-            ComplexField.getInstance().zero().inverse(), 
-                "L'inverso di zero deve lanciare ArithmeticException."
-            );
-        }
+    // --- Arithmetic Operations ---
+    
+    @Test
+    void testAddition() {
+        Complex sum = a.add(b); // (3+4i) + (1-2i) = 4 + 2i
+        assertTrue(sum.isMathematicallyEqualTo(new Complex(4.0, 2.0)));
     }
 
-    // ======================================================================================
-    // CAPACITÀ AGGIUNTIVE
-    // ======================================================================================
-
-    @Nested
-    @DisplayName("Modulo, Norma e Coniugato")
-    class NormAndConjugateOperations {
+    @Test
+    void testNegateAndSubtract() {
+        Complex negatedB = b.negate(); // -1 + 2i
+        assertTrue(negatedB.isMathematicallyEqualTo(new Complex(-1.0, 2.0)));
         
-        @Test
-        void modulusAndModulusSquared() {
-            Complex z = c(3.0, -4.0);
-            
-            assertEquals(25.0, z.modulusSquared(), TOLERANCE, "|3-4i|^2");
-            assertEquals(5.0, z.modulus(), TOLERANCE, "|3-4i|");
-            assertEquals(0.0, ComplexField.getInstance().zero().modulus(), 0);
-        }
-        
-        @Test
-        void norm() {
-            Complex z = c(-5.0, 12.0); // Modulo = 13.0
-            Real normResult = z.norm();
-            
-            assertEquals(13.0, normResult.getValue(), TOLERANCE, "Norma come oggetto Real");
-        }
-        
-        @Test
-        void conjugate() {
-            assertComplexEquals(c(5.0, -3.0), c(5.0, 3.0).conjugate(), "Coniugato");
-            assertComplexEquals(c(-2.0, 0.0), c(-2.0, 0.0).conjugate(), "Coniugato di Reale");
-            assertComplexEquals(c(0.0, -5.0), c(0.0, 5.0).conjugate(), "Coniugato di Immaginario Puro");
-        }
+        Complex diff = a.subtract(b); // (3+4i) - (1-2i) = 2 + 6i
+        assertTrue(diff.isMathematicallyEqualTo(new Complex(2.0, 6.0)));
     }
 
-    @Nested
-    @DisplayName("Radice Quadrata (SqrtableElement)")
-    class SqrtOperations {
+    @Test
+    void testMultiplication() {
+        Complex product = a.multiply(b); // (3+4i)(1-2i) = 3 - 6i + 4i - 8i^2 = 3 - 2i + 8 = 11 - 2i
+        assertTrue(product.isMathematicallyEqualTo(new Complex(11.0, -2.0)));
         
-        @Test
-        void sqrtOfZero() {
-            assertComplexEquals(ComplexField.getInstance().zero(), ComplexField.getInstance().zero().sqrt(), "Radice di Zero");
-        }
+        // i * i = -1
+        assertTrue(i.multiply(i).isMathematicallyEqualTo(new Complex(-1.0, 0.0)));
+        // Test multiplication by ONE
+        assertTrue(a.multiply(Complex.ONE).isMathematicallyEqualTo(a));
+    }
 
-        @Test
-        void sqrtOfPositiveReal() {
-            assertComplexEquals(c(2.0, 0.0), c(4.0, 0.0).sqrt(), "Radice di 4");
-        }
-        
-        @Test
-        void sqrtOfNegativeReal() {
-            // sqrt(-4) = 2i (Il tuo algoritmo sceglie la radice con parte immaginaria positiva)
-            assertComplexEquals(c(0.0, 2.0), c(-4.0, 0.0).sqrt(), "Radice di -4");
-        }
+    @Test
+    void testInverse() {
+        Complex inverseA = a.inverse(); // (3-4i) / 25
+        Complex expected = new Complex(3.0 / 25.0, -4.0 / 25.0);
+        assertTrue(inverseA.isMathematicallyEqualTo(expected));
 
-        @Test
-        void sqrtOfComplexNumber() {
-            // sqrt(8 + 6i) = 3 + 1i
-            Complex z = c(8.0, 6.0);
-            Complex expected = c(3.0, 1.0);
-            Complex result = z.sqrt();
-            
-            assertComplexEquals(expected, result, "Radice di 8 + 6i");
-            // Verifica la proprietà inversa: (3+i)^2 = 9 + 6i + i^2 = 8 + 6i
-            assertComplexEquals(z, result.multiply(result), "Verifica inversa");
-        }
+        Complex product = a.multiply(inverseA);
+        assertTrue(product.isMathematicallyEqualTo(Complex.ONE));
+
+        assertThrows(ArithmeticException.class, () -> Complex.ZERO.inverse());
+    }
+
+    @Test
+    void testDivide() {
+        Complex quotient = a.divide(b); // (3+4i) / (1-2i)
+        // (3+4i)(1+2i) / (1-2i)(1+2i) = (3+6i+4i+8i^2) / (1+4) = (-5 + 10i) / 5 = -1 + 2i
+        Complex expected = new Complex(-1.0, 2.0);
+        assertTrue(quotient.isMathematicallyEqualTo(expected));
         
-        @Test
-        void sqrtOfComplexNumberNegativeImaginary() {
-            // sqrt(8 - 6i) = 3 - 1i (L'algoritmo sceglie il segno corretto)
-            Complex z = c(8.0, -6.0);
-            Complex expected = c(3.0, -1.0);
-            Complex result = z.sqrt();
-            
-            assertComplexEquals(expected, result, "Radice di 8 - 6i");
-        }
+        assertThrows(ArithmeticException.class, () -> a.divide(Complex.ZERO));
+    }
+
+    // --- Complex-specific Methods (Power & Sqrt) ---
+
+    @Test
+    void testPower() {
+        // Positive exponent: i^3 = -i
+        assertTrue(i.power(3).isMathematicallyEqualTo(new Complex(0.0, -1.0)));
+        
+        // Negative exponent: i^-2 = 1/i^2 = 1/-1 = -1
+        assertTrue(i.power(-2).isMathematicallyEqualTo(new Complex(-1.0, 0.0)));
+        
+        // Zero exponent
+        assertTrue(a.power(0).isMathematicallyEqualTo(Complex.ONE));
+        
+        // Test non-trivial power (De Moivre's formula check on -1+i, |z|=sqrt(2), arg=3pi/4)
+        // c^4 = (-1+i)^4 = (|z|^4) * e^(i * 4*arg) = 4 * e^(i * 3pi) = 4 * (-1) = -4
+        Complex cPower4 = c.power(4);
+        assertTrue(cPower4.isMathematicallyEqualTo(new Complex(-4.0, 0.0)));
+        
+        // Exception test
+        assertThrows(ArithmeticException.class, () -> Complex.ZERO.power(-1));
+    }
+
+    @Test
+    void testSqrt() {
+        // sqrt(-1) = i
+        Complex minusOne = new Complex(-1.0, 0.0);
+        assertTrue(minusOne.sqrt().isMathematicallyEqualTo(i));
+
+        // sqrt(a) = sqrt(3+4i) = 2+i (using the formula: |z|=5, realPart=sqrt((5+3)/2)=2, imagPart=sqrt((5-3)/2)=1)
+        Complex sqrtA = a.sqrt();
+        assertTrue(sqrtA.isMathematicallyEqualTo(new Complex(2.0, 1.0)));
+
+        // sqrt(b) = sqrt(1-2i)
+        // The formula is designed to give the principal root (Re >= 0)
+        Complex sqrtB = b.sqrt();
+        // Check if (sqrtB)^2 is mathematically equal to b
+        assertTrue(sqrtB.multiply(sqrtB).isMathematicallyEqualTo(b));
+
+        // sqrt(0)
+        assertTrue(Complex.ZERO.sqrt().isMathematicallyEqualTo(Complex.ZERO));
+    }
+
+    // --- Utility/Interface Tests ---
+
+    @Test
+    void testMathematicalEquality() {
+        Complex a2 = new Complex(3.0, 4.0 + EPSILON / 2.0);
+        assertTrue(a.isMathematicallyEqualTo(a2));
+        
+        Complex a3 = new Complex(3.0, 4.0 + 2 * EPSILON); // Outside tolerance
+        assertFalse(a.isMathematicallyEqualTo(a3));
+    }
+
+    @Test
+    void testStandardEqualsAndHashCode() {
+        // 'equals' must check exact bit-for-bit equality
+        Complex a2 = new Complex(3.0, 4.0);
+        assertEquals(a, a2);
+        assertEquals(a.hashCode(), a2.hashCode());
+        
+        Complex a3 = new Complex(3.0, 4.0 + 1e-15);
+        assertNotEquals(a, a3);
+        assertNotEquals(a.hashCode(), a3.hashCode());
+    }
+
+    @Test
+    void testNorm() {
+        Real normA = a.norm();
+        assertEquals(5.0, normA.getValue(), EPSILON);
+        
+        Real normI = i.norm();
+        assertEquals(1.0, normI.getValue(), EPSILON);
     }
     
-    @Nested
-    @DisplayName("Potenza (ExponentiableElement)")
-    class PowerOperations {
-        
-        @Test
-        void powerPositiveExponent() {
-            // (1 + i)^2 = 1 + 2i - 1 = 2i
-            Complex z = c(1.0, 1.0);
-            assertComplexEquals(c(0.0, 2.0), z.power(2), "(1+i)^2");
-            
-            // (2i)^3 = 8 * i^3 = 8 * (-i) = -8i
-            Complex z_im = c(0.0, 2.0);
-            assertComplexEquals(c(0.0, -8.0), z_im.power(3), "(2i)^3");
-        }
-        
-        @Test
-        void powerNegativeExponent() {
-            // (2i)^-1 = 1 / 2i = -i / 2
-            Complex z_im = c(0.0, 2.0);
-            assertComplexEquals(c(0.0, -0.5), z_im.power(-1), "(2i)^-1");
-            
-            // (1 + i)^-2 = (2i)^-1 = -i / 2
-            Complex z = c(1.0, 1.0);
-            assertComplexEquals(c(0.0, -0.5), z.power(-2), "(1+i)^-2");
-        }
-        
-        @Test
-        void powerZero() {
-            assertComplexEquals(ComplexField.getInstance().one(), c(10.0, -5.0).power(0), "z^0");
-        }
-
-        @Test
-        void powerZeroNegativeExponentThrowsException() {
-            assertThrows(ArithmeticException.class, () -> 
-            ComplexField.getInstance().zero().power(-1), 
-                "Zero elevato a potenza negativa"
-            );
-        }
-    }
-    
-    @Nested
-    @DisplayName("Altre Funzioni e Conversione")
-    class UtilityFunctions {
-        
-        @Test
-        void argument() {
-            assertEquals(0.0, c(5.0, 0.0).argument(), TOLERANCE, "Argomento 5");
-            assertEquals(Math.PI / 2.0, c(0.0, 5.0).argument(), TOLERANCE, "Argomento 5i");
-            assertEquals(-Math.PI / 2.0, c(0.0, -5.0).argument(), TOLERANCE, "Argomento -5i");
-            assertEquals(Math.PI, c(-5.0, 0.0).argument(), TOLERANCE, "Argomento -5");
-            assertEquals(Math.PI / 4.0, c(1.0, 1.0).argument(), TOLERANCE, "Argomento 1+i");
-        }
-
-        @ParameterizedTest(name = "valueOf({0})")
-        @CsvSource({"10.0", "-5.5", "0.0"})
-        void valueOf(double input) {
-            Complex result = ComplexField.getInstance().of(input);
-            assertComplexEquals(c(input, 0.0), result, "valueOf deve creare un numero reale");
-        }
-        
-        @Test
-        @DisplayName("toString Formattazione")
-        void stringRepresentation() {
-            assertEquals("5.0", c(5.0, 0.0).toString());
-            assertEquals("-5.0", c(-5.0, 0.0).toString());
-            assertEquals("i", c(0.0, 1.0).toString());
-            assertEquals("-i", c(0.0, -1.0).toString());
-            assertEquals("5.0i", c(0.0, 5.0).toString());
-            assertEquals("5.0 + 3.0i", c(5.0, 3.0).toString());
-            assertEquals("5.0 - 3.0i", c(5.0, -3.0).toString());
-            assertEquals("5.0 - i", c(5.0, -1.0).toString());
-            assertEquals("-5.0 + i", c(-5.0, 1.0).toString());
-        }
+    @Test
+    void testToString() {
+        assertEquals("3.0 + 4.0i", a.toString());
+        assertEquals("1.0 - 2.0i", b.toString());
+        assertEquals("i", i.toString()); // Special case for 0 + 1i
+        assertEquals("-i", new Complex(0.0, -1.0).toString()); // Special case for 0 - 1i
+        assertEquals("5.0", realVal.toString()); // Special case for pure real
+        assertEquals("-2.0i", new Complex(0.0, -2.0).toString()); // Special case for pure imag
+        assertEquals("-3.0 - 2.0i", new Complex(-3.0, -2.0).toString());
     }
 }

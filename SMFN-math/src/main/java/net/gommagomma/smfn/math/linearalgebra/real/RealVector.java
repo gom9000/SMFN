@@ -31,7 +31,7 @@ implements InnerProductSpaceElement<Real, RealVector>
 	public RealVector(int dimension) {
 		super(dimension);
 		this.data = new Real[dimension];
-		Arrays.fill(this.data, RealVectorFactory.getInstance().getScalarFactory().zero());
+		Arrays.fill(this.data, getZero());
 	}
 
 

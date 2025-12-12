@@ -11,4 +11,7 @@ extends SemiringMatrixSemimodule<K, V, M>
 {
 	@Override
 	Ring<K> getScalarStructure();
+
+	@Override
+	Module<K, V> getVectorStructure();
 }

@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.core.elements.matrices;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.RingElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.ModuleElement;
-import net.gommagomma.smfn.math.linearalgebra.core.factories.RingMatrixFactory;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RingMatrixModule;
 
 
 /**
@@ -10,27 +10,16 @@ import net.gommagomma.smfn.math.linearalgebra.core.factories.RingMatrixFactory;
  * Estende AbstractSemiringMatrix e implementa la logica per la negazione e la sottrazione
  * degli elementi matrice.
  */
-public abstract class AbstractRingMatrix<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>, F extends RingMatrixFactory<K, V, M>>
-extends AbstractSemiringMatrix<K, V, M, F>
+public abstract class AbstractRingMatrix<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>, S extends RingMatrixModule<K, V, M>>
+extends AbstractSemiringMatrix<K, V, M, S>
 implements RingMatrixElement<K, V, M>
 {
-    /**
-     * Costruttore principale.
-     * @param data I dati della matrice.
-     * @param factory La factory specifica per il tipo K (Anello).
-     */
-    protected AbstractRingMatrix(K[][] data, F factory) {
-        super(data, factory);
+    protected AbstractRingMatrix(K[][] data, S matrixStructure) {
+        super(data, matrixStructure);
     }
 
-    /**
-     * Costruttore helper per creare matrici vuote/zero.
-     * @param rows Il numero di righe.
-     * @param cols Il numero di colonne.
-     * @param factory La factory specifica per il tipo K (Anello).
-     */
-    protected AbstractRingMatrix(int rows, int cols, F factory) {
-        super(rows, cols, factory);
+    protected AbstractRingMatrix(int rows, int cols, S matrixStructure) {
+        super(rows, cols, matrixStructure);
     }
 
 
@@ -42,6 +31,6 @@ implements RingMatrixElement<K, V, M>
 				resultData[i][j] = this.data[i][j].negate();
 			}
 		}
-		return factory.createMatrix(resultData);
+		return matrixStructure.createMatrix(resultData);
     }
 }

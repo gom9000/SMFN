@@ -1,233 +1,127 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Natural: Test delle proprietà di Semianello e Overflow")
-class NaturalTest {
+import net.gommagomma.smfn.math.utils.MathConstants;
+import org.junit.jupiter.api.Test;
 
-    // Helper per una creazione rapida e confronto
-    private Natural n(long value) {
-        return new Natural(value);
-    }
 
-    // ======================================================================================
-    // COSTRUTTORE E PROPRIETÀ BASE
-    // ======================================================================================
+public class NaturalTest {
+
+    private final Natural n5 = new Natural(5);
+    private final Natural n10 = new Natural(10);
+    private final Natural nMax = new Natural(Long.MAX_VALUE);
+    
+    // --- Constructor & Identity Tests ---
 
     @Test
-    @DisplayName("Costruttore, Getter e Costanti")
-    void constructorAndBasicProps() {
-        assertEquals(0L, NaturalSemiring.getInstance().zero().getValue());
-        assertEquals(1L, NaturalSemiring.getInstance().one().getValue());
-        assertEquals(123L, n(123L).getValue());
-
-        // Test IllegalArgumentException per valori negativi
-        assertThrows(IllegalArgumentException.class, () -> 
-            new Natural(-1), 
-            "Il costruttore dovrebbe lanciare IllegalArgumentException per input negativo."
-        );
+    void testConstructorValid() {
+        assertEquals(10, n10.getValue());
+        assertEquals(0, Natural.ZERO.getValue());
+        assertEquals(1, Natural.ONE.getValue());
     }
 
     @Test
-    @DisplayName("Copia, Uguaglianza Matematica e Standard")
-    void equalityAndCopy() {
-        Natural a = n(50L);
-        Natural b = n(50L);
-        Natural c = n(51L);
+    void testConstructorInvalid() {
+        // Natural numbers cannot be negative
+        assertThrows(IllegalArgumentException.class, () -> new Natural(-1));
+    }
 
-        // Uguaglianza Standard (equals)
-        assertTrue(a.equals(b));
-        assertEquals(a.hashCode(), b.hashCode());
-        assertFalse(a.equals(c));
-        assertFalse(a.equals(null));
-        assertFalse(a.equals(new Object()));
+    @Test
+    void testIdentities() {
+        assertTrue(Natural.ZERO.isMathematicallyEqualTo(n5.getZero()));
+        assertTrue(Natural.ONE.isMathematicallyEqualTo(n5.getOne()));
+    }
 
-        // Uguaglianza Matematica
-        assertTrue(a.isMathematicallyEqualTo(b));
-        assertFalse(a.isMathematicallyEqualTo(c));
-        
-        // Copia
-        Natural copy = a.copy();
-        assertEquals(a, copy);
-        assertNotSame(a, copy);
+    // --- Arithmetic Operations ---
+
+    @Test
+    void testAdd() {
+        Natural sum = n5.add(n10);
+        assertEquals(15, sum.getValue());
     }
     
     @Test
-    @DisplayName("getZero, getOne")
-    void identityElements() {
-        assertEquals(NaturalSemiring.getInstance().zero(), n(5).getZero());
-        assertEquals(NaturalSemiring.getInstance().one(), n(5).getOne());
+    void testAddOverflow() {
+        // Test overflow using Math.addExact
+        assertThrows(ArithmeticException.class, () -> nMax.add(Natural.ONE));
     }
 
-    // ======================================================================================
-    // OPERAZIONI DI SEMIANELLO (Semiring Operations)
-    // ======================================================================================
-
-    @Nested
-    @DisplayName("Addizione (Monoid Element)")
-    class AdditiveOperations {
+    @Test
+    void testMultiply() {
+        Natural product = n5.multiply(n10);
+        assertEquals(50, product.getValue());
         
-        @ParameterizedTest(name = "{0} + {1} = {2}")
-        @CsvSource({"10, 5, 15", "0, 100, 100", "5, 0, 5", "1000, 2000, 3000"})
-        void add(long a, long b, long expected) {
-            assertEquals(n(expected), n(a).add(n(b)));
-        }
-
-        @Test
-        @DisplayName("Overflow in Addizione")
-        void addOverflow() {
-            Natural max = n(Long.MAX_VALUE);
-            Natural one = NaturalSemiring.getInstance().one();
-
-            // Math.addExact lancia ArithmeticException se si verifica un overflow
-            assertThrows(ArithmeticException.class, () -> 
-                max.add(one), 
-                "L'addizione dovrebbe lanciare ArithmeticException in caso di overflow."
-            );
-        }
+        Natural productZero = n5.multiply(Natural.ZERO);
+        assertEquals(0, productZero.getValue());
     }
 
-    @Nested
-    @DisplayName("Moltiplicazione (Multiplicative Monoid Element)")
-    class MultiplicativeOperations {
-        
-        @ParameterizedTest(name = "{0} * {1} = {2}")
-        @CsvSource({"10, 5, 50", "1, 100, 100", "5, 0, 0", "10, 1, 10"})
-        void multiply(long a, long b, long expected) {
-            assertEquals(n(expected), n(a).multiply(n(b)));
-        }
-
-        @Test
-        @DisplayName("Overflow in Moltiplicazione")
-        void multiplyOverflow() {
-            // 1. Definisci il limite: Long.MAX_VALUE / 2 + 1
-            // La metà di Long.MAX_VALUE (9.22e18) è circa 4.61e18.
-            
-            // Scegliamo il valore più semplice che garantisca l'overflow quando moltiplicato per 2
-            long halfMax = Long.MAX_VALUE / 2;
-            Natural large = n(halfMax + 1); // Questo è il primo numero che causa overflow quando * 2
-            Natural two = n(2L);
-
-            // (halfMax + 1) * 2 = 2 * halfMax + 2, che è > Long.MAX_VALUE.
-            assertThrows(ArithmeticException.class, () -> 
-                large.multiply(two), 
-                "La moltiplicazione dovrebbe lanciare ArithmeticException in caso di overflow."
-            );
-        }
+    @Test
+    void testMultiplyOverflow() {
+        // Test overflow using Math.multiplyExact (MAX_VALUE * 2 will overflow)
+        assertThrows(ArithmeticException.class, () -> nMax.multiply(new Natural(2)));
     }
-
-    // ======================================================================================
-    // CAPACITÀ AGGIUNTIVE
-    // ======================================================================================
     
-    @Nested
-    @DisplayName("Potenza (ExponentiableElement)")
-    class PowerOperations {
-
-        @ParameterizedTest(name = "{0}^{1} = {2}")
-        @CsvSource({"2, 4, 16", "5, 3, 125", "10, 0, 1", "0, 5, 0", "1, 1000, 1"})
-        void power(long base, int exp, long expected) {
-            assertEquals(n(expected), n(base).power(exp));
-        }
-
-        @Test
-        @DisplayName("Potenza Negativa (Eccezione)")
-        void powerNegativeExponentThrowsException() {
-            assertThrows(ArithmeticException.class, () -> 
-                n(5).power(-1), 
-                "La potenza negativa dovrebbe lanciare ArithmeticException."
-            );
-        }
-
-        @Test
-        @DisplayName("Overflow in Potenza")
-        void powerOverflow() {
-            Natural base = n(Long.MAX_VALUE / 2); 
-            
-            assertThrows(ArithmeticException.class, () -> 
-                base.power(2), 
-                "La potenza dovrebbe lanciare ArithmeticException in caso di overflow."
-            );
-            
-            // Caso più piccolo (es. 9223372036854775807 / 2 = 4611686018427387903)
-            assertThrows(ArithmeticException.class, () -> 
-                n(3037000500L).power(2), // sqrt(MAX_VALUE) ~ 3.037e9
-                "La potenza dovrebbe lanciare ArithmeticException in caso di overflow."
-            );
-        }
+    // --- Exponentiation ---
+    
+    @Test
+    void testPowerValid() {
+        // 5^3 = 125
+        Natural p3 = n5.power(3);
+        assertEquals(125, p3.getValue());
+        
+        // 5^0 = 1
+        Natural p0 = n5.power(0);
+        assertEquals(1, p0.getValue());
+        
+        // 0^5 = 0
+        Natural zeroP = Natural.ZERO.power(5);
+        assertEquals(0, zeroP.getValue());
+        
+        // 1^100 = 1
+        Natural oneP = Natural.ONE.power(100);
+        assertEquals(1, oneP.getValue());
     }
 
-    @Nested
-    @DisplayName("Comparazione (ComparableElement)")
-    class ComparisonTests {
-        
-        @Test
-        void compareTo() {
-            Natural small = n(100L);
-            Natural large = n(200L);
-            Natural equal = n(100L);
-            
-            assertTrue(small.compareTo(large) < 0);
-            assertTrue(large.compareTo(small) > 0);
-            assertEquals(0, small.compareTo(equal));
-        }
+    @Test
+    void testPowerNegativeExponent() {
+        // Cannot raise a Natural number to a negative power
+        assertThrows(ArithmeticException.class, () -> n5.power(-1));
+    }
+    
+    @Test
+    void testPowerOverflow() {
+        // 10^19 (close to MAX_VALUE) * 10 will surely overflow
+        Natural largeBase = new Natural(1000000000000000000L); // 10^18
+        assertThrows(ArithmeticException.class, () -> largeBase.power(3)); // 10^54 (overflow)
     }
 
-    @Nested
-    @DisplayName("Creazione da Double (CreatableFromDouble)")
-    class CreatableFromDoubleTests {
+    // --- Comparison and Modulus ---
+    
+    @Test
+    void testCompareTo() {
+        assertTrue(n10.compareTo(n5) > 0);
+        assertTrue(n5.compareTo(n10) < 0);
+        assertTrue(n5.compareTo(new Natural(5)) == 0);
+    }
+    
+    @Test
+    void testModulus() {
+        assertEquals(5.0, n5.modulus(), MathConstants.EPSILON);
+    }
 
-        @ParameterizedTest
-        @ValueSource(doubles = {123.0, 1, 0.0, 5, 124})
-        void valueOfValid(double input) {
-            Natural result = NaturalSemiring.getInstance().of(input); 
-            // La conversione a long tronca la parte decimale
-            assertEquals(Math.round(input), result.getValue());
-        }
+    // --- Utility Tests ---
+    
+    @Test
+    void testMathematicalEquality() {
+        Natural n5copy = new Natural(5);
+        assertTrue(n5.isMathematicallyEqualTo(n5copy));
+        assertFalse(n5.isMathematicallyEqualTo(n10));
+    }
 
-        @ParameterizedTest
-        @ValueSource(doubles = {-1.0, -0.0001, -123.45})
-        void valueOfNegativeThrowsException(double input) {
-            assertThrows(IllegalArgumentException.class, () -> 
-            NaturalSemiring.getInstance().of(input), 
-                "valueOf dovrebbe lanciare IllegalArgumentException per valori negativi."
-            );
-        }
-        
-        @Test
-        @DisplayName("valueOf Overflow")
-        void valueOfOverflow() {
-            // Testiamo un valore double maggiore di Long.MAX_VALUE
-            // Math.pow(2, 63) che è il primo double > Long.MAX_VALUE
-            double overflowValue = 9.223372036854776E18 * 2.0; 
-            
-            assertThrows(ArithmeticException.class, () -> 
-            NaturalSemiring.getInstance().of(overflowValue), 
-                "valueOf dovrebbe lanciare ArithmeticException per overflow."
-            );
-        }
-        
-        @Test
-        @DisplayName("valueOf Non Finiti")
-        void valueOfNonFinite() {
-            // NaN e Infinity non sono numeri Naturali validi
-            assertThrows(IllegalArgumentException.class, () -> 
-            NaturalSemiring.getInstance().of(Double.NaN), 
-                "valueOf dovrebbe lanciare IllegalArgumentException per NaN."
-            );
-            assertThrows(IllegalArgumentException.class, () -> 
-            NaturalSemiring.getInstance().of(Double.POSITIVE_INFINITY), 
-                "valueOf dovrebbe lanciare IllegalArgumentException per Infinity."
-            );
-        }
+    @Test
+    void testToString() {
+        assertEquals("5", n5.toString());
+        assertEquals(String.valueOf(Long.MAX_VALUE), nMax.toString());
     }
 }

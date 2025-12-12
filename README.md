@@ -132,20 +132,17 @@ extends ModuleElement<K, V> {}
 - interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends AlgebraicElement<M>, CommutativeMonoidElement<M> { int getRows(); int getColumns(); K get(int row, int col); V getRowVector(int row); V getColumnVector(int col);  M multiply(M other);  M multiplyByScalar(K scalar); V multiply(V vector);}
 - interface RingMatrixElement<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixElement<K, V, M>, AbelianGroupElement<M> {}
 - interface FieldMatrixElement<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixElement<K, V, M> { K determinant(); M inverse(); M transpose(); }
-- abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, F extends SemiringMatrixFactory<K, V, M>> implements SemiringMatrixElement<K, V, M>, TensorElement<K> {    protected final K[][] data; protected final int rows;  protected final int cols;  protected final F factory;}
-- abstract class AbstractRingMatrix<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>, F extends RingMatrixFactory<K, V, M>> extends AbstractSemiringMatrix<K, V, M, F> implements RingMatrixElement<K, V, M> {}
-- abstract class AbstractFieldMatrix<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, F extends FieldMatrixFactory<K, V, M>> extends AbstractRingMatrix<K, V, M, F> implements FieldMatrixElement<K, V, M> {}
+- abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, S extends SemiringMatrixSemimodule<K, V, M>> implements SemiringMatrixElement<K, V, M>, TensorElement<K> {    protected final K[][] data; protected final int rows;  protected final int cols;  protected final S structure;}
+- abstract class AbstractRingMatrix<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>, S extends RingMatrixModule<K, V, M>> extends AbstractSemiringMatrix<K, V, M, S> implements RingMatrixElement<K, V, M> {}
+- abstract class AbstractFieldMatrix<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, S extends FieldMatrixSpace<K, V, M>> extends AbstractRingMatrix<K, V, M, S> implements FieldMatrixElement<K, V, M> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.factories:
-- interface SemimoduleVectorFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>>{ NumericFactory<K> getScalarFactory(); Class<K> getScalarClass(); V createVector(K[] data);  V createVector(double[] data);  V createVector(long[] data);  V createVector(int[] data);  V createZeroVector(int dimension);  default K getZeroScalar() { return getScalarFactory().zero(); }  default K getOneScalar() { return getScalarFactory().one(); }
-- interface SemiringMatrixFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>{SemimoduleVectorFactory<K, V> getVectorFactory();	default NumericFactory<K> getScalarFactory() {  return getVectorFactory().getScalarFactory(); }M createMatrix(K[][] data); 	M createMatrix(double[][] data);M createMatrix(long[][] data);	M createMatrix(int[][] data);	M createZeroMatrix(int rows, int cols); 	default V createVector(K[] data) { return getVectorFactory().createVector(data); }	default K getZeroScalar() { return getScalarFactory().zero(); }    default K getOneScalar() { return getScalarFactory().one(); }}
-- interface RingMatrixFactory<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixFactory<K, V, M>
-{}
-- interface FieldMatrixFactory<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixFactory<K, V, M> {}
+- interface VectorElementFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>>{ V createVector(K[] data);  V createVector(double[] data);  V createVector(long[] data);  V createVector(int[] data);  V createZeroVector(int dimension);}
+- interface MatrixElementFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>{ M createMatrix(K[][] data); 	M createMatrix(double[][] data);M createMatrix(long[][] data);	M createMatrix(int[][] data);	M createZeroMatrix(int rows, int cols);}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.structures.spaces:
 - interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {}
-- interface Semimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends Space<V> {Semiring<K> getScalarStructure();}
+- interface Semimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends Space<V>, VectorElementFactory<K, V> {Semiring<K> getScalarStructure();}
 - interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Semimodule<K, V> {Ring<K> getScalarStructure(); }
 - interface VectorSpace<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K, ?> getScalarStructure();}
 - interface MetricSpace<T extends AlgebraicElement<T>> extends Space<T> {Real distance(T point1, T point2);}
@@ -153,10 +150,11 @@ extends ModuleElement<K, V> {}
 - interface InnerProductSpace<K extends FieldElement<K, ?> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends VectorSpace<K, V>, MetricSpace<V> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
 - interface HilbertSpace<K extends FieldElement<K, ?> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
 
-- interface SemiringMatrixSemimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M> {Semiring<K> getScalarStructure();	int getMatrixRows(); int getMatrixColumns();}
-- interface RingMatrixModule<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSemimodule<K, V, M> { @Override	Ring<K> getScalarStructure();}
+- interface SemiringMatrixSemimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M>, SemiringMatrixFactory<K, V, M>, DimensionalStructure<SemiringMatrixSemimodule<K, V, M>> {Semiring<K> getScalarStructure();	Semimodule<K, V> getVectorStructure(); int getMatrixRows(); int getMatrixColumns();}
+- interface RingMatrixModule<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSemimodule<K, V, M> { @Override Ring<K> getScalarStructure(); @Override Module<K, V> getVectorStructure();}
 - interface FieldMatrixSpace<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
-extends RingMatrixModule<K, V, M> {@Override Field<K, ?> getScalarStructure();}
+extends RingMatrixModule<K, V, M> {@Override Field<K, ?> getScalarStructure(); @Override VectorSpace<K, V> getVectorStructure();}
+- interface DimensionalStructure<S extends AlgebraicStructure<?>> {S getSpaceOfDimensions(int rows, int cols);}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.operators:
 - interface LinearOperator<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> extends MathFunction<V, V> {}
@@ -166,46 +164,33 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - interface HermitianOperator<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, O extends HermitianOperator<K, V, O>>  extends LinearOperator<K, V, O> {Real expectationValue(V state);}
 
 ### net.gommagomma.smfn.math.linearalgebra.natural:
-- final class NaturalVectorFactory implements SemimoduleVectorFactory<Natural, NaturalVector> {}
 - final class NaturalVector extends AbstractRank1Tensor<Natural, NaturalVector> { //... }
-- final class NaturalVectorFactory implements SemimoduleVectorFactory<Natural, NaturalVector> {}
 - final class NaturalSemimodule implements Semimodule<Natural, NaturalVector> {}
-- final class NaturalMatrixFactory implements SemiringMatrixFactory<Natural, NaturalVector, NaturalMatrix> {}
-- final class NaturalMatrix extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixFactory> {}
+- final class NaturalMatrix extends AbstractSemiringMatrix<Natural, NaturalVector, NaturalMatrix, NaturalMatrixSemimodule> {}
 - final class NaturalMatrixSemimodule implements SemiringMatrixSemimodule<Natural, NaturalVector, NaturalMatrix> {}
 
 ###net.gommagomma.smfn.math.linearalgebra.signedint:
-- final class SignedIntVectorFactory implements SemimoduleVectorFactory<SignedInt, SignedIntVector> {}
 - final class SignedIntVector extends AbstractRank1Tensor<SignedInt, SignedIntVector> implements ModuleElement<SignedInt, SignedIntVector> {//...}
 - final class SignedIntModule implements Module<SignedInt, SignedIntVector> {}
-- final class SignedIntMatrixFactory implements RingMatrixFactory<SignedInt, SignedIntVector, SignedIntMatrix> {}
-- final class SignedIntMatrix extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIntMatrixFactory> {}
+- final class SignedIntMatrix extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIntMatrixModule> {}
 - final class SignedIntMatrixModule implements RingMatrixModule<SignedInt, SignedIntVector, SignedIntMatrix> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.real:
-- final class RealVectorFactory implements SemimoduleVectorFactory<Real, RealVector> {}
 - final class RealVector extends AbstractRank1Tensor<Real, RealVector> implements InnerProductSpaceElement<Real, RealVector> {//...}
 - final class RealVectorSpace implements HilbertSpace<Real, RealVector> {//...}
-- final class RealMatrixFactory implements FieldMatrixFactory<Real, RealVector, RealMatrix> {}
-- final class RealMatrix extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixFactory> {//...}
+- final class RealMatrix extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixSpace> {//...}
 - final class RealMatrixSpace implements FieldMatrixSpace<Real, RealVector, RealMatrix> {//...}
-- class RealVectorProjection extends AbstractProjectionOperator<Real, RealVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
-- final class ComplexVectorFactory implements SemimoduleVectorFactory<Complex, ComplexVector> {}
 - final class ComplexVector extends AbstractRank1Tensor<Complex, ComplexVector> implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
 - final class ComplexVectorSpace implements HilbertSpace<Complex, ComplexVector> {//...}
-- final class ComplexMatrixFactory implements FieldMatrixFactory<Complex, ComplexVector, ComplexMatrix> {}
-- final class ComplexMatrix implements AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixFactory> {}
+- final class ComplexMatrix extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixSpace> {}
 - final class ComplexMatrixSpace implements FieldMatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
-- class ComplexVectorProjection extends AbstractProjectionOperator<Complex, ComplexVector> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.rational:
-- final class RationalVectorFactory implements SemimoduleVectorFactory<Rational, RationalVector> {}
 - final class RationalVector extends AbstractRank1Tensor<Rational, RationalVector> implements InnerProductSpaceElement<Rational, RationalVector> { /... }
 - final class RationalVectorSpace implements VectorSpace<Rational, RationalVector> {//...}
-- final class RationalMatrixFactory implements FieldMatrixFactory<Rational, RationalVector, RationalMatrix> {}
-- final class RationalMatrix implements AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixFactory> {//...}
+- final class RationalMatrix implements AbstractFieldMatrix<Rational, RationalVector, RationalMatrix, RationalMatrixSpace> {//...}
 - final class RationalMatrixSpace implements FieldMatrixSpace<Rational, RationalVector, RationalMatrix> {//...}
 
 ## net.gommagomma.smfn.math.geometry
@@ -282,14 +267,6 @@ implements ODESolver<K, T> {}
 
 
 # TODO:
-
-- Unifica le factory e le strutture:
-final class RationalField 
-    implements Field<Rational>, NumericFactory<Rational> { 
-    // ...
-    @Override
-    public Rational zero() { /* ... */ } // Factory Method
-}
 
 - introduzione delle matrici quadrate (come anello moltiplicativo);
 

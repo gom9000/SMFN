@@ -3,6 +3,7 @@ package net.gommagomma.smfn.physics.mq;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexMatrix;
+import net.gommagomma.smfn.math.linearalgebra.complex.ComplexMatrixSpace;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
 
 /**
@@ -19,7 +20,8 @@ implements Observable<Complex, ComplexVector, HamiltonianOperator>
      * @param data I dati della matrice NxN.
      */
     public HamiltonianOperator(Complex[][] data) {
-        this.matrix = new ComplexMatrix(data);
+    	ComplexMatrixSpace space = new ComplexMatrixSpace(data.length, data[0].length);
+        this.matrix =  space.createMatrix(data);
     }
 
     @Override

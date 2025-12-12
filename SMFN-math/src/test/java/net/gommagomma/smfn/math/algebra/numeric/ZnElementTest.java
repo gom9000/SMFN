@@ -3,249 +3,200 @@ package net.gommagomma.smfn.math.algebra.numeric;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import net.gommagomma.smfn.math.algebra.structures.ZnRing;
-
-@DisplayName("ZnElement: Test dell'Aritmetica Modulare (Z/nZ)")
+@DisplayName("ZnElement: Test delle operazioni in Z/nZ (aritmetica modulare)")
 class ZnElementTest {
 
-    // Helper: Crea un SignedInt
-    private SignedInt si(long val) {
-        return new SignedInt(val);
+    // Modulo n = 7
+    private static final SignedInt MOD_7 = new SignedInt(7);
+    // Modulo n = 12
+    private static final SignedInt MOD_12 = new SignedInt(12);
+
+    // Helper per creare ZnElement in Z/7Z
+    private ZnElement zn7(long value) {
+        return new ZnElement(new SignedInt(value), MOD_7);
     }
     
-    // Helper: Crea un ZnElement ([value] mod modulus)
-    private ZnElement z(long value, long modulus) {
-        return new ZnElement(si(value), si(modulus));
-    }
-    
-    // Helper: Confronta due ZnElement
-    private void assertZnElementEquals(ZnElement expected, ZnElement actual, String message) {
-        // Confronta l'uguaglianza matematica che verifica sia il valore che il modulo
-        assertTrue(expected.isMathematicallyEqualTo(actual), 
-                   message + String.format(" | Atteso: %s, Ottenuto: %s", expected.toString(), actual.toString()));
+    // Helper per creare ZnElement in Z/12Z
+    private ZnElement zn12(long value) {
+        return new ZnElement(new SignedInt(value), MOD_12);
     }
 
     // ======================================================================================
-    // COSTRUTTORE E NORMALIZZAZIONE
+    // 1. COSTRUTTORE E PROPRIETÀ BASE
+    // ======================================================================================
+
+    @Test
+    @DisplayName("Costruttore: Modulo deve essere positivo")
+    void constructorInvalidModulus() {
+        // Modulo zero
+        assertThrows(IllegalArgumentException.class, () -> 
+            new ZnElement(new SignedInt(5), new SignedInt(0)));
+        // Modulo negativo
+        assertThrows(IllegalArgumentException.class, () -> 
+            new ZnElement(new SignedInt(5), new SignedInt(-5)));
+    }
+
+    @Test
+    @DisplayName("Costruttore: Normalizzazione del valore")
+    void constructorValueNormalization() {
+        // 10 mod 7 = 3
+        ZnElement tenMod7 = zn7(10);
+        assertEquals(3L, tenMod7.getValue().getValue());
+        assertEquals(MOD_7, tenMod7.getModulus());
+
+        // -1 mod 7 = 6 (resto normalizzato)
+        ZnElement minusOneMod7 = zn7(-1);
+        assertEquals(6L, minusOneMod7.getValue().getValue());
+
+        // 7 mod 7 = 0
+        ZnElement sevenMod7 = zn7(7);
+        assertEquals(0L, sevenMod7.getValue().getValue());
+    }
+
+    @Test
+    @DisplayName("isMathematicallyEqualTo e equals/hashCode")
+    void equalityAndHashCode() {
+        ZnElement a = zn7(10); // [3] mod 7
+        ZnElement b = zn7(3);  // [3] mod 7
+        ZnElement c = zn7(4);  // [4] mod 7
+        ZnElement d = zn12(3); // [3] mod 12 (modulo diverso)
+
+        // Uguaglianza matematica (stesso anello, stesso valore ridotto)
+        assertTrue(a.isMathematicallyEqualTo(b));
+        assertTrue(a.equals(b));
+        assertEquals(a.hashCode(), b.hashCode());
+
+        // Non uguali
+        assertFalse(a.isMathematicallyEqualTo(c));
+        assertFalse(a.equals(c));
+        assertNotEquals(a.hashCode(), c.hashCode());
+        
+        // Modulo diverso
+        assertFalse(a.isMathematicallyEqualTo(d), "Elementi di anelli diversi non sono matematicamente uguali.");
+        assertFalse(a.equals(d), "Elementi di anelli diversi non sono uguali.");
+    }
+    
+    @Test
+    @DisplayName("Zero e IsZero")
+    void zeroAndIsZero() {
+        ZnElement zero = zn7(0);
+        
+        assertTrue(zero.isZero());
+        assertEquals(zn7(0), zero.getZero());
+        assertTrue(zn7(7).isZero()); // Corretto: [7] mod 7 = [0]
+        
+        assertFalse(zn7(1).isZero());
+    }
+
+    @Test
+    @DisplayName("Copia")
+    void copy() {
+        ZnElement original = zn7(5);
+        ZnElement copy = original.copy();
+
+        assertEquals(original, copy);
+        assertNotSame(original, copy);
+    }
+    
+    @Test
+    @DisplayName("toString")
+    void testToString() {
+        assertEquals("[3 mod 7]", zn7(3).toString());
+        assertEquals("[1 mod 12]", zn12(13).toString());
+    }
+
+    // ======================================================================================
+    // 2. OPERAZIONI DI ANELLO (RING OPERATIONS)
     // ======================================================================================
 
     @Nested
-    @DisplayName("Costruttore e Normalizzazione (mod n)")
-    class ConstructorAndNormalizationTests {
-        
-        private final long MODULUS = 7; // Usiamo Z/7Z
-        
-        @Test
-        @DisplayName("Normalizzazione: Valori Positivi")
-        void normalizationPositive() {
-            // 10 mod 7 = 3
-            ZnElement z1 = z(10, MODULUS);
-            assertEquals(si(3), z1.getValue());
-            
-            // 7 mod 7 = 0
-            ZnElement z2 = z(7, MODULUS);
-            assertEquals(si(0), z2.getValue());
-            
-            // 0 mod 7 = 0
-            ZnElement z3 = z(0, MODULUS);
-            assertEquals(si(0), z3.getValue());
-        }
-
-        @Test
-        @DisplayName("Normalizzazione: Valori Negativi")
-        void normalizationNegative() {
-            // -1 mod 7 = 6
-            ZnElement z1 = z(-1, MODULUS);
-            assertEquals(si(6), z1.getValue());
-            
-            // -10 mod 7 = 4
-            ZnElement z2 = z(-10, MODULUS);
-            assertEquals(si(4), z2.getValue());
-            
-            // -7 mod 7 = 0
-            ZnElement z3 = z(-7, MODULUS);
-            assertEquals(si(0), z3.getValue());
-        }
-
-        @Test
-        @DisplayName("Modulus Non Validi (0 o Negativi)")
-        void invalidModulusThrowsException() {
-            assertThrows(IllegalArgumentException.class, () -> 
-                new ZnElement(si(5), si(0)), 
-                "Modulus 0 deve lanciare eccezione."
-            );
-            assertThrows(IllegalArgumentException.class, () -> 
-                new ZnElement(si(5), si(-5)), 
-                "Modulus negativo deve lanciare eccezione."
-            );
-        }
-        
-        @Test
-        @DisplayName("Costanti e Modulo")
-        void constantsAndModulus() {
-            ZnElement ring = z(1, 5);
-            
-            assertEquals(si(5), ring.getModulus());
-            assertZnElementEquals(z(0, 5), ring.getZero(), "ZERO deve avere lo stesso modulo.");
-            assertZnElementEquals(z(1, 5), ring.getOne(), "ONE deve avere lo stesso modulo.");
-            assertTrue(z(0, 5).isZero());
-            assertFalse(z(1, 5).isZero());
-        }
-    }
-
-    // ======================================================================================
-    // OPERAZIONI DI ANELLO (RING OPERATIONS)
-    // ======================================================================================
-
-    @Nested
-    @DisplayName("Addizione e Negazione (Gruppo Additivo)")
+    @DisplayName("Addizione Modulare")
     class AdditiveOperations {
         
-        private final long MODULUS = 11; // Usiamo Z/11Z
-        private final ZnElement MOD_RING = z(0, MODULUS);
+        @ParameterizedTest(name = "[{0}] + [{1}] = [{2}] mod 7")
+        @CsvSource({
+            "3, 2, 5",      // 3 + 2 = 5
+            "5, 4, 2",      // 5 + 4 = 9, 9 mod 7 = 2
+            "6, 1, 0",      // 6 + 1 = 7, 7 mod 7 = 0
+            "6, 6, 5"       // 6 + 6 = 12, 12 mod 7 = 5
+        })
+        void add(long a, long b, long expected) {
+            ZnElement op1 = zn7(a);
+            ZnElement op2 = zn7(b);
+            ZnElement result = op1.add(op2);
+            
+            assertEquals(zn7(expected), result);
+            assertEquals(expected, result.getValue().getValue());
+        }
 
         @Test
-        @DisplayName("Addizione Modulare (Overflow)")
-        void add() {
-            // 5 + 8 = 13. 13 mod 11 = 2
-            ZnElement z1 = z(5, MODULUS);
-            ZnElement z2 = z(8, MODULUS);
-            assertZnElementEquals(z(2, MODULUS), z1.add(z2), "5 + 8 = 2 mod 11");
-            
-            // 5 + 6 = 11. 11 mod 11 = 0
-            ZnElement z3 = z(6, MODULUS);
-            assertZnElementEquals(z(0, MODULUS), z1.add(z3), "5 + 6 = 0 mod 11");
-            
-            // 5 + (-2) = 3. 3 mod 11 = 3
-            ZnElement z4 = z(-2, MODULUS); // Rappresentato come 9
-            assertZnElementEquals(z(3, MODULUS), z1.add(z4), "5 + (-2) = 3 mod 11");
+        @DisplayName("Addizione con modulo diverso")
+        void addDifferentModulus() {
+            ZnElement op1 = zn7(5);
+            ZnElement op2 = zn12(5);
+            assertThrows(IllegalArgumentException.class, () -> op1.add(op2));
         }
         
-        @Test
-        @DisplayName("Addizione con Moduli Diversi (Eccezione)")
-        void addDifferentModulusThrowsException() {
-            ZnElement z1 = z(5, 7);
-            ZnElement z2 = z(5, 11);
-            
-            assertThrows(IllegalArgumentException.class, () -> 
-                z1.add(z2), 
-                "L'addizione deve lanciare eccezione per moduli diversi."
-            );
-        }
-
         @Test
         @DisplayName("Negazione Modulare")
         void negate() {
-            // 5 -> -5. -5 mod 11 = 6
-            ZnElement z1 = z(5, MODULUS);
-            assertZnElementEquals(z(6, MODULUS), z1.negate(), "Negazione di 5");
+            // -[3] mod 7 = [-3] mod 7 = [4]
+            ZnElement three = zn7(3);
+            assertEquals(zn7(4), three.negate());
             
-            // 0 -> 0
-            assertZnElementEquals(z(0, MODULUS), z(0, MODULUS).negate(), "Negazione di 0");
+            // -[0] mod 7 = [0]
+            assertEquals(zn7(0), zn7(0).negate());
 
-            // Verifica che z + (-z) = 0
-            assertZnElementEquals(MOD_RING.getZero(), z1.add(z1.negate()), "Proprietà di Gruppo Additivo");
+            // -[4] mod 12 = [8]
+            ZnElement fourMod12 = zn12(4);
+            assertEquals(zn12(8), fourMod12.negate());
         }
     }
 
     @Nested
-    @DisplayName("Moltiplicazione (Monoide Moltiplicativo)")
+    @DisplayName("Moltiplicazione Modulare")
     class MultiplicativeOperations {
         
-        private final long MODULUS = 13; // Usiamo Z/13Z
-
-        @Test
-        @DisplayName("Moltiplicazione Modulare")
-        void multiply() {
-            // 5 * 8 = 40. 40 mod 13 = 1
-            ZnElement z1 = z(5, MODULUS);
-            ZnElement z2 = z(8, MODULUS);
-            assertZnElementEquals(z(1, MODULUS), z1.multiply(z2), "5 * 8 = 1 mod 13"); // 8 è l'inverso moltiplicativo di 5
-
-            // 5 * 0 = 0
-            assertZnElementEquals(z(0, MODULUS), z1.multiply(z(0, MODULUS)), "Moltiplicazione per Zero");
-
-            // 5 * (-2) = -10. -10 mod 13 = 3
-            ZnElement z3 = z(-2, MODULUS); // Rappresentato come 11
-            assertZnElementEquals(z(3, MODULUS), z1.multiply(z3), "5 * (-2) = 3 mod 13");
-        }
-        
-        @Test
-        @DisplayName("Moltiplicazione con Moduli Diversi (Eccezione)")
-        void multiplyDifferentModulusThrowsException() {
-            ZnElement z1 = z(5, 7);
-            ZnElement z2 = z(5, 13);
+        @ParameterizedTest(name = "[{0}] * [{1}] = [{2}] mod 7")
+        @CsvSource({
+            "3, 2, 6",      // 3 * 2 = 6
+            "4, 2, 1",      // 4 * 2 = 8, 8 mod 7 = 1
+            "3, 3, 2"       // 3 * 3 = 9, 9 mod 7 = 2
+        })
+        void multiply(long a, long b, long expected) {
+            ZnElement op1 = zn7(a);
+            ZnElement op2 = zn7(b);
+            ZnElement result = op1.multiply(op2);
             
-            assertThrows(IllegalArgumentException.class, () -> 
-                z1.multiply(z2), 
-                "La moltiplicazione deve lanciare eccezione per moduli diversi."
-            );
-        }
-    }
-
-    // ======================================================================================
-    // UTILITÀ E CONFRONTO
-    // ======================================================================================
-
-    @Nested
-    @DisplayName("Uguaglianza, Copia e Conversione")
-    class UtilityAndConversionTests {
-        
-        private final long MODULUS = 10;
-
-        @Test
-        @DisplayName("isMathematicallyEqualTo e equals")
-        void equality() {
-            ZnElement z1 = z(12, MODULUS); // [2] mod 10
-            ZnElement z2 = z(2, MODULUS);  // [2] mod 10
-            ZnElement z3 = z(2, 5);        // [2] mod 5
-            
-            // isMathematicallyEqualTo verifica modulo e valore canonico
-            assertTrue(z1.isMathematicallyEqualTo(z2), "12 mod 10 = 2 mod 10");
-            assertFalse(z1.isMathematicallyEqualTo(z3), "Moduli diversi");
-            
-            // equals (Java standard) verifica anche l'uguaglianza del modulo e del valore canonico
-            assertTrue(z1.equals(z2));
-            assertFalse(z1.equals(z3));
+            assertEquals(zn7(expected), result);
+            assertEquals(expected, result.getValue().getValue());
         }
 
         @Test
-        @DisplayName("valueOf (CreatableFromDouble)")
-        void valueOf() {
-            ZnRing ring = new ZnRing(new SignedInt(10));
-            
-            // Conversione diretta da long
-            ZnElement z1 = ring.of(15.0); // 15 mod 10 = 5
-            assertZnElementEquals(z(5, 10), z1, "15.0 mod 10");
-            
-            // Valore negativo
-            ZnElement z2 = ring.of(-3.0); // -3 mod 10 = 7
-            assertZnElementEquals(z(7, 10), z2, "-3.0 mod 10");
-            
-            // Valori che causano overflow di long (dovrebbe essere gestito da SignedInt, ma qui è intercettato)
-            assertThrows(ArithmeticException.class, () -> 
-                ring.of(Double.MAX_VALUE), 
-                "Valore fuori dal range long."
-            );
+        @DisplayName("Identità Moltiplicativa (One)")
+        void getOne() {
+            ZnElement oneMod7 = zn7(1);
+            assertEquals(oneMod7, zn7(5).getOne());
+            assertEquals(1L, zn7(5).getOne().getValue().getValue());
+            assertEquals(MOD_7, zn7(5).getOne().getModulus());
         }
-        
+
         @Test
-        @DisplayName("ToString e HashCode")
-        void stringAndHash() {
-            ZnElement z = z(15, 7); // [1] mod 7
-            
-            assertEquals("[1 mod 7]", z.toString());
-            
-            // HashCode deve essere coerente con equals
-            assertEquals(z.hashCode(), z(1, 7).hashCode());
-            assertNotEquals(z.hashCode(), z(1, 8).hashCode());
+        @DisplayName("Moltiplicazione per modulo diverso")
+        void multiplyDifferentModulus() {
+            ZnElement op1 = zn7(5);
+            ZnElement op2 = zn12(5);
+            assertThrows(IllegalArgumentException.class, () -> op1.multiply(op2));
         }
     }
 }

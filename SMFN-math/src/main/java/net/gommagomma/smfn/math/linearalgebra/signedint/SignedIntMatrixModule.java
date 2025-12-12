@@ -1,20 +1,21 @@
-package net.gommagomma.smfn.math.linearalgebra.real;
+package net.gommagomma.smfn.math.linearalgebra.signedint;
 
-import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.VectorSpace;
+import net.gommagomma.smfn.math.algebra.core.structures.Ring;
+import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.Module;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RingMatrixModule;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.SemiringMatrixSemimodule;
 
-public final class RealMatrixSpace
-implements FieldMatrixSpace<Real, RealVector, RealMatrix>
+
+public class SignedIntMatrixModule
+implements RingMatrixModule<SignedInt, SignedIntVector, SignedIntMatrix>
 {
     private final int rows;
     private final int cols;
 
 
-    public RealMatrixSpace(int rows, int cols) {
+    public SignedIntMatrixModule(int rows, int cols) {
     	if (rows <= 0 || cols <= 0) {
             throw new IllegalArgumentException("Matrix dimensions must be positive.");
         }
@@ -25,46 +26,46 @@ implements FieldMatrixSpace<Real, RealVector, RealMatrix>
 
     @Override // AlgebraicStructure impls
     public String getName() {
-        return "Space of " + rows + "x" + cols + " Real Matrices";
+    	return "SignedInt Matrix Ring (Z^mxn)";
     }
-    
+
     @Override // AlgebraicStructure impls
-    public boolean contains(RealMatrix m) {
-        return m.getRows() == rows && m.getColumns() == cols;
+    public boolean contains(SignedIntMatrix m) {
+        return m.getRows() == this.rows && m.getColumns() == this.cols;
     }
 
 
     @Override // SemiringMatrixSemimodule impls 
-    public int getMatrixRows() { return rows; }
+    public int getMatrixRows() { return this.rows; }
 
-    @Override // SemiringMatrixSemimodule impls
-    public int getMatrixColumns() { return cols; }
+    @Override // SemiringMatrixSemimodule impls 
+    public int getMatrixColumns() { return this.cols; }
 
 
-    @Override // FieldMatrixSpace impls
-    public Field<Real, Natural> getScalarStructure() { return RealField.getInstance(); }
+    @Override // RingMatrixModule impls
+    public Ring<SignedInt> getScalarStructure() { return IntegerRing.getInstance(); }
 
-    @Override // SemiringMatrixSemimodule impls
-	public VectorSpace<Real, RealVector> getVectorStructure() { return RealVectorSpace.getInstance(); }
+	@Override // RingMatrixModule impls
+	public Module<SignedInt, SignedIntVector> getVectorStructure() { return SignedIntModule.getInstance(); }
 
 
     @Override // MatrixElementFactory impls
-    public RealMatrix createMatrix(Real[][] data) {
+    public SignedIntMatrix createMatrix(SignedInt[][] data) {
     	if (data == null || data.length != this.rows || (this.rows > 0 && data[0].length != this.cols)) {
     		throw new IllegalArgumentException("Input data dimensions do not match this Space dimensions (" + this.rows + "x" + this.cols + ").");
     	}
-        return new RealMatrix(data, this);
+    	return new SignedIntMatrix(data, this);
     }
 
-    @Override // MatrixElementFactory impls
-    public RealMatrix createMatrix(double[][] data) {
+    @Override // SemiringMatrixFactory impls
+    public SignedIntMatrix createMatrix(double[][] data) {
         int rows = data.length;
         if (rows == 0) {
             return createZeroMatrix(0, 0); 
         }
         int cols = data[0].length;
 
-        Real[][] components = new Real[rows][cols]; 
+        SignedInt[][] components = new SignedInt[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
             if (data[i].length != cols) {
@@ -79,14 +80,14 @@ implements FieldMatrixSpace<Real, RealVector, RealMatrix>
     }
 
     @Override // MatrixElementFactory impls
-    public RealMatrix createMatrix(long[][] data) {
+    public SignedIntMatrix createMatrix(long[][] data) {
         int rows = data.length;
         if (rows == 0) {
             return createZeroMatrix(0, 0); 
         }
         int cols = data[0].length;
 
-        Real[][] components = new Real[rows][cols]; 
+        SignedInt[][] components = new SignedInt[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
             if (data[i].length != cols) {
@@ -101,14 +102,14 @@ implements FieldMatrixSpace<Real, RealVector, RealMatrix>
     }
 
     @Override // MatrixElementFactory impls
-    public RealMatrix createMatrix(int[][] data) {
+    public SignedIntMatrix createMatrix(int[][] data) {
         int rows = data.length;
         if (rows == 0) {
             return createZeroMatrix(0, 0); 
         }
         int cols = data[0].length;
 
-        Real[][] components = new Real[rows][cols]; 
+        SignedInt[][] components = new SignedInt[rows][cols]; 
         
         for (int i = 0; i < rows; i++) {
             if (data[i].length != cols) {
@@ -123,16 +124,16 @@ implements FieldMatrixSpace<Real, RealVector, RealMatrix>
     }
 
     @Override // MatrixElementFactory impls
-    public RealMatrix createZeroMatrix(int rows, int cols) {
+    public SignedIntMatrix createZeroMatrix(int rows, int cols) {
     	if (rows != this.rows || cols != this.cols) {
     		throw new IllegalArgumentException("Requested zero matrix dimensions do not match this Space dimensions (" + this.rows + "x" + this.cols + ").");
     	}
-    	return new RealMatrix(rows, cols, this);
+        return new SignedIntMatrix(rows, cols, this);
     }
 
 
 	@Override // DimensionalStructure impls
-	public FieldMatrixSpace<Real, RealVector, RealMatrix> getSpaceOfDimensions(int rows, int cols) {
-		return new RealMatrixSpace(rows, cols);
+	public SemiringMatrixSemimodule<SignedInt, SignedIntVector, SignedIntMatrix> getSpaceOfDimensions(int rows,	int cols) {
+		return new SignedIntMatrixModule(rows, cols);
 	}
 }

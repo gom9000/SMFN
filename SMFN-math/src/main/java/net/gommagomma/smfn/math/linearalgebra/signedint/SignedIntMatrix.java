@@ -9,13 +9,10 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractRin
  * Rappresenta una matrice i cui elementi sono numeri interi relativi (SignedInt).
  */
 public final class SignedIntMatrix
-extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIntMatrixFactory>
+extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIntMatrixModule>
 {
-    private static final SignedIntMatrixFactory FACTORY_INSTANCE = SignedIntMatrixFactory.getInstance();
-
-
-    SignedIntMatrix(SignedInt[][] data) { super(data, FACTORY_INSTANCE); }
-    SignedIntMatrix(int rows, int cols) { super(rows, cols, FACTORY_INSTANCE); }
+    SignedIntMatrix(SignedInt[][] data, SignedIntMatrixModule matrixStructure) { super(data, matrixStructure); }
+    SignedIntMatrix(int rows, int cols, SignedIntMatrixModule matrixStructure) { super(rows, cols, matrixStructure); }
 
 
     @Override // AbstractSemiringMatrix impls
@@ -29,7 +26,7 @@ extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIn
             throw new IndexOutOfBoundsException("Row index out of bounds: " + row);
         }
 
-        return factory.createVector(Arrays.copyOf(data[row], cols));
+        return matrixStructure.getVectorStructure().createVector(Arrays.copyOf(data[row], cols));
     }
 
     @Override // SemiringMatrixElement impls
@@ -44,6 +41,6 @@ extends AbstractRingMatrix<SignedInt, SignedIntVector, SignedIntMatrix, SignedIn
             columnData[i] = data[i][col];
         }
 
-        return factory.createVector(columnData);
+        return matrixStructure.getVectorStructure().createVector(columnData);
     }
 }
