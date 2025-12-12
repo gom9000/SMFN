@@ -1,0 +1,81 @@
+package net.gommagomma.smfn.client;
+
+import java.awt.Color;
+import java.util.function.Function;
+
+import javax.swing.JFrame;
+
+import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
+import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
+import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
+
+// Importazioni aggiornate
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.polynomial.Polynomial; // Usiamo la nuova classe!
+import net.gommagomma.smfn.math.algebra.structures.RealField; // Necessario per la struttura dei coefficienti
+import net.gommagomma.smfn.math.algebra.structures.PolynomialRing; // Necessario per creare il Polinomio
+
+public class PolynomialClient
+{
+    public static void main(String[] args)
+    {
+        // --- 1. Definizione del Contesto e del Polinomio P(x) = 1.5x^3 + 3.0x^2 - 5.0x - 2.0 ---
+        
+        // 1.1 Definiamo la struttura base (Anello/Campo dei coefficienti)
+        RealField R = RealField.getInstance(); 
+        
+        // 1.2 Definiamo l'Anello dei Polinomi R[x]
+        PolynomialRing<Real> R_X = new PolynomialRing<>(R);
+        
+        // 1.3 Coefficienti in ordine [c0, c1, c2, c3]
+        Real[] coeffs = {new Real(-2.0), new Real(-5.0), new Real(3.0), new Real(1.5)};
+        
+        // 1.4 Creiamo il Polinomio usando la Factory della Struttura
+        // NOTA: La classe Polynomial<Real> implementa MathFunction<Real, Real>
+        Polynomial<Real> cubicPolynomial = R_X.create(coeffs); 
+
+        System.out.println("Polinomio da plottare: P(x) = " + cubicPolynomial);
+
+
+        // --- 2. Setup del contesto grafico (nessuna modifica qui) ---
+        int width = 800;
+        int height = 600;
+        
+        SwingRenderer1D renderer = new SwingRenderer1D(width, height);
+        
+        JFrame frame = new JFrame("SMFN Polynomial Example: P(x) = 1.5x^3 + 3x^2 - 5x - 2");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(renderer);
+        frame.pack();
+        frame.setVisible(true);
+        try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+        renderer.requestFocusInWindow();
+        renderer.initBufferStrategy();
+
+        // Range visualizzato
+        Viewport viewport = new Viewport(-3.5, 3.5, -8.5, 8.5, width, height);
+
+        // --- 3. Definizione degli adattatori (Adapter Pattern) ---
+        // Adattatore da double a Real (per il dominio)
+        Function<Double, Real> domainAdapter = Real::new;
+        // Adattatore da Real a double (per il codominio)
+        Function<Real, Double> codomainAdapter = Real::getValue; 
+
+        // --- 4. Processo di rendering (Composizione dei grafici) ---
+        renderer.startDrawing();
+        
+        renderer.clear(Color.BLACK);
+
+        // Disegna gli assi cartesiani
+        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        
+        // Disegna il Polinomio (ora la variabile è cubicPolynomial)
+        renderer.setColor(Color.BLUE);
+        FunctionPlotter1D.plotFunction(
+            renderer, viewport, cubicPolynomial, domainAdapter, codomainAdapter
+        );
+        
+        renderer.endDrawingAndFlush();
+    }
+}

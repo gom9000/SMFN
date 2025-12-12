@@ -203,7 +203,6 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 ## net.gommagomma.smfn.math.analysis
 ------------------------------------
 ### net.gommagomma.smfn.math.analysis.functions:
-- final class PolynomialFunction<K extends FieldElement<K, ?>> implements CommutativeRingElement<PolynomialFunction<K>>, MathFunction<K, K> {}
 - final class LinearFunction<K extends FieldElement<K, ?>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
 
 ### net.gommagomma.smfn.math.analysis.models:
