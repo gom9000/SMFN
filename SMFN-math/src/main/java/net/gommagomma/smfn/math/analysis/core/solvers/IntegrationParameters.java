@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Real;
 /**
  * Parametri che definiscono le condizioni di avanzamento per un IntervalSolver.
  */
-public class IntegrationParameters
+public final class IntegrationParameters
 {
     // Per Solutori a Passo Fisso (e guess iniziale per adattivi)
     public final Real fixedStepSize; 

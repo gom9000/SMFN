@@ -25,15 +25,15 @@ net.gommagomma.smfn/
 |   |   |-- rational                        # Implementazioni per Q (RationalVector, RationalMatrix, relativi spaces)
 |   |   |-- real                            # Implementazioni per R (RealVector, RealMatrix, relativi spaces)
 |   |   \-- signedint                       # Implementazioni per Z (SignedIntVector, SignedIntMatrix, relativi spaces)
-|   |-- geometry/								 # (GeometryEntity, Point, Circle, Ellipse)
+|   |-- geometry/								  # (GeometryEntity, Point, Circle, Ellipse)
 |   |-- analysis/                           # Calcolo (Funzioni, Derivate, Integrali, Risolutori Numerici)
-|   |   |-- functions/						 # LinearFunction, PolynomialFunction, ...
-|   |   |-- fractals/                       # Contiene implementazioni specifiche di frattali
-|   |   |-- models/                         # Contiene le definizioni astratte dei problemi
-|   |   |-- solvers/                        # Contiene implementazioni di metodi numerici
-|   |   |   |-- core/                       # Contiene le astrazioni fondamentali ed i parametri comuni
-|   |   |   |-- differential/               # Contiene strumenti di differenziazione numerica 
-|   |   |   |-- iterative/                  # Contiene implementazioni per i solutori iterativi
+|   |   |-- core								  # core interface per functionals, operators, problems, solvers
+|   |   |-- functions/						  # LinearFunction ...
+|   |   |-- fractals/                       # Contiene implementazioni specifiche di frattali (Mandelbrot, Julia, ...)
+|   |   |-- numerical/                      # Contiene implementazioni di metodi numerici
+|   |   |   |-- functionals/                # Contiene le implementazioni per il calcolo differenziale/integrale
+|   |   |   |-- solvers.ode/                # Contiene le implementazioni per la risoluzione delle ODE
+|   |   |   |-- solvers.root/               # Contiene le implementazioni per la ricerca delle roots
 |   |   |   \-- ode/                        # Contiene le implementazioni per la risoluzione delle ODE
 |   |   \-- integral/                       # (es. Metodi di quadratura numerica)
 |   |-- utils                               # Utility e Costanti (MathConstants, MathUtils)
@@ -209,39 +209,51 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 
 ## net.gommagomma.smfn.math.analysis
 ------------------------------------
+### net.gommagomma.smfn.math.analysis.core.functionals:
+- interface Functional<K extends FieldElement<K, ?>, D extends AlgebraicElement<D>, C> { K evaluate(MathFunction<D, K> f, C context); }
+
+### net.gommagomma.smfn.math.analysis.core.operators:
+- interface SymbolicOperator<F extends MathFunction<?, ?>, R extends MathFunction<?, ?>> extends Operator<F, R> {}
+- interface DifferentialOperator<F extends MathFunction<?, ?>, R extends MathFunction<?, ?>> extends SymbolicOperator<F, R> {}
+- interface IntegralOperator<F extends MathFunction<?, ?>, R extends MathFunction<?, ?>> extends SymbolicOperator<F, R> {}
+
+### net.gommagomma.smfn.math.analysis.core.problems:
+- interface AnalysisProblem<P extends AlgebraicElement<P>> {}
+- interface DifferentialEquationProblem<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> extends AnalysisProblem<V> { V derivative(V currentState, Real currentTime); }
+- interface InitialValueProblem<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> extends DifferentialEquationProblem<K, V> { V getInitialState(); Real getStartTime(); }
+- interface BoundaryValueProblem<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> extends DifferentialEquationProblem<K, V> { K getEndTime(); V getBoundaryConditionAtStart(); V getBoundaryConditionAtEnd(); }
+- interface FixedPointProblem<T extends AlgebraicElement<T>> extends AnalysisProblem<T> {  T nextIteration(T current); }
+- interface ScalarRootFindingProblem<T extends FieldElement<T, ?>> extends AnalysisProblem<T> { MathFunction<T, T> getFunction(); }
+- interface RootFindingProblem<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> extends AnalysisProblem<V> { MathFunction<V, V> getFunction(); }
+
+### net.gommagomma.smfn.math.analysis.core.solvers:
+- interface Solver<P, R> {}
+- interface IterativeSolver<P, S extends AlgebraicElement<S>, R extends AlgebraicElement<R>> extends Solver<P, R> { R solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<S> space); }
+- interface IntervalSolver<K extends FieldElement<K, ?>, R extends VectorElement<K, R>> extends Solver<InitialValueProblem<K, R>, R> { R integrate(InitialValueProblem<K, R> problem, Real endTime, IntegrationParameters params); }
+- interface IntervalODEStepSolver<K extends FieldElement<K, ?>, T extends VectorElement<K, T>> extends IntervalSolver<K, T> { T step(DifferentialEquationProblem<K, T> system, T currentState, Real currentTime, Real deltaTime); }
+- interface ConvergenceCriteria { boolean isConverged(Real distance, ConvergenceParameters params, int iteration); }
+- final class ConvergenceParameters { public final Real tolerance;  public final int maxIterations; }
+- final class IntegrationParameters { public final Real fixedStepSize; public final Real tolerance; public final Real maxStepSize; public final Real minStepSize; }
+
+### net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation:
+- class CentralDifferenceDifferentiator<K extends FieldElement<K, ?>> implements Functional<K, K, K> {}
+- class ForwardDifferenceDifferentiator<R extends FieldElement<R, ?>> implements Functional<R, R, R> {}
+
+### net.gommagomma.smfn.math.analysis.numerical.solvers.ode:
+- class RungeKutta4Solver<K extends FieldElement<K, ?>, T extends VectorElement<K, T>> implements IntervalODEStepSolver<K, T> {}
+- class EmbeddedRK23Solver<K extends FieldElement<K, ?>, T extends VectorElement<K, T> & NormableElement<Real, T>> implements IntervalODEStepSolver<K, T> {}
+
+### net.gommagomma.smfn.math.analysis.numerical.solvers.roots:
+- class NewtonRaphsonSolver<R extends FieldElement<R, ?>> implements IterativeSolver<ScalarRootFindingProblem<R>, R, R> {}
+
 ### net.gommagomma.smfn.math.analysis.functions:
 - final class LinearFunction<K extends FieldElement<K, ?>> implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>  {}
 
-### net.gommagomma.smfn.math.analysis.models:
-- interface DynamicSystem<K extends FieldElement<K, ?>, T extends VectorElement<K, T>> {T derivative(T state, Real time);}
-- interface IterativeSystem<T> {T nextIteration(T current);}
-
-### net.gommagomma.smfn.math.analysis.solvers.core:
-- interface Solver<T extends AlgebraicElement<T>, R> {}
-- interface IterativeSolver<T extends AlgebraicElement<T, ?>, R> extends Solver<T, R> {R solve(T initial, IterativeSystem<T> system, ConvergenceTest<T> test, ConvergenceParameters params, MetricSpace<T> space);}
-- interface IntervalSolver<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> extends Solver<V, V> {V integrate(DynamicSystem<K, V> system, V initialState, Real startTime, Real endTime, IntegrationParameters params);}
-- class ConvergenceParameters {public final Real tolerance;  public final int maxIterations;}
-- class IntegrationParameters {public final Real fixedStepSize; public final ConvergenceParameters convergenceParams}
-- interface ConvergenceTest<T extends AlgebraicElement<T>> {boolean isConverged(T current, T previous, ConvergenceParameters params, int iteration, MetricSpace<T> space);}
-
-### net.gommagomma.smfn.math.analysis.solvers.differential:
-- interface NumericalDifferentiator<K extends FieldElement<K, ?>> {K derivativeAt(MathFunction<K, K> function, K x, K h);}
-- class CentralDifferenceDifferentiator<K extends FieldElement<K, ?>> 
-implements NumericalDifferentiator<K> {}
-
-### net.gommagomma.smfn.math.analysis.solvers.iterative:
-- class NewtonRaphsonSolver<K extends FieldElement<K, ?>> implements MetricSolver<K, K> {}
-
-### net.gommagomma.smfn.math.analysis.solvers.ode:
-- interface ODESolver<K extends FieldElement<K, ?>, T extends VectorElement<K, T>> extends IntervalSolver<K, T> {T step(DynamicSystem<K, T> system, T currentState, Real currentTime, Real deltaTime);}
-- class RungeKutta4Solver<K extends FieldElement<K, ?>, T extends VectorElement<K, T>> 
-implements ODESolver<K, T> {}
-
 ### net.gommagomma.smfn.math.analysis.fractals;
-- class MandelbrotSolver implements Solver<Complex, Integer> {}
-- class MandelbrotFunction implements MathFunction<Complex, Real> {}
-- class JuliaSolver implements Solver<Complex, Integer> {}
-- class JuliaFunction implements MathFunction<Complex, Real> {}
+- class MandelbrotSolver implements IterativeSolver<FixedPointProblem<Complex>, Complex, Natural> {}
+- class MandelbrotFunction implements MathFunction<Complex, Natural> {}
+- class JuliaSolver IterativeSolver<FixedPointProblem<Complex>, Complex, Natural> {}
+- class JuliaFunction implements MathFunction<Complex, Natural> {}
 
 ## net.gommagomma.smfn.graphics
 -------------------------------
