@@ -6,23 +6,25 @@
 net.gommagomma.smfn/
 |-- math/
 |   |-- algebra/
-|   |   |-- core/                           (AlgebraicElement, AlgebraicStructure, Commutative, NumericFactory, MathFunction)
+|   |   |-- core/                           (AlgebraicElement, AlgebraicStructure, Commutative, NumericFactory, MathFunction, Operator)
 |   |   |   |-- elements/                   (...)
 |   |   |   |   |-- additive/               (...)
 |   |   |   |   |-- multiplicative/         (...)
 |   |   |   |   |-- tensors/                (TensorElement)
 |   |   |   |   \-- capabilities/           (ComparableElement,ExponentiableElement,NormableElement,SqrtableElement)
 |   |   |   |-- structures/                 (AdditiveMonoid,MultiplicativeMonoid,ComutativeMultiplicativeMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
-|   |   |-- numeric/                        (Natural, NaturalFactory, Signedint, SignedintFactory, ZnElement, ZnElementFactory, Rational, RationalFactory, Real, RealFactory, Complex, ComplexFactory)
-|   |   \-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField)
+|   |   |-- numeric/                        (Natural, Signedint, ZnElement, Rational, Real, Complex)
+|   |   |-- polynomial/
+|   |   \-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField, PolynomialRing)
 |   |-- linearalgebra                       # Vettori, Matrici e Spazi
 |   |   |-- core                   		  # Interfacce per Vettori, Matrici, Spazi
 |   |   |   |-- elements/                   (...)
 |   |   |   \-- structures/                 (...)
-|   |   |-- complex                         # Implementazioni per C (ComplexVector, ComplexMatrix, spaces)
-|   |   |-- rational                        # Implementazioni per Q (RationalVector, RationalMatrix, spaces)
-|   |   |-- real                            # Implementazioni per R (RealVector, RealMatrix, spaces)
-|   |   \-- signedint                       # Implementazioni per Z (SignedIntVector, SignedIntMatrix, spaces)
+|   |   |-- complex                         # Implementazioni per C (ComplexVector, ComplexMatrix, relativi spaces)
+|   |   |-- natural                         # Implementazioni per N (NaturalVector, NaturalMatrix, relativi spaces)
+|   |   |-- rational                        # Implementazioni per Q (RationalVector, RationalMatrix, relativi spaces)
+|   |   |-- real                            # Implementazioni per R (RealVector, RealMatrix, relativi spaces)
+|   |   \-- signedint                       # Implementazioni per Z (SignedIntVector, SignedIntMatrix, relativi spaces)
 |   |-- geometry/								 # (GeometryEntity, Point, Circle, Ellipse)
 |   |-- analysis/                           # Calcolo (Funzioni, Derivate, Integrali, Risolutori Numerici)
 |   |   |-- functions/						 # LinearFunction, PolynomialFunction, ...
@@ -63,6 +65,7 @@ net.gommagomma.smfn/
 - interface AlgebraicStructure<E extends AlgebraicElement<E>> { String getName(); boolean contains(E e); }
 - interface NumericFactory<E extends SemiringElement<E>> {E zero(); E one(); E of(double value); E of(long value); E of(int value);}
 - interface MathFunction<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> {C evaluate(D input);default <V extends AlgebraicElement<V>> MathFunction<V, C> compose(MathFunction<V, D> before)}
+- interface Operator<I, O> { O apply(I input); }
 
 ### net.gommagomma.smfn.math.algebra.core.elements.additive:
 - interface AdditiveMonoidElement<E extends AdditiveMonoidElement<E>> extends AlgebraicElement<E> { E add(E other); E getZero(); default boolean isZero() { return isMathematicallyEqualTo(getZero()); }}
@@ -115,6 +118,10 @@ net.gommagomma.smfn/
 - final class RealField implements Field<Real, Natural> {}
 - final class ComplexField implements Field<Complex, Natural> {}
 - final class ZnRing implements CommutativeRing<ZnElement> {}
+- public class PolynomialRing<K extends SemiringElement<K>> implements CommutativeRing<Polynomial<K>> {}
+
+### net.gommagomma.smfn.math.algebra.polynomial:
+- final class Polynomial<K extends SemiringElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}
 
 ## net.gommagomma.smfn.math.linearalgebra
 -----------------------------------------
@@ -267,6 +274,49 @@ implements ODESolver<K, T> {}
 
 # TODO:
 
+
+- analysis.core.operators
+	|- public interface SymbolicOperator<F extends MathFunction, R extends MathFunction> extends Operator<F, R> { R apply(F function); }
+	|- public interface NumericalOperator<K extends FieldElement<K, ?>> { K evaluate(MathFunction<K, K> f, K point); }
+	|- public interface NumericalDifferentiator<K extends FieldElement<K, ?>> extends NumericalOperator<K> { default K derivativeAt(MathFunction<K, K> f, K x) {return evaluate(f, x);} }
+- analysis.core.problems
+	|- DynamicSystem (DifferentialEquation)
+	|- RootFindingProblem
+	|- IterativeSystem
+	|- BoundaryValueProblem
+- analysis.core.solvers
+	|- public interface Solver<P, R> { R solve(P problem); }
+	|- IterativeSolver
+	|- ConvergenceCriteria
+	|- ConvergenceParameters
+	|- IntervalSolver
+	|- IntegrationParameters
+	|- StepInterpolator
+
+- analysis.symbolic
+	|- differentiation
+	|	|- public class PolynomialDerivative implements SymbolicOperator<Polynomial, Polynomial> {}
+	|- integration
+	|	|- public class PolynomialIntegral  implements SymbolicOperator<Polynomial, Polynomial> {}
+
+- analysis.numerical
+	|- differentiation
+	|	|- CentralDifferenceDifferentiator <K extends FieldElement<K, ?>> implements NumericalDifferentiator<K> { private final K h; ...}
+	|- integration
+	|   |- TrapezoidalIntegrator
+	|   |- SimpsonIntegrator
+	|- roots
+	|   |- NewtonRaphsonSolver
+	|   |- BisectionSolver
+	|- ode
+		|- EulerSolver
+		|- RungeKutta4Solver
+
+- analysis.functions
+	|- LinearFunction
+
+
+
 - introduzione delle matrici quadrate (come anello moltiplicativo);
 
 - public class Point<K extends FieldElement<K, ?>, V extends VectorElement<K, V>>
@@ -275,7 +325,6 @@ implements AlgebraicElement<Point<K, V>>
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
 - Polinomi: Evaluatable<X, X>  - interfaccia chiave che definisca il concetto di "radice" (valutazione)
-- Polynomial Ring: Hai PolynomialFunction che implementa CommutativeRingElement<Polynomial<K>>. Questa classe probabilmente rappresenta solo il polinomio come funzione. Manca la classe Polynomial<K> che rappresenta il Polinomio stesso (l'anello dei polinomi K[x]). Questo è cruciale per la Fattorizzazione, il Calcolo degli Autovalori (attraverso il polinomio caratteristico) e la teoria dei Campi.
 
 - ComplexVector: Dot Product
 Stai calcolando <v,w>=SOMMA(v(i) x w(i)\). Questa è la convenzione standard dei Matematici (lineare nel primo argomento, antilineare nel secondo).
@@ -298,7 +347,7 @@ if (real >= 0) {
 
 - Soluzione Architetturale: Nelle implementazioni concrete (es. RealMatrix), considera di usare internamente double[] o double[][] primitivi per lo storage, e crea gli oggetti Real "on the fly" solo quando richiesti tramite get(row, col).
 
-- trasformazioni:
+- Operatori lineari e trasformazioni: ereditare algebra.core.Operator
 - AbstractLinearTransformation
 LinearTransformation<K, V> extends MathFunction<V, V>, e la classe concreta MatrixOperator implementerebbe questa interfaccia, delegando il calcolo a Mv.
 class AffineMapper

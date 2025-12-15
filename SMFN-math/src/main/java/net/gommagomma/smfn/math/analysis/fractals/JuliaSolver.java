@@ -1,16 +1,18 @@
 package net.gommagomma.smfn.math.analysis.fractals;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.analysis.models.IterativeSystem;
-import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceTest;
-import net.gommagomma.smfn.math.analysis.solvers.core.IterativeSolver;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.analysis.core.problems.FixedPointProblem;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolver;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
 
 
 public class JuliaSolver
-implements IterativeSolver<Complex, Integer>
+implements IterativeSolver<FixedPointProblem<Complex>, Complex, Natural>
 {
     private static final double DIVERGENCE_RADIUS_SQ = 4.0;
     private final Complex constantC;
@@ -23,45 +25,38 @@ implements IterativeSolver<Complex, Integer>
 
     // Il metodo solve() è esattamente lo stesso del MandelbrotSolver
     @Override
-    public Integer solve(Complex initial, IterativeSystem<Complex> system, ConvergenceTest<Complex> test, ConvergenceParameters params, MetricSpace<Complex> space)
+    public Natural solve(FixedPointProblem<Complex> problem, Complex initialGuess, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<Complex> space)
     {
-        Complex currentZ = initial;
-        Complex previousZ = null; 
+    	Complex currentZ = initialGuess;
 
         for (int iterations = 0; iterations < params.maxIterations; iterations++)
         {
-            if (test.isConverged(currentZ, previousZ, params, iterations, space)) {
-                return iterations; // Ritorna il numero di iterazioni prima della divergenza
-            }
+        	Real divergenceMeasure = new Real(currentZ.modulusSquared());
 
-            previousZ = currentZ;
-            currentZ = system.nextIteration(currentZ);
+        	// Il Solver chiama il Criterio con la misura (Real)
+            if (criteria.isConverged(divergenceMeasure, params, iterations)) {
+                return new Natural(iterations);
+            }
+            
+            // Prepara per la prossima iterazione
+            currentZ = problem.nextIteration(currentZ);
         }
         
-        return params.maxIterations; 
+        return new Natural(params.maxIterations);
     }
 
 
-    /**
-     * Calcola il numero di iterazioni necessarie affinché un punto iniziale 'z0' diverga,
-     * usando la costante 'c' fissata nel costruttore.
-     */
-    public int evaluateJuliaPoint(Complex z0_initial, int maxIterations)
+    public Natural evaluateJuliaPoint(Complex z0, int maxIterations)
     {
-        final Complex c = this.constantC;
-        
-        // Il sistema di iterazione: z_{n+1} = z_n^2 + c
-        // NOTA: 'c' è la costante fissata dal costruttore, non l'input variabile
-        IterativeSystem<Complex> system = current -> current.multiply(current).add(c);
+        // z_{n+1} = z_n^2 + c
+        FixedPointProblem<Complex> problem = current -> current.multiply(current).add(this.constantC);
         
         // Il test di convergenza/divergenza (|z_n|^2 > 4)
-        ConvergenceTest<Complex> divergenceTest = (current, previous, params, iteration, space) -> {
-        	if (current == null) return false; // Prima iterazione
-        	return current.modulusSquared() > DIVERGENCE_RADIUS_SQ;
+        ConvergenceCriteria divergenceTest = (divergenceMeasure, params, iteration) -> {
+        	return divergenceMeasure.getValue() > DIVERGENCE_RADIUS_SQ;
         };
 
-        // Risolve partendo dal punto iniziale z0_initial (che è l'input variabile del set di Julia)
-        ConvergenceParameters params = new ConvergenceParameters(new Real(0.0), maxIterations);
-        return solve(z0_initial, system, divergenceTest, params, null);  
+        ConvergenceParameters params = new ConvergenceParameters(RealField.getInstance().zero(), maxIterations);
+        return solve(problem, z0, divergenceTest, params, null);
     }
 }

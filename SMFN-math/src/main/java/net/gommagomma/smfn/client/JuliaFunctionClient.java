@@ -11,7 +11,7 @@ import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.analysis.fractals.JuliaFunction;
 
 public class JuliaFunctionClient {
@@ -56,9 +56,9 @@ public class JuliaFunctionClient {
         // Adattatore Dominio: Combina X (reale) e Y (immaginario) in un Complex input 'c'
         BiFunction<Double, Double, Complex> domainAdapter = Complex::new;
 
-        ColorMapper<Real> colorMapper = new ColorMapper<>() {
+        ColorMapper<Natural> colorMapper = new ColorMapper<>() {
             @Override
-            public Color map(Real r) {
+            public Color map(Natural r) {
             	double value = r.getValue();
                 if (value == 0) return Color.BLACK; 
                 if (value >= MAX_ITERATIONS) return Color.BLACK; 

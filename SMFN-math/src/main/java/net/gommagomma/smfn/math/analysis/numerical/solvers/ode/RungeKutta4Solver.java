@@ -1,10 +1,12 @@
-package net.gommagomma.smfn.math.analysis.solvers.ode;
+package net.gommagomma.smfn.math.analysis.numerical.solvers.ode;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.analysis.models.DynamicSystem;
-import net.gommagomma.smfn.math.analysis.solvers.core.IntegrationParameters;
+import net.gommagomma.smfn.math.analysis.core.problems.DifferentialEquationProblem;
+import net.gommagomma.smfn.math.analysis.core.problems.InitialValueProblem;
+import net.gommagomma.smfn.math.analysis.core.solvers.IntegrationParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.IntervalODEStepSolver;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement; 
 
 
@@ -15,7 +17,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * @param <T> Il tipo di vettore (es. ComplexVector) che rappresenta lo stato del sistema.
  */
 public class RungeKutta4Solver<K extends FieldElement<K, ?>, T extends VectorElement<K, T>> 
-implements ODESolver<K, T>
+implements IntervalODEStepSolver<K, T>
 {
 	private final NumericFactory<K> scalarFactory;
 
@@ -27,7 +29,7 @@ implements ODESolver<K, T>
 	    this.scalarFactory = scalarFactory;
     }
 
-    // Helper per ottenere costanti K da double (richiede ancora Field.valueOf(double))
+    // Helper per ottenere costanti K da double
     private K val(double v) {
        return scalarFactory.of(v);
     }
@@ -42,7 +44,7 @@ implements ODESolver<K, T>
      * @return Lo stato y(t + h) approssimato.
      */
     @Override
-    public T step(DynamicSystem<K, T> system, T currentState, Real currentTime, Real deltaTime)
+    public T step(DifferentialEquationProblem<K, T> system, T currentState, Real currentTime, Real deltaTime)
     {    
         // Convertiamo i Real usati per i passi temporali nel tipo scalare K
     	K dt = val(deltaTime.modulus());
@@ -102,11 +104,12 @@ implements ODESolver<K, T>
         return currentState.add(sum.multiplyByScalar(oneSixthAsK));
     }
 
+
     /**
      * Esegue l'integrazione del sistema differenziale da startTime a endTime 
      * utilizzando un passo fisso specificato in IntegrationParameters.
      * 
-     * @param system Il sistema differenziale da risolvere.
+     * @param problem Il problem differenziale da risolvere.
      * @param initialState Lo stato iniziale al tempo startTime.
      * @param startTime Il tempo iniziale.
      * @param endTime Il tempo finale desiderato.
@@ -114,22 +117,18 @@ implements ODESolver<K, T>
      * @return Lo stato del sistema al tempo endTime.
      */
     @Override
-    public T integrate(DynamicSystem<K, T> system, T initialState, Real startTime, Real endTime, IntegrationParameters params)
+    public T integrate(InitialValueProblem<K, T> problem, Real endTime, IntegrationParameters params)
     {
-    	Real fixedDeltaTime = params.fixedStepSize; // Il deltaTime richiesto dall'utente
-
-        if (fixedDeltaTime == null) {
-            throw new IllegalArgumentException("RungeKutta4Solver richiede un parametro fixedStepSize non nullo.");
-        }
-        if (fixedDeltaTime.isZero()) {
-             throw new IllegalArgumentException("deltaTime cannot be zero.");
+    	Real fixedDeltaTime = params.fixedStepSize; 
+        if (fixedDeltaTime == null || fixedDeltaTime.isZero()) {
+            throw new IllegalArgumentException("RungeKutta4Solver richiede un parametro fixedStepSize non nullo e non zero.");
         }
 
-        T currentState = initialState.copy();
-        Real currentTime = startTime;
+        T currentState = problem.getInitialState().copy();
+        Real currentTime = problem.getStartTime();
 
         // Determina se stiamo integrando in avanti o indietro nel tempo
-        boolean forward = endTime.isGreaterThan(startTime);
+        boolean forward = endTime.isGreaterThan(currentTime);
         Real effectiveDeltaTime = forward ? fixedDeltaTime : (Real) fixedDeltaTime.negate();
 
         while ((forward && currentTime.isLessThan(endTime)) || (!forward && currentTime.isGreaterThan(endTime)))
@@ -141,7 +140,7 @@ implements ODESolver<K, T>
             Real stepDt = (effectiveDeltaTime.modulus() > remainingTime.modulus()) ? 
                           remainingTime : effectiveDeltaTime;
             
-            currentState = step(system, currentState, currentTime, stepDt);
+            currentState = step(problem, currentState, currentTime, stepDt);
             currentTime = currentTime.add(stepDt);
 
             if (stepDt.isZero()) break;

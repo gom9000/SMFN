@@ -2,12 +2,12 @@ package net.gommagomma.smfn.physics.mq;
 
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.analysis.models.DynamicSystem;
+import net.gommagomma.smfn.math.analysis.core.problems.DifferentialEquationProblem;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
 
 
 public class SchrodingerEquationSystem
-implements DynamicSystem<Complex, ComplexVector>
+implements DifferentialEquationProblem<Complex, ComplexVector>
 {
 	private final Observable<Complex, ComplexVector, ?> H;
     // hbar (costante di Planck ridotta) è spesso 1.0 in unità naturali per MQ

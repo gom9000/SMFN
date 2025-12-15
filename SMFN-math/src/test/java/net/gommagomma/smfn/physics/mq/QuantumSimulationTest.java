@@ -5,16 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.analysis.solvers.core.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.solvers.core.IntegrationParameters;
-import net.gommagomma.smfn.math.analysis.solvers.core.IntervalSolver;
-import net.gommagomma.smfn.math.analysis.solvers.ode.EmbeddedRK23Solver;
-import net.gommagomma.smfn.math.analysis.solvers.ode.ODESolver;
-import net.gommagomma.smfn.math.analysis.solvers.ode.RungeKutta4Solver;
+import net.gommagomma.smfn.math.analysis.core.problems.InitialValueProblem;
+import net.gommagomma.smfn.math.analysis.core.solvers.IntegrationParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.IntervalODEStepSolver;
+import net.gommagomma.smfn.math.analysis.core.solvers.IntervalSolver;
+import net.gommagomma.smfn.math.analysis.numerical.solvers.ode.EmbeddedRK23Solver;
+import net.gommagomma.smfn.math.analysis.numerical.solvers.ode.RungeKutta4Solver;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
@@ -111,29 +110,49 @@ public class QuantumSimulationTest
 
     @Test
     public void testQuantumTimeEvolution() {
-        // 1. Definisci l'Hamiltoniano (es. un campo magnetico costante sull'asse X)
+        // Definisci l'Hamiltoniano (es. un campo magnetico costante sull'asse X)
     	Observable<Complex, ComplexVector, ?> Hx = new HamiltonianOperator(new Complex[][] {
             {new Complex(0.0), new Complex(1.0)},
             {new Complex(1.0), new Complex(0.0)}
         });
         
-        // 2. Definisci il sistema differenziale
-        SchrodingerEquationSystem system = new SchrodingerEquationSystem(Hx);
+        // Definisci il sistema differenziale
+        SchrodingerEquationSystem problem = new SchrodingerEquationSystem(Hx);
 
-        // 3. Definisci lo stato iniziale |psi(t=0)> (es. |su> state)
+        // Definisci le condizioni iniziali e finali |psi(t=0)> (es. |su> state)
         ComplexVector psi_initial = new ComplexVector(new Complex(1.0), new Complex(0.0));
-
-        // 4. Configura il solutore (come nel punto 2)
-        ComplexField scalarFactory = ComplexField.getInstance();
-        ODESolver<Complex, ComplexVector> mqSolver = new RungeKutta4Solver<>(scalarFactory);
-
-        // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2, con passo dt=0.0001
         Real startTime = new Real(0.0);
         Real endTime = new Real(Math.PI/2.0);
         Real deltaTime = new Real(0.001);
         IntegrationParameters params = new IntegrationParameters(deltaTime);
 
-        ComplexVector psi_final = mqSolver.integrate(system, psi_initial, startTime, endTime, params);
+        // Crea l'Initial Value Problem (IVP)
+        InitialValueProblem<Complex, ComplexVector> ivp = 
+                new InitialValueProblem<Complex, ComplexVector>() {
+                
+                    // Implementa il metodo ereditato da DifferentialEquationProblem
+                    @Override
+                    public ComplexVector derivative(ComplexVector currentState, Real currentTime) {
+                        return problem.derivative(currentState, currentTime);
+                    }
+
+                    @Override
+                    public ComplexVector getInitialState() {
+                        return psi_initial;
+                    }
+
+                    @Override
+                    public Real getStartTime() {
+                        return startTime;
+                    }
+                };
+
+        // Configura il solutore
+        ComplexField scalarFactory = ComplexField.getInstance();
+        IntervalODEStepSolver<Complex, ComplexVector> mqSolver = new RungeKutta4Solver<>(scalarFactory);
+
+        // Esegue l'integrazione
+        ComplexVector psi_final = mqSolver.integrate(ivp, endTime, params);
 
         // 6. Verifica il risultato atteso
         // Con questo Hx e questo tempo finale (PI), lo stato dovrebbe essere |giù> = (0, 1)
@@ -144,49 +163,71 @@ public class QuantumSimulationTest
 
     @Test
     public void testQuantumTimeEvolutionAdaptive() {
-        // 1. Definisci l'Hamiltoniano (es. un campo magnetico costante sull'asse X)
+        // 1. Definisci l'Hamiltoniano (es. campo magnetico costante sull'asse X: Hx = sigma_x)
     	Observable<Complex, ComplexVector, ?> Hx = new HamiltonianOperator(new Complex[][] {
             {new Complex(0.0), new Complex(1.0)},
             {new Complex(1.0), new Complex(0.0)}
         });
         
-        // 2. Definisci il sistema differenziale
-        SchrodingerEquationSystem system = new SchrodingerEquationSystem(Hx);
+        // 2. Definisci il sistema differenziale d|psi>/dt = -i H |psi>
+        SchrodingerEquationSystem problem = new SchrodingerEquationSystem(Hx);
 
-        // 3. Definisci lo stato iniziale |psi(t=0)> (es. |su> state)
+        // 3. Definisci lo stato iniziale |psi(t=0)> (es. |su> state: [1, 0])
         ComplexVector psi_initial = new ComplexVector(new Complex(1.0), new Complex(0.0));
 
-        // 4. Configura il solutore (ORA ADATTIVO)
-        Field<Complex, ?> complexField = ComplexField.getInstance();
-        
-        // Inizializziamo l'EmbeddedRK23Solver passando solo il Field<Complex>
+        // 4. Configura il solutore
         ComplexField scalarFactory = ComplexField.getInstance();
         IntervalSolver<Complex, ComplexVector> mqSolver = new EmbeddedRK23Solver<>(scalarFactory);
 
-        // 5. Esegui l'integrazione: Fai evolvere lo stato da t=0.0 a t=PI/2
+        // 5. Configura i parametri di integrazione
         Real startTime = new Real(0.0);
-        Real endTime = new Real(Math.PI/2.0);
+        Real endTime = new Real(Math.PI/2.0); // Risultato atteso: rotazione di 90 gradi
 
-        // Scegliamo una tolleranza target per l'errore locale (es. 1e-8)
-        Real tolerance = new Real(1e-6);
-        ConvergenceParameters convParams = new ConvergenceParameters(tolerance, 0); // max iterazioni non è molto rilevante qui
+        // --- PARAMETRI ADATTIVI RICHIESTI DA EmbeddedRK23Solver ---
+        Real tolerance = new Real(1e-5);         // Tolleranza di errore locale richiesta (tau)
+        Real maxStepSize = new Real(0.1);        // Passo massimo per l'efficienza
+        Real minStepSize = new Real(1e-8);      // Passo minimo per prevenire il fallimento
 
-        // Creiamo IntegrationParameters usando i parametri di convergenza, non fixedStepSize
-        IntegrationParameters params = new IntegrationParameters(convParams); 
+        // Creazione di IntegrationParameters con tutti i campi adattivi
+        // Nota: Assumiamo che tu abbia un costruttore aggiornato o un builder che accetta questi parametri
+        IntegrationParameters params = new IntegrationParameters(
+            null, // fixedStepSize (non usato in adattivo)
+            tolerance, 
+            maxStepSize, 
+            minStepSize
+        );
         
-        // Chiamiamo integrate()
-        ComplexVector psi_final = mqSolver.integrate(system, psi_initial, startTime, endTime, params);
+        // --- Creazione del problema a valore iniziale ---
+        InitialValueProblem<Complex, ComplexVector> ivp = 
+                new InitialValueProblem<Complex, ComplexVector>() {
+                
+                    // Implementa il metodo ereditato da DifferentialEquationProblem
+                    @Override
+                    public ComplexVector derivative(ComplexVector currentState, Real currentTime) {
+                        return problem.derivative(currentState, currentTime);
+                    }
 
-        // 6. Verifica il risultato atteso (usando una tolleranza adeguata)
-        // Il risultato corretto atteso è (0, -i)
+                    @Override
+                    public ComplexVector getInitialState() {
+                        return psi_initial;
+                    }
+
+                    @Override
+                    public Real getStartTime() {
+                        return startTime;
+                    }
+                };
+
+        // 6. Esegui l'integrazione
+        ComplexVector psi_final = mqSolver.integrate(ivp, endTime, params);
+
+        // 7. Verifica il risultato atteso
+        // Con Hx e |psi(0)>=|su>, a t=PI/2 lo stato ruota a |giù>: (0, -i)
         ComplexVector expected_final = new ComplexVector(new Complex(0.0), new Complex(0.0, -1.0));
         
-        System.out.println("psi final = " + psi_final + ", psi expected = " + expected_final);
+        System.out.println("psi2 final = " + psi_final + ", psi expected = " + expected_final);
         
-        // Usiamo una tolleranza (EPSILON) per il confronto del risultato finale
-        // L'errore finale dovrebbe essere ben al di sotto della tolleranza locale impostata (1e-8)
-        final double FINAL_EPSILON = 1e-7;
-
-        assertTrue(psi_final.isMathematicallyEqualTo(expected_final), "Lo stato finale doveva essere |giù>, psi=" + psi_final);
+        assertTrue(psi_final.isMathematicallyEqualTo(expected_final), 
+            "Lo stato finale doveva essere |giù> (0, -i), trovato: " + psi_final);
     }
 }

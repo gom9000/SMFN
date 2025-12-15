@@ -16,7 +16,7 @@ import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.analysis.fractals.MandelbrotFunction;
 
 
@@ -27,7 +27,7 @@ implements ViewportController.ViewportUpdateHandler
     private final SwingRenderer2D renderer;
     private final MandelbrotFunction mandelbrotFunction;
     private final BiFunction<Double, Double, Complex> domainAdapter;
-    private final ColorMapper<Real> baseColorMapper; // Mapper base (richiede un setter per le iterazioni)
+    private final ColorMapper<Natural> baseColorMapper; // Mapper base (richiede un setter per le iterazioni)
     private ViewportController viewportController;
     private final Color selectionColor = new Color(0, 0, 255, 100); // Blu semi-trasparente
     private static final DecimalFormat DF = new DecimalFormat("0.000E0"); // Formattazione scientifica
@@ -86,10 +86,10 @@ implements ViewportController.ViewportUpdateHandler
     /**
      * Crea un ColorMapper che utilizza il valore corrente di currentMaxIterations
      */
-    private ColorMapper<Real> createDynamicColorMapper() {
+    private ColorMapper<Natural> createDynamicColorMapper() {
         return new ColorMapper<>() {
             @Override
-            public Color map(Real r) {
+            public Color map(Natural r) {
                 double value = r.getValue();
                 // Usa currentMaxIterations che è aggiornato dal renderScene
                 if (value == 0) return Color.BLACK; 
