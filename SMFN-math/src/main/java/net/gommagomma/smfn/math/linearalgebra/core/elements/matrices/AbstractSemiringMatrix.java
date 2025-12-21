@@ -96,6 +96,27 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
     }
 
 
+    @Override
+    public M getOne() {
+        // l'identità esiste solo nel sottoinsieme delle matrici quadrate
+        if (this.rows != this.cols) {
+            throw new UnsupportedOperationException("Multiplicative identity is not defined for rectangular matrices.");
+        }
+
+        // Procediamo con la creazione dell'identità specifica per il tipo K
+        K[][] identityData = createMatrixArray(rows, cols);
+        K zero = matrixStructure.getScalarStructure().zero();
+        K one = matrixStructure.getScalarStructure().one();
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                identityData[i][j] = (i == j) ? one : zero;
+            }
+        }
+
+        return matrixStructure.createMatrix(identityData);
+    }
+
     @Override // AlgebraicElement impls
     public boolean isMathematicallyEqualTo(M other) {
     	if (this == other) {

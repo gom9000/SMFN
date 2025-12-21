@@ -1,13 +1,11 @@
 package net.gommagomma.smfn.math.linearalgebra.core.elements.matrices;
 
-import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
-import net.gommagomma.smfn.math.algebra.core.elements.additive.CommutativeMonoidElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.SemimoduleElement;
 
 
 public interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> 
-extends AlgebraicElement<M>, CommutativeMonoidElement<M>
+extends SemiringElement<M>
 {
     int getRows();
     int getColumns();
