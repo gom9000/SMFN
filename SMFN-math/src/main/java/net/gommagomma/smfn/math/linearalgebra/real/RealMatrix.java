@@ -52,4 +52,8 @@ extends AbstractFieldMatrix<Real, RealVector, RealMatrix, RealMatrixSpace>
             return Double.compare(abs1, abs2);
         };
     }
+	@Override
+	public RealMatrix getOne() {
+        return null;
+	}
 }

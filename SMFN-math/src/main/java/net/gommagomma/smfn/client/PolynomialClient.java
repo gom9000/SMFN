@@ -9,17 +9,31 @@ import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
-
-// Importazioni aggiornate
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.polynomial.Polynomial; // Usiamo la nuova classe!
-import net.gommagomma.smfn.math.algebra.structures.RealField; // Necessario per la struttura dei coefficienti
-import net.gommagomma.smfn.math.algebra.structures.PolynomialRing; // Necessario per creare il Polinomio
+import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
+import net.gommagomma.smfn.math.algebra.structures.PolynomialRing;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.specialized.RealMatrixRing;
+import net.gommagomma.smfn.math.linearalgebra.real.RealMatrix;
 
 public class PolynomialClient
 {
     public static void main(String[] args)
     {
+    	RealMatrixRing MRing = new RealMatrixRing(2);
+    	PolynomialRing<RealMatrix> P = new PolynomialRing<>(MRing);
+    	
+    	RealMatrix M1 = MRing.createMatrix(new double[][]{{1, 0},{0, 1}});
+    	RealMatrix M0 = MRing.createMatrix(new double[][]{{1, 0},{0, -1}});
+    	RealMatrix M2 = MRing.createMatrix(new double[][]{{1, -1},{3, 2}});
+    	RealMatrix[] data = {M2, M1, M0};
+    	
+    	Polynomial<RealMatrix> mpoly = P.create(data);
+    	
+    	System.out.println("P(x) = " + mpoly.toString());
+    	System.out.println("P(M2) evaluate = " + mpoly.evaluate(M2));
+    	;
+    	
         // --- 1. Definizione del Contesto e del Polinomio P(x) = 1.5x^3 + 3.0x^2 - 5.0x - 2.0 ---
         
         // 1.1 Definiamo la struttura base (Anello/Campo dei coefficienti)

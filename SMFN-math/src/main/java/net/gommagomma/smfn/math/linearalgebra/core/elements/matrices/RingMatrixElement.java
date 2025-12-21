@@ -6,5 +6,5 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.ModuleElemen
 
 
 public interface RingMatrixElement<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> 
-extends SemiringMatrixElement<K, V, M>, AbelianGroupElement<M>
+extends SemiringMatrixElement<K, V, M>, AbelianGroupElement<M>, RingElement<M>
 {}
