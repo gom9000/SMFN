@@ -1,14 +1,15 @@
 package net.gommagomma.smfn.math.linearalgebra.core.structures.spaces;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
+import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 
 /**
  * Rappresenta uno Spazio Metrico (X, d), dove X è un insieme di elementi T 
  * e d è una funzione di distanza (metrica) d: X * X -> Real.
  */
-public interface MetricSpace<T extends AlgebraicElement<T>> 
-extends Space<T>
+public interface MetricSpace<K extends SemiringElement<K>, T extends AlgebraicElement<T>>
+extends LinearSpace<K, T>
 {
     /**
      * Calcola la distanza tra due punti nello spazio metrico.

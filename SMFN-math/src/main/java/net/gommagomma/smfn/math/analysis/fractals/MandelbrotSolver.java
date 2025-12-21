@@ -23,7 +23,7 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Natural>
 
 
     @Override
-    public Natural solve(FixedPointProblem<Complex> problem, Complex initialGuess, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<Complex> space)
+    public Natural solve(FixedPointProblem<Complex> problem, Complex initialGuess, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<?, Complex> space)
     {
         Complex currentZ = initialGuess;
 

@@ -21,6 +21,6 @@ extends Solver<P, R>
      * @param space L'oggetto MetricSpace che definisce come misurare la distanza tra le iterazioni S.
      * @return Il risultato convergente R.
      */
-    R solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<S> space);
+    R solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<?, S> space);
 }
  

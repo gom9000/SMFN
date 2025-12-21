@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.ForwardDifferenceDifferentiator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.NewtonRaphsonSolver;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.ScalarMetricSpace;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RealMetricSpace;
 
 /**
  * Classe client per dimostrare l'utilizzo del NewtonRaphsonSolver.
@@ -61,7 +61,7 @@ public class RootSolverClient
         ConvergenceCriteria criteria = new AbsoluteDifferenceCriteria();
 
         // Spazio Metrico (calcolo della distanza)
-        MetricSpace<Real> space = new ScalarMetricSpace<>("Euclidean Scalar Space");
+        MetricSpace<?, Real> space = new RealMetricSpace("Euclidean Real Space");
 
         // Funzionale (calcola la derivata numerica f'(x)
         Real differentiationStepSize = new Real(1e-6); // h piccolo

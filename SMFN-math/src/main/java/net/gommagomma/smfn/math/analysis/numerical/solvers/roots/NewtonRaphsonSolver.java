@@ -28,7 +28,7 @@ implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
 
 
     @Override
-    public R solve(ScalarRootFindingProblem<R> problem, R initialGuess, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<R> space) {
+    public R solve(ScalarRootFindingProblem<R> problem, R initialGuess, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<?, R> space) {
         
         R current = initialGuess; // Contiene x_{k}
         R next;                   // Contiene x_{k+1}

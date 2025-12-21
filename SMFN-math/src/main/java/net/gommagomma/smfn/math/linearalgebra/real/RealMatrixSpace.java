@@ -1,138 +1,46 @@
 package net.gommagomma.smfn.math.linearalgebra.real;
 
-import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.AbstractFieldMatrixSpace;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.VectorSpace;
 
-public final class RealMatrixSpace
-implements FieldMatrixSpace<Real, RealVector, RealMatrix>
+public final class RealMatrixSpace 
+extends AbstractFieldMatrixSpace<Real, RealVector, RealMatrix> 
 {
-    private final int rows;
-    private final int cols;
-
-
     public RealMatrixSpace(int rows, int cols) {
-    	if (rows <= 0 || cols <= 0) {
-            throw new IllegalArgumentException("Matrix dimensions must be positive.");
-        }
-        this.rows = rows;
-        this.cols = cols;
+        super(rows, cols);
     }
 
-
-    @Override // AlgebraicStructure impls
+    @Override
     public String getName() {
-        return "Space of " + rows + "x" + cols + " Real Matrices";
-    }
-    
-    @Override // AlgebraicStructure impls
-    public boolean contains(RealMatrix m) {
-        return m.getRows() == rows && m.getColumns() == cols;
+        return String.format("Space of %dx%d Real Matrices", rows, cols);
     }
 
+    @Override
+    public RealField getScalarStructure() {
+        return RealField.getInstance();
+    }
 
-    @Override // SemiringMatrixSemimodule impls 
-    public int getMatrixRows() { return rows; }
+    @Override
+    public RealVectorSpace getVectorStructure() {
+        return RealVectorSpace.getInstance();
+    }
 
-    @Override // SemiringMatrixSemimodule impls
-    public int getMatrixColumns() { return cols; }
-
-
-    @Override // FieldMatrixSpace impls
-    public Field<Real, Natural> getScalarStructure() { return RealField.getInstance(); }
-
-    @Override // SemiringMatrixSemimodule impls
-	public VectorSpace<Real, RealVector> getVectorStructure() { return RealVectorSpace.getInstance(); }
-
-
-    @Override // MatrixElementFactory impls
+    @Override
     public RealMatrix createMatrix(Real[][] data) {
-    	if (data == null || data.length != this.rows || (this.rows > 0 && data[0].length != this.cols)) {
-    		throw new IllegalArgumentException("Input data dimensions do not match this Space dimensions (" + this.rows + "x" + this.cols + ").");
-    	}
+        // Usiamo il validatore ereditato dall'astratta
+        validateInputDimensions(data.length, data.length > 0 ? data[0].length : 0);
         return new RealMatrix(data, this);
     }
 
-    @Override // MatrixElementFactory impls
-    public RealMatrix createMatrix(double[][] data) {
-        int rows = data.length;
-        if (rows == 0) {
-            return createZeroMatrix(0, 0); 
-        }
-        int cols = data[0].length;
-
-        Real[][] components = new Real[rows][cols]; 
-        
-        for (int i = 0; i < rows; i++) {
-            if (data[i].length != cols) {
-                throw new IllegalArgumentException("All rows must have the same length.");
-            }
-            for (int j = 0; j < cols; j++) {
-                components[i][j] = getScalarStructure().of(data[i][j]);
-            }
-        }
-
-        return createMatrix(components);
+    @Override
+    protected Real[][] createDataArray(int r, int c) {
+        return new Real[r][c];
     }
 
-    @Override // MatrixElementFactory impls
-    public RealMatrix createMatrix(long[][] data) {
-        int rows = data.length;
-        if (rows == 0) {
-            return createZeroMatrix(0, 0); 
-        }
-        int cols = data[0].length;
-
-        Real[][] components = new Real[rows][cols]; 
-        
-        for (int i = 0; i < rows; i++) {
-            if (data[i].length != cols) {
-                throw new IllegalArgumentException("All rows must have the same length.");
-            }
-            for (int j = 0; j < cols; j++) {
-                components[i][j] = getScalarStructure().of(data[i][j]); 
-            }
-        }
-
-        return createMatrix(components);
+    @Override
+    public FieldMatrixSpace<Real, RealVector, RealMatrix> getSpaceOfDimensions(int rows, int cols) {
+        return new RealMatrixSpace(rows, cols);
     }
-
-    @Override // MatrixElementFactory impls
-    public RealMatrix createMatrix(int[][] data) {
-        int rows = data.length;
-        if (rows == 0) {
-            return createZeroMatrix(0, 0); 
-        }
-        int cols = data[0].length;
-
-        Real[][] components = new Real[rows][cols]; 
-        
-        for (int i = 0; i < rows; i++) {
-            if (data[i].length != cols) {
-                throw new IllegalArgumentException("All rows must have the same length.");
-            }
-            for (int j = 0; j < cols; j++) {
-                components[i][j] = getScalarStructure().of(data[i][j]); 
-            }
-        }
-
-        return createMatrix(components);
-    }
-
-    @Override // MatrixElementFactory impls
-    public RealMatrix createZeroMatrix(int rows, int cols) {
-    	if (rows != this.rows || cols != this.cols) {
-    		throw new IllegalArgumentException("Requested zero matrix dimensions do not match this Space dimensions (" + this.rows + "x" + this.cols + ").");
-    	}
-    	return new RealMatrix(rows, cols, this);
-    }
-
-
-	@Override // DimensionalStructure impls
-	public FieldMatrixSpace<Real, RealVector, RealMatrix> getSpaceOfDimensions(int rows, int cols) {
-		return new RealMatrixSpace(rows, cols);
-	}
 }

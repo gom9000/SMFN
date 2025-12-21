@@ -12,4 +12,5 @@ public interface MatrixElementFactory<K extends SemiringElement<K>, V extends Se
 	M createMatrix(long[][] data);
 	M createMatrix(int[][] data);
 	M createZeroMatrix(int rows, int cols);
+	M createIdentityMatrix(int dimension);
 }

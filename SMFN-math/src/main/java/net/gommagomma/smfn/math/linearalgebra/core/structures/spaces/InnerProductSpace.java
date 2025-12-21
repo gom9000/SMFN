@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProduct
 
 
 public interface InnerProductSpace<K extends FieldElement<K, ?> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> 
-extends VectorSpace<K, V>, MetricSpace<V>
+extends VectorSpace<K, V>, MetricSpace<K, V>
 {
     /**
      * Calcola il prodotto interno tra due elementi nello spazio.
