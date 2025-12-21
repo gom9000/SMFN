@@ -1,27 +1,28 @@
 package net.gommagomma.smfn.math.algebra.polynomial;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 import java.util.Objects;
+
+import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 
 /**
  * Contenitore immutabile per il risultato della Divisione Euclidea:
  * P(x) = Q(x) * D(x) + R(x)
  */
-public final class PolynomialQuotientRemainder<K extends SemiringElement<K>> {
-    
-    private final Polynomial<K> quotient;
-    private final Polynomial<K> remainder;
+public final class PolynomialQuotientRemainder<K extends SemiringElement<K>>
+{    
+    private final AbstractPolynomial<K, ?> quotient;
+    private final AbstractPolynomial<K, ?> remainder;
 
-    public PolynomialQuotientRemainder(Polynomial<K> quotient, Polynomial<K> remainder) {
+    public PolynomialQuotientRemainder(AbstractPolynomial<K, ?> quotient, AbstractPolynomial<K, ?> remainder) {
         this.quotient = Objects.requireNonNull(quotient);
         this.remainder = Objects.requireNonNull(remainder);
     }
 
-    public Polynomial<K> quotient() {
+    public AbstractPolynomial<K, ?> quotient() {
         return quotient;
     }
 
-    public Polynomial<K> remainder() {
+    public AbstractPolynomial<K, ?> remainder() {
         return remainder;
     }
 
