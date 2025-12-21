@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.algebra.polynomial;
 import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
+import net.gommagomma.smfn.math.algebra.polynomial.core.AbstractPolynomial;
 
 /**
  * Contenitore immutabile per il risultato della Divisione Euclidea:

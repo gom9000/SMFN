@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.algebra.polynomial;
 import java.util.TreeMap;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
+import net.gommagomma.smfn.math.algebra.polynomial.core.AbstractPolynomial;
 
 /**
  * Implementazione finale e immutabile per polinomi su semianelli.

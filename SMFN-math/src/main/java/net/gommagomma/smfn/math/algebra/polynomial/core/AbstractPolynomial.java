@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.algebra.polynomial;
+package net.gommagomma.smfn.math.algebra.polynomial.core;
 
 import java.util.Collections;
 import java.util.Map;
@@ -32,6 +32,10 @@ implements SemiringElement<P>, MathFunction<K, K>
                 this.coefficients.put(deg, val.copy());
             }
         });
+    }
+
+    public final Semiring<K> getScalarStructure() {
+        return this.structure;
     }
 
     /** Crea una nuova istanza della sottoclasse specifica. */

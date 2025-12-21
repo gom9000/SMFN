@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.algebra.polynomial;
+package net.gommagomma.smfn.math.algebra.polynomial.core;
 
 import java.util.TreeMap;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.RingElement;

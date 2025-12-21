@@ -10,8 +10,9 @@ import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
-import net.gommagomma.smfn.math.algebra.structures.PolynomialRing;
+import net.gommagomma.smfn.math.algebra.polynomial.CommutativePolynomial;
+import net.gommagomma.smfn.math.algebra.polynomial.GeneralPolynomial;
+import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.specialized.RealMatrixRing;
 import net.gommagomma.smfn.math.linearalgebra.real.RealMatrix;
@@ -21,33 +22,25 @@ public class PolynomialClient
     public static void main(String[] args)
     {
     	RealMatrixRing MRing = new RealMatrixRing(2);
-    	PolynomialRing<RealMatrix> P = new PolynomialRing<>(MRing);
     	
     	RealMatrix M1 = MRing.createMatrix(new double[][]{{1, 0},{0, 1}});
     	RealMatrix M0 = MRing.createMatrix(new double[][]{{1, 0},{0, -1}});
     	RealMatrix M2 = MRing.createMatrix(new double[][]{{1, -1},{3, 2}});
     	RealMatrix[] data = {M2, M1, M0};
     	
-    	Polynomial<RealMatrix> mpoly = P.create(data);
+    	GeneralPolynomial<RealMatrix> polyMatrix = Polynomials.ring(MRing, data);
     	
-    	System.out.println("P(x) = " + mpoly.toString());
-    	System.out.println("P(M2) evaluate = " + mpoly.evaluate(M2));
+    	System.out.println("P(x) = " + polyMatrix.toString());
+    	System.out.println("P(M2) evaluate = " + polyMatrix.evaluate(M2));
     	;
     	
         // --- 1. Definizione del Contesto e del Polinomio P(x) = 1.5x^3 + 3.0x^2 - 5.0x - 2.0 ---
         
         // 1.1 Definiamo la struttura base (Anello/Campo dei coefficienti)
-        RealField R = RealField.getInstance(); 
-        
-        // 1.2 Definiamo l'Anello dei Polinomi R[x]
-        PolynomialRing<Real> R_X = new PolynomialRing<>(R);
-        
-        // 1.3 Coefficienti in ordine [c0, c1, c2, c3]
+        RealField R = RealField.getInstance();
         Real[] coeffs = {new Real(-2.0), new Real(-5.0), new Real(3.0), new Real(1.5)};
-        
-        // 1.4 Creiamo il Polinomio usando la Factory della Struttura
-        // NOTA: La classe Polynomial<Real> implementa MathFunction<Real, Real>
-        Polynomial<Real> cubicPolynomial = R_X.create(coeffs); 
+
+        CommutativePolynomial<Real> cubicPolynomial = Polynomials.commutative(R, coeffs);
 
         System.out.println("Polinomio da plottare: P(x) = " + cubicPolynomial);
 

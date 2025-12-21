@@ -8,55 +8,50 @@ import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 
-/**
- * Utility factory per la creazione rapida di polinomi.
- * Utilizza la 'structure' per convertire primitivi in elementi algebrici.
- */
-public final class Polynomials {
+public final class Polynomials
+{
+    private Polynomials() {}
 
-    private Polynomials() {} // Classe utility, non istanziabile
-
-    /**
-     * Crea un polinomio commutativo da un array di coefficienti scalari.
-     * I coefficienti sono ordinati per grado crescente: [a0, a1, a2, ...] -> a0 + a1*x + a2*x^2
-     */
+    /** Crea un polinomio commutativo (es. Integers, Reals) */
     @SafeVarargs
     public static <K extends CommutativeRingElement<K>> CommutativePolynomial<K> commutative(CommutativeRing<K> structure, K... coeffs) {
-        return new CommutativePolynomial<>(buildMap(coeffs), structure);
+        return new CommutativePolynomial<>(buildMap(structure, coeffs), structure);
     }
 
-    /**
-     * Crea un polinomio commutativo partendo da valori double (usa la factory della struttura).
-     */
+    /** Crea un polinomio commutativo partendo da valori primitivi */
     public static <K extends CommutativeRingElement<K>> CommutativePolynomial<K> commutative(CommutativeRing<K> structure, double... values) {
         TreeMap<Integer, K> map = new TreeMap<>();
+        K zero = structure.zero();
         for (int i = 0; i < values.length; i++) {
-            map.put(i, structure.of(values[i]));
+            K val = structure.of(values[i]);
+            // Importante: inserire solo se diverso da zero
+            if (!val.isMathematicallyEqualTo(zero)) {
+                map.put(i, val);
+            }
         }
         return new CommutativePolynomial<>(map, structure);
     }
 
-    /**
-     * Crea un polinomio generale (non commutativo) da coefficienti scalari (es. Matrici).
-     */
+    /** Crea un polinomio per anelli generici (es. Matrici) */
     @SafeVarargs
     public static <K extends RingElement<K>> GeneralPolynomial<K> ring(Ring<K> structure, K... coeffs) {
-        return new GeneralPolynomial<>(buildMap(coeffs), structure);
+        return new GeneralPolynomial<>(buildMap(structure, coeffs), structure);
     }
 
-    /**
-     * Crea un polinomio per un Semianello (es. Naturali).
-     */
+    /** Crea un polinomio per semianelli (es. Naturali) */
     @SafeVarargs
     public static <K extends SemiringElement<K>> SemiringPolynomial<K> semiring(Semiring<K> structure, K... coeffs) {
-        return new SemiringPolynomial<>(buildMap(coeffs), structure);
+        return new SemiringPolynomial<>(buildMap(structure, coeffs), structure);
     }
 
-    /** Helper interno per trasformare array in TreeMap */
-    private static <K extends SemiringElement<K>> TreeMap<Integer, K> buildMap(K[] coeffs) {
+    /** * Helper interno per trasformare array in TreeMap.
+     * Filtra i null e gli zeri matematici per mantenere corretti i calcoli sul grado.
+     */
+    private static <K extends SemiringElement<K>> TreeMap<Integer, K> buildMap(Semiring<K> structure, K[] coeffs) {
         TreeMap<Integer, K> map = new TreeMap<>();
+        K zero = structure.zero();
         for (int i = 0; i < coeffs.length; i++) {
-            if (coeffs[i] != null) {
+            if (coeffs[i] != null && !coeffs[i].isMathematicallyEqualTo(zero)) {
                 map.put(i, coeffs[i]);
             }
         }

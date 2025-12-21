@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.algebra.polynomial;
 import java.util.TreeMap;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.RingElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
+import net.gommagomma.smfn.math.algebra.polynomial.core.AbstractRingPolynomial;
 
 public final class GeneralPolynomial<K extends RingElement<K>> 
 extends AbstractRingPolynomial<K, GeneralPolynomial<K>>

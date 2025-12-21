@@ -4,6 +4,7 @@ import java.util.TreeMap;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
+import net.gommagomma.smfn.math.algebra.polynomial.core.AbstractRingPolynomial;
 
 public final class CommutativePolynomial<K extends CommutativeRingElement<K>> 
 extends AbstractRingPolynomial<K, CommutativePolynomial<K>> 
