@@ -77,7 +77,7 @@ implements FieldElement<Rational, Natural>, ExponentiableElement<Rational>, Comp
 
     @Override // EuclideanDomainElement impls
     public Natural normValue() {
-        return Natural.ONE;
+    	return this.isZero() ? Natural.ZERO : Natural.ONE;
     }
 
     @Override // EuclideanDomainElement impls

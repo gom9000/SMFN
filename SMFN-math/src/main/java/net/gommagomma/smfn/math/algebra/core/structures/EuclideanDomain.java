@@ -5,4 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.EuclideanDo
 
 public interface EuclideanDomain<E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> 
 extends CommutativeRing<E>
-{}
+{
+	E quotient(E a, E b);
+	E remainder(E a, E b);
+}

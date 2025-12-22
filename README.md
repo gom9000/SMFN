@@ -100,8 +100,12 @@ net.gommagomma.smfn/
 - interface Semiring<E extends SemiringElement<E>> extends AdditiveMonoid<E>, MultiplicativeMonoid<E>, NumericFactory<E>{ default E zero() { return additiveIdentity(); } default E one() { return multiplicativeIdentity(); } }
 - interface Ring<E extends RingElement<E>> extends Semiring<E>, AbelianGroup<E> {}
 - interface CommutativeRing<E extends CommutativeRingElement<E>> extends Ring<E>, CommutativeMultiplicativeMonoid<E> {}
-- interface EuclideanDomain<E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> extends CommutativeRing<E> {}
-- interface Field<E extends FieldElement<E, N>, N extends ComparableElement<N>> extends EuclideanDomain<E, N> {}
+- interface EuclideanDomain<E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> extends CommutativeRing<E> { E quotient(E a, E b); E remainder(E a, E b);}
+- interface Field<E extends FieldElement<E, N>, N extends ComparableElement<N>> extends EuclideanDomain<E, N> {
+@Override default E quotient(E a, E b) {if (b.isZero()) throw new ArithmeticException("Division by zero"); return a.multiply(b.inverse()); }  @Override default E remainder(E a, E b) { if (b.isZero()) throw new ArithmeticException("Division by zero"); return zero(); }}
+
+### net.gommagomma.smfn.math.algebra.core.algorithms:
+- AlgebraicAlgorithms { public static <E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> E gcd(E a, E b){} public static <E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> E lcm(E a, E b) {} }
 
 ### net.gommagomma.smfn.math.algebra.numeric:
 - final class Natural implements SemiringElement<Natural>, ExponentiableElement<Natural>, ComparableElement<Natural> {}
@@ -118,7 +122,6 @@ net.gommagomma.smfn/
 - final class RealField implements Field<Real, Natural> {}
 - final class ComplexField implements Field<Complex, Natural> {}
 - final class ZnRing implements CommutativeRing<ZnElement> {}
-- public class PolynomialRing<K extends SemiringElement<K>> implements CommutativeRing<Polynomial<K>> {}
 
 ### net.gommagomma.smfn.math.algebra.polynomial:
 - final class Polynomial<K extends SemiringElement<K>> implements CommutativeRingElement<Polynomial<K>>, MathFunction<K, K> {}

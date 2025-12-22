@@ -2,9 +2,11 @@ package net.gommagomma.smfn.math.algebra.polynomial;
 
 import java.util.TreeMap;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
+import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.RingElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 
@@ -56,5 +58,10 @@ public final class Polynomials
             }
         }
         return map;
+    }
+
+    @SafeVarargs
+    public static <K extends FieldElement<K, ?>> EuclideanPolynomial<K> euclidean(Field<K, ?> structure, K... coeffs) {
+        return new EuclideanPolynomial<>(buildMap(structure, coeffs), structure);
     }
 }

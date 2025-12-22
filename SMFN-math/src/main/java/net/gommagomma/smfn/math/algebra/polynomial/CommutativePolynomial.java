@@ -37,7 +37,7 @@ implements CommutativeRingElement<CommutativePolynomial<K>>
      * Esegue la divisione euclidea. Richiede che i coefficienti siano FieldElements.
      */
     @SuppressWarnings("unchecked")
-    public PolynomialQuotientRemainder<K> euclideanDivide(CommutativePolynomial<K> divisor) {
+    public PolynomialQuotientRemainder<K, CommutativePolynomial<K>> euclideanDivide(CommutativePolynomial<K> divisor) {
         if (divisor.isZero()) throw new ArithmeticException("Division by zero polynomial.");
         
         K zeroK = structure.zero();
@@ -65,6 +65,6 @@ implements CommutativeRingElement<CommutativePolynomial<K>>
             remainder = remainder.add(term.multiply(divisor).negate());
         }
         
-        return new PolynomialQuotientRemainder<K>(quotient, remainder);
+        return new PolynomialQuotientRemainder<>(quotient, remainder);
     }
 }

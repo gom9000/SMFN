@@ -12,9 +12,9 @@ import net.gommagomma.smfn.math.algebra.polynomial.core.AbstractPolynomialRing;
  * Utilizzata quando i coefficienti commutano nel prodotto (es. Integers, Reals).
  */
 public final class CommutativePolynomialRing<K extends CommutativeRingElement<K>> 
-    extends AbstractPolynomialRing<K, CommutativePolynomial<K>>
-    implements CommutativeRing<CommutativePolynomial<K>> {
-
+extends AbstractPolynomialRing<K, CommutativePolynomial<K>>
+implements CommutativeRing<CommutativePolynomial<K>>
+{
     public CommutativePolynomialRing(CommutativeRing<K> scalarRing) {
         super(Objects.requireNonNull(scalarRing));
     }

@@ -16,6 +16,23 @@ implements EuclideanDomain<SignedInt, SignedInt>
     public static IntegerRing getInstance() { return INSTANCE; }
 
 
+    @Override // EuclideanDomain impls
+    public SignedInt quotient(SignedInt a, SignedInt b) {
+        if (b.isZero()) {
+            throw new ArithmeticException("Division by zero in Z.");
+        }
+        return a.quotient(b);
+    }
+
+    @Override // EuclideanDomain impls
+    public SignedInt remainder(SignedInt a, SignedInt b) {
+        if (b.isZero()) {
+            throw new ArithmeticException("Modulo by zero in Z.");
+        }
+        return a.remainder(b);
+    }
+
+
     @Override // AlgebraicStructure impls
     public String getName()
     {
