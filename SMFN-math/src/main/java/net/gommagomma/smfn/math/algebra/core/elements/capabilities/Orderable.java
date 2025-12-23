@@ -11,5 +11,4 @@ extends AlgebraicElement<E>, Comparable<E>
     default boolean isGreaterThan(E other) {
         return compareTo(other) > 0;
     }
-    double modulus();
 }

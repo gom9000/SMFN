@@ -13,6 +13,6 @@ extends AbstractProjectionOperator<Real, RealVector>
 
     @Override
     protected Real getInverseNormScalar(Real normValue) {
-        return new Real(1.0 / normValue.modulus());
+        return normValue.abs().inverse();
     }
 }

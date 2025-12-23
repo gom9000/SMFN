@@ -1,12 +1,12 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Absolutable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.EuclideanDomainElement;
 
 public final class SignedInt
-implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, Orderable<SignedInt>, EuclideanDomainElement<SignedInt, Natural>
+implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, Absolutable<SignedInt>, EuclideanDomainElement<SignedInt, Natural>
 {
 	public static final SignedInt ZERO = new SignedInt(0);
     public static final SignedInt ONE = new SignedInt(1);
@@ -121,11 +121,6 @@ implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, Orderabl
     public int compareTo(SignedInt other)
     {
         return Long.compare(this.value, other.value);
-    }
-
-    @Override // ComparableElement impls
-    public double modulus() {
-        return Math.abs(this.value);
     }
 
     

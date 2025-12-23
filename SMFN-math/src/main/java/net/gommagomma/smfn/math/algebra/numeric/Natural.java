@@ -106,15 +106,10 @@ implements SemiringElement<Natural>, Exponentiable<Natural>, Orderable<Natural>
     }
 
 
-    @Override // ComparableElement impls
+    @Override // Orderable impls
     public int compareTo(Natural other)
     {
         return Long.compare(this.value, other.value);
-    }
-
-    @Override // ComparableElement impls
-    public double modulus() {
-        return this.value;
     }
 
 

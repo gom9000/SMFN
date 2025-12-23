@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.algebra.core.algorithms;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.EuclideanDomainElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Absolutable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
 
 /**
@@ -16,7 +17,8 @@ public final class AlgebraicAlgorithms
      * @param <E> Il tipo dell'elemento (es. SignedInt, EuclideanPolynomial)
      * @param <N> Il tipo della norma (es. SignedInt, Natural)
      */
-    public static <E extends EuclideanDomainElement<E, N>, N extends Orderable<N>> E gcd(E a, E b) {
+    @SuppressWarnings("unchecked")
+	public static <E extends EuclideanDomainElement<E, N>, N extends Orderable<N>> E gcd(E a, E b) {
         E r0 = a;
         E r1 = b;
 
@@ -24,6 +26,10 @@ public final class AlgebraicAlgorithms
             E temp = r1;
             r1 = r0.remainder(r1);
             r0 = temp;
+        }
+
+        if (r0 instanceof Absolutable) {
+            return (E) ((Absolutable<?>) r0).abs();
         }
         
         return r0;

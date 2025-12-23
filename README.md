@@ -83,18 +83,21 @@ net.gommagomma.smfn/
 - interface RingElement<E extends RingElement<E>> extends SemiringElement<E>, AbelianGroupElement<E> {}
 - interface CommutativeRingElement<E extends CommutativeRingElement<E>> extends RingElement<E>, CommutativeMultiplicativeMonoidElement<E> {}
 - interface FieldElement<E extends FieldElement<E>> extends CommutativeRingElement<E> {E inverse();default E divide(E other) { return multiply(other.inverse());}}
-- interface EuclideanDomainElement<E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> extends CommutativeRingElement<E> {N normValue(); E remainder(E divisor); E quotient(E divisor); default E mod(E divisor) { return remainder(divisor); }}
+- interface EuclideanDomainElement<E extends EuclideanDomainElement<E, N>, N extends Orderable<N>> extends CommutativeRingElement<E> {N normValue(); E remainder(E divisor); E quotient(E divisor); default E mod(E divisor) { return remainder(divisor); }}
 
 ### net.gommagomma.smfn.math.algebra.core.elements.tensors:
 - interface TensorElement<K extends SemiringElement<K>> {int rank(); int[] getShape(); long size(); K get(int... indices);}
 
 ### net.gommagomma.smfn.math.algebra.core.elements.capabilities:
-- interface Orderable<E extends ComparableElement<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;} double modulus();}
-- interface Sqrtable<E extends SqrtableElement<E>> extends AlgebraicElement<E> { E sqrt(); }
-- interface Exponentiable<E extends ExponentiableElement<E>> extends AlgebraicElement<E> { E power(int exponent);}
-- interface Normable<N extends FieldElement<N>, E extends NormableElement<N, E>>  extends AlgebraicElement<E> {N norm();}
+- interface Orderable<E extends Orderable<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;} }
+- interface Sqrtable<E extends Sqrtable<E>> extends AlgebraicElement<E> { E sqrt(); }
+- interface Exponentiable<E extends Exponentiable<E>> extends AlgebraicElement<E> { E power(int exponent);}
+- interface Normable<N extends FieldElement<N>, E extends Normable<N, E>>  extends AlgebraicElement<E> {N norm();}
 - interface Evaluable<D, C> {  C eval(D input); }
 - interface Differentiable<T extends AlgebraicElement<T>> {  T derivative(); }
+- interface Absolutable<E extends Absolutable<E>> extends Orderable<E>, AbelianGroupElement<E> { default E abs() {
+return this.isLessThan(getZero()) ? this.negate() : (E) this;}	default int signum() {	if (this.isZero()) return 0;
+return this.isGreaterThan(getZero()) ? 1 : -1;	}}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}
@@ -105,17 +108,17 @@ net.gommagomma.smfn/
 - interface Semiring<E extends SemiringElement<E>> extends AdditiveMonoid<E>, MultiplicativeMonoid<E>, NumericFactory<E>{ default E zero() { return additiveIdentity(); } default E one() { return multiplicativeIdentity(); } }
 - interface Ring<E extends RingElement<E>> extends Semiring<E>, AbelianGroup<E> {}
 - interface CommutativeRing<E extends CommutativeRingElement<E>> extends Ring<E>, CommutativeMultiplicativeMonoid<E> {}
-- interface EuclideanDomain<E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> extends CommutativeRing<E> { E quotient(E a, E b); E remainder(E a, E b);}
+- interface EuclideanDomain<E extends EuclideanDomainElement<E, N>, N extends Orderable<N>> extends CommutativeRing<E> { E quotient(E a, E b); E remainder(E a, E b);}
 - interface Field<E extends FieldElement<E>> extends CommutativeRing<E> {}
 
-### net.gommagomma.smfn.math.algebra.core.structures.cpabilities:
+### net.gommagomma.smfn.math.algebra.core.structures.capabilities:
 - interface HasScalarStructure<K extends SemiringElement<K>>{ Semiring<K> getScalarStructure();}
 
 ### net.gommagomma.smfn.math.algebra.numeric:
 - final class Natural implements SemiringElement<Natural>, Exponentiable<Natural>, Orderable<Natural> {}
-- final class SignedInt implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, Orderable<SignedInt>, EuclideanDomainElement<SignedInt, Natural> { /* ... */ }
-- final class Rational implements FieldElement<Rational>, Normable<Real, Rational>, Exponentiable<Rational>, Orderable<Rational> {}
-- final class Real implements FieldElement<Real>, Normable<Real, Real>, Exponentiable<Real>, Sqrtable<Real>, Orderable<Real> {}
+- final class SignedInt implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, Absolutable<SignedInt>, EuclideanDomainElement<SignedInt, Natural> { /* ... */ }
+- final class Rational implements FieldElement<Rational>, Normable<Real, Rational>, Exponentiable<Rational>, Absolutable<Rational> {}
+- final class Real implements FieldElement<Real>, Normable<Real, Real>, Exponentiable<Real>, Sqrtable<Real>, Absolutable<Real> {}
 - final class Complex implements FieldElement<Complex>, Normable<Real, Complex>, Exponentiable<Complex>, Sqrtable<Complex> {}
 - final class ZnElement implements CommutativeRingElement<ZnElement> {}
 

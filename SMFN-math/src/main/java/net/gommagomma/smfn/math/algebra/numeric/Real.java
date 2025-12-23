@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Absolutable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Sqrtable;
@@ -10,7 +10,7 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Real
-implements FieldElement<Real>, Exponentiable<Real>, Sqrtable<Real>, Orderable<Real>, Normable<Real, Real>
+implements FieldElement<Real>, Exponentiable<Real>, Sqrtable<Real>, Absolutable<Real>, Normable<Real, Real>
 {
 	public static final Real ZERO = new Real(0.0);
     public static final Real ONE = new Real(1.0);
@@ -129,17 +129,12 @@ implements FieldElement<Real>, Exponentiable<Real>, Sqrtable<Real>, Orderable<Re
     {
         return Double.compare(this.value, other.value);
     }
-
-    @Override // ComparableElement impls
-    public double modulus() {
-        return Math.abs(this.value);
-    }
     
 
     @Override // NormableElement impls
     public Real norm()
     {
-        return new Real(modulus());
+        return abs();
     }
  
  
