@@ -11,7 +11,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
  * Polinomio su un Campo. Implementa formalmente il Dominio Euclideo.
  * K deve essere un FieldElement.
  */
-public final class EuclideanPolynomial<K extends FieldElement<K, ?>> 
+public final class EuclideanPolynomial<K extends FieldElement<K>> 
 extends AbstractRingPolynomial<K, EuclideanPolynomial<K>>
 implements EuclideanDomainElement<EuclideanPolynomial<K>, Natural> 
 {

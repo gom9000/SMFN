@@ -10,7 +10,7 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Real
-implements FieldElement<Real, Natural>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, NormableElement<Real, Real>
+implements FieldElement<Real>, ExponentiableElement<Real>, SqrtableElement<Real>, ComparableElement<Real>, NormableElement<Real, Real>
 {
 	public static final Real ZERO = new Real(0.0);
     public static final Real ONE = new Real(1.0);
@@ -168,24 +168,5 @@ implements FieldElement<Real, Natural>, ExponentiableElement<Real>, SqrtableElem
     public final int hashCode()
     {
     	return java.util.Objects.hash(this.value);
-    }
-
-
-    @Override // EuclideanDomainElement impls
-    public Natural normValue() {
-        if (isMathematicallyEqualTo(getZero())) {
-            return Natural.ZERO;
-        }
-        return Natural.ONE; 
-    }
-
-    @Override // EuclideanDomainElement impls
-    public Real remainder(Real divisor) {
-        return getZero(); 
-    }
-
-    @Override // EuclideanDomainElement impls
-    public Real quotient(Real divisor) {
-        return divide(divisor); 
     }
 }

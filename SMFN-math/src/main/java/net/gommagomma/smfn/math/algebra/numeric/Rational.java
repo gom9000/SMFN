@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.utils.MathUtils;
 
 
 public final class Rational
-implements FieldElement<Rational, Natural>, ExponentiableElement<Rational>, ComparableElement<Rational>, NormableElement<Real, Rational>
+implements FieldElement<Rational>, ExponentiableElement<Rational>, ComparableElement<Rational>, NormableElement<Real, Rational>
 {
 	public static final Rational ZERO = new Rational(0, 1);
     public static final Rational ONE = new Rational(1, 1);
@@ -72,22 +72,6 @@ implements FieldElement<Rational, Natural>, ExponentiableElement<Rational>, Comp
         } else {
             throw new ArithmeticException("The square root of " + this + " is irrational and cannot be represented as a Rational.");
         }
-    }
-
-
-    @Override // EuclideanDomainElement impls
-    public Natural normValue() {
-    	return this.isZero() ? Natural.ZERO : Natural.ONE;
-    }
-
-    @Override // EuclideanDomainElement impls
-    public Rational remainder(Rational divisor) {
-        return getZero();
-    }
-
-    @Override // EuclideanDomainElement impls
-    public Rational quotient(Rational divisor) {
-        return divide(divisor);
     }
 
 

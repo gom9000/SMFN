@@ -2,13 +2,12 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.numeric.Rational;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
 
 public final class RationalField
-implements Field<Rational, Natural>
+implements Field<Rational>
 {
 	public static final RationalField INSTANCE = new RationalField();
 

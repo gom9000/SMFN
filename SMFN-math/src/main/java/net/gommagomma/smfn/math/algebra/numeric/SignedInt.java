@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.Commutative
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.EuclideanDomainElement;
 
 public final class SignedInt
-implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, EuclideanDomainElement<SignedInt, SignedInt>
+implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, EuclideanDomainElement<SignedInt, Natural>
 {
 	public static final SignedInt ZERO = new SignedInt(0);
     public static final SignedInt ONE = new SignedInt(1);
@@ -131,12 +131,10 @@ implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, C
     
     /**
      * Implementa la funzione norma euclidea v(n) = |n|.
-     * Nota: Stiamo usando SignedInt per la norma, assumendo che i valori positivi
-     * di SignedInt agiscano come i Naturali (N).
      */
     @Override // EuclideanDomainElement impls
-    public SignedInt normValue() {
-        return new SignedInt(Math.abs(this.value));
+    public Natural normValue() {
+        return new Natural(Math.abs(this.value));
     }
 
     /**

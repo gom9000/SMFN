@@ -3,11 +3,10 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
 
 
 public final class ComplexField
-implements Field<Complex, Natural>
+implements Field<Complex>
 {
 	public static final ComplexField INSTANCE = new ComplexField();
 

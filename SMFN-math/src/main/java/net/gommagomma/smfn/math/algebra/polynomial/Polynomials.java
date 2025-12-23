@@ -61,7 +61,7 @@ public final class Polynomials
     }
 
     @SafeVarargs
-    public static <K extends FieldElement<K, ?>> EuclideanPolynomial<K> euclidean(Field<K, ?> structure, K... coeffs) {
+    public static <K extends FieldElement<K>> EuclideanPolynomial<K> euclidean(Field<K> structure, K... coeffs) {
         return new EuclideanPolynomial<>(buildMap(structure, coeffs), structure);
     }
 }

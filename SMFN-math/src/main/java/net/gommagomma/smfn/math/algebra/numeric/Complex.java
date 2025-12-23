@@ -10,7 +10,7 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Complex
-implements FieldElement<Complex, Natural>, ExponentiableElement<Complex>, SqrtableElement<Complex>, NormableElement<Real, Complex>
+implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, NormableElement<Real, Complex>
 {
 	public static final Complex ZERO = new Complex(0.0, 0.0);
     public static final Complex ONE = new Complex(1.0, 0.0);
@@ -239,26 +239,5 @@ implements FieldElement<Complex, Natural>, ExponentiableElement<Complex>, Sqrtab
     public final int hashCode()
     {
     	return java.util.Objects.hash(this.real, this.imaginary);
-    }
-
-
-    @Override // EuclideanDomainElement impls
-    public Natural normValue() {
-        if (isMathematicallyEqualTo(getZero())) {
-            return Natural.ZERO;
-        }
-        return Natural.ONE;
-    }
-
-
-    @Override // EuclideanDomainElement impls
-    public Complex remainder(Complex divisor) {
-        return getZero(); 
-    }
-
-
-    @Override // EuclideanDomainElement impls
-    public Complex quotient(Complex divisor) {
-        return divide(divisor); 
     }
 }

@@ -1,9 +1,7 @@
 package net.gommagomma.smfn.math.algebra.core.elements.multiplicative;
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-
-public interface FieldElement<E extends FieldElement<E, N>, N extends ComparableElement<N>>
-extends EuclideanDomainElement<E, N>
+public interface FieldElement<E extends FieldElement<E>>
+extends CommutativeRingElement<E>
 {
 	E inverse();
 	default E divide(E other) {

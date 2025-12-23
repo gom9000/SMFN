@@ -2,12 +2,13 @@ package net.gommagomma.smfn.math.algebra.structures;
 
 
 import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
+import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class IntegerRing
-implements EuclideanDomain<SignedInt, SignedInt>
+implements EuclideanDomain<SignedInt, Natural>
 {
 	public static final IntegerRing INSTANCE = new IntegerRing();
 

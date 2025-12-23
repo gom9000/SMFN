@@ -14,17 +14,17 @@ import net.gommagomma.smfn.math.algebra.polynomial.core.AbstractPolynomialRing;
 /**
  * Rappresenta il Dominio Euclideo dei polinomi K[x] dove K è un Campo.
  */
-public final class EuclideanPolynomialRing<K extends FieldElement<K, ?>> 
+public final class EuclideanPolynomialRing<K extends FieldElement<K>> 
 extends AbstractPolynomialRing<K, EuclideanPolynomial<K>>
 implements EuclideanDomain<EuclideanPolynomial<K>, Natural> 
 {
-    public EuclideanPolynomialRing(Field<K, ?> scalarField) {
+    public EuclideanPolynomialRing(Field<K> scalarField) {
         super(Objects.requireNonNull(scalarField));
     }
 
     @Override
-    public Field<K, ?> getScalarStructure() {
-        return (Field<K, ?>) this.scalarStructure;
+    public Field<K> getScalarStructure() {
+        return (Field<K>) this.scalarStructure;
     }
 
     // --- Implementazione EuclideanDomain ---
