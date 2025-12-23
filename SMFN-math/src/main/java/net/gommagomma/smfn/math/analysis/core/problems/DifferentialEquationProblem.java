@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * K: Tipo dello scalare (es. Real per il tempo e i coefficienti).
  * V: Tipo dello stato (es. VectorElement).
  */
-public interface DifferentialEquationProblem<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> 
+public interface DifferentialEquationProblem<K extends FieldElement<K>, V extends VectorElement<K, V>> 
 extends AnalysisProblem<V>
 {
 	/**

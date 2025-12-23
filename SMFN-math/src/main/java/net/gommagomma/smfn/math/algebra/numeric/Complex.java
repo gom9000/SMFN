@@ -1,16 +1,16 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.SqrtableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Sqrtable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class Complex
-implements FieldElement<Complex>, ExponentiableElement<Complex>, SqrtableElement<Complex>, NormableElement<Real, Complex>
+implements FieldElement<Complex>, Exponentiable<Complex>, Sqrtable<Complex>, Normable<Real, Complex>
 {
 	public static final Complex ZERO = new Complex(0.0, 0.0);
     public static final Complex ONE = new Complex(1.0, 0.0);

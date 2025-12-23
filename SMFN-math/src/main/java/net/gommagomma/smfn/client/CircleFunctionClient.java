@@ -12,12 +12,12 @@ import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.geometry.Circle;
-import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
+import net.gommagomma.smfn.math.geometry.Point;
 
 public class CircleFunctionClient {
     public static void main(String[] args) {
         // --- 1. Definizione della funzione matematica
-        Circle circleFunction = new Circle(new RealVector(new Real(0), new Real(0)), new Real(2.5));
+        Circle circleFunction = new Circle(new Point(new Real(0), new Real(0)), new Real(2.5));
 
         // --- 2. Setup del contesto grafico ---
         int width = 800;
@@ -35,11 +35,8 @@ public class CircleFunctionClient {
         // L'area classica che contiene l'intero set
         Viewport viewport = new Viewport(-5, 5, -5, 5, width, height);
 
-        // Adattatore Dominio: Combina X e Y in un RealVector 2D
-        BiFunction<Double, Double, RealVector> domainAdapter = (x, y) -> {
-            Real[] components = {new Real(x), new Real(y)};
-            return new RealVector(components); // Assumendo esista un costruttore RealVector(Real...)
-        };
+        // Adattatore Dominio: Combina X e Y in un point 2D
+        BiFunction<Double, Double, Point> domainAdapter = (x, y) -> new Point(new Real(x), new Real(y));
 
         ColorMapper<Real> colorMapper = new ColorMapper<>() {
             @Override
@@ -58,7 +55,7 @@ public class CircleFunctionClient {
         renderer.startDrawing();
 
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, circleFunction, domainAdapter, colorMapper
+            renderer, viewport, circleFunction::eval, domainAdapter, colorMapper
         );
 
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);

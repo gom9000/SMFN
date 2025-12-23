@@ -1,7 +1,7 @@
 // net.gommagomma.smfn.math.analysis.fractals.JuliaFunction.java
 package net.gommagomma.smfn.math.analysis.fractals;
 
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numeric.Complex;
 import net.gommagomma.smfn.math.algebra.numeric.Natural;
 
@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Natural;
  * Rappresenta la funzione matematica per un set di Julia specifico (definito da una costante C).
  */
 public class JuliaFunction
-implements MathFunction<Complex, Natural>
+implements Mapping<Complex, Natural>
 {
     private final JuliaSolver solver;
     private final int maxIterations;
@@ -22,7 +22,7 @@ implements MathFunction<Complex, Natural>
 
 
     @Override
-    public Natural evaluate(Complex input) {
+    public Natural apply(Complex input) {
         return solver.evaluateJuliaPoint(input, maxIterations);
     }
 }

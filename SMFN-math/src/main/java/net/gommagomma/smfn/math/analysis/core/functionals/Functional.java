@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.analysis.core.functionals;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 
 /**
@@ -10,7 +10,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElemen
  * D: Il tipo del Dominio della Funzione f (es. Real, VectorElement).
  * C: Il tipo del Contesto di Valutazione (es. un Intervallo, un Punto).
  */
-public interface Functional<K extends FieldElement<K, ?>, D extends AlgebraicElement<D>, C>
+public interface Functional<K extends FieldElement<K>, D extends AlgebraicElement<D>, C>
 {    
     /**
      * Esegue l'operazione funzionale sulla funzione 'f' dato il 'context'.
@@ -19,5 +19,5 @@ public interface Functional<K extends FieldElement<K, ?>, D extends AlgebraicEle
      * @param context Il contesto C (es. l'intervallo [a, b] per l'integrale definito).
      * @return Il risultato scalare K.
      */
-    K evaluate(MathFunction<D, K> f, C context);
+    K evaluate(Mapping<D, K> f, C context);
 }

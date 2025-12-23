@@ -21,7 +21,7 @@ implements DifferentialEquationProblem<Complex, ComplexVector>
         // L'equazione è d|psi>/dt = (-i/hbar) * H * |psi>
         
         // 1. Calcola H * |psi> (moltiplicazione Matrice-Vettore)
-        ComplexVector H_psi = H.evaluate(state); // evaluate() è il metodo ereditato da MathFunction/LinearOperator
+        ComplexVector H_psi = H.apply(state); // evaluate() è il metodo ereditato da MathFunction/LinearOperator
 
         // 2. Calcola lo scalare (-i/hbar). Usiamo hbar = 1.0
         Complex minusIOverHbar = new Complex(0.0, -1.0); 

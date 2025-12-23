@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.analysis.numerical.solvers.ode;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentialEquationProblem;
@@ -14,7 +14,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * Solutore ODE Embedded Runge-Kutta di ordine 2(3) (Bogacki–Shampine).
  * Utilizza la stima dell'errore per il controllo del passo adattivo.
  */
-public class EmbeddedRK23Solver<K extends FieldElement<K, ?>, T extends VectorElement<K, T> & NormableElement<Real, T>>
+public class EmbeddedRK23Solver<K extends FieldElement<K>, T extends VectorElement<K, T> & Normable<Real, T>>
 implements IntervalODEStepSolver<K, T>
 {
     private final NumericFactory<K> scalarFactory;

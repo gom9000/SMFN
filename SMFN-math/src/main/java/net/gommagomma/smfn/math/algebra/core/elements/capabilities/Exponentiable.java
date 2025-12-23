@@ -4,7 +4,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 
 
-public interface ExponentiableElement<E extends ExponentiableElement<E>>
+public interface Exponentiable<E extends Exponentiable<E>>
 extends AlgebraicElement<E>
 {
     /**

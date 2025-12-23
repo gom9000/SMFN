@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.client;
 
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
@@ -16,10 +16,10 @@ import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RealMetricS
  */
 public class RootSolverClient
 {
-	private static class ParabolaFunction implements MathFunction<Real, Real>
+	private static class ParabolaFunction implements Mapping<Real, Real>
 	{
         @Override
-        public Real evaluate(Real x) {
+        public Real apply(Real x) {
             // f(x) = x^2 - 2
         	return x.multiply(x).subtract(new Real(2));
         }
@@ -30,7 +30,7 @@ public class RootSolverClient
         private final ParabolaFunction function = new ParabolaFunction();
 
         @Override
-        public MathFunction<Real, Real> getFunction() {
+        public Mapping<Real, Real> getFunction() {
             return function;
         }
     }
@@ -81,7 +81,7 @@ public class RootSolverClient
             
             System.out.println("\n--- Risultato ---");
             System.out.println("Radice trovata (x): " + result);
-            System.out.println("Valore di verifica f(x): " + problem.getFunction().evaluate(result));
+            System.out.println("Valore di verifica f(x): " + problem.getFunction().apply(result));
             System.out.println("Valore Atteso (Math.sqrt(2)): " + Math.sqrt(2.0));
             
         } catch (Exception e) {

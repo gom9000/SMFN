@@ -29,7 +29,7 @@ implements HilbertSpace<Real, RealVector>
 
 
     @Override // VectorSpace impls
-    public Field<Real, ?> getScalarStructure()
+    public Field<Real> getScalarStructure()
     {
         return RealField.getInstance();
     }

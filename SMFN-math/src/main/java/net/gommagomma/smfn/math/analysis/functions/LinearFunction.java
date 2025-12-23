@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.analysis.functions;
 
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 
@@ -10,8 +10,8 @@ import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElemen
  * 
  * @param <K> Il tipo di campo dei coefficienti (es. Real, Rational, Complex)
  */
-public final class LinearFunction<K extends FieldElement<K, ?>>
-implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>
+public final class LinearFunction<K extends FieldElement<K>>
+implements CommutativeRingElement<LinearFunction<K>>, Mapping<K, K>
 {
     private final K m; // Coefficiente angolare
     private final K q; // Intercetta (termine noto)
@@ -33,7 +33,7 @@ implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>
     // --- Implementazione di MathFunction ---
 
     @Override
-    public K evaluate(K x) {
+    public K apply(K x) {
         // f(x) = m*x + q
         return m.multiply(x).add(q);
     }
@@ -88,11 +88,13 @@ implements CommutativeRingElement<LinearFunction<K>>, MathFunction<K, K>
         // f(x) = m1*x + q1
         // g(x) = m2*x + q2
         // f(g(x)) = m1*(m2*x + q2) + q1 = (m1*m2)*x + (m1*q2 + q1)
-
-        K newM = this.m.multiply(other.m);
-        K mqProduct = this.m.multiply(other.q);
-        K newQ = mqProduct.add(this.q);
         
+        return compose(other);
+    }
+
+    public LinearFunction<K> compose(LinearFunction<K> other) {
+        K newM = this.m.multiply(other.m);
+        K newQ = this.m.multiply(other.q).add(this.q);
         return new LinearFunction<>(newM, newQ);
     }
 }

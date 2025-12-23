@@ -77,7 +77,7 @@ public class JuliaFunctionClient {
         
         // Usa il FunctionPlotter2D per disegnare il frattale
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, juliaFunction, domainAdapter, colorMapper
+            renderer, viewport, juliaFunction::apply, domainAdapter, colorMapper
         );
 
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);

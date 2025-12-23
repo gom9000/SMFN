@@ -27,7 +27,7 @@ implements InnerProductSpace<Rational, RationalVector>
 
 
     @Override // VectorSpace impls
-    public Field<Rational, ?> getScalarStructure() {
+    public Field<Rational> getScalarStructure() {
         return RationalField.getInstance();
     }
 

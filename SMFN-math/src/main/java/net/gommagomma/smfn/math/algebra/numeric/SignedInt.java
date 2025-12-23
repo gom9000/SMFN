@@ -1,12 +1,12 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ExponentiableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.CommutativeRingElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.EuclideanDomainElement;
 
 public final class SignedInt
-implements CommutativeRingElement<SignedInt>, ExponentiableElement<SignedInt>, ComparableElement<SignedInt>, EuclideanDomainElement<SignedInt, Natural>
+implements CommutativeRingElement<SignedInt>, Exponentiable<SignedInt>, Orderable<SignedInt>, EuclideanDomainElement<SignedInt, Natural>
 {
 	public static final SignedInt ZERO = new SignedInt(0);
     public static final SignedInt ONE = new SignedInt(1);

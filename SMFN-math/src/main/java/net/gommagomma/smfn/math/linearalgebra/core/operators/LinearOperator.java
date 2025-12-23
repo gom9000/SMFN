@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.core.operators;
 
 
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement; 
 
@@ -14,8 +14,8 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * @param <V> L'elemento dello spazio vettoriale.
  * @param <O> L'operatore stesso (vincolo ricorsivo).
  */
-public interface LinearOperator<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> 
-extends MathFunction<V, V>
+public interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> 
+extends Mapping<V, V>
 {
     /**
      * Applica l'operatore a un dato vettore (l'azione dell'operatore).
@@ -23,5 +23,5 @@ extends MathFunction<V, V>
      * @return Il vettore di output.
      */
     @Override
-    V evaluate(V vector);
+    V apply(V vector);
 }

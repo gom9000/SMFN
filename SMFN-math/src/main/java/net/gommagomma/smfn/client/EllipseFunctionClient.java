@@ -12,13 +12,11 @@ import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.geometry.Ellipse;
-import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
+import net.gommagomma.smfn.math.geometry.Point;
 
 public class EllipseFunctionClient {
     public static void main(String[] args) {
-    	// Centro (0,0), semiasse X=3.0, semiasse Y=1.5
-        RealVector center = new RealVector(new Real(0.0), new Real(0.0));
-        Ellipse ellipseFunction = new Ellipse(center, new Real(3.0), new Real(1.5)); 
+        Ellipse ellipseFunction = new Ellipse(new Point(new Real(0.0), new Real(0.0)), new Real(3.0), new Real(1.5)); 
 
         // --- 2. Setup del contesto grafico ---
         int width = 800;
@@ -34,8 +32,7 @@ public class EllipseFunctionClient {
 
         Viewport viewport = new Viewport(-4.0, 4.0, -3.0, 3.0, width, height); 
 
-        BiFunction<Double, Double, RealVector> domainAdapter = (x, y) -> 
-            new RealVector(new Real(x), new Real(y));
+        BiFunction<Double, Double, Point> domainAdapter = (x, y) -> new Point(new Real(x), new Real(y));
 
         ColorMapper<Real> colorMapper = new ColorMapper<>() {
             @Override
@@ -54,7 +51,7 @@ public class EllipseFunctionClient {
         renderer.startDrawing();
 
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, ellipseFunction, domainAdapter, colorMapper
+            renderer, viewport, ellipseFunction::eval, domainAdapter, colorMapper
         );
         
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);

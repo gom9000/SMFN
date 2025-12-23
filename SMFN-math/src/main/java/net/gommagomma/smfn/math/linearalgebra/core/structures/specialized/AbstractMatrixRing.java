@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.FieldMatrix
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
 
-public abstract class AbstractMatrixRing<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
+public abstract class AbstractMatrixRing<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
 implements MatrixRing<K, V, M>, FieldMatrixSpace<K, V, M> 
 {
 	protected final int n; // Dimensione n x n

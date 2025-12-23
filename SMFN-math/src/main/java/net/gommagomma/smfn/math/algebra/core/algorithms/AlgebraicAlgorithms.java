@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.algebra.core.algorithms;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.EuclideanDomainElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
 
 /**
  * Algoritmi algebrici universali operanti su strutture euclidee.
@@ -16,7 +16,7 @@ public final class AlgebraicAlgorithms
      * @param <E> Il tipo dell'elemento (es. SignedInt, EuclideanPolynomial)
      * @param <N> Il tipo della norma (es. SignedInt, Natural)
      */
-    public static <E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> E gcd(E a, E b) {
+    public static <E extends EuclideanDomainElement<E, N>, N extends Orderable<N>> E gcd(E a, E b) {
         E r0 = a;
         E r1 = b;
 
@@ -33,7 +33,7 @@ public final class AlgebraicAlgorithms
      * Calcola il Minimo Comune Multiplo (LCM).
      * Nota: Richiede che il dominio sia commutativo e integro.
      */
-    public static <E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> E lcm(E a, E b) {
+    public static <E extends EuclideanDomainElement<E, N>, N extends Orderable<N>> E lcm(E a, E b) {
         if (a.isZero() || b.isZero()) return a.getZero();
         
         E gcd = gcd(a, b);

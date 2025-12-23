@@ -32,7 +32,7 @@ implements Observable<Complex, ComplexVector, HamiltonianOperator>
     }
     
     @Override
-    public ComplexVector evaluate(ComplexVector vector) {
+    public ComplexVector apply(ComplexVector vector) {
         // evaluate() e multiply() sono la stessa operazione logica per un operatore lineare
         return this.multiply(vector);
     }

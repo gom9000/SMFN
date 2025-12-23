@@ -1,17 +1,18 @@
 package net.gommagomma.smfn.client;
 
+import java.awt.Color;
+import java.text.DecimalFormat;
+import java.util.function.Function;
+
+import javax.swing.JFrame;
+
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.analysis.functions.LinearFunction;
-
-import javax.swing.*;
-import java.awt.*;
-import java.text.DecimalFormat;
-import java.util.function.Function;
 
 public class RealLinearFunctionClient
 {
@@ -20,7 +21,7 @@ public class RealLinearFunctionClient
         // --- 1. Definizione della funzione matematica (y = mx + q)
         LinearFunction<Real> linearFunction1 = new LinearFunction<>(new Real(0.5), new Real(0.0));
         LinearFunction<Real> linearFunction2 = new LinearFunction<>(new Real(2.0), new Real(5.0));
-        MathFunction<Real, Real> linearFunction = linearFunction1.compose(linearFunction2);
+        Mapping<Real, Real> linearFunction = linearFunction1.compose(linearFunction2);
 
         // --- 2. Setup del contesto grafico ---
         int width = 800;
@@ -58,9 +59,16 @@ public class RealLinearFunctionClient
         // Disegna la funzione lineare (in blu)
         renderer.setColor(Color.BLUE);
         FunctionPlotter1D.plotFunction(
-            renderer, viewport, linearFunction, domainAdapter, codomainAdapter
+            renderer, viewport, linearFunction::apply, domainAdapter, codomainAdapter
         );
-
+        renderer.setColor(Color.GREEN);
+        FunctionPlotter1D.plotFunction(
+                renderer, viewport, linearFunction1::apply, domainAdapter, codomainAdapter
+            );
+        renderer.setColor(Color.RED);
+        FunctionPlotter1D.plotFunction(
+                renderer, viewport, linearFunction2::apply, domainAdapter, codomainAdapter
+            );
         // Calcola l'ampiezza del range matematico
         double rangeX = viewport.maxX - viewport.minX;
         double rangeY = viewport.maxY - viewport.minY;

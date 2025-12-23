@@ -1,7 +1,6 @@
 package net.gommagomma.smfn.math.analysis.core.operators;
 
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
-import net.gommagomma.smfn.math.algebra.core.Operator;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 
 /**
  * Operatore Simbolico. Trasforma una funzione F in una funzione R 
@@ -9,6 +8,6 @@ import net.gommagomma.smfn.math.algebra.core.Operator;
  * F: Tipo della funzione in input.
  * R: Tipo della funzione in output.
  */
-public interface SymbolicOperator<F extends MathFunction<?, ?>, R extends MathFunction<?, ?>> 
-extends Operator<F, R>
+public interface SymbolicMapping<F extends Mapping<?, ?>, R extends Mapping<?, ?>> 
+extends Mapping<F, R>
 {}

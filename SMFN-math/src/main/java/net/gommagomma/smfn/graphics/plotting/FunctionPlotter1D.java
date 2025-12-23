@@ -5,7 +5,7 @@ import java.util.function.Function;
 import net.gommagomma.smfn.graphics.core.Renderer;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Evaluable;
 
 
 /**
@@ -30,7 +30,7 @@ public class FunctionPlotter1D
      * @param codomainAdapter Adattatore da C a double (es. Real -> Double).
      */
     public static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
-    void plotFunction(Renderer renderer, Viewport viewport, MathFunction<D, C> function, Function<Double, D> domainAdapter, Function<C, Double> codomainAdapter) 
+    void plotFunction(Renderer renderer, Viewport viewport, Evaluable<D, C> function, Function<Double, D> domainAdapter, Function<C, Double> codomainAdapter) 
     {
         int width = renderer.getWidth();
         int lastPixelX = Integer.MIN_VALUE;
@@ -45,7 +45,7 @@ public class FunctionPlotter1D
             D inputElement = domainAdapter.apply(mathX);
 
             // 3. Valutazione matematica (usa il modulo math)
-            C outputElement = function.evaluate(inputElement);
+            C outputElement = function.eval(inputElement);
 
             // 4. Estrai il double dal codominio C (es. Real -> double)
             double mathY = codomainAdapter.apply(outputElement);

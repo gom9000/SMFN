@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
 /**
  * Definisce un Problema ai Valori al Contorno (BVP): DifferentialEquation + condizioni V(t0) e V(tf).
  */
-public interface BoundaryValueProblem<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> 
+public interface BoundaryValueProblem<K extends FieldElement<K>, V extends VectorElement<K, V>> 
 extends DifferentialEquationProblem<K, V>
 {
     K getEndTime();

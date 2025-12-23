@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * K: Tipo dello scalare.
  * V: Tipo dello stato.
  */
-public interface InitialValueProblem<K extends FieldElement<K, ?>, V extends VectorElement<K, V>> 
+public interface InitialValueProblem<K extends FieldElement<K>, V extends VectorElement<K, V>> 
 extends DifferentialEquationProblem<K, V>
 {
     /**

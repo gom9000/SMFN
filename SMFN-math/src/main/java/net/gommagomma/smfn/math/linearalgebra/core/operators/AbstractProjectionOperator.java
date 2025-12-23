@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.core.operators;
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProduct
 /**
  * Operatore di proiezione generico che funziona su qualsiasi spazio con prodotto interno.
  */
-public abstract class AbstractProjectionOperator<K extends FieldElement<K, ?> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> 
+public abstract class AbstractProjectionOperator<K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> 
 implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>>
 {
     protected final V direction; // Il vettore normalizzato su cui proiettare
@@ -45,7 +45,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>>
 
 
     @Override
-    public V evaluate(V vector) {
+    public V apply(V vector) {
         // La logica generica della proiezione: P_u(v) = (v . u) * u
         K dotProduct = vector.dotProduct(direction);
         return direction.multiplyByScalar(dotProduct);

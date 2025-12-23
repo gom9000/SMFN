@@ -1,33 +1,41 @@
 package net.gommagomma.smfn.math.geometry;
 
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Evaluable;
 
 /**
  * Interfaccia base che caratterizza un ente geometrico.
- * Estende MathFunction per standardizzare la rappresentazione implicita/esplicita.
- * 
- * @param <D> Il tipo di input (dominio, tipicamente RealVector).
- * @param <C> Il tipo di output (codominio, tipicamente Real).
+ * Rappresenta l'ente tramite la sua funzione implicita f(P) = 0.
+ * * @param <D> Il tipo di input (es. Vector).
+ * @param <C> Il tipo di output (es. Real o Scalar).
  */
-public interface GeometryEntity<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> 
-extends MathFunction<D, C> 
+public interface GeometryEntity<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
+extends Evaluable<D, C>
 {
     /**
-     * Restituisce la dimensione dello spazio in cui esiste l'ente (es. 2 per cerchio, 3 per piano).
-     * @return La dimensione.
+     * Dimensione dello spazio ambiente (es. 3 per R^3).
      */
-    int getDimension();
+    int getAmbientDimension();
 
     /**
-     * Controlla se un punto specificato si trova esattamente sull'ente geometrico.
-     * @param point Il punto da controllare.
-     * @return true se il punto è sull'ente (entro una tolleranza).
+     * Dimensione intrinseca dell'ente (es. 1 per una curva, 2 per una superficie).
+     */
+    int getEntityDimension();
+
+    /**
+     * Controlla se un punto appartiene all'ente.
+     * Implementazione di default basata sulla valutazione della funzione implicita.
      */
     boolean isOnEntity(D point);
 
-    // Potresti aggiungere:
-    // AABB getBoundingBox();
-    // Real getArea(); (Per enti 2D)
-    // Real getVolume(); (Per enti 3D)
+    /**
+     * Implementazione della capability Evaluable.
+     * Restituisce il valore della funzione implicita nel punto (es. x^2 + y^2 - r^2).
+     */
+    @Override
+    default C eval(D point) {
+        return implicitFunctionAt(point);
+    }
+
+    C implicitFunctionAt(D point);
 }

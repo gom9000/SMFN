@@ -5,7 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.FieldMatrixElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
-public abstract class AbstractFieldMatrixSpace<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
+public abstract class AbstractFieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
 extends AbstractRingMatrixSpace<K, V, M>
 implements FieldMatrixSpace<K, V, M> 
 {
@@ -14,7 +14,7 @@ implements FieldMatrixSpace<K, V, M>
     }
 
     @Override
-    public abstract Field<K, ?> getScalarStructure();
+    public abstract Field<K> getScalarStructure();
 
     @Override
     public abstract VectorSpace<K, V> getVectorStructure();

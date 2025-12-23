@@ -16,7 +16,7 @@ import net.gommagomma.smfn.math.algebra.numeric.Real;
  * R: Il tipo del campo (es. Real, ComplexElement), deve essere un FieldElement.
  * Implementa IterativeSolver<Problema, Soluzione>.
  */
-public class NewtonRaphsonSolver<R extends FieldElement<R, ?>> 
+public class NewtonRaphsonSolver<R extends FieldElement<R>> 
 implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
 {            
     private final Functional<R, R, R> differentiator;
@@ -39,7 +39,7 @@ implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
             R previous = current; 
             
             // 2. Calcola f(x_k) e f'(x_k)
-            R f_of_x = problem.getFunction().evaluate(current);
+            R f_of_x = problem.getFunction().apply(current);
             R f_prime_of_x = differentiator.evaluate(problem.getFunction(), current);
             
             // 3. Controllo di stabilità: f'(x_k) ~ 0 ?

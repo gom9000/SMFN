@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.algebra.core.elements.multiplicative;
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
 
 
 /**
@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.capabilities.ComparableEle
 * Un DE è un anello commutativo con unità su cui è definita una Funzione Norma (o Valutazione)
 * che permette la Divisione Euclidea.
 */
-public interface EuclideanDomainElement<E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> 
+public interface EuclideanDomainElement<E extends EuclideanDomainElement<E, N>, N extends Orderable<N>> 
 extends CommutativeRingElement<E>
 {
    /**

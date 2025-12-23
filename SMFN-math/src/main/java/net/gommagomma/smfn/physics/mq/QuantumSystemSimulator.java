@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.physics.mq;
 
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.NormableElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
@@ -14,7 +14,7 @@ public class QuantumSystemSimulator
      * Questo metodo funziona per qualsiasi operatore, su qualsiasi HilbertSpace 
      * (es. sia con RealVector che ComplexVector).
      */
-    public <K extends FieldElement<K, ?> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> 
+    public <K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> 
     Real measure(HilbertSpace<K, V> space, Observable<K, V, ?> observable, V state)
     {
         // Esegue il calcolo del valore di aspettazione definito nell'interfaccia Observable

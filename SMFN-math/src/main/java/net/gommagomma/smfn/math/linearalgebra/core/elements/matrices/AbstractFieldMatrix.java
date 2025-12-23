@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
 
 
-public abstract class AbstractFieldMatrix<K extends FieldElement<K, ?>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, S extends FieldMatrixSpace<K, V, M>>
+public abstract class AbstractFieldMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, S extends FieldMatrixSpace<K, V, M>>
 extends AbstractRingMatrix<K, V, M, S>
 implements FieldMatrixElement<K, V, M>
 {

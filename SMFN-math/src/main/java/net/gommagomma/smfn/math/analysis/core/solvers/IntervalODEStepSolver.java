@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.analysis.core.problems.DifferentialEquationProbl
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
 
-public interface IntervalODEStepSolver<K extends FieldElement<K, ?>, T extends VectorElement<K, T>>
+public interface IntervalODEStepSolver<K extends FieldElement<K>, T extends VectorElement<K, T>>
 extends IntervalSolver<K, T>
 {
 	/**

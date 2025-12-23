@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
-import net.gommagomma.smfn.math.algebra.core.MathFunction;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Evaluable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 
@@ -16,7 +16,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
  * @param <P> Il tipo del polinomio stesso (pattern CRTP).
  */
 public abstract class AbstractPolynomial<K extends SemiringElement<K>, P extends AbstractPolynomial<K, P>> 
-implements SemiringElement<P>, MathFunction<K, K>
+implements SemiringElement<P>, Evaluable<K, K>
 {
     protected final TreeMap<Integer, K> coefficients;
     protected final Semiring<K> structure;
@@ -98,7 +98,7 @@ implements SemiringElement<P>, MathFunction<K, K>
     // --- Valutazione (MathFunction) ---
 
     @Override
-    public K evaluate(K x) {
+    public K eval(K x) {
         if (isZero()) return structure.zero();
         
         int deg = degree();
@@ -117,12 +117,6 @@ implements SemiringElement<P>, MathFunction<K, K>
     public P getZero() {
         return create(new TreeMap<>());
     }
-
-    @Override
-    public abstract P getOne(); // Delegato alle sottoclassi finali (usando structure.one())
-
-    @Override
-    public abstract P copy();
 
     @Override
     public String toString() {
