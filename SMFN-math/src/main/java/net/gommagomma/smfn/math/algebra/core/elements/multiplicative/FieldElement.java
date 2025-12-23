@@ -7,6 +7,7 @@ extends EuclideanDomainElement<E, N>
 {
 	E inverse();
 	default E divide(E other) {
+		if (other.isZero()) throw new ArithmeticException("Division by zero");
 		return multiply(other.inverse());
 	}
 }

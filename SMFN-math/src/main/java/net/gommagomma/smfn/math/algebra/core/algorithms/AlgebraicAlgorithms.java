@@ -13,7 +13,7 @@ public final class AlgebraicAlgorithms
     /**
      * Calcola il Massimo Comun Divisore (GCD) tra due elementi di un Dominio Euclideo.
      * Utilizza l'algoritmo di Euclide basato sulle divisioni successive.
-     * * @param <E> Il tipo dell'elemento (es. SignedInt, EuclideanPolynomial)
+     * @param <E> Il tipo dell'elemento (es. SignedInt, EuclideanPolynomial)
      * @param <N> Il tipo della norma (es. SignedInt, Natural)
      */
     public static <E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> E gcd(E a, E b) {
@@ -38,7 +38,6 @@ public final class AlgebraicAlgorithms
         
         E gcd = gcd(a, b);
         // lcm(a, b) = |a * b| / gcd(a, b)
-        // Eseguiamo prima la divisione per evitare overflow prematuri
         return a.quotient(gcd).multiply(b);
     }
 }
