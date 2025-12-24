@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.algebra.structures;
 import static org.junit.jupiter.api.Assertions.*;
 
 import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
+import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
 import net.gommagomma.smfn.math.utils.MathConstants;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public class IntegerRingTest {
 
-    private final EuclideanDomain<SignedInt, SignedInt> integerRing = IntegerRing.getInstance();
+    private final EuclideanDomain<SignedInt, Natural> integerRing = IntegerRing.getInstance();
 
     @Test
     void testGetInstanceIsSingleton() {

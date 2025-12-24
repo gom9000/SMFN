@@ -39,7 +39,7 @@ public class RealMatrixPolynomialTest {
         // 5. Valutazione in un punto reale (es. x = 3.0)
         //Real xVal = ring2x2.getScalarStructure().of(3.0);
         RealMatrix xVal = ring2x2.of(3.0);
-        RealMatrix result = polyP.evaluate(xVal);
+        RealMatrix result = polyP.eval(xVal);
         
         System.out.println("\nValutazione P(3.0):");
         System.out.println(result);

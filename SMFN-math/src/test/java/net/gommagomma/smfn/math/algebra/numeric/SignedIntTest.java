@@ -261,8 +261,8 @@ class SignedIntTest {
         assertTrue(b.compareTo(a) > 0);
         assertEquals(0, a.compareTo(si(10)));
         
-        assertEquals(10.0, a.modulus());
-        assertEquals(15.0, c.modulus());
+        assertEquals(10.0, a.abs().getValue());
+        assertEquals(15.0, c.abs().getValue());
     }
 
     // ======================================================================================

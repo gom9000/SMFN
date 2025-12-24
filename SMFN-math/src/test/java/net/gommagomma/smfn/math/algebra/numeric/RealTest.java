@@ -131,8 +131,8 @@ public class RealTest {
     
     @Test
     void testModulusAndNorm() {
-        assertEquals(5.0, r5.modulus(), EPSILON);
-        assertEquals(3.0, r_neg3.modulus(), EPSILON);
+        assertEquals(5.0, r5.abs().getValue(), EPSILON);
+        assertEquals(3.0, r_neg3.abs().getValue(), EPSILON);
         
         // Norm returns a Real element with the absolute value
         assertTrue(r_neg3.norm().isMathematicallyEqualTo(new Real(3.0)));
@@ -156,18 +156,5 @@ public class RealTest {
         // Slight difference means unequal by standard equals()
         Real r5_diff = new Real(5.0 + 1e-15); 
         assertNotEquals(r5, r5_diff);
-    }
-
-    @Test
-    void testEuclideanDomainElementImpls() {
-        // Real numbers form a Field, so remainder is always 0
-        assertTrue(r5.remainder(r_neg3).isMathematicallyEqualTo(Real.ZERO));
-        
-        // Quotient is the standard division
-        assertTrue(r5.quotient(r_neg3).isMathematicallyEqualTo(r5.divide(r_neg3)));
-        
-        // NormValue is 1 for non-zero elements
-        assertTrue(r5.normValue().isMathematicallyEqualTo(Natural.ONE));
-        assertTrue(Real.ZERO.normValue().isMathematicallyEqualTo(Natural.ZERO));
     }
 }

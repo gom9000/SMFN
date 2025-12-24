@@ -64,7 +64,7 @@ implements IntervalODEStepSolver<K, T>
     // --- Metodo Interno di Passo Embedded ---
     private EmbeddedStep<T> embeddedStep(DifferentialEquationProblem<K, T> system, T currentState, Real currentTime, Real deltaTime)
     {
-        K dt = val(deltaTime.modulus());
+        K dt = val(deltaTime.abs().getValue());
 
         // ... (La logica RK è identica e corretta) ...
         T k1_rate = system.derivative(currentState, currentTime);

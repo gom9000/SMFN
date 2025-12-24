@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 public class RationalFieldTest {
 
-    private final Field<Rational, ?> rationalField = RationalField.getInstance();
+    private final Field<Rational> rationalField = RationalField.getInstance();
 
     @Test
     void testGetInstanceIsSingleton() {

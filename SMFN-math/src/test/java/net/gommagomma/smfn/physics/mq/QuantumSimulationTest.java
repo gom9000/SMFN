@@ -20,7 +20,7 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
 public class QuantumSimulationTest
 {
 	// Helper method generico per calcolare il valore di aspettazione di qualsiasi Observable
-    private <K extends FieldElement<K, ?>, V extends VectorElement<K, V>> 
+    private <K extends FieldElement<K>, V extends VectorElement<K, V>> 
             Real measureExpectation(Observable<K, V, ?> observable, V state) {
         // Chiama il metodo ereditato da HermitianOperator
         return observable.expectationValue(state); 

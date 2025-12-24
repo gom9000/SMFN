@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 public class ComplexFieldTest {
 
-    private final Field<Complex, ?> complexField = ComplexField.getInstance();
+    private final Field<Complex> complexField = ComplexField.getInstance();
 
     @Test
     void testGetInstanceIsSingleton() {

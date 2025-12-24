@@ -1,8 +1,10 @@
 package net.gommagomma.smfn.math.algebra.numeric;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.gommagomma.smfn.math.utils.MathConstants;
 import org.junit.jupiter.api.Test;
 
 
@@ -105,11 +107,6 @@ public class NaturalTest {
         assertTrue(n5.compareTo(new Natural(5)) == 0);
     }
     
-    @Test
-    void testModulus() {
-        assertEquals(5.0, n5.modulus(), MathConstants.EPSILON);
-    }
-
     // --- Utility Tests ---
     
     @Test

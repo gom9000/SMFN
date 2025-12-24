@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 public class RealFieldTest {
 
-    private final Field<Real, ?> realField = RealField.getInstance();
+    private final Field<Real> realField = RealField.getInstance();
 
     @Test
     void testGetInstanceIsSingleton() {

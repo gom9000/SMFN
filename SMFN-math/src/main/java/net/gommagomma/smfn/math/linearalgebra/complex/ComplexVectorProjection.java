@@ -16,6 +16,6 @@ extends AbstractProjectionOperator<Complex, ComplexVector>
     protected Complex getInverseNormScalar(Real normValue) {
         // Implementazione specifica per i Complessi: 
         // Creiamo un complesso con parte reale 1.0/normValue.modulus() e parte immaginaria 0.0
-        return new Complex(1.0 / normValue.modulus(), 0.0);
+        return new Complex(normValue.abs().inverse());
     }
 }

@@ -170,8 +170,8 @@ public class RationalTest {
     
     @Test
     void testModulusAndNorm() {
-        assertEquals(0.75, r_3_4.modulus(), MathConstants.EPSILON);
-        assertEquals(0.5, r_neg_1_2.modulus(), MathConstants.EPSILON);
+        assertEquals(0.75, r_3_4.abs(), MathConstants.EPSILON);
+        assertEquals(0.5, r_neg_1_2.abs(), MathConstants.EPSILON);
         
         // Norm returns Real element with modulus value
         assertEquals(5.0, r_5.norm().getValue(), MathConstants.EPSILON);

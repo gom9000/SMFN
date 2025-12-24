@@ -47,7 +47,7 @@ implements IntervalODEStepSolver<K, T>
     public T step(DifferentialEquationProblem<K, T> system, T currentState, Real currentTime, Real deltaTime)
     {    
         // Convertiamo i Real usati per i passi temporali nel tipo scalare K
-    	K dt = val(deltaTime.modulus());
+    	K dt = val(deltaTime.abs().getValue());
         
         // Definiamo le costanti necessarie usando l'API Real
         Real realHalf = new Real(0.5);
@@ -65,7 +65,7 @@ implements IntervalODEStepSolver<K, T>
         // t_k2 = currentTime + deltaTime / 2
         Real time_k2 = currentTime.add(deltaTime.multiply(realHalf)); // Uso corretto di realHalf
         // state_k2 = currentState + k1_rate * (deltaTime / 2)
-        K dtHalfAsK = val(deltaTime.multiply(realHalf).modulus()); // Uso corretto di realHalf
+        K dtHalfAsK = val(deltaTime.multiply(realHalf).abs().getValue()); // Uso corretto di realHalf
         T state_k2 = currentState.add(k1_rate.multiplyByScalar(dtHalfAsK));
         // k2_rate = f(t_k2, state_k2)
         T k2_rate = system.derivative(state_k2, time_k2);
@@ -100,7 +100,7 @@ implements IntervalODEStepSolver<K, T>
                   .add(k4);
         
         // Moltiplichiamo la somma per 1/6 (convertito in K)
-        K oneSixthAsK = val(realOneSixth.modulus());
+        K oneSixthAsK = val(realOneSixth.abs().getValue());
         return currentState.add(sum.multiplyByScalar(oneSixthAsK));
     }
 
@@ -137,7 +137,7 @@ implements IntervalODEStepSolver<K, T>
             Real remainingTime = endTime.subtract(currentTime);
             
             // Scegli il passo minimo (in valore assoluto) tra effectiveDeltaTime e il tempo rimanente
-            Real stepDt = (effectiveDeltaTime.modulus() > remainingTime.modulus()) ? 
+            Real stepDt = (effectiveDeltaTime.abs().getValue() > remainingTime.abs().getValue()) ? 
                           remainingTime : effectiveDeltaTime;
             
             currentState = step(problem, currentState, currentTime, stepDt);
