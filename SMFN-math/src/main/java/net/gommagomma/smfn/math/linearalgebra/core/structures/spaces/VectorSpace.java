@@ -10,9 +10,6 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
 public interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> 
 extends Module<K, V>
 {
-    /**
-     * Restituisce il campo degli scalari.
-     */
 	@Override
     Field<K> getScalarStructure();
 }

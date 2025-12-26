@@ -65,7 +65,7 @@ public class ComplexLinearFunctionClient
         renderer.clear(Color.WHITE);
         
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, complexFunction::apply, domainAdapter, colorMapper
+            renderer, viewport, complexFunction, domainAdapter, colorMapper
         );
 
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);

@@ -59,15 +59,15 @@ public class RealLinearFunctionClient
         // Disegna la funzione lineare (in blu)
         renderer.setColor(Color.BLUE);
         FunctionPlotter1D.plotFunction(
-            renderer, viewport, linearFunction::apply, domainAdapter, codomainAdapter
+            renderer, viewport, linearFunction, domainAdapter, codomainAdapter
         );
         renderer.setColor(Color.GREEN);
         FunctionPlotter1D.plotFunction(
-                renderer, viewport, linearFunction1::apply, domainAdapter, codomainAdapter
+                renderer, viewport, linearFunction1, domainAdapter, codomainAdapter
             );
         renderer.setColor(Color.RED);
         FunctionPlotter1D.plotFunction(
-                renderer, viewport, linearFunction2::apply, domainAdapter, codomainAdapter
+                renderer, viewport, linearFunction2, domainAdapter, codomainAdapter
             );
         // Calcola l'ampiezza del range matematico
         double rangeX = viewport.maxX - viewport.minX;

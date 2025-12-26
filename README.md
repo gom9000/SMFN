@@ -6,13 +6,13 @@
 net.gommagomma.smfn/
 |-- math/
 |   |-- algebra/
-|   |   |-- core/                           (AlgebraicElement, AlgebraicStructure, Commutative, NumericFactory, MathFunction, Operator)
+|   |   |-- core/                           (AlgebraicElement, AlgebraicStructure, Commutative, NumericFactory, MathFunction, Mapping, FunctionElement)
 |   |   |   |-- algorithms                  (AlgebraicAlgorithms)
 |   |   |   |-- elements/                   (...)
 |   |   |   |   |-- additive/               (...)
 |   |   |   |   |-- multiplicative/         (...)
 |   |   |   |   |-- tensors/                (TensorElement)
-|   |   |   |   \-- capabilities/           (ComparableElement,ExponentiableElement,NormableElement,SqrtableElement)
+|   |   |   |   \-- capabilities/           (Absolutable,Exponentiable,Normable,Sqrtable,Orderable)
 |   |   |   |-- structures/                 (AdditiveMonoid,MultiplicativeMonoid,ComutativeMultiplicativeMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
 |   |   |-- numeric/                        (Natural, Signedint, ZnElement, Rational, Real, Complex)
 |   |   |-- polynomial/
@@ -65,7 +65,8 @@ net.gommagomma.smfn/
 - interface AlgebraicElement<E extends AlgebraicElement<E>> { boolean isMathematicallyEqualTo(E other); E copy();}
 - interface AlgebraicStructure<E extends AlgebraicElement<E>> { String getName(); boolean contains(E e); }
 - interface NumericFactory<E extends SemiringElement<E>> {E zero(); E one(); E of(double value); E of(long value); E of(int value);}
-- interface Mapping<I, O> { O apply(I input); default <V> Mapping<V, O> compose(Mapping<? super V, ? extends I> before) {        Objects.requireNonNull(before); return (V v) -> apply(before.apply(v)); }}
+- interface Mapping<I, O> { O apply(I input); default <V> Mapping<V, O> compose(Mapping<? super V, ? extends I> before) {  Objects.requireNonNull(before); return (V v) -> apply(before.apply(v)); } static <T> Mapping<T, T> identity() { return (T t) -> t; } }
+- interface Morphism<I, O> extends Mapping<I, O> { O evaluate(I input); }
 
 ### net.gommagomma.smfn.math.algebra.core.algorithms:
 - AlgebraicAlgorithms { public static <E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> E gcd(E a, E b){} public static <E extends EuclideanDomainElement<E, N>, N extends ComparableElement<N>> E lcm(E a, E b) {} }
@@ -93,7 +94,6 @@ net.gommagomma.smfn/
 - interface Sqrtable<E extends Sqrtable<E>> extends AlgebraicElement<E> { E sqrt(); }
 - interface Exponentiable<E extends Exponentiable<E>> extends AlgebraicElement<E> { E power(int exponent);}
 - interface Normable<N extends FieldElement<N>, E extends Normable<N, E>>  extends AlgebraicElement<E> {N norm();}
-- interface Evaluable<D, C> {  C eval(D input); }
 - interface Differentiable<T extends AlgebraicElement<T>> {  T derivative(); }
 - interface Absolutable<E extends Absolutable<E>> extends Orderable<E>, AbelianGroupElement<E> { default E abs() {
 return this.isLessThan(getZero()) ? this.negate() : (E) this;}	default int signum() {	if (this.isZero()) return 0;
@@ -175,12 +175,12 @@ extends ModuleElement<K, V> {}
 - interface MatrixElementFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>{ M createMatrix(K[][] data); 	M createMatrix(double[][] data);M createMatrix(long[][] data);	M createMatrix(int[][] data);	M createZeroMatrix(int rows, int cols);}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.structures.spaces:
-- interface Space<V extends AlgebraicElement<V>> extends AlgebraicStructure<V> {}
-- interface Semimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends Space<V>, VectorElementFactory<K, V> {Semiring<K> getScalarStructure();}
+- interface LinearSpace<K extends SemiringElement<K>, V extends AlgebraicElement<V>> extends AlgebraicStructure<V> { Semiring<K> getScalarStructure(); }
+- interface MetricSpace<T extends AlgebraicElement<T>> extends LinearSpace<T> {Real distance(T point1, T point2);}
+- interface Semimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends Space<V>, VectorElementFactory<K, V> {}
 - interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Semimodule<K, V> {Ring<K> getScalarStructure(); }
 - interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarStructure();}
-- interface MetricSpace<T extends AlgebraicElement<T>> extends Space<T> {Real distance(T point1, T point2);}
-- class ScalarMetricSpace<T extends AbelianGroupElement<T> & NormableElement<Real, T>> implements MetricSpace<T> {}
+- class RealMetricSpace implements MetricSpace<Real, Real> {}
 - interface InnerProductSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends VectorSpace<K, V>, MetricSpace<V> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
 - interface HilbertSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
 
@@ -229,8 +229,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 
 ## net.gommagomma.smfn.math.geometry
 -------------------------------------
-- interface GeometryEntity<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
-extends Evaluable<D, C> {int getAmbientDimension();}
+- interface GeometryEntity<D extends AlgebraicElement<D>, C extends AlgebraicElement<C>> extends Morphism<D, C> {int getAmbientDimension();}
 - class Point implements AlgebraicElement<Point> {}
 - class Circle implements GeometryEntity<RealVector, Real> {}
 - class Ellipse implements GeometryEntity<RealVector, Real> {}
@@ -279,9 +278,9 @@ extends Evaluable<D, C> {int getAmbientDimension();}
 
 ### net.gommagomma.smfn.math.analysis.fractals;
 - class MandelbrotSolver implements IterativeSolver<FixedPointProblem<Complex>, Complex, Natural> {}
-- class MandelbrotFunction implements MathFunction<Complex, Natural> {}
+- class MandelbrotFunction implements Mapping<Complex, Natural> {}
 - class JuliaSolver IterativeSolver<FixedPointProblem<Complex>, Complex, Natural> {}
-- class JuliaFunction implements MathFunction<Complex, Natural> {}
+- class JuliaFunction implements Mapping<Complex, Natural> {}
 
 ## net.gommagomma.smfn.graphics
 -------------------------------

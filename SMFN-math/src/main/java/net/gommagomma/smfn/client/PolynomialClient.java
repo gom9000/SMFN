@@ -31,7 +31,7 @@ public class PolynomialClient
     	GeneralPolynomial<RealMatrix> polyMatrix = Polynomials.ring(MRing, data);
     	
     	System.out.println("P(x) = " + polyMatrix.toString());
-    	System.out.println("P(M2) evaluate = " + polyMatrix.eval(M2));
+    	System.out.println("P(M2) evaluate = " + polyMatrix.evaluate(M2));
     	;
     	
         // --- 1. Definizione del Contesto e del Polinomio P(x) = 1.5x^3 + 3.0x^2 - 5.0x - 2.0 ---
@@ -80,7 +80,7 @@ public class PolynomialClient
         // Disegna il Polinomio (ora la variabile è cubicPolynomial)
         renderer.setColor(Color.BLUE);
         FunctionPlotter1D.plotFunction(
-            renderer, viewport, cubicPolynomial::eval, domainAdapter, codomainAdapter
+            renderer, viewport, cubicPolynomial, domainAdapter, codomainAdapter
         );
         
         renderer.endDrawingAndFlush();

@@ -147,7 +147,7 @@ implements ViewportController.ViewportUpdateHandler
         
         // Disegna il frattale
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, mandelbrotFunction::apply, domainAdapter, baseColorMapper
+            renderer, viewport, mandelbrotFunction, domainAdapter, baseColorMapper
         );
         
         // Disegna gli assi sopra il frattale

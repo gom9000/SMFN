@@ -62,7 +62,7 @@ public class MandelbrotFunctionClient {
         
         // Usa il FunctionPlotter2D per disegnare il frattale
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, mandelbrotFunction::apply, domainAdapter, colorMapper
+            renderer, viewport, mandelbrotFunction, domainAdapter, colorMapper
         );
 
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);

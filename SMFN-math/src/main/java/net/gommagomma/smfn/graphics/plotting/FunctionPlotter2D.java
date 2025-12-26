@@ -7,7 +7,7 @@ import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Renderer;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Evaluable;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 
 
 /**
@@ -31,7 +31,7 @@ public class FunctionPlotter2D
      * @param colorMapper Un adattatore che mappa il risultato C in un Color AWT.
      */
     public static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
-    void plotFunction(Renderer renderer, Viewport viewport, Evaluable<D, C> function,BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper)
+    void plotFunction(Renderer renderer, Viewport viewport, Mapping<D, C> function,BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper)
     {
         int width = renderer.getWidth();
         int height = renderer.getHeight();
@@ -48,7 +48,7 @@ public class FunctionPlotter2D
                 D inputElement = domainAdapter.apply(mathX, mathY);
 
                 // 3. Valuta la funzione (usa il modulo math)
-                C outputElement = function.eval(inputElement);
+                C outputElement = function.apply(inputElement);
 
                 // 4. Mappa il risultato a un colore 
                 Color color = colorMapper.map(outputElement);

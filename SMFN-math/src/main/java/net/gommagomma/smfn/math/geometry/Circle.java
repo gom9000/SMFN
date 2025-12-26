@@ -43,11 +43,11 @@ implements GeometryEntity<Point, Real>
 
     @Override
     public boolean isOnEntity(Point point) {
-        return Math.abs(eval(point).getValue()) < MathConstants.EPSILON;
+        return Math.abs(evaluate(point).getValue()) < MathConstants.EPSILON;
     }
 
     @Override
-    public Real eval(Point inputPoint) {
+    public Real evaluate(Point inputPoint) {
         return implicitFunctionAt(inputPoint);
     }
 

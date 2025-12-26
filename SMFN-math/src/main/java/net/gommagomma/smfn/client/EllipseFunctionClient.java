@@ -51,7 +51,7 @@ public class EllipseFunctionClient {
         renderer.startDrawing();
 
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, ellipseFunction::eval, domainAdapter, colorMapper
+            renderer, viewport, ellipseFunction, domainAdapter, colorMapper
         );
         
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);

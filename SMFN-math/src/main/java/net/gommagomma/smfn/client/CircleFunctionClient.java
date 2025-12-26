@@ -55,7 +55,7 @@ public class CircleFunctionClient {
         renderer.startDrawing();
 
         FunctionPlotter2D.plotFunction(
-            renderer, viewport, circleFunction::eval, domainAdapter, colorMapper
+            renderer, viewport, circleFunction, domainAdapter, colorMapper
         );
 
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
