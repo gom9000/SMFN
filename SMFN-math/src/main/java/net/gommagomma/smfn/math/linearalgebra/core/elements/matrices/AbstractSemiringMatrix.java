@@ -57,6 +57,11 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
     protected abstract Class<K> getScalarClass();
 
 
+    @Override
+    public V apply(V vector) {
+        return this.multiply(vector);
+    }
+
     // Helpers
 
     /**

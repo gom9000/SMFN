@@ -131,7 +131,7 @@ return this.isGreaterThan(getZero()) ? 1 : -1;	}}
 - final class ZnRing implements CommutativeRing<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.polynomial:
-- abstract class AbstractPolynomial<K extends SemiringElement<K>, P extends AbstractPolynomial<K, P>> implements SemiringElement<P>, Evaluable<K, K> {}
+- abstract class AbstractPolynomial<K extends SemiringElement<K>, P extends AbstractPolynomial<K, P>> implements SemiringElement<P>, Morphism<K, K> {}
 - abstract class AbstractRingPolynomial<K extends RingElement<K>, P extends AbstractRingPolynomial<K, P>> 
 extends AbstractPolynomial<K, P> 
 implements RingElement<P> {}
@@ -163,9 +163,9 @@ extends ModuleElement<K, V> {}
 - public abstract class AbstractRank1Tensor<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> implements SemimoduleElement<K, V> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.elements.matrices:
-- interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends AlgebraicElement<M>, CommutativeMonoidElement<M> { int getRows(); int getColumns(); K get(int row, int col); V getRowVector(int row); V getColumnVector(int col);  M multiply(M other);  M multiplyByScalar(K scalar); V multiply(V vector);}
+- public interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends SemiringElement<M>, LinearMapping<K, V, M> { int getRows(); int getColumns(); K get(int row, int col); V getRowVector(int row); V getColumnVector(int col);  M multiply(M other);  M multiplyByScalar(K scalar); V multiply(V vector);M transpose();}
 - interface RingMatrixElement<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixElement<K, V, M>, AbelianGroupElement<M> {}
-- interface FieldMatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixElement<K, V, M> { K determinant(); M inverse(); M transpose(); }
+- interface FieldMatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixElement<K, V, M>, LinearOperator<K, V, M> { K determinant(); M inverse(); }
 - abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, S extends SemiringMatrixSemimodule<K, V, M>> implements SemiringMatrixElement<K, V, M>, TensorElement<K> {    protected final K[][] data; protected final int rows;  protected final int cols;  protected final S structure;}
 - abstract class AbstractRingMatrix<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>, S extends RingMatrixModule<K, V, M>> extends AbstractSemiringMatrix<K, V, M, S> implements RingMatrixElement<K, V, M> {}
 - abstract class AbstractFieldMatrix<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>, S extends FieldMatrixSpace<K, V, M>> extends AbstractRingMatrix<K, V, M, S> implements FieldMatrixElement<K, V, M> {}
@@ -181,8 +181,8 @@ extends ModuleElement<K, V> {}
 - interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Semimodule<K, V> {Ring<K> getScalarStructure(); }
 - interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarStructure();}
 - class RealMetricSpace implements MetricSpace<Real, Real> {}
-- interface InnerProductSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends VectorSpace<K, V>, MetricSpace<V> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
-- interface HilbertSpace<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
+- interface InnerProductSpace<K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> extends VectorSpace<K, V>, MetricSpace<V> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
+- interface HilbertSpace<K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
 
 - interface SemiringMatrixSemimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M>, SemiringMatrixFactory<K, V, M>, DimensionalStructure<SemiringMatrixSemimodule<K, V, M>> {Semiring<K> getScalarStructure();	Semimodule<K, V> getVectorStructure(); int getMatrixRows(); int getMatrixColumns();}
 - interface RingMatrixModule<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSemimodule<K, V, M> { @Override Ring<K> getScalarStructure(); @Override Module<K, V> getVectorStructure();}
@@ -191,11 +191,10 @@ extends RingMatrixModule<K, V, M> {@Override Field<K> getScalarStructure(); @Ove
 - interface DimensionalStructure<S extends AlgebraicStructure<?>> {S getSpaceOfDimensions(int rows, int cols);}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.operators:
-- interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> extends MathFunction<V, V> {}
-- interface ProjectionOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, P extends ProjectionOperator<K, V, P>> extends LinearOperator<K, V, P> {}
-- public abstract class AbstractProjectionOperator<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> 
-implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
-- interface HermitianOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends HermitianOperator<K, V, O>>  extends LinearOperator<K, V, O> {Real expectationValue(V state);}
+- interface LinearMapping<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends LinearMapping<K, V, M>> extends Morphism<V, V> {	default V transform(V vector) {	return apply(vector);	}}
+- interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> extends LinearMapping<K, V, O>, VectorElement<K, O>{@Override   default V evaluate(V vector) {       return apply(vector);   }}
+- interface HermitianMapping<K extends FieldElement<K>, V extends VectorElement<K, V>, H extends HermitianMapping<K, V, H>> extends LinearMapping<K, V, H> {Real expectationValue(V state);}
+- interface HermitianOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends HermitianOperator<K, V, O>> extends LinearOperator<K, V, O>, HermitianMapping<K, V, O> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.natural:
 - final class NaturalVector extends AbstractRank1Tensor<Natural, NaturalVector> { //... }
@@ -216,7 +215,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 - final class RealMatrixSpace implements FieldMatrixSpace<Real, RealVector, RealMatrix> {//...}
 
 ### net.gommagomma.smfn.math.linearalgebra.complex:
-- final class ComplexVector extends AbstractRank1Tensor<Complex, ComplexVector> implements InnerProductSpaceElement<Complex, ComplexVector> { /... }
+- final class ComplexVector extends AbstractRank1Tensor<Complex, ComplexVector> implements InnerProductSpaceElement<Complex, ComplexVector> { //... }
 - final class ComplexVectorSpace implements HilbertSpace<Complex, ComplexVector> {//...}
 - final class ComplexMatrix extends AbstractFieldMatrix<Complex, ComplexVector, ComplexMatrix, ComplexMatrixSpace> {}
 - final class ComplexMatrixSpace implements FieldMatrixSpace<Complex, ComplexVector, ComplexMatrix> {//...}
@@ -268,7 +267,7 @@ implements ProjectionOperator<K, V, AbstractProjectionOperator<K, V>> {}
 
 ### net.gommagomma.smfn.math.analysis.numerical.solvers.ode:
 - class RungeKutta4Solver<K extends FieldElement<K>, T extends VectorElement<K, T>> implements IntervalODEStepSolver<K, T> {}
-- class EmbeddedRK23Solver<K extends FieldElement<K>, T extends VectorElement<K, T> & NormableElement<Real, T>> implements IntervalODEStepSolver<K, T> {}
+- class EmbeddedRK23Solver<K extends FieldElement<K>, T extends VectorElement<K, T> & Normable<Real, T>> implements IntervalODEStepSolver<K, T> {}
 
 ### net.gommagomma.smfn.math.analysis.numerical.solvers.roots:
 - class NewtonRaphsonSolver<R extends FieldElement<R>> implements IterativeSolver<ScalarRootFindingProblem<R>, R, R> {}
@@ -399,7 +398,7 @@ impl (in linearalgebra.real):
 class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
 - Suggerimento: Vincola l'interfaccia HermitianOperator in modo più stretto, non solo a VectorElement, ma a InnerProductSpaceElement.
 // Vincolo più stretto per i problemi di MQ:
-public interface HermitianOperator<K extends FieldElement<K, ?> & NormableElement<Real, K>, 
+public interface HermitianOperator<K extends FieldElement<K, ?> & Normable<Real, K>, 
                                   V extends InnerProductSpaceElement<K, V>, 
                                   O extends HermitianOperator<K, V, O>> 
     extends LinearOperator<K, V, O> {

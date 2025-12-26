@@ -1,7 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.core.operators;
 
 
-import net.gommagomma.smfn.math.algebra.core.Morphism;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement; 
 
@@ -11,12 +10,10 @@ import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElemen
  * dello stesso spazio (Endomorfismo), preservando le operazioni di somma e prodotto per scalare.
  */
 public interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> 
-extends Morphism<V, V>
+extends LinearMapping<K, V, O>, VectorElement<K, O>
 {
-    /**
-     * Valuta l'operatore sul vettore
-     */
-	default V transform(V vector) {
+	@Override
+    default V evaluate(V vector) {
         return apply(vector);
     }
 }
