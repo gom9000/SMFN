@@ -311,54 +311,7 @@ extends RingMatrixModule<K, V, M> {@Override Field<K> getScalarStructure(); @Ove
 
 
 # TODO:
-
-
-- analysis.core.operators
-	|- public interface SymbolicOperator<F extends MathFunction, R extends MathFunction> extends Operator<F, R> { R apply(F function); }
-	|- public interface NumericalOperator<K extends FieldElement<K, ?>> { K evaluate(MathFunction<K, K> f, K point); }
-	|- public interface NumericalDifferentiator<K extends FieldElement<K, ?>> extends NumericalOperator<K> { default K derivativeAt(MathFunction<K, K> f, K x) {return evaluate(f, x);} }
-- analysis.core.problems
-	|- DynamicSystem (DifferentialEquation)
-	|- RootFindingProblem
-	|- IterativeSystem
-	|- BoundaryValueProblem
-- analysis.core.solvers
-	|- public interface Solver<P, R> { R solve(P problem); }
-	|- IterativeSolver
-	|- ConvergenceCriteria
-	|- ConvergenceParameters
-	|- IntervalSolver
-	|- IntegrationParameters
-	|- StepInterpolator
-
-- analysis.symbolic
-	|- differentiation
-	|	|- public class PolynomialDerivative implements SymbolicOperator<Polynomial, Polynomial> {}
-	|- integration
-	|	|- public class PolynomialIntegral  implements SymbolicOperator<Polynomial, Polynomial> {}
-
-- analysis.numerical
-	|- differentiation
-	|	|- CentralDifferenceDifferentiator <K extends FieldElement<K, ?>> implements NumericalDifferentiator<K> { private final K h; ...}
-	|- integration
-	|   |- TrapezoidalIntegrator
-	|   |- SimpsonIntegrator
-	|- roots
-	|   |- NewtonRaphsonSolver
-	|   |- BisectionSolver
-	|- ode
-		|- EulerSolver
-		|- RungeKutta4Solver
-
-- analysis.functions
-	|- LinearFunction
-
-
-
 - introduzione delle matrici quadrate (come anello moltiplicativo);
-
-- public class Point<K extends FieldElement<K, ?>, V extends VectorElement<K, V>>
-implements AlgebraicElement<Point<K, V>>
 
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
