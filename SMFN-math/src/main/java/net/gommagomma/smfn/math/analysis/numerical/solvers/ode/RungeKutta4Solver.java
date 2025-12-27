@@ -59,49 +59,49 @@ implements IntervalODEStepSolver<K, T>
         // k1_rate = f(t_k1, currentState)
         T k1_rate = system.derivative(currentState, currentTime);
         // k1 = k1_rate * dt (nello spazio K)
-        T k1 = k1_rate.multiplyByScalar(dt); 
+        T k1 = k1_rate.scale(dt); 
 
         // --- Calcolo K2 ---
         // t_k2 = currentTime + deltaTime / 2
         Real time_k2 = currentTime.add(deltaTime.multiply(realHalf)); // Uso corretto di realHalf
         // state_k2 = currentState + k1_rate * (deltaTime / 2)
         K dtHalfAsK = val(deltaTime.multiply(realHalf).abs().getValue()); // Uso corretto di realHalf
-        T state_k2 = currentState.add(k1_rate.multiplyByScalar(dtHalfAsK));
+        T state_k2 = currentState.add(k1_rate.scale(dtHalfAsK));
         // k2_rate = f(t_k2, state_k2)
         T k2_rate = system.derivative(state_k2, time_k2);
         // k2 = k2_rate * dt
-        T k2 = k2_rate.multiplyByScalar(dt);
+        T k2 = k2_rate.scale(dt);
 
         // --- Calcolo K3 ---
         // t_k3 = currentTime + deltaTime / 2 (uguale a t_k2)
         Real time_k3 = time_k2; 
         // state_k3 = currentState + k2_rate * (deltaTime / 2)
         // Riutilizziamo dtHalfAsK
-        T state_k3 = currentState.add(k2_rate.multiplyByScalar(dtHalfAsK));
+        T state_k3 = currentState.add(k2_rate.scale(dtHalfAsK));
         // k3_rate = f(t_k3, state_k3)
         T k3_rate = system.derivative(state_k3, time_k3);
         // k3 = k3_rate * dt
-        T k3 = k3_rate.multiplyByScalar(dt);
+        T k3 = k3_rate.scale(dt);
         
         // --- Calcolo K4 ---
         // t_k4 = currentTime + deltaTime
         Real time_k4 = currentTime.add(deltaTime);
         // state_k4 = currentState + k3_rate * deltaTime
-        T state_k4 = currentState.add(k3_rate.multiplyByScalar(dt)); // Usiamo dt in K
+        T state_k4 = currentState.add(k3_rate.scale(dt)); // Usiamo dt in K
         // k4_rate = f(t_k4, state_k4)
         T k4_rate = system.derivative(state_k4, time_k4);
         // k4 = k4_rate * dt
-        T k4 = k4_rate.multiplyByScalar(dt);
+        T k4 = k4_rate.scale(dt);
 
         // --- Calcolo nextState ---
         // nextState = currentState + 1/6 * (K1 + 2*K2 + 2*K3 + K4)
-        T sum = k1.add(k2.multiplyByScalar(two))
-                  .add(k3.multiplyByScalar(two))
+        T sum = k1.add(k2.scale(two))
+                  .add(k3.scale(two))
                   .add(k4);
         
         // Moltiplichiamo la somma per 1/6 (convertito in K)
         K oneSixthAsK = val(realOneSixth.abs().getValue());
-        return currentState.add(sum.multiplyByScalar(oneSixthAsK));
+        return currentState.add(sum.scale(oneSixthAsK));
     }
 
 

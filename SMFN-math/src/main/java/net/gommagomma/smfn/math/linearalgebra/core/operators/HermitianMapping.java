@@ -1,15 +1,15 @@
 package net.gommagomma.smfn.math.linearalgebra.core.operators;
 
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.LinearCombinable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.numeric.Real;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
 
 /**
  * Rappresenta un operatore Hermitiano (o autoaggiunto).
  * Una proprietà matematica richiesta dagli osservabili fisici.
  */
-public interface HermitianMapping<K extends FieldElement<K>, V extends VectorElement<K, V>, H extends HermitianMapping<K, V, H>> 
+public interface HermitianMapping<K extends FieldElement<K>, V extends LinearCombinable<K, V>, H extends HermitianMapping<K, V, H>>
 extends LinearMapping<K, V, H>
 {
     // L'interfaccia garantisce la proprietà hermitiana per contratto.

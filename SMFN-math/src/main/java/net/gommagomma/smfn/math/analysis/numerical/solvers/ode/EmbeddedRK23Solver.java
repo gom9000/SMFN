@@ -70,29 +70,29 @@ implements IntervalODEStepSolver<K, T>
         T k1_rate = system.derivative(currentState, currentTime);
         
         Real t2 = currentTime.add(deltaTime.multiply(new Real(A21)));
-        T y2 = currentState.add(k1_rate.multiplyByScalar(val(A21).multiply(dt)));
+        T y2 = currentState.add(k1_rate.scale(val(A21).multiply(dt)));
         T k2_rate = system.derivative(y2, t2);
         
         Real t3 = currentTime.add(deltaTime.multiply(new Real(A32))); 
-        T y3 = currentState.add(k2_rate.multiplyByScalar(val(A32).multiply(dt)));
+        T y3 = currentState.add(k2_rate.scale(val(A32).multiply(dt)));
         T k3_rate = system.derivative(y3, t3);
 
         Real t4 = currentTime.add(deltaTime);
-        T term41 = k1_rate.multiplyByScalar(val(A41).multiply(dt));
-        T term42 = k2_rate.multiplyByScalar(val(A42).multiply(dt));
-        T term43 = k3_rate.multiplyByScalar(val(A43).multiply(dt));
+        T term41 = k1_rate.scale(val(A41).multiply(dt));
+        T term42 = k2_rate.scale(val(A42).multiply(dt));
+        T term43 = k3_rate.scale(val(A43).multiply(dt));
         T y4 = currentState.add(term41).add(term42).add(term43);
         T k4_rate = system.derivative(y4, t4);
         
-        T term31 = k1_rate.multiplyByScalar(val(C31).multiply(dt));
-        T term32 = k2_rate.multiplyByScalar(val(C32).multiply(dt));
-        T term33 = k3_rate.multiplyByScalar(val(C33).multiply(dt));
+        T term31 = k1_rate.scale(val(C31).multiply(dt));
+        T term32 = k2_rate.scale(val(C32).multiply(dt));
+        T term33 = k3_rate.scale(val(C33).multiply(dt));
         T result = currentState.add(term31).add(term32).add(term33);
 
-        T term21 = k1_rate.multiplyByScalar(val(C21).multiply(dt));
-        T term22 = k2_rate.multiplyByScalar(val(C22).multiply(dt));
-        T term23 = k3_rate.multiplyByScalar(val(C23).multiply(dt));
-        T term24 = k4_rate.multiplyByScalar(val(C24).multiply(dt));
+        T term21 = k1_rate.scale(val(C21).multiply(dt));
+        T term22 = k2_rate.scale(val(C22).multiply(dt));
+        T term23 = k3_rate.scale(val(C23).multiply(dt));
+        T term24 = k4_rate.scale(val(C24).multiply(dt));
         T resultOrder2 = currentState.add(term21).add(term22).add(term23).add(term24);
 
         T errorEstimate = result.subtract(resultOrder2);

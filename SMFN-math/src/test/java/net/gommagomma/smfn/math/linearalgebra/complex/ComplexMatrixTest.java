@@ -112,7 +112,7 @@ public class ComplexMatrixTest {
         // Scalare (1 + i)
         Complex scalar = c(1, 1); 
 
-        ComplexMatrix c = a.multiplyByScalar(scalar);
+        ComplexMatrix c = a.scale(scalar);
         
         // Risultato atteso: 
         // (2)*(1+i) = 2+2i

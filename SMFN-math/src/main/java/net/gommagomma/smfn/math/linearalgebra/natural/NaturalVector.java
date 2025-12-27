@@ -78,7 +78,7 @@ extends AbstractRank1Tensor<Natural, NaturalVector>
     }
 
     @Override // SemimoduleElement impls
-    public NaturalVector multiplyByScalar(Natural scalar) {
+    public NaturalVector scale(Natural scalar) {
     	Natural[] scaledData = new Natural[dimension];
         for (int i = 0; i < dimension; i++) {
             scaledData[i] = this.data[i].multiply(scalar);

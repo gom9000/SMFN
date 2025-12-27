@@ -92,7 +92,7 @@ implements InnerProductSpaceElement<Rational, RationalVector>
 
 
     @Override // SemimoduleElement impls
-    public RationalVector multiplyByScalar(Rational scalar) {
+    public RationalVector scale(Rational scalar) {
         Rational[] scaledData = new Rational[dimension];
         for (int i = 0; i < dimension; i++) {
             scaledData[i] = this.data[i].multiply(scalar);

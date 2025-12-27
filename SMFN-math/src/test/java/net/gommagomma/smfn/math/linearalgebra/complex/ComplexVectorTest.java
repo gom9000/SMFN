@@ -118,7 +118,7 @@ class ComplexVectorTest {
         Complex expected_1 = createComplex(-2.0, 0.0);
         ComplexVector expected = factory.createVector(new Complex[]{expected_0, expected_1});
 
-        ComplexVector result = v.multiplyByScalar(scalar);
+        ComplexVector result = v.scale(scalar);
         assertTrue(result.isMathematicallyEqualTo(expected));
     }
 

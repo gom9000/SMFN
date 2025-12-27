@@ -95,9 +95,9 @@ net.gommagomma.smfn/
 - interface Exponentiable<E extends Exponentiable<E>> extends AlgebraicElement<E> { E power(int exponent);}
 - interface Normable<N extends FieldElement<N>, E extends Normable<N, E>>  extends AlgebraicElement<E> {N norm();}
 - interface Differentiable<T extends AlgebraicElement<T>> {  T derivative(); }
-- interface Absolutable<E extends Absolutable<E>> extends Orderable<E>, AbelianGroupElement<E> { default E abs() {
-return this.isLessThan(getZero()) ? this.negate() : (E) this;}	default int signum() {	if (this.isZero()) return 0;
-return this.isGreaterThan(getZero()) ? 1 : -1;	}}
+- interface Absolutable<E extends Absolutable<E>> extends Orderable<E>, AbelianGroupElement<E> { default E abs() { return this.isLessThan(getZero()) ? this.negate() : (E) this;}	default int signum() {	if (this.isZero()) return 0; return this.isGreaterThan(getZero()) ? 1 : -1;	}}
+- interface LinearCombinable<K extends SemiringElement<K>, E extends LinearCombinable<K, E>> extends AbelianGroupElement<E>{	E multiplyByScalar(K scalar);}
+- interface Scalable<K extends SemiringElement<K>, E extends Scalable<K, E>> extends CommutativeMonoidElement<E>{	E multiplyByScalar(K scalar);}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}

@@ -84,7 +84,7 @@ class RealVectorTest {
         RealVector v = factory.createVector(new double[]{1.0, -2.0});
         Real scalar = scalarFactory.of(3.5);
 
-        RealVector result = v.multiplyByScalar(scalar);
+        RealVector result = v.scale(scalar);
         RealVector expected = factory.createVector(new double[]{3.5, -7.0});
 
         assertTrue(result.isMathematicallyEqualTo(expected));

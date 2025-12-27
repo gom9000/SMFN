@@ -192,7 +192,7 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
     }
 
     @Override // SemiringMatrixElement impls
-    public M multiplyByScalar(K scalar) {
+    public M scale(K scalar) {
         K[][] resultData = createMatrixArray(rows, cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -201,7 +201,12 @@ implements SemiringMatrixElement<K, V, M>, TensorElement<K>
         }
         return matrixStructure.createMatrix(resultData);
     }
-    
+
+//    @Override
+//    public M multiplyByScalar(M otherMatrix) {
+//        return this.multiply(otherMatrix);
+//    }
+
     @Override // SemiringMatrixElement impls
     public M multiply(M other) {
         if (this.cols != other.getRows()) {

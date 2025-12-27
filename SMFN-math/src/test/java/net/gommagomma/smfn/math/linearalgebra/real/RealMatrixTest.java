@@ -116,7 +116,7 @@ public class RealMatrixTest {
         RealMatrix a = factory.createMatrix(data);
         Real scalar = new Real(2.5);
 
-        RealMatrix c = a.multiplyByScalar(scalar);
+        RealMatrix c = a.scale(scalar);
         RealMatrix expected = factory.createMatrix(new double[][]{{2.5, 5.0}, {7.5, 10.0}});
 
         assertTrue(c.isMathematicallyEqualTo(expected));

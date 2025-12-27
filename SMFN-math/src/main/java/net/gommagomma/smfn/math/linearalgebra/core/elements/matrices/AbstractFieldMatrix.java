@@ -34,17 +34,6 @@ implements FieldMatrixElement<K, V, M>
         return apply(vector);
     }
 
-    @Override 
-    public int dimension() {
-        return rows * cols; // La dimensione dello spazio degli operatori
-    }
-
-    @Override
-    public K get(int index) {
-        // Mapping da indice lineare a coordinate (row-major)
-        return data[index / cols][index % cols];
-    }
-
     @Override // FieldMatrixElement impls
     public K determinant() {
         if (getColumns() != getRows()) {

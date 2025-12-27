@@ -66,7 +66,7 @@ extends AbstractMatrixRing<Real, RealVector, RealMatrix>
     @Override
     public RealMatrix of(double value) {
         Real scalar = getScalarStructure().of(value);
-        return getIdentity().multiplyByScalar(scalar); 
+        return getIdentity().scale(scalar); 
     }
 
     @Override

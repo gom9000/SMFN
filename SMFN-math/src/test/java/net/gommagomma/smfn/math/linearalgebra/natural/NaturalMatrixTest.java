@@ -121,7 +121,7 @@ public class NaturalMatrixTest {
     void testMultiplyByScalar() {
         NaturalMatrix A = factory.createMatrix(new int[][]{{1, 2}, {3, 4}});
         Natural scalar = NaturalSemiring.getInstance().of(3);
-        NaturalMatrix C = A.multiplyByScalar(scalar); // [[3, 6], [9, 12]]
+        NaturalMatrix C = A.scale(scalar); // [[3, 6], [9, 12]]
 
         assertTrue(C.get(0, 0).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(3)));
         assertTrue(C.get(1, 1).isMathematicallyEqualTo(NaturalSemiring.getInstance().of(12)));

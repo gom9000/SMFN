@@ -91,7 +91,7 @@ public class RationalMatrixTest {
         Rational scalar = new Rational(3, 2); // 3/2
 
         // C = (3/2) * A = [[3/2, 3/4], [3, 0]]
-        RationalMatrix C = A.multiplyByScalar(scalar);
+        RationalMatrix C = A.scale(scalar);
 
         assertTrue(C.get(0, 0).isMathematicallyEqualTo(new Rational(3, 2)));
         assertTrue(C.get(0, 1).isMathematicallyEqualTo(new Rational(3, 4)));

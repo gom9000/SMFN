@@ -86,7 +86,7 @@ implements ModuleElement<SignedInt, SignedIntVector>
 
 
     @Override // SemimoduleElement impls
-    public SignedIntVector multiplyByScalar(SignedInt scalar) {
+    public SignedIntVector scale(SignedInt scalar) {
         SignedInt[] scaledData = new SignedInt[dimension];
         for (int i = 0; i < dimension; i++) {
             scaledData[i] = this.data[i].multiply(scalar);

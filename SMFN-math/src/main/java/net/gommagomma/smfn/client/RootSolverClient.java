@@ -7,6 +7,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.ForwardDifferenceDifferentiator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.NewtonRaphsonSolver;
+import net.gommagomma.smfn.math.linearalgebra.core.operators.LinearMorphism;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RealMetricSpace;
 
@@ -16,22 +17,26 @@ import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RealMetricS
  */
 public class RootSolverClient
 {
-	private static class ParabolaFunction implements Mapping<Real, Real>
-	{
+	private static class ParabolaFunction implements LinearMorphism<Real, Real> {
         @Override
-        public Real apply(Real x) {
+        public Real evaluate(Real x) {
             // f(x) = x^2 - 2
-        	return x.multiply(x).subtract(new Real(2));
+            return x.multiply(x).subtract(new Real(2));
         }
     }
 
-    private static class SquareRootProblem implements ScalarRootFindingProblem<Real>
-    {
+    private static class SquareRootProblem implements ScalarRootFindingProblem<Real> {
         private final ParabolaFunction function = new ParabolaFunction();
 
         @Override
-        public Mapping<Real, Real> getFunction() {
+        public LinearMorphism<Real, Real> getFunction() {
             return function;
+        }
+
+        @Override
+        public Mapping<Real, Real> getDerivative() {
+            // Se non forniamo la derivata analitica, il solutore userà il fallback numerico
+            throw new UnsupportedOperationException("Analytic derivative not provided.");
         }
     }
 

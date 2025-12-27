@@ -90,7 +90,7 @@ class NaturalVectorTest {
         NaturalVector v = factory.createVector(new int[]{3, 4});
         Natural scalar = factory.getScalarFactory().of(5);
         
-        NaturalVector result = v.multiplyByScalar(scalar);
+        NaturalVector result = v.scale(scalar);
         NaturalVector expected = factory.createVector(new int[]{15, 20});
         
         assertTrue(result.isMathematicallyEqualTo(expected));
@@ -101,7 +101,7 @@ class NaturalVectorTest {
         NaturalVector v = factory.createVector(new int[]{10, 20});
         Natural scalarOne = factory.getScalarFactory().one();
         
-        NaturalVector result = v.multiplyByScalar(scalarOne);
+        NaturalVector result = v.scale(scalarOne);
         
         assertTrue(result.isMathematicallyEqualTo(v));
     }

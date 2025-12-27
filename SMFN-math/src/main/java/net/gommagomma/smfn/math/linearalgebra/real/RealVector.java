@@ -90,7 +90,7 @@ implements InnerProductSpaceElement<Real, RealVector>
 
 
 	@Override // SemimoduleElement impls
-	public RealVector multiplyByScalar(Real scalar) {
+	public RealVector scale(Real scalar) {
 		Real[] scaledData = new Real[dimension];
 		for (int i = 0; i < dimension; i++) {
 			scaledData[i] = this.data[i].multiply(scalar);

@@ -27,6 +27,6 @@ implements DifferentialEquationProblem<Complex, ComplexVector>
         Complex minusIOverHbar = new Complex(0.0, -1.0); 
 
         // 3. Moltiplica il vettore H_psi per lo scalare (-i/hbar)
-        return H_psi.multiplyByScalar(minusIOverHbar);
+        return H_psi.scale(minusIOverHbar);
     }
 }

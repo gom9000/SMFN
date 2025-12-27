@@ -89,7 +89,7 @@ implements InnerProductSpaceElement<Complex, ComplexVector>
 
 
     @Override // SemimoduleElement impls
-    public ComplexVector multiplyByScalar(Complex scalar) {
+    public ComplexVector scale(Complex scalar) {
     	Complex[] scaledData = new Complex[dimension];
         for (int i = 0; i < dimension; i++) {
             scaledData[i] = this.data[i].multiply(scalar);

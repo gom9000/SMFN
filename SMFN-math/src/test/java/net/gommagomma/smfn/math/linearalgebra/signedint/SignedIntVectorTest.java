@@ -127,7 +127,7 @@ class SignedIntVectorTest {
         SignedIntVector v = factory.createVector(new int[]{4, -1, 3});
         SignedInt scalar = factory.getScalarFactory().of(-2);
         
-        SignedIntVector result = v.multiplyByScalar(scalar);
+        SignedIntVector result = v.scale(scalar);
         SignedIntVector expected = factory.createVector(new int[]{-8, 2, -6});
         
         assertTrue(result.isMathematicallyEqualTo(expected));
