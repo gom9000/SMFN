@@ -21,7 +21,7 @@ public class RootSolverClient
         @Override
         public Real evaluate(Real x) {
             // f(x) = x^2 - 2
-            return x.multiply(x).subtract(new Real(2));
+            return x.multiply(x).multiply(x).subtract(new Real(2));
         }
     }
 
@@ -35,9 +35,14 @@ public class RootSolverClient
 
         @Override
         public Mapping<Real, Real> getDerivative() {
-            // Se non forniamo la derivata analitica, il solutore userà il fallback numerico
-            throw new UnsupportedOperationException("Analytic derivative not provided.");
+            // f'(x) = 2 * x
+            return x -> x.multiply(x).multiply(new Real(3.0)); // 1.2599210498948732
         }
+
+//        @Override
+//        public Mapping<Real, Real> getDerivative() {
+//            throw new UnsupportedOperationException("Analytic derivative not provided."); //5:  1.2599210498948732
+//        }
     }
 
     private static class AbsoluteDifferenceCriteria implements ConvergenceCriteria

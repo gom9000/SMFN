@@ -4,10 +4,4 @@ import net.gommagomma.smfn.math.algebra.core.elements.additive.CommutativeMonoid
 
 public interface SemiringElement<E extends SemiringElement<E>> 
 extends CommutativeMonoidElement<E>, MultiplicativeMonoidElement<E>
-{
-	@Override
-    E getZero();
-
-    @Override
-    E copy();	
-}
+{}

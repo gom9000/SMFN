@@ -83,7 +83,7 @@ net.gommagomma.smfn/
 - interface SemiringElement<E extends SemiringElement<E>> extends CommutativeMonoidElement<E>, MultiplicativeMonoidElement<E> {}
 - interface RingElement<E extends RingElement<E>> extends SemiringElement<E>, AbelianGroupElement<E> {}
 - interface CommutativeRingElement<E extends CommutativeRingElement<E>> extends RingElement<E>, CommutativeMultiplicativeMonoidElement<E> {}
-- interface FieldElement<E extends FieldElement<E>> extends CommutativeRingElement<E> {E inverse();default E divide(E other) { return multiply(other.inverse());}}
+- interface FieldElement<E extends FieldElement<E>> extends CommutativeRingElement<E>, Scalable<E, E> {E inverse();default E divide(E other) { return multiply(other.inverse());} @Override  default E scale(E scalar) {        return this.multiply(scalar);  }}
 - interface EuclideanDomainElement<E extends EuclideanDomainElement<E, N>, N extends Orderable<N>> extends CommutativeRingElement<E> {N normValue(); E remainder(E divisor); E quotient(E divisor); default E mod(E divisor) { return remainder(divisor); }}
 
 ### net.gommagomma.smfn.math.algebra.core.elements.tensors:
@@ -96,8 +96,8 @@ net.gommagomma.smfn/
 - interface Normable<N extends FieldElement<N>, E extends Normable<N, E>>  extends AlgebraicElement<E> {N norm();}
 - interface Differentiable<T extends AlgebraicElement<T>> {  T derivative(); }
 - interface Absolutable<E extends Absolutable<E>> extends Orderable<E>, AbelianGroupElement<E> { default E abs() { return this.isLessThan(getZero()) ? this.negate() : (E) this;}	default int signum() {	if (this.isZero()) return 0; return this.isGreaterThan(getZero()) ? 1 : -1;	}}
-- interface LinearCombinable<K extends SemiringElement<K>, E extends LinearCombinable<K, E>> extends AbelianGroupElement<E>{	E multiplyByScalar(K scalar);}
-- interface Scalable<K extends SemiringElement<K>, E extends Scalable<K, E>> extends CommutativeMonoidElement<E>{	E multiplyByScalar(K scalar);}
+- interface LinearCombinable<K, E extends LinearCombinable<K, E>> extends Scalable<K, E>, AbelianGroupElement<E>{	default E linearCombine(K a, E other, K b) {  return this.scale(a).add(other.scale(b));  }}
+- interface Scalable<K, E> {    E scale(K scalar);}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AdditiveMonoid<E extends AdditiveMonoidElement<E>> extends AlgebraicStructure<E>{ E additiveIdentity(); }}
