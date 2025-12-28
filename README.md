@@ -154,17 +154,16 @@ implements EuclideanDomain<EuclideanPolynomial<K>, Natural> {}
 -----------------------------------------
 ### net.gommagomma.smfn.math.linearalgebra.core.elements.vectors:
 - interface SpaceElement<V extends SpaceElement<V>> extends AlgebraicElement<V>{}
-- interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V>, TensorElement<K> {int dimension(); K get(int index); V multiplyByScalar(K scalar);}
-- interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemimoduleElement<K, V>, AbelianGroupElement<V> {}
-- interface VectorElement<K extends FieldElement<K>, V extends VectorElement<K, V>>
-extends ModuleElement<K, V> {}
+- interface SemimoduleElement<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends SpaceElement<V>, CommutativeMonoidElement<V>, Scalable<K, V>, TensorElement<K> {int dimension(); K get(int index); int dimension();}
+- interface ModuleElement<K extends RingElement<K>, V extends ModuleElement<K, V>> extends SemimoduleElement<K, V>, LinearCombinable<K, V> {}
+- interface VectorElement<K extends FieldElement<K>, V extends VectorElement<K, V>> extends ModuleElement<K, V> {}
 - interface NormedVectorElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends NormedVectorElement<K, V>> extends VectorElement<K, V>, NormableElement<Real, V>{  default Real distanceTo(V other) {}}
 - interface InnerProductSpaceElement<K extends FieldElement<K> & NormableElement<Real, K>, V extends InnerProductSpaceElement<K, V>> extends NormedVectorElement<K, V> {K dotProduct(V other);}
 - public abstract class AbstractRank1Tensor<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> implements SemimoduleElement<K, V> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.elements.matrices:
-- public interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends SemiringElement<M>, LinearMapping<K, V, M> { int getRows(); int getColumns(); K get(int row, int col); V getRowVector(int row); V getColumnVector(int col);  M multiply(M other);  M multiplyByScalar(K scalar); V multiply(V vector);M transpose();}
-- interface RingMatrixElement<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixElement<K, V, M>, AbelianGroupElement<M> {}
+- interface SemiringMatrixElement<K extends SemiringElement<K>,V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends SemiringElement<M>, LinearMapping<K, V, M>, Scalable<K, M> { int getRows(); int getColumns(); K get(int row, int col); V getRowVector(int row); V getColumnVector(int col);  M multiply(M other); V multiply(V vector);M transpose();}
+- interface RingMatrixElement<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixElement<K, V, M>, RingElement<M> {}
 - interface FieldMatrixElement<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>> extends RingMatrixElement<K, V, M>, LinearOperator<K, V, M> { K determinant(); M inverse(); }
 - abstract class AbstractSemiringMatrix<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>, S extends SemiringMatrixSemimodule<K, V, M>> implements SemiringMatrixElement<K, V, M>, TensorElement<K> {    protected final K[][] data; protected final int rows;  protected final int cols;  protected final S structure;}
 - abstract class AbstractRingMatrix<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>, S extends RingMatrixModule<K, V, M>> extends AbstractSemiringMatrix<K, V, M, S> implements RingMatrixElement<K, V, M> {}
@@ -177,24 +176,25 @@ extends ModuleElement<K, V> {}
 ### net.gommagomma.smfn.math.linearalgebra.core.structures.spaces:
 - interface LinearSpace<K extends SemiringElement<K>, V extends AlgebraicElement<V>> extends AlgebraicStructure<V> { Semiring<K> getScalarStructure(); }
 - interface MetricSpace<T extends AlgebraicElement<T>> extends LinearSpace<T> {Real distance(T point1, T point2);}
-- interface Semimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends Space<V>, VectorElementFactory<K, V> {}
+- interface Semimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>> extends LinearSpace<V>, VectorElementFactory<K, V> {}
 - interface Module<K extends RingElement<K>, V extends ModuleElement<K, V>> extends Semimodule<K, V> {Ring<K> getScalarStructure(); }
 - interface VectorSpace<K extends FieldElement<K>, V extends VectorElement<K, V>> extends Module<K, V> {Field<K> getScalarStructure();}
 - class RealMetricSpace implements MetricSpace<Real, Real> {}
 - interface InnerProductSpace<K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> extends VectorSpace<K, V>, MetricSpace<V> {default K innerProduct(V v1, V v2) {return v1.dotProduct(v2);} @Override   default Real distance(V point1, V point2) { return point1.distanceTo(point2); }}
 - interface HilbertSpace<K extends FieldElement<K> & Normable<Real, K>, V extends InnerProductSpaceElement<K, V>> extends InnerProductSpace<K, V> {}
 
-- interface SemiringMatrixSemimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends Space<M>, SemiringMatrixFactory<K, V, M>, DimensionalStructure<SemiringMatrixSemimodule<K, V, M>> {Semiring<K> getScalarStructure();	Semimodule<K, V> getVectorStructure(); int getMatrixRows(); int getMatrixColumns();}
+- interface SemiringMatrixSemimodule<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>> extends LinearSpace<M>, SemiringMatrixFactory<K, V, M>, DimensionalStructure<SemiringMatrixSemimodule<K, V, M>> {Semiring<K> getScalarStructure();	Semimodule<K, V> getVectorStructure(); int getMatrixRows(); int getMatrixColumns();}
 - interface RingMatrixModule<K extends RingElement<K>, V extends ModuleElement<K, V>, M extends RingMatrixElement<K, V, M>> extends SemiringMatrixSemimodule<K, V, M> { @Override Ring<K> getScalarStructure(); @Override Module<K, V> getVectorStructure();}
 - interface FieldMatrixSpace<K extends FieldElement<K>, V extends VectorElement<K, V>, M extends FieldMatrixElement<K, V, M>>
 extends RingMatrixModule<K, V, M> {@Override Field<K> getScalarStructure(); @Override VectorSpace<K, V> getVectorStructure();}
 - interface DimensionalStructure<S extends AlgebraicStructure<?>> {S getSpaceOfDimensions(int rows, int cols);}
 
 ### net.gommagomma.smfn.math.linearalgebra.core.operators:
-- interface LinearMapping<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends LinearMapping<K, V, M>> extends Morphism<V, V> {	default V transform(V vector) {	return apply(vector);	}}
-- interface LinearOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends LinearOperator<K, V, O>> extends LinearMapping<K, V, O>, VectorElement<K, O>{@Override   default V evaluate(V vector) {       return apply(vector);   }}
-- interface HermitianMapping<K extends FieldElement<K>, V extends VectorElement<K, V>, H extends HermitianMapping<K, V, H>> extends LinearMapping<K, V, H> {Real expectationValue(V state);}
-- interface HermitianOperator<K extends FieldElement<K>, V extends VectorElement<K, V>, O extends HermitianOperator<K, V, O>> extends LinearOperator<K, V, O>, HermitianMapping<K, V, O> {}
+- interface LinearMapping<K, V, M extends LinearMapping<K, V, M>> extends Scalable<K, M>, Morphism<V, V> {	default V transform(V vector) {	return apply(vector);	}}
+- interface LinearMorphism<K extends SemiringElement<K>, V extends Scalable<K, V> & CommutativeMonoidElement<V>> extends Morphism<V, V>, CommutativeMonoidElement<LinearMorphism<K, V>>, Scalable<K, LinearMorphism<K, V>> {  }
+- interface LinearOperator<K extends FieldElement<K>, V extends LinearCombinable<K, V>, O extends LinearOperator<K, V, O>> extends LinearMapping<K, V, O>, LinearCombinable<K, O> {@Override   default V evaluate(V vector) {  return apply(vector); }}
+- interface HermitianMapping<K extends FieldElement<K>, V extends LinearCombinable<K, V>, H extends HermitianMapping<K, V, H>> extends LinearMapping<K, V, H> {Real expectationValue(V state);}
+- interface HermitianOperator<K extends FieldElement<K>, V extends LinearCombinable<K, V>, O extends HermitianOperator<K, V, O>> extends LinearOperator<K, V, O>, HermitianMapping<K, V, O> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.natural:
 - final class NaturalVector extends AbstractRank1Tensor<Natural, NaturalVector> { //... }
@@ -311,6 +311,25 @@ extends RingMatrixModule<K, V, M> {@Override Field<K> getScalarStructure(); @Ove
 
 
 # TODO:
+
+// Marker per atomi numerici
+interface ScalarElement extends AlgebraicElement {} 
+
+// Marker per dati esatti (Natural, SignedInt)
+interface ExactElement extends ScalarElement {} 
+
+// Marker per dati approssimati (Real, Complex)
+interface ApproximateElement extends ScalarElement {}
+
+// Marker per TensorElement (che hai già)
+interface StructuredElement<K extends SemiringElement<K>> extends AlgebraicElement {
+    Semiring<K> getScalarStructure();
+}
+
+
+
+
+
 - introduzione delle matrici quadrate (come anello moltiplicativo);
 
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
@@ -360,18 +379,6 @@ public interface HermitianOperator<K extends FieldElement<K, ?> & Normable<Real,
 }
 
 
-- struttura mq
-|   |-- mq/                                  
-|   |   \-- operators/
-|   |   |   \-- HamiltonianOperator, PositionOperator, MomentumOperator # Suggeriti
-|   |   \-- dynamics/
-|   |   |   \-- SchrodingerEquationSystem, SchrodingerSolver # Suggeriti/Rilocati
-|   |   \-- core/ # Vecchia interfaces
-|   |   |   \-- Observable
-|   |   \-- states/
-|   |   |   \-- StateVector # Suggerito
-|   |   \-- problems/
-|   |       \-- ParticleInABox # Suggerito
 
 - Solvers per mq:
 math.analysis.solvers.integral: metodi di quadratura numerici (Regola di Simpson, Regola del Trapezio o Gauss-Legendre)

@@ -17,8 +17,8 @@ extends SemiringElement<M>, LinearMapping<K, V, M>, Scalable<K, M>
 
     M multiply(M other); 
     M transpose();
-    @Override
-    M scale(K scalar);
+//    @Override
+//    M scale(K scalar);
 
     V multiply(V vector);	
 }
