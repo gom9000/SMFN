@@ -1,9 +1,7 @@
 package net.gommagomma.smfn.math.algebra.core.structures;
 
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.RingElement;
-
-
-public interface Ring<E extends RingElement<E>>
+public interface Ring<E extends AlgebraicElement<E>>
 extends Semiring<E>, AbelianGroup<E>
 {}

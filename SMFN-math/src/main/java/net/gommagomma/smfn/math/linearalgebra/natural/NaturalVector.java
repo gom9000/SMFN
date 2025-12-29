@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.natural;
 
 import java.util.Arrays;
 
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 
 public final class NaturalVector

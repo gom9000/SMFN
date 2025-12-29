@@ -1,17 +1,9 @@
 package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 
-import net.gommagomma.smfn.math.algebra.core.elements.additive.AbelianGroupElement;
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
-public interface Absolutable<E extends Absolutable<E>> 
-extends Orderable<E>, AbelianGroupElement<E>
+public interface Absolutable<E extends AlgebraicElement<E>> 
 {
-	@SuppressWarnings("unchecked")
-	default E abs() {
-		return this.isLessThan(getZero()) ? this.negate() : (E) this;
-	}
-
-	default int signum() {
-		if (this.isZero()) return 0;
-		return this.isGreaterThan(getZero()) ? 1 : -1;
-	}
+	E abs();
+	int signum();
 }

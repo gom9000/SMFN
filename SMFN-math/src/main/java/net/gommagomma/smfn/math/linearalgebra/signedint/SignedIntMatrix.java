@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.signedint;
 
 import java.util.Arrays;
 
-import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractRingMatrix;
 
 /**

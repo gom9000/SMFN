@@ -10,8 +10,8 @@ import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.analysis.fractals.JuliaFunction;
 
 public class JuliaFunctionClient {

@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.analysis.core.problems;
 
-import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.core.Morphism;
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
  * Definisce un problema di ricerca di radici, V t.c. F(V) = Zero.

@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 
 import static org.junit.jupiter.api.Assertions.*;

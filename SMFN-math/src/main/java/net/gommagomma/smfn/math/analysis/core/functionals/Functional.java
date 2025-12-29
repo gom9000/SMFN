@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.analysis.core.functionals;
 
-import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.Morphism;
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 
 /**

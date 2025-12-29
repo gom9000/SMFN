@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.algebra.numeric;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.utils.MathConstants;
 import org.junit.jupiter.api.Test;
 

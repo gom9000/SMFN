@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.HilbertSpace;
 

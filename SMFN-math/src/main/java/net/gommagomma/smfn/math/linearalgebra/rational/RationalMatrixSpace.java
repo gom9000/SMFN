@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.rational;
 
-import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.AbstractFieldMatrixSpace;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;

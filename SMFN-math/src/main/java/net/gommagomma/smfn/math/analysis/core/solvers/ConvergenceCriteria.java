@@ -1,7 +1,7 @@
 
 package net.gommagomma.smfn.math.analysis.core.solvers;
 
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
 * Definisce il test logico per determinare se una sequenza di iterazioni è convergente.

@@ -6,8 +6,8 @@ import java.util.function.BiFunction;
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Renderer;
 import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 
 /**

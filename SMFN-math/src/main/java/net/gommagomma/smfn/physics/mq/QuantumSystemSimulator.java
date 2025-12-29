@@ -2,7 +2,7 @@ package net.gommagomma.smfn.physics.mq;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.HilbertSpace;
 

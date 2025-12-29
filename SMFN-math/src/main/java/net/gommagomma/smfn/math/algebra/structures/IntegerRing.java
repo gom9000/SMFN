@@ -1,37 +1,92 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
-
 import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.algebra.core.structures.ExactStructure;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
-
 public final class IntegerRing
-implements EuclideanDomain<SignedInt, Natural>
+implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>
 {
-	public static final IntegerRing INSTANCE = new IntegerRing();
+	private static final SignedInt ZERO = new SignedInt(0);
+	private static final SignedInt ONE = new SignedInt(1);
 
+	public static final IntegerRing INSTANCE = new IntegerRing();
 
     private IntegerRing() {}
     public static IntegerRing getInstance() { return INSTANCE; }
 
 
-    @Override // EuclideanDomain impls
-    public SignedInt quotient(SignedInt a, SignedInt b) {
-        if (b.isZero()) {
-            throw new ArithmeticException("Division by zero in Z.");
+    // NumericFactory (via ScalarStructure) impls
+    @Override public SignedInt zero() { return ZERO; }
+    @Override public SignedInt one() { return ONE; }
+    @Override public SignedInt of(long value) { return new SignedInt(value); }
+    @Override public SignedInt of(int value) { return new SignedInt(value); }
+    @Override
+    public SignedInt of(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            throw new IllegalArgumentException("Non-finite value: " + value);
         }
-        return a.quotient(b);
+        long rounded = Math.round(value);
+        if (Math.abs(value - rounded) > MathConstants.EPSILON) {
+            throw new IllegalArgumentException("Value " + value + " is not an integer.");
+        }
+        return new SignedInt(rounded);
     }
 
-    @Override // EuclideanDomain impls
-    public SignedInt remainder(SignedInt a, SignedInt b) {
-        if (b.isZero()) {
-            throw new ArithmeticException("Modulo by zero in Z.");
-        }
-        return a.remainder(b);
+
+    // AdditiveMonoid impls
+    @Override
+    public SignedInt add(SignedInt a, SignedInt b) {
+        return new SignedInt(Math.addExact(a.getValue(), b.getValue()));
     }
+
+
+    // MultiplicativeMonoid impls
+    @Override
+    public SignedInt multiply(SignedInt a, SignedInt b) {
+        return new SignedInt(Math.multiplyExact(a.getValue(), b.getValue()));
+    }
+
+
+    // AdditiveGroup impls
+    @Override
+    public SignedInt negate(SignedInt e) {
+    	if (e.getValue() == Long.MIN_VALUE) {
+            throw new ArithmeticException("Integer overflow: negation of Long.MIN_VALUE");
+        }
+        return new SignedInt(-e.getValue());
+    }
+
+
+    // EuclideanDomain impls
+    @Override
+    public SignedInt quotient(SignedInt a, SignedInt b) {
+        if (isZero(b)) throw new ArithmeticException("Division by zero");
+        
+        long aVal = a.getValue();
+        long bVal = b.getValue();
+        
+        // Per gli interi, a = qb + r. Se r deve essere >= 0:
+        long r = aVal % bVal;
+        if (r < 0) r += Math.abs(bVal);
+        
+        return new SignedInt((aVal - r) / bVal);
+    }
+
+    @Override
+    public SignedInt remainder(SignedInt a, SignedInt b) {
+        if (isZero(b)) throw new ArithmeticException("Modulo by zero");
+        long rem = a.getValue() % b.getValue();
+        if (rem < 0) rem += Math.abs(b.getValue());
+        return new SignedInt(rem);
+    }
+
+	@Override
+	public Natural degree(SignedInt e) {
+		return new Natural(Math.abs(e.getValue()));
+	}
 
 
     @Override // AlgebraicStructure impls
@@ -40,51 +95,9 @@ implements EuclideanDomain<SignedInt, Natural>
         return "Integer Ring (Z)";
     }
 
-    @Override // AlgebraicStructure impls
+    @Override
     public boolean contains(SignedInt e)
     {
     	return (e != null);
     }
-
-
-    @Override // AdditiveMonoid impls
-    public SignedInt additiveIdentity()
-    {
-        return SignedInt.ZERO;
-    }
-
-
-    @Override // MultiplicativeMonoid impls
-    public SignedInt multiplicativeIdentity()
-    {
-        return SignedInt.ONE;
-    }
-
-
-    @Override // NumericFactory impls
-	public SignedInt of(double value) {
-    	if (Double.isNaN(value) || Double.isInfinite(value)) {
-	        throw new IllegalArgumentException("Cannot create a SignedInt number from a non-finite value: " + value);
-	    }
-        if (value > Long.MAX_VALUE) {
-	        throw new ArithmeticException("Value " + value + " is outside the range of SignedInt (long).");
-	    }
-
-        long roundedValue = Math.round(value);
-        if (Math.abs(value - roundedValue) > MathConstants.EPSILON) {
-            throw new IllegalArgumentException("Cannot convert non-integer value " + value + " to integer type.");
-        }
-
-		return new SignedInt(roundedValue);
-	}
-
-	@Override // NumericFactory impls
-	public SignedInt of(long value) {
-		return new SignedInt(value);
-	}
-
-	@Override // NumericFactory impls
-	public SignedInt of(int value) {
-		return new SignedInt(value);
-	}
 }

@@ -1,49 +1,28 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
+import net.gommagomma.smfn.math.algebra.core.structures.ExactStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class NaturalSemiring
-implements Semiring<Natural>
+implements Semiring<Natural>, ExactStructure<Natural>
 {
-	public static final NaturalSemiring INSTANCE = new NaturalSemiring();
+	public static final Natural ZERO = new Natural(0);
+    public static final Natural ONE = new Natural(1);
 
+	public static final NaturalSemiring INSTANCE = new NaturalSemiring();
 
     private NaturalSemiring() {}
     public static NaturalSemiring getInstance() { return INSTANCE; }
 
 
-    @Override // AlgebraicStructure impls
-    public String getName()
-    {
-        return "Natural Semiring (N)";
-    }
-
-    @Override // AlgebraicStructure impls
-    public boolean contains(Natural e)
-    {
-    	return (e != null);
-    }
-
-
-    @Override // AdditiveMonoid impls
-    public Natural additiveIdentity()
-    {
-        return Natural.ZERO;
-    }
-
-
-    @Override // MultiplicativeMonoid impls
-    public Natural multiplicativeIdentity()
-    {
-        return Natural.ONE;
-    }
-
-
-    @Override // NumericFactory impls
+    // NumericFactory (via ScalarStructure) impls
+    @Override public Natural zero() { return ZERO; }
+    @Override public Natural one() { return ONE; }
+    @Override
     public Natural of(double value) {
     	if (Double.isNaN(value) || Double.isInfinite(value)) {
 	        throw new IllegalArgumentException("Cannot create a Natural number from a non-finite value: " + value);
@@ -63,7 +42,7 @@ implements Semiring<Natural>
         return new Natural(roundedValue);
     }
 
-    @Override // NumericFactory impls
+    @Override
     public Natural of(long value) {
         if (value < 0) {
             throw new IllegalArgumentException("Cannot create Natural from negative integer: " + value);
@@ -71,11 +50,38 @@ implements Semiring<Natural>
         return new Natural(value);
     }
 
-    @Override // NumericFactory impls
+    @Override
     public Natural of(int value) {
         if (value < 0) {
             throw new IllegalArgumentException("Cannot create Natural from negative integer: " + value);
         }
         return new Natural(value);
+    }
+
+
+     // AdditiveMonoid impls
+    @Override
+    public Natural add(Natural a, Natural b) {
+        return new Natural(Math.addExact(a.getValue(), b.getValue()));
+    }
+
+
+    // MultiplicativeMonoid impls
+    @Override
+    public Natural multiply(Natural a, Natural b) {
+        return new Natural(Math.multiplyExact(a.getValue(), b.getValue()));
+    }
+
+
+    @Override // AlgebraicStructure impls
+    public String getName()
+    {
+        return "Natural Semiring (N)";
+    }
+
+    @Override
+    public boolean contains(Natural e)
+    {
+    	return (e != null);
     }
 }

@@ -1,12 +1,13 @@
 package net.gommagomma.smfn.math.algebra.core.structures;
 
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
-import net.gommagomma.smfn.math.algebra.core.AlgebraicStructure;
-import net.gommagomma.smfn.math.algebra.core.elements.additive.AdditiveMonoidElement;
-
-
-public interface AdditiveMonoid<E extends AdditiveMonoidElement<E>>
+public interface AdditiveMonoid<E extends AlgebraicElement<E>>
 extends AlgebraicStructure<E>
 {
-    E additiveIdentity();
+	E zero();
+	E add(E a, E b);
+	default boolean isZero(E e) {
+        return areEqual(e, zero());
+    }
 }

@@ -6,8 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
-import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 class RationalVectorTest {
 

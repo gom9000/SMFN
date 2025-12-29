@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.algebra.polynomial;
 
 import net.gommagomma.smfn.math.algebra.core.algorithms.AlgebraicAlgorithms;
-import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 
 public class PolynomialGcdTest {

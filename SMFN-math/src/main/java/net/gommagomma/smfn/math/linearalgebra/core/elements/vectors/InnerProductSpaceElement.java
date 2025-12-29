@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.core.elements.vectors;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
  * Rappresenta un elemento in uno spazio con prodotto interno (Inner Product Space).

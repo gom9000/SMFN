@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.linearalgebra.core.structures.spaces;
 
-import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.SemiringElement;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
  * Rappresenta uno Spazio Metrico (X, d), dove X è un insieme di elementi T 

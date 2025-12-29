@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.natural;
 
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.AbstractSemiringMatrixSpace;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.SemiringMatrixSemimodule;

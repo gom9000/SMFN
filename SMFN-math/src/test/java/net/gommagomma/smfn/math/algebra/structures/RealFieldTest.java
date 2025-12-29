@@ -3,7 +3,8 @@ package net.gommagomma.smfn.math.algebra.structures;
 import static org.junit.jupiter.api.Assertions.*;
 
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
+
 import org.junit.jupiter.api.Test;
 
 

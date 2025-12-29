@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.analysis.fractals;
 
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.FixedPointProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;

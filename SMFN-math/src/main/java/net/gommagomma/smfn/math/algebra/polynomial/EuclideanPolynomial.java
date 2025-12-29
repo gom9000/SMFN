@@ -3,9 +3,9 @@ package net.gommagomma.smfn.math.algebra.polynomial;
 import java.util.TreeMap;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.EuclideanDomainElement;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.polynomial.core.AbstractRingPolynomial;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
 
 /**
  * Polinomio su un Campo. Implementa formalmente il Dominio Euclideo.

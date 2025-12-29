@@ -2,12 +2,12 @@ package net.gommagomma.smfn.math.analysis.numerical.solvers.roots;
 
 import net.gommagomma.smfn.math.algebra.core.Morphism;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolver;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.operators.LinearMorphism;
 
 /**

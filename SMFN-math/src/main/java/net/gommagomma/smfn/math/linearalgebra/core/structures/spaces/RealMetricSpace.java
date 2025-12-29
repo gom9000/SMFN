@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.core.structures.spaces; 
 
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 public class RealMetricSpace

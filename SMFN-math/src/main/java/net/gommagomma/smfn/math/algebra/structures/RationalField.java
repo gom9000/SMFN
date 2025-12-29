@@ -1,49 +1,30 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
+import net.gommagomma.smfn.math.algebra.core.structures.ExactStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
 
 public final class RationalField
-implements Field<Rational>
+implements Field<Rational>, ExactStructure<Rational>
 {
-	public static final RationalField INSTANCE = new RationalField();
-
+	private static final Rational ZERO = new Rational(0, 1);
+    private static final Rational ONE = new Rational(1, 1);
+    
+    private static final RationalField INSTANCE = new RationalField();
 
     private RationalField() {}
     public static RationalField getInstance() { return INSTANCE; }
 
 
-	@Override // AlgebraicStructure impls
-	public String getName()
-	{
-		return "Rational Field (Q)";
-	}
-
-	@Override // AlgebraicStructure impls
-	public boolean contains(Rational e)
-	{
-		return (e != null);
-	}
-
-
-	@Override // AdditiveMonoid impls
-	public Rational additiveIdentity()
-	{
-		return Rational.ZERO;
-	}
-
-
-	@Override // MultiplicativeMonoid impls
-	public Rational multiplicativeIdentity()
-	{
-		return Rational.ONE;
-	}
-
-
-    @Override // NumericFactory impls
+    // NumericFactory (via ScalarStructure) impls
+    @Override public Rational zero() { return ZERO; }
+    @Override public Rational one() { return ONE; }
+    @Override public Rational of(long value) { return new Rational(value); }
+	@Override public Rational of(int value) { return new Rational(value);}
+    @Override
     public Rational of(double value) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             throw new IllegalArgumentException("Cannot create a Rational number from NaN or Infinity.");
@@ -120,13 +101,53 @@ implements Field<Rational>
         return new Rational(num, den);
     }
 
-    @Override // NumericFactory impls
-    public Rational of(long value) {
-        return new Rational(value);
+
+    // AdditiveMonoid impls
+    @Override
+    public Rational add(Rational a, Rational b) {
+        long num = Math.addExact(
+            Math.multiplyExact(a.getNumerator(), b.getDenominator()),
+            Math.multiplyExact(b.getNumerator(), a.getDenominator())
+        );
+        long den = Math.multiplyExact(a.getDenominator(), b.getDenominator());
+        return new Rational(num, den);
     }
 
-    @Override // NumericFactory impls
-    public Rational of(int value) {
-        return new Rational(value);
+
+    // MultiplicativeMonoid impls
+    @Override
+    public Rational multiply(Rational a, Rational b) {
+        return new Rational(
+            Math.multiplyExact(a.getNumerator(), b.getNumerator()),
+            Math.multiplyExact(a.getDenominator(), b.getDenominator())
+        );
     }
+
+
+    // AdditiveGroup impls
+    @Override
+    public Rational negate(Rational e) {
+        return new Rational(-e.getNumerator(), e.getDenominator());
+    }
+
+
+    // MultiplicativeGroup impls
+    @Override
+    public Rational inverse(Rational e) {
+        if (isZero(e)) throw new ArithmeticException("Division by zero");
+        return new Rational(e.getDenominator(), e.getNumerator());
+    }
+
+
+	@Override // AlgebraicStructure impls
+	public String getName()
+	{
+		return "Rational Field (Q)";
+	}
+
+	@Override
+	public boolean contains(Rational e)
+	{
+		return (e != null);
+	}
 }

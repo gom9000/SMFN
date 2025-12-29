@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.core.structures.spaces;
 
-import net.gommagomma.smfn.math.algebra.core.AlgebraicStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.AlgebraicStructure;
 
 public interface DimensionalStructure<S extends AlgebraicStructure<?>>
 {

@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import net.gommagomma.smfn.math.algebra.numeric.Rational;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFieldMatrix;
 
 /**

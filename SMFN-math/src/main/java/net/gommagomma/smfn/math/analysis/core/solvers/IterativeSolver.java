@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.analysis.core.solvers;
 
-import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
 
 /**

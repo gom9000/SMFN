@@ -6,8 +6,8 @@ import java.util.Objects;
 import net.gommagomma.smfn.math.algebra.core.algorithms.AlgebraicAlgorithms;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
 import net.gommagomma.smfn.math.algebra.polynomial.EuclideanPolynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.core.AbstractPolynomialRing;
 

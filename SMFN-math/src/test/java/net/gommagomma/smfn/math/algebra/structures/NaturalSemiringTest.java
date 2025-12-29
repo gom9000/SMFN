@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
 
 @DisplayName("NaturalSemiring: Test della Struttura di Semianello (N)")
 class NaturalSemiringTest {

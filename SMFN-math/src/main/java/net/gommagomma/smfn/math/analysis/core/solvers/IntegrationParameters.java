@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.analysis.core.solvers;
 
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
  * Parametri che definiscono le condizioni di avanzamento per un IntervalSolver.

@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.client;
 
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.geometry.Point;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVectorSpace; // La tua classe di struttura

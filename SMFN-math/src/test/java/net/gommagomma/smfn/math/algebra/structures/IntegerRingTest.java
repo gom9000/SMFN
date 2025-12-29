@@ -3,8 +3,8 @@ package net.gommagomma.smfn.math.algebra.structures;
 import static org.junit.jupiter.api.Assertions.*;
 
 import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
-import net.gommagomma.smfn.math.algebra.numeric.Natural;
-import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
+import net.gommagomma.smfn.math.algebra.numerics.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.utils.MathConstants;
 import org.junit.jupiter.api.Test;
 

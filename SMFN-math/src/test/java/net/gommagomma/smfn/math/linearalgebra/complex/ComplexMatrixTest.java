@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.core.NumericFactory;
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 public class ComplexMatrixTest {

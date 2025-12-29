@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.analysis.core.problems;
 
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
 /**

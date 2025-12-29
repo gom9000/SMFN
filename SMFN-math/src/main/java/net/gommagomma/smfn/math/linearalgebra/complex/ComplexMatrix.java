@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.matrices.AbstractFieldMatrix;
 
 /**

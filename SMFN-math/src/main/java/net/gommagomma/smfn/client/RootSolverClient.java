@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.client;
 
 import net.gommagomma.smfn.math.algebra.core.Mapping;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;

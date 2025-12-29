@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.client;
 
-import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.algebra.numeric.ZnElement;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
+import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
+import net.gommagomma.smfn.math.algebra.numerics.ZnElement;
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.algebra.structures.ZnRing;

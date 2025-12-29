@@ -2,8 +2,8 @@ package net.gommagomma.smfn.math.linearalgebra.complex;
 
 import java.util.Arrays;
 
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;

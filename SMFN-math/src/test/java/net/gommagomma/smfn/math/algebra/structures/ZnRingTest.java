@@ -9,8 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import net.gommagomma.smfn.math.algebra.numeric.SignedInt;
-import net.gommagomma.smfn.math.algebra.numeric.ZnElement;
+import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
+import net.gommagomma.smfn.math.algebra.numerics.ZnElement;
 
 @DisplayName("ZnRing: Test della struttura dell'Anello Z/nZ")
 class ZnRingTest {

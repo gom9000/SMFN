@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.real;
 
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.AbstractFieldMatrixSpace;
 import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.FieldMatrixSpace;
 

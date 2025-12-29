@@ -1,7 +1,7 @@
 
 package net.gommagomma.smfn.math.analysis.core.problems;
 
-import net.gommagomma.smfn.math.algebra.core.AlgebraicElement;
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
  * Definisce un Problema di Punto Fisso: trovare T_k+1 = G(T_k).

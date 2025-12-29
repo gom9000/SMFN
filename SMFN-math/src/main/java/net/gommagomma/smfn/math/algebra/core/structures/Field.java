@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.algebra.core.structures;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
-public interface Field<E extends FieldElement<E>>
-extends CommutativeRing<E>
+public interface Field<E extends AlgebraicElement<E>>
+extends CommutativeRing<E>, MultiplicativeGroup<E>
 {}

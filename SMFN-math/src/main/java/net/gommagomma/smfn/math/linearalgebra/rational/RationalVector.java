@@ -2,8 +2,8 @@ package net.gommagomma.smfn.math.linearalgebra.rational;
 
 import java.util.Arrays;
 
-import net.gommagomma.smfn.math.algebra.numeric.Rational;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.AbstractRank1Tensor;
 import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.InnerProductSpaceElement;

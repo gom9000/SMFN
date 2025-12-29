@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.core.elements.vectors;
 
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 
 public interface NormedVectorElement<K extends FieldElement<K> & Normable<Real, K>, V extends NormedVectorElement<K, V>>

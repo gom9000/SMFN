@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
+import net.gommagomma.smfn.math.algebra.numerics.ZnElement;
+
 @DisplayName("ZnElement: Test delle operazioni in Z/nZ (aritmetica modulare)")
 class ZnElementTest {
 

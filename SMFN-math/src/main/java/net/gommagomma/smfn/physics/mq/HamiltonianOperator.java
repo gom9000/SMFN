@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.physics.mq;
 
-import net.gommagomma.smfn.math.algebra.numeric.Complex;
-import net.gommagomma.smfn.math.algebra.numeric.Real;
+import net.gommagomma.smfn.math.algebra.numerics.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexMatrix;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexMatrixSpace;
 import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
