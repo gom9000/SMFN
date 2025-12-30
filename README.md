@@ -83,7 +83,7 @@ net.gommagomma.smfn/
 - interface Normable<N extends ScalarElement<N>> {N norm();}
 - interface Absolutable<E extends AlgebraicElement<E>> { E abs(); int signum(); }
 - interface Differentiable<E extends AlgebraicElement<E>>{   E derive();}
-- interface Integrable<T extends AlgebraicElement<T>, K extends ScalarElement<K>>{  T integrate(K c);   default T integrate() {  return integrate(null);  }}
+- interface Integrable<T extends AlgebraicElement<T>, K extends ScalarElement<K>>{  T integrate(K c);  }}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AlgebraicStructure<E extends AlgebraicElement<E>>{ String getName(); boolean contains(E e); boolean areEqual(E a, E b);}
