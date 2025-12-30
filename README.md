@@ -6,17 +6,16 @@
 net.gommagomma.smfn/
 |-- math/
 |   |-- algebra/
-|   |   |-- core/                           (AlgebraicElement, AlgebraicStructure, Commutative, NumericFactory, MathFunction, Mapping, FunctionElement)
-|   |   |   |-- algorithms                  (AlgebraicAlgorithms)
+|   |   |-- core/
 |   |   |   |-- elements/                   (...)
 |   |   |   |   |-- additive/               (...)
 |   |   |   |   |-- multiplicative/         (...)
 |   |   |   |   |-- tensors/                (TensorElement)
 |   |   |   |   \-- capabilities/           (Absolutable,Exponentiable,Normable,Sqrtable,Orderable)
 |   |   |   |-- structures/                 (AdditiveMonoid,MultiplicativeMonoid,ComutativeMultiplicativeMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
-|   |   |-- numeric/                        (Natural, Signedint, ZnElement, Rational, Real, Complex)
+|   |   |-- numerics/                       (Natural, Signedint, ZnElement, Rational, Real, Complex)
 |   |   |-- polynomial/
-|   |   \-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField, PolynomialRing)
+|   |   \-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField)
 |   |-- linearalgebra                       # Vettori, Matrici e Spazi
 |   |   |-- core                   		  # Interfacce per Vettori, Matrici, Spazi
 |   |   |   |-- elements/                   (...)
@@ -64,6 +63,8 @@ net.gommagomma.smfn/
 - interface NumericFactory<E extends AlgebraicElement<E>> {E zero(); E one(); E of(double value); E of(long value); E of(int value);}
 - interface Mapping<I, O> { O apply(I input); default <V> Mapping<V, O> compose(Mapping<? super V, ? extends I> before) {  Objects.requireNonNull(before); return (V v) -> apply(before.apply(v)); } static <T> Mapping<T, T> identity() { return (T t) -> t; } }
 - interface Morphism<I, O> extends Mapping<I, O> { O evaluate(I input); }
+- interface Operator<T> extends Mapping<T, T>{    static <T> Operator<T> identity() {   return t -> t;  }   default Operator<T> then(Operator<T> next) { return (T t) -> next.apply(this.apply(t));  }  default Operator<T> power(int n) {        if (n < 0) throw new IllegalArgumentException("Negative power not supported for general operators."); if (n == 0) return identity(); return (T t) -> { T result = t; for (int i = 0; i < n; i++) result = this.apply(result);            return result;   };  }}
+- interface LinearOperator<T> extends Operator<T> {}
 
 ### net.gommagomma.smfn.math.algebra.core.elements:
 - interface AlgebraicElement<E extends AlgebraicElement<E>>{E copy();  }
@@ -81,9 +82,8 @@ net.gommagomma.smfn/
 - interface Exponentiable<E extends AlgebraicElement<E>> { E power(int exponent);}
 - interface Normable<N extends ScalarElement<N>> {N norm();}
 - interface Absolutable<E extends AlgebraicElement<E>> { E abs(); int signum(); }
-
-- //interface Differentiable<T extends AlgebraicElement<T>> {  T derivative(); }
-- //interface LinearCombinable<K, E extends LinearCombinable<K, E>> extends Scalable<K, E>, AbelianGroupElement<E>{	default E linearCombine(K a, E other, K b) {  return this.scale(a).add(other.scale(b));  }}
+- interface Differentiable<E extends AlgebraicElement<E>>{   E derive();}
+- interface Integrable<T extends AlgebraicElement<T>, K extends ScalarElement<K>>{  T integrate(K c);   default T integrate() {  return integrate(null);  }}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AlgebraicStructure<E extends AlgebraicElement<E>>{ String getName(); boolean contains(E e); boolean areEqual(E a, E b);}
@@ -120,24 +120,13 @@ net.gommagomma.smfn/
 - final class ZnRing implements CommutativeRing<ZnElement>, ExactStructure<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.polynomial:
-- abstract class AbstractPolynomial<K extends SemiringElement<K>, P extends AbstractPolynomial<K, P>> implements SemiringElement<P>, Morphism<K, K> {}
-- abstract class AbstractRingPolynomial<K extends RingElement<K>, P extends AbstractRingPolynomial<K, P>> 
-extends AbstractPolynomial<K, P> 
-implements RingElement<P> {}
-- final class SemiringPolynomial<K extends SemiringElement<K>> extends AbstractPolynomial<K, SemiringPolynomial<K>> {}
-- final class GeneralPolynomial<K extends RingElement<K>> extends AbstractRingPolynomial<K, GeneralPolynomial<K>> {}
-- final class CommutativePolynomial<K extends CommutativeRingElement<K>> extends AbstractRingPolynomial<K, CommutativePolynomial<K>> implements CommutativeRingElement<CommutativePolynomial<K>> {}
-- final class EuclideanPolynomial<K extends FieldElement<K>> extends AbstractRingPolynomial<K, EuclideanPolynomial<K>>
-implements EuclideanDomainElement<EuclideanPolynomial<K>, Natural> {}
-- final class PolynomialQuotientRemainder<K extends SemiringElement<K>, P extends AbstractPolynomial<K, P>> {}
+- final class Polynomial<K extends ScalarElement<K>> implements CompositeElement<K, Polynomial<K>>, Morphism<K, K>, Differentiable<Polynomial<K>>, Integrable<Polynomial<K>, K> {}
+- class PolynomialSemiring<K extends ScalarElement<K>> implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>> {}
+- class PolynomialRing<K extends ScalarElement<K>> extends PolynomialSemiring<K> implements Ring<Polynomial<K>> {}
+- class CommutativePolynomialRing<K extends ScalarElement<K>> extends PolynomialRing<K> implements CommutativeRing<Polynomial<K>> {}
+- class EuclideanPolynomialRing<K extends ScalarElement<K>> extends CommutativePolynomialRing<K> implements EuclideanDomain<Polynomial<K>, Natural> {}
+- final class PolynomialDivisionResult<K extends ScalarElement<K>> {}
 - final class Polynomials {}
-
-- abstract class AbstractPolynomialRing<K extends SemiringElement<K>, P extends AbstractPolynomial<K, P>> implements HasScalarStructure<K> {}
-- public final class SemiringPolynomialRing<K extends SemiringElement<K>> extends AbstractPolynomialRing<K, SemiringPolynomial<K>> implements Semiring<SemiringPolynomial<K>> {}
-- final class GeneralPolynomialRing<K extends RingElement<K>> extends AbstractPolynomialRing<K, GeneralPolynomial<K>> implements Ring<GeneralPolynomial<K>> {}
-- final class CommutativePolynomialRing<K extends CommutativeRingElement<K>> extends AbstractPolynomialRing<K, CommutativePolynomial<K>> implements CommutativeRing<CommutativePolynomial<K>> {}
-- final class EuclideanPolynomialRing<K extends FieldElement<K>> extends AbstractPolynomialRing<K, EuclideanPolynomial<K>>
-implements EuclideanDomain<EuclideanPolynomial<K>, Natural> {}
 
 ## net.gommagomma.smfn.math.linearalgebra
 -----------------------------------------
@@ -300,6 +289,17 @@ extends RingMatrixModule<K, V, M> {@Override Field<K> getScalarStructure(); @Ove
 
 
 # TODO:
+
+- public final class DerivativeOperator<T extends Differentiable<T>> 
+    implements Operator<T> {
+
+    @Override
+    public T apply(T input) {
+        // Non mi serve sapere se 'input' è un Polinomio o una Matrice.
+        // Mi basta sapere che è 'Differentiable'.
+        return input.derive();
+    }
+}
 
 - introduzione delle matrici quadrate (come anello moltiplicativo);
 

@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
-public interface Differentiable<T extends AlgebraicElement<T>>
+public interface Differentiable<E extends AlgebraicElement<E>>
 {
-    T derivative();
+    E derive();
 }
