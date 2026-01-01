@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.algebra.numerics;
 import net.gommagomma.smfn.math.algebra.core.elements.ExactElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
+import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
 
 public final class Natural
@@ -20,6 +21,12 @@ implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural>
     }
 
     public long getValue() { return value; }
+
+
+    @Override // ScalarElement impls
+    public ScalarStructure<Natural> getStructure() {
+        return NaturalSemiring.INSTANCE;
+    }
 
 
     @Override  // AlgebraicElement impls
@@ -41,7 +48,7 @@ implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural>
     @Override // Exponentiable impls
     public Natural power(int exponent)
     {
-    	NaturalSemiring semiring = NaturalSemiring.getInstance();
+    	NaturalSemiring semiring = NaturalSemiring.INSTANCE;
     	if (semiring.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }

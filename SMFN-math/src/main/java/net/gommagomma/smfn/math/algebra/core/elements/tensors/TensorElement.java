@@ -9,8 +9,8 @@ import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
  * @param <E> Il tipo del tensore stesso
  * @param <K> Il tipo di scalare contenuto
  */
-public interface TensorElement<E extends TensorElement<E, K>, K extends ScalarElement<K>> 
-extends AlgebraicElement<E>
+public interface TensorElement<T extends TensorElement<T, K>, K extends ScalarElement<K>> 
+extends AlgebraicElement<T>
 {
     int rank();
     int[] getShape();

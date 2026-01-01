@@ -2,7 +2,9 @@ package net.gommagomma.smfn.math.algebra.numerics;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ExactElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
+import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
+import net.gommagomma.smfn.math.algebra.structures.ZnRing;
 
 public final class ZnElement 
 implements ExactElement<ZnElement>, Exponentiable<ZnElement>
@@ -15,11 +17,17 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
             throw new IllegalArgumentException("Modulus must be positive.");
         }
         this.modulus = modulus;
-        this.value = IntegerRing.getInstance().remainder(value, modulus);
+        this.value = IntegerRing.INSTANCE.remainder(value, modulus);
     }
 
     public SignedInt getValue() { return value; }
     public SignedInt getModulus() { return modulus; }
+
+
+    @Override // ScalarElement impls
+    public ScalarStructure<ZnElement> getStructure() {
+    	return ZnRing.of(this.modulus);
+    }
 
 
     @Override // AlgebraicElement impls
@@ -35,7 +43,7 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
         }
         // Square-and-multiply algorithm
         ZnElement base = this;
-        ZnElement result = new ZnElement(IntegerRing.getInstance().one(), modulus);
+        ZnElement result = ZnRing.of(modulus).one();
         int exp = exponent;
         while (exp > 0) {
             if (exp % 2 == 1) result = multiplyInternal(result, base);
@@ -46,7 +54,7 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
     }
     // Helper interno per la potenza
     private ZnElement multiplyInternal(ZnElement a, ZnElement b) {
-        SignedInt prod = IntegerRing.getInstance().multiply(a.value, b.value);
+        SignedInt prod = IntegerRing.INSTANCE.multiply(a.value, b.value);
         return new ZnElement(prod, a.modulus);
     }
 

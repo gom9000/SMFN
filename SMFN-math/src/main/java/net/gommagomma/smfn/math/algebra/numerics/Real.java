@@ -6,6 +6,8 @@ import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Sqrtable;
+import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 
 public final class Real
@@ -17,6 +19,12 @@ implements ApproximateElement<Real>, Normable<Real>, Orderable<Real>, Absolutabl
 	public Real(double value) { this.value = value; }
 
     public double getValue() { return value; }
+
+
+    @Override // ScalarElement impls
+    public ScalarStructure<Real> getStructure() {
+        return RealField.INSTANCE;
+    }
 
 
     @Override // AlgebraicElement impls

@@ -1,29 +1,27 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
-import net.gommagomma.smfn.math.algebra.core.structures.ApproximateStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ApproximateStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 public final class RealField
-implements Field<Real>, ApproximateStructure<Real>
+implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>
 {
 	private static final Real ZERO = new Real(0.0);
 	private static final Real ONE = new Real(1.0);
 
 	public static final RealField INSTANCE = new RealField(MathConstants.EPSILON);
 	private final double epsilon;
-
-
     private RealField(double epsilon) { this.epsilon = epsilon; }
-    public static RealField getInstance() { return INSTANCE; }
 
 
     @Override // ApproximateStructure impls
     public double epsilon() { return epsilon; }
 
 
-    // NumericFactory (via ScalarStructure) impls
+    // NumericFactory  impls
     @Override public Real zero() { return ZERO; }
     @Override public Real one() { return ONE; }
     @Override public Real of(double v) { return new Real(v); }

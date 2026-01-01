@@ -8,23 +8,17 @@ net.gommagomma.smfn/
 |   |-- algebra/
 |   |   |-- core/
 |   |   |   |-- elements/                   (...)
-|   |   |   |   |-- additive/               (...)
-|   |   |   |   |-- multiplicative/         (...)
 |   |   |   |   |-- tensors/                (TensorElement)
-|   |   |   |   \-- capabilities/           (Absolutable,Exponentiable,Normable,Sqrtable,Orderable)
+|   |   |   |   \-- capabilities/           (Absolutable,Exponentiable,Normable,Sqrtable,Orderable,Differentiable,Integrable)
 |   |   |   |-- structures/                 (AdditiveMonoid,MultiplicativeMonoid,ComutativeMultiplicativeMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
+|   |   |   |   \-- capabilities/           (ApproximateStructure,ExactStructure,NumericFactory)
 |   |   |-- numerics/                       (Natural, Signedint, ZnElement, Rational, Real, Complex)
-|   |   |-- polynomial/
-|   |   \-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField)
+|   |   |-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField)
+|   |   \-- polynomial/
 |   |-- linearalgebra                       # Vettori, Matrici e Spazi
 |   |   |-- core                   		  # Interfacce per Vettori, Matrici, Spazi
 |   |   |   |-- elements/                   (...)
 |   |   |   \-- structures/                 (...)
-|   |   |-- complex                         # Implementazioni per C (ComplexVector, ComplexMatrix, relativi spaces)
-|   |   |-- natural                         # Implementazioni per N (NaturalVector, NaturalMatrix, relativi spaces)
-|   |   |-- rational                        # Implementazioni per Q (RationalVector, RationalMatrix, relativi spaces)
-|   |   |-- real                            # Implementazioni per R (RealVector, RealMatrix, relativi spaces)
-|   |   \-- signedint                       # Implementazioni per Z (SignedIntVector, SignedIntMatrix, relativi spaces)
 |   |-- geometry/								  # (GeometryEntity, Point, Circle, Ellipse)
 |   |-- analysis/                           # Calcolo (Funzioni, Derivate, Integrali, Risolutori Numerici)
 |   |   |-- core								  # core interface per functionals, operators, problems, solvers
@@ -60,7 +54,6 @@ net.gommagomma.smfn/
 ## net.gommagomma.smfn.math.algebra
 -----------------------------------
 ### net.gommagomma.smfn.math.algebra.core:
-- interface NumericFactory<E extends AlgebraicElement<E>> {E zero(); E one(); E of(double value); E of(long value); E of(int value);}
 - interface Mapping<I, O> { O apply(I input); default <V> Mapping<V, O> compose(Mapping<? super V, ? extends I> before) {  Objects.requireNonNull(before); return (V v) -> apply(before.apply(v)); } static <T> Mapping<T, T> identity() { return (T t) -> t; } }
 - interface Morphism<I, O> extends Mapping<I, O> { O evaluate(I input); }
 - interface Operator<T> extends Mapping<T, T>{    static <T> Operator<T> identity() {   return t -> t;  }   default Operator<T> then(Operator<T> next) { return (T t) -> next.apply(this.apply(t));  }  default Operator<T> power(int n) {        if (n < 0) throw new IllegalArgumentException("Negative power not supported for general operators."); if (n == 0) return identity(); return (T t) -> { T result = t; for (int i = 0; i < n; i++) result = this.apply(result);            return result;   };  }}
@@ -68,22 +61,23 @@ net.gommagomma.smfn/
 
 ### net.gommagomma.smfn.math.algebra.core.elements:
 - interface AlgebraicElement<E extends AlgebraicElement<E>>{E copy();  }
-- interface ScalarElement<E extends ScalarElement<E>> extends AlgebraicElement<E> {}
-- interface ExactElement<E extends ExactElement<E>> extends ScalarElement<E> {}
-- interface ApproximateElement<E extends ApproximateElement<E>> extends ScalarElement<E> {}
+- interface ScalarElement<K extends ScalarElement<K>> extends AlgebraicElement<K> { ScalarStructure<K> getStructure(); }
+- interface ExactElement<K extends ExactElement<K>> extends ScalarElement<K> {}
+- interface ApproximateElement<K extends ApproximateElement<K>> extends ScalarElement<K> {}
 - interface CompositeElement<K extends ScalarElement<K>, E extends CompositeElement<K, E>> extends AlgebraicElement<E> { ScalarStructure<K> getScalarStructure();}
+- interface LinearElement<V extends LinearElement<V, K>, K extends ScalarElement<K>> extends CompositeElement<K, V> {}
 
 ### net.gommagomma.smfn.math.algebra.core.elements.tensors:
-- interface TensorElement<E extends TensorElement<E, K>, K extends ScalarElement<K>> extends AlgebraicElement<E> {int rank(); int[] getShape(); long size(); K get(int... indices);}
+- interface TensorElement<T extends TensorElement<T, K>, K extends ScalarElement<K>> extends AlgebraicElement<T> {int rank(); int[] getShape(); long size(); K get(int... indices);}
 
 ### net.gommagomma.smfn.math.algebra.core.elements.capabilities:
 - interface Orderable<E extends Orderable<E>> extends AlgebraicElement<E>, Comparable<E>{ default boolean isLessThan(E other) { return compareTo(other) < 0; }default boolean isGreaterThan(E other) {return compareTo(other) > 0;} }
 - interface Sqrtable<E extends AlgebraicElement<E>> { E sqrt(); }
 - interface Exponentiable<E extends AlgebraicElement<E>> { E power(int exponent);}
-- interface Normable<N extends ScalarElement<N>> {N norm();}
+- interface Normable<K extends ScalarElement<K>> {K norm();}
 - interface Absolutable<E extends AlgebraicElement<E>> { E abs(); int signum(); }
-- interface Differentiable<E extends AlgebraicElement<E>>{   E derive();}
-- interface Integrable<T extends AlgebraicElement<T>, K extends ScalarElement<K>>{  T integrate(K c);  }}
+- interface Differentiable<E extends AlgebraicElement<E>> {   E derive();}
+- interface Integrable<E extends AlgebraicElement<E>, K extends ScalarElement<K>> {  E integrate(K c);  }}
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AlgebraicStructure<E extends AlgebraicElement<E>>{ String getName(); boolean contains(E e); boolean areEqual(E a, E b);}
@@ -91,17 +85,25 @@ net.gommagomma.smfn/
 - interface AdditiveGroup<E extends AlgebraicElement<E>> extends AdditiveMonoid<E> { E negate(E e);	default E subtract(E a, E b) {  return add(a, negate(b));  }}
 - interface AbelianGroup<E extends AlgebraicElement<E>> extends AdditiveGroup<E> {}
 - interface MultiplicativeMonoid<E extends AlgebraicElement<E>> extends AlgebraicStructure<E> {	E one();  E multiply(E a, E b);  boolean isOne(E element);}
+- interface CommutativeMultiplicativeMonoid<E extends AlgebraicElement<E>> extends MultiplicativeMonoid<E> {}
+- interface MultiplicativeGroup<E extends AlgebraicElement<E>> extends CommutativeMultiplicativeMonoid<E> {	E inverse(E e);	default E divide(E a, E b) { return multiply(a, inverse(b)); }}
 - interface Semiring<E extends AlgebraicElement<E>> extends AdditiveMonoid<E>, MultiplicativeMonoid<E> {}
 - interface Ring<E extends AlgebraicElement<E>> extends Semiring<E>, AbelianGroup<E> {}
-- interface CommutativeMultiplicativeMonoid<E extends AlgebraicElement<E>> extends MultiplicativeMonoid<E> {}
 - interface CommutativeRing<E extends AlgebraicElement<E>> extends Ring<E>, CommutativeMultiplicativeMonoid<E> {}
-- interface MultiplicativeGroup<E extends AlgebraicElement<E>> extends CommutativeMultiplicativeMonoid<E> {	E inverse(E e);	default E divide(E a, E b) { return multiply(a, inverse(b)); }}
 - interface Field<E extends AlgebraicElement<E>> extends CommutativeRing<E>, MultiplicativeGroup<E> {}
-- interface EuclideanDomain<E extends AlgebraicElement<E>, N extends AlgebraicElement<N>> extends CommutativeRing<E> {E quotient(E a, E b);	E remainder(E a, E b);	N degree(E e); default E lcm(E a, E b) {} default E normalize(E element) {}}
-- interface ScalarStructure<E extends ScalarElement<E>> extends AlgebraicStructure<E>, NumericFactory<E> {default boolean isExact() { return this instanceof ExactStructure;   }}
-- interface CompositeStructure<K extends ScalarElement<K>, E extends AlgebraicElement<E>> extends AlgebraicStructure<E> { ScalarStructure<K> getScalarStructure(); default boolean isExact() { return getScalarStructure().isExact(); }}
-- interface ExactStructure<E extends ExactElement<E>> extends ScalarStructure<E> {	@Override default boolean isExact() { return true; } @Override  default boolean areEqual(E a, E b) { if (a == b) return true; if (a == null || b == null) return false;return a.equals(b); }	}
-- interface ApproximateStructure<E extends ApproximateElement<E>> extends ScalarStructure<E> {  @Override default boolean isExact() { return false; }  double epsilon();  }}
+- interface EuclideanDomain<E extends AlgebraicElement<E>, N extends AlgebraicElement<N>> extends CommutativeRing<E> {E quotient(E a, E b); E remainder(E a, E b);	N degree(E e); default E gcd(E a, E b) {} default E lcm(E a, E b) {} default E normalize(E element) {}}
+
+- interface ScalarStructure<K extends ScalarElement<K>> extends Semiring<K> {default boolean isExact() { return this instanceof ExactStructure;   }}
+- interface CompositeStructure<K extends ScalarElement<K>, E extends CompositeElement<K, E>, S extends ScalarStructure<K>> { S getScalarStructure(); default boolean isExact() { return getScalarStructure().isExact(); }}
+- interface LinearStructure<V extends LinearElement<V, K>, K extends ScalarElement<K>, S extends ScalarStructure<K>> extends CompositeStructure<K, V, S> {  V scale(K scalar, V vector);}
+- interface Semimodule<V extends LinearElement<V, K>, K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> extends LinearStructure<V, K, S>, AdditiveMonoid<V> {}
+- interface Module<V extends LinearElement<V, K>, K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends Semimodule<V, K, S>, AbelianGroup<V> {}
+- interface VectorSpace<V extends LinearElement<V, K>, K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends Module<V, K, S> {}
+
+### net.gommagomma.smfn.math.algebra.core.structures.capabilities:
+- interface NumericFactory<K extends ScalarElement<K>> {K zero(); K one(); K of(double value); K of(long value); K of(int value);}
+- interface ExactStructure<K extends ExactElement<K>> extends ScalarStructure<K> {	@Override default boolean isExact() { return true; } @Override  default boolean areEqual(K a, K b) { if (a == b) return true; if (a == null || b == null) return false;return a.equals(b); }	}
+- interface ApproximateStructure<K extends ApproximateElement<K>> extends ScalarStructure<K> {  @Override default boolean isExact() { return false; }  double epsilon();  }}
 
 ### net.gommagomma.smfn.math.algebra.numerics:
 - final class Natural implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural> {}
@@ -112,19 +114,19 @@ net.gommagomma.smfn/
 - final class ZnElement implements ExactElement<ZnElement>, Exponentiable<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.structures:
-- final class NaturalSemiring implements Semiring<Natural>, ExactStructure<Natural> {}
-- final class IntegerRing implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt> {}
-- final class RationalField implements Field<Rational>, ExactStructure<Rational> {}
-- final class RealField implements Field<Real>, ApproximateStructure<Real> {}
-- final class ComplexField implements Field<Complex>, ApproximateStructure<Complex> {}
-- final class ZnRing implements CommutativeRing<ZnElement>, ExactStructure<ZnElement> {}
+- final class NaturalSemiring implements Semiring<Natural>, ExactStructure<Natural>, NumericFactory<Natural> {}
+- final class IntegerRing implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, NumericFactory<SignedInt> {}
+- final class RationalField implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational> {}
+- final class RealField implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real> {}
+- final class ComplexField implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex> {}
+- final class ZnRing implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.polynomial:
-- final class Polynomial<K extends ScalarElement<K>> implements CompositeElement<K, Polynomial<K>>, Morphism<K, K>, Differentiable<Polynomial<K>>, Integrable<Polynomial<K>, K> {}
-- class PolynomialSemiring<K extends ScalarElement<K>> implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>> {}
-- class PolynomialRing<K extends ScalarElement<K>> extends PolynomialSemiring<K> implements Ring<Polynomial<K>> {}
-- class CommutativePolynomialRing<K extends ScalarElement<K>> extends PolynomialRing<K> implements CommutativeRing<Polynomial<K>> {}
-- class EuclideanPolynomialRing<K extends ScalarElement<K>> extends CommutativePolynomialRing<K> implements EuclideanDomain<Polynomial<K>, Natural> {}
+- final class Polynomial<K extends ScalarElement<K>> implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K>, Differentiable<Polynomial<K>>, Integrable<Polynomial<K>, K> {}
+- class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>> {}
+- class PolynomialRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends PolynomialSemiring<K, S> implements Ring<Polynomial<K>> {}
+- class CommutativePolynomialRing<K extends ScalarElement<K>, S extends CommutativeRing<K> & ScalarStructure<K>> extends PolynomialRing<K, S> implements CommutativeRing<Polynomial<K>> {}
+- class EuclideanPolynomialRing<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends CommutativePolynomialRing<K, S> implements EuclideanDomain<Polynomial<K>, Natural> {}
 - final class PolynomialDivisionResult<K extends ScalarElement<K>> {}
 - final class Polynomials {}
 

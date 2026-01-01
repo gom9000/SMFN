@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.gommagomma.smfn.math.algebra.core.NumericFactory;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
 
 

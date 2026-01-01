@@ -5,16 +5,14 @@ import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
+import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
 
-public class PolynomialRing<K extends ScalarElement<K>>
-extends PolynomialSemiring<K>
+public class PolynomialRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>>
+extends PolynomialSemiring<K, S>
 implements Ring<Polynomial<K>>
 {
-	protected final Ring<K> kRing;
-
-    public PolynomialRing(Ring<K> kRing) {
-        super(kRing);
-        this.kRing = kRing;
+    public PolynomialRing(S scalarStructure) {
+        super(scalarStructure);
     }
 
 
@@ -24,15 +22,15 @@ implements Ring<Polynomial<K>>
 
         List<K> negatedCoeffs = new ArrayList<>(e.getCoefficients().size());
         for (K coeff : e.getCoefficients()) {
-            negatedCoeffs.add(kRing.negate(coeff));
+            negatedCoeffs.add(scalarStructure.negate(coeff));
         }
 
-        return new Polynomial<>(kRing, negatedCoeffs);
+        return new Polynomial<>(scalarStructure, negatedCoeffs);
     }
 
 
     @Override // AlgebraicStructure impls (override)
     public String getName() {
-        return "Polynomial Ring over " + kRing.getName();
+        return "Polynomial Ring over " + scalarStructure.getName();
     }
 }

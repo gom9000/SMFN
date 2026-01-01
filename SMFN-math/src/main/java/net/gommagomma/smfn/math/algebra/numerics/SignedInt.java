@@ -4,6 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.ExactElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Absolutable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
+import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 
 public final class SignedInt
@@ -18,6 +19,12 @@ implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>
     }
 
     public long getValue() { return value; }
+
+
+    @Override // ScalarElement impls
+    public ScalarStructure<SignedInt> getStructure() {
+        return IntegerRing.INSTANCE;
+    }
 
 
     @Override // AlgebraicElement impls
@@ -51,7 +58,7 @@ implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>
     @Override // Exponentiable impls
     public SignedInt power(int exponent)
     {
-    	IntegerRing ring = IntegerRing.getInstance();
+    	IntegerRing ring = IntegerRing.INSTANCE;
     	if (ring.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }

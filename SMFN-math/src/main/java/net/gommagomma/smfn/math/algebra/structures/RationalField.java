@@ -1,25 +1,24 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
-import net.gommagomma.smfn.math.algebra.core.structures.ExactStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
 
 public final class RationalField
-implements Field<Rational>, ExactStructure<Rational>
+implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
 {
 	private static final Rational ZERO = new Rational(0, 1);
     private static final Rational ONE = new Rational(1, 1);
     
-    private static final RationalField INSTANCE = new RationalField();
-
+    public static final RationalField INSTANCE = new RationalField();
     private RationalField() {}
-    public static RationalField getInstance() { return INSTANCE; }
 
 
-    // NumericFactory (via ScalarStructure) impls
+    // NumericFactory impls
     @Override public Rational zero() { return ZERO; }
     @Override public Rational one() { return ONE; }
     @Override public Rational of(long value) { return new Rational(value); }

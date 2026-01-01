@@ -36,7 +36,7 @@ public class PolynomialClient
         // --- 1. Definizione del Contesto e del Polinomio P(x) = 1.5x^3 + 3.0x^2 - 5.0x - 2.0 ---
         
         // 1.1 Definiamo la struttura base (Anello/Campo dei coefficienti)
-        RealField R = RealField.getInstance();
+        RealField R = RealField.INSTANCE;
         Real[] coeffs = {new Real(-2.0), new Real(-5.0), new Real(3.0), new Real(1.5)};
 
         Polynomial<Real> cubicPolynomial = Polynomials.of(R, coeffs);

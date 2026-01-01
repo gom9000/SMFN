@@ -1,5 +1,9 @@
 package net.gommagomma.smfn.math.algebra.core.elements;
 
-public interface ScalarElement<E extends ScalarElement<E>>
-extends AlgebraicElement<E>
-{}
+import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
+
+public interface ScalarElement<K extends ScalarElement<K>>
+extends AlgebraicElement<K>
+{
+	ScalarStructure<K> getStructure();
+}

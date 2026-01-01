@@ -9,21 +9,20 @@ import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Differentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Integrable;
 import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
-import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 
 public final class Polynomial<K extends ScalarElement<K>> 
-implements CompositeElement<K, Polynomial<K>>, Morphism<K, K>, Differentiable<Polynomial<K>>, Integrable<Polynomial<K>, K>
+implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K>, Differentiable<Polynomial<K>>, Integrable<Polynomial<K>, K>
 {
 	private final List<K> coefficients; // Ordinati per grado crescente: a0, a1, ... an
-	private final Semiring<K> structure;
+	private final ScalarStructure<K> scalarStructure;
 
 
-	public Polynomial(Semiring<K> structure, List<K> coefficients) {
-        this.structure = structure;
-        this.coefficients = normalize(structure, coefficients);
+	public Polynomial(ScalarStructure<K> scalarStructure, List<K> coefficients) {
+        this.scalarStructure = scalarStructure;
+        this.coefficients = normalize(scalarStructure, coefficients);
     }
 
-	private List<K> normalize(Semiring<K> struct, List<K> coeffs) {
+	private List<K> normalize(ScalarStructure<K> struct, List<K> coeffs) {
         if (coeffs.isEmpty()) return List.of();
         
         int lastNonZero = -1;
@@ -43,7 +42,7 @@ implements CompositeElement<K, Polynomial<K>>, Morphism<K, K>, Differentiable<Po
 
     public K getCoefficient(int degree) {
         if (degree < 0 || degree >= coefficients.size()) {
-            return structure.zero();
+            return scalarStructure.zero();
         }
         return coefficients.get(degree);
     }
@@ -54,12 +53,12 @@ implements CompositeElement<K, Polynomial<K>>, Morphism<K, K>, Differentiable<Po
 
     @Override // Morphism impls
     public K apply(K input) {
-        if (coefficients.isEmpty()) return structure.zero();
+        if (coefficients.isEmpty()) return scalarStructure.zero();
         
         // Algoritmo di Horner per l'efficienza: (...((an*x + an-1)*x + ... + a1)*x + a0)
         K result = getCoefficient(degree());
         for (int i = degree() - 1; i >= 0; i--) {
-            result = structure.add(structure.multiply(result, input), getCoefficient(i));
+            result = scalarStructure.add(scalarStructure.multiply(result, input), getCoefficient(i));
         }
         return result;
     }
@@ -74,15 +73,19 @@ implements CompositeElement<K, Polynomial<K>>, Morphism<K, K>, Differentiable<Po
 		return Polynomials.integrate(this, c);
 	}
 
-    @SuppressWarnings("unchecked")
 	@Override
     public ScalarStructure<K> getScalarStructure() {
-        return (ScalarStructure<K>) structure;
+        return scalarStructure;
+    }
+
+	@Override
+    public ScalarStructure<Polynomial<K>> getStructure() {
+        return Polynomials.getStructureFor(this.getScalarStructure());
     }
 
     @Override
     public Polynomial<K> copy() {
-        return new Polynomial<>(structure, coefficients);
+        return new Polynomial<>(scalarStructure, coefficients);
     }
 
     @Override
@@ -105,7 +108,7 @@ implements CompositeElement<K, Polynomial<K>>, Morphism<K, K>, Differentiable<Po
         StringBuilder sb = new StringBuilder();
         for (int i = degree(); i >= 0; i--) {
             K coeff = getCoefficient(i);
-            if (structure.isZero(coeff)) continue;
+            if (scalarStructure.isZero(coeff)) continue;
             
             if (sb.length() > 0) sb.append(" + ");
             

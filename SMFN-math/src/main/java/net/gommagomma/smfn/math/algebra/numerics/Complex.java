@@ -4,6 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.ApproximateElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Sqrtable;
+import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
@@ -52,6 +53,12 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
     }
 
 
+    @Override // ScalarElement impls
+    public ScalarStructure<Complex> getStructure() {
+        return ComplexField.INSTANCE;
+    }
+
+
     @Override // AlgebraicElement impls
     public Complex copy()
     {
@@ -62,14 +69,14 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
     @Override // Normable impls
     public Real norm()
     {
-        return RealField.getInstance().of(this.modulus());
+        return RealField.INSTANCE.of(this.modulus());
     }
 
 
     @Override // Exponentiable impls
     public Complex power(int exponent)
     {
-    	ComplexField field = ComplexField.getInstance();
+    	ComplexField field = ComplexField.INSTANCE;
         if (field.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }
@@ -94,7 +101,7 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
 
     @Override // Squertable impls
     public Complex sqrt() {
-        ComplexField field = ComplexField.getInstance();
+        ComplexField field = ComplexField.INSTANCE;
         if (field.isZero(this)) return field.zero();
 
         double x = Math.abs(real);

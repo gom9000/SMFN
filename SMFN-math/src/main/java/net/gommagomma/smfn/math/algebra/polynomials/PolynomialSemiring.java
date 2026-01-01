@@ -8,22 +8,26 @@ import net.gommagomma.smfn.math.algebra.core.structures.CompositeStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 
-public class PolynomialSemiring<K extends ScalarElement<K>> 
-implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>>
+public class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> 
+implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>>
 {
-	protected final Semiring<K> kSemiring;
+	protected final S scalarStructure;
 	private final Polynomial<K> zero;
     private final Polynomial<K> one;
 
-	public PolynomialSemiring(Semiring<K> kSemiring) {
-        this.kSemiring = kSemiring;
-        this.zero = new Polynomial<>(kSemiring, List.of());
-        this.one = new Polynomial<>(kSemiring, List.of(kSemiring.one()));
+	public PolynomialSemiring(S scalarStructure) {
+        this.scalarStructure = scalarStructure;
+        this.zero = new Polynomial<>(scalarStructure, List.of());
+        this.one = new Polynomial<>(scalarStructure, List.of(scalarStructure.one()));
     }
 
-	@SuppressWarnings("unchecked")
+	@Override
+    public boolean isExact() {
+        return scalarStructure.isExact();
+    }
+
 	@Override // CompositeStructure impls
-    public ScalarStructure<K> getScalarStructure() { return (ScalarStructure<K>) kSemiring;	}
+    public S getScalarStructure() { return scalarStructure;	}
 
 
 	@Override // AdditiveMonoid impls
@@ -37,11 +41,11 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>>
         List<K> resultCoeffs = new ArrayList<>(maxDegree + 1);
 
         for (int i = 0; i <= maxDegree; i++) {
-            K sum = kSemiring.add(a.getCoefficient(i), b.getCoefficient(i));
+            K sum = scalarStructure.add(a.getCoefficient(i), b.getCoefficient(i));
             resultCoeffs.add(sum);
         }
 
-        return new Polynomial<>(kSemiring, resultCoeffs);
+        return new Polynomial<>(scalarStructure, resultCoeffs);
     }
 
 
@@ -59,33 +63,33 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>>
         
         // Inizializza con lo zero del semianello
         for (int i = 0; i <= newDegree; i++) {
-            resultCoeffs.add(kSemiring.zero());
+            resultCoeffs.add(scalarStructure.zero());
         }
 
         // algoritmo di convoluzione standard: c_k = sum_{i+j=k} (a_i * b_j)
         for (int i = 0; i <= a.degree(); i++) {
             K ai = a.getCoefficient(i);
-            if (kSemiring.isZero(ai)) continue;
+            if (scalarStructure.isZero(ai)) continue;
 
             for (int j = 0; j <= b.degree(); j++) {
                 K bj = b.getCoefficient(j);
-                if (kSemiring.isZero(bj)) continue;
+                if (scalarStructure.isZero(bj)) continue;
 
                 int k = i + j;
-                K currentTerm = kSemiring.multiply(ai, bj);
-                K accumulated = kSemiring.add(resultCoeffs.get(k), currentTerm);
+                K currentTerm = scalarStructure.multiply(ai, bj);
+                K accumulated = scalarStructure.add(resultCoeffs.get(k), currentTerm);
                 resultCoeffs.set(k, accumulated);
             }
         }
 
-        return new Polynomial<>(kSemiring, resultCoeffs);
+        return new Polynomial<>(scalarStructure, resultCoeffs);
     }
 
 
     // AlgebraicStructure impls
     @Override
     public String getName() {
-        return "PolynomialSemiring over " + kSemiring.getName();
+        return "PolynomialSemiring over " + scalarStructure.getName();
     }
 
     @Override
@@ -98,7 +102,7 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>>
     	if (a == b) return true;
         if (a.degree() != b.degree()) return false;
         for (int i = 0; i <= a.degree(); i++) {
-            if (!kSemiring.areEqual(a.getCoefficient(i), b.getCoefficient(i))) {
+            if (!scalarStructure.areEqual(a.getCoefficient(i), b.getCoefficient(i))) {
                 return false;
             }
         }

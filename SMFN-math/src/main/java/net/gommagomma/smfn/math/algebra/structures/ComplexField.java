@@ -1,21 +1,20 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.*;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ApproximateStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 public final class ComplexField
-implements Field<Complex>, ApproximateStructure<Complex>
+implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex>
 {
 	private static final Complex ZERO = new Complex(0.0, 0.0);
 	private static final Complex ONE = new Complex(1.0, 0.0);
 
-    private static final ComplexField INSTANCE = new ComplexField(MathConstants.EPSILON);
+    public static final ComplexField INSTANCE = new ComplexField(MathConstants.EPSILON);
     private final double epsilon;
-
-
     private ComplexField(double epsilon) { this.epsilon = epsilon; }
-    public static ComplexField getInstance() { return INSTANCE; }
 
 
     // ApproximateStructure impls
@@ -23,7 +22,7 @@ implements Field<Complex>, ApproximateStructure<Complex>
     public double epsilon() { return epsilon; }
 
 
-    // NumericFactory (via ScalarStructure) impls
+    // NumericFactory impls
     @Override
     public Complex of(double value) { return new Complex(value, 0); }
 

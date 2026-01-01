@@ -1,24 +1,23 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
-import net.gommagomma.smfn.math.algebra.core.structures.ExactStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 public final class IntegerRing
-implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>
+implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, NumericFactory<SignedInt>
 {
 	private static final SignedInt ZERO = new SignedInt(0);
 	private static final SignedInt ONE = new SignedInt(1);
 
 	public static final IntegerRing INSTANCE = new IntegerRing();
-
     private IntegerRing() {}
-    public static IntegerRing getInstance() { return INSTANCE; }
 
 
-    // NumericFactory (via ScalarStructure) impls
+    // NumericFactory impls
     @Override public SignedInt zero() { return ZERO; }
     @Override public SignedInt one() { return ONE; }
     @Override public SignedInt of(long value) { return new SignedInt(value); }

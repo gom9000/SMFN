@@ -1,25 +1,24 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
-import net.gommagomma.smfn.math.algebra.core.structures.ExactStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 
 public final class NaturalSemiring
-implements Semiring<Natural>, ExactStructure<Natural>
+implements Semiring<Natural>, ExactStructure<Natural>, NumericFactory<Natural>
 {
 	public static final Natural ZERO = new Natural(0);
     public static final Natural ONE = new Natural(1);
 
 	public static final NaturalSemiring INSTANCE = new NaturalSemiring();
-
     private NaturalSemiring() {}
-    public static NaturalSemiring getInstance() { return INSTANCE; }
 
 
-    // NumericFactory (via ScalarStructure) impls
+    // NumericFactory impls
     @Override public Natural zero() { return ZERO; }
     @Override public Natural one() { return ONE; }
     @Override

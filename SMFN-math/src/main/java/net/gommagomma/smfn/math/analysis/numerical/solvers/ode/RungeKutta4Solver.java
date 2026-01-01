@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.analysis.numerical.solvers.ode;
 
-import net.gommagomma.smfn.math.algebra.core.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentialEquationProblem;
 import net.gommagomma.smfn.math.analysis.core.problems.InitialValueProblem;

@@ -5,6 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Absolutable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
+import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
@@ -39,6 +40,12 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
 
     public long getNumerator() { return numerator; }
     public long getDenominator() {  return denominator; }
+
+
+    @Override // ScalarElement impls
+    public ScalarStructure<Rational> getStructure() {
+        return RationalField.INSTANCE;
+    }
 
 
     @Override // AlgebraicElement impls
@@ -79,7 +86,7 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
     @Override // Exponentiable impls
     public Rational power(int exponent)
     {
-    	RationalField field = RationalField.getInstance();
+    	RationalField field = RationalField.INSTANCE;
         if (field.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }

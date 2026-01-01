@@ -1,7 +1,11 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
-import net.gommagomma.smfn.math.algebra.core.structures.ExactStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.algebra.numerics.ZnElement;
 import net.gommagomma.smfn.math.utils.MathConstants;
@@ -12,8 +16,10 @@ import net.gommagomma.smfn.math.utils.MathConstants;
  * * Z/nZ è un Campo se e solo se n è primo. Qui è implementato come Anello generico.
  */
 public final class ZnRing
-implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>
+implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory<ZnElement>
 {
+	private static final Map<SignedInt, ZnRing> CACHE = new ConcurrentHashMap<>();
+
     private final SignedInt modulus;
     private final ZnElement additiveIdentity;
     private final ZnElement multiplicativeIdentity;
@@ -23,39 +29,39 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>
      * Costruisce l'anello Z/nZ specificando il modulo n.
      * @param modulus Il modulo n (deve essere un intero positivo > 0).
      */
-    public ZnRing(SignedInt modulus) {
+    private ZnRing(SignedInt modulus) {
         if (modulus.getValue() <= 0) {
             throw new IllegalArgumentException("Modulus for ZModNRing must be a positive integer > 0.");
         }
         this.modulus = modulus;
-        IntegerRing ring = IntegerRing.getInstance();
+        IntegerRing ring = IntegerRing.INSTANCE;
         this.additiveIdentity = new ZnElement(ring.zero(), this.modulus);
         this.multiplicativeIdentity = new ZnElement(ring.one(), this.modulus);
+    }
+
+    public static ZnRing of(SignedInt modulus) {
+        return CACHE.computeIfAbsent(modulus, ZnRing::new);
     }
 
     public SignedInt getModulus() { return modulus; }
 
 
-    // NumericFactory (via ScalarStructure) impls
+    // NumericFactory impls
     @Override public ZnElement zero() { return additiveIdentity; }
     @Override public ZnElement one() { return multiplicativeIdentity; }
-    @Override public ZnElement of(long value) { return new ZnElement(IntegerRing.getInstance().of(value), this.modulus); }
-    @Override public ZnElement of(int value) { return new ZnElement(IntegerRing.getInstance().of(value), this.modulus); }
+    @Override public ZnElement of(long value) { return new ZnElement(IntegerRing.INSTANCE.of(value), this.modulus); }
+    @Override public ZnElement of(int value) { return new ZnElement(IntegerRing.INSTANCE.of(value), this.modulus); }
     @Override
 	public ZnElement of(double value) {
-    	if (Double.isNaN(value) || Double.isInfinite(value)) {
+    	if (!Double.isFinite(value)) {
 	        throw new IllegalArgumentException("Cannot create a SignedInt number from a non-finite value: " + value);
 	    }
-        if (value > Long.MAX_VALUE) {
-	        throw new ArithmeticException("Value " + value + " is outside the range of SignedInt (long).");
-	    }
-
-        long roundedValue = Math.round(value);
+    	long roundedValue = Math.round(value);
         if (Math.abs(value - roundedValue) > MathConstants.EPSILON) {
-            throw new IllegalArgumentException("Cannot convert non-integer value " + value + " to integer type.");
+            throw new IllegalArgumentException("Value " + value + " is not an integer (within epsilon).");
         }
 
-        SignedInt signedInt = IntegerRing.getInstance().of(value);
+        SignedInt signedInt = IntegerRing.INSTANCE.of(roundedValue);
         return new ZnElement(signedInt, this.modulus);
 	}
 
@@ -82,7 +88,7 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>
     @Override
     public ZnElement add(ZnElement a, ZnElement b) {
         checkModulus(a); checkModulus(b);
-        return new ZnElement(IntegerRing.getInstance().add(a.getValue(), b.getValue()), modulus);
+        return new ZnElement(IntegerRing.INSTANCE.add(a.getValue(), b.getValue()), modulus);
     }
 
 
@@ -90,7 +96,7 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>
     @Override
     public ZnElement multiply(ZnElement a, ZnElement b) {
         checkModulus(a); checkModulus(b);
-        return new ZnElement(IntegerRing.getInstance().multiply(a.getValue(), b.getValue()), modulus);
+        return new ZnElement(IntegerRing.INSTANCE.multiply(a.getValue(), b.getValue()), modulus);
     }
 
 
@@ -98,7 +104,7 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>
     @Override
     public ZnElement negate(ZnElement e) {
         checkModulus(e);
-        return new ZnElement(IntegerRing.getInstance().negate(e.getValue()), modulus);
+        return new ZnElement(IntegerRing.INSTANCE.negate(e.getValue()), modulus);
     }
 
 
