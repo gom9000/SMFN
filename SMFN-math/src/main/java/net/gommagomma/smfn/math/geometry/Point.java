@@ -2,7 +2,8 @@ package net.gommagomma.smfn.math.geometry;
 
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
+
 import java.util.Objects;
 
 /**
@@ -12,10 +13,10 @@ import java.util.Objects;
 public final class Point
 implements AlgebraicElement<Point>
 {
-    private final RealVector position;
+    private final Vector<Real> position;
 
     // --- Costruttori ---
-    public Point(RealVector position) {
+    public Point(Vector<Real> position) {
         this.position = Objects.requireNonNull(position, "Position vector cannot be null");
     }
 

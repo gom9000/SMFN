@@ -29,6 +29,13 @@ implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>
     @Override public Real of(int v) { return new Real(v); }
 
 
+    // ScalarStructure impls
+    @Override
+    public Real magnitude(Real a) {
+    	return a.abs();
+    }
+
+
     // AdditiveMonoid impls
     @Override
     public Real add(Real a, Real b) { 

@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.ApproximateElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Sqrtable;
-import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 

@@ -1,9 +1,10 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
-import net.gommagomma.smfn.math.algebra.core.structures.*;
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ApproximateStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 public final class ComplexField
@@ -37,6 +38,16 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
 
     @Override
     public Complex one() { return ONE; }
+
+
+    // ScalarStructure impls
+    @Override
+    public Real magnitude(Complex z) {
+    	if (z == null) {
+            return RealField.INSTANCE.zero();
+        }
+        return RealField.INSTANCE.of(z.modulus());
+    }
 
 
     // AdditiveMonoid impls

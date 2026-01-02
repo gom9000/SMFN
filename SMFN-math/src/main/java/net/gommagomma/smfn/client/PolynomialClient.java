@@ -10,11 +10,9 @@ import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.algebra.polynomials.Polynomial;
-import net.gommagomma.smfn.math.algebra.polynomials.Polynomials;
+import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
+import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.specialized.RealMatrixRing;
-import net.gommagomma.smfn.math.linearalgebra.real.RealMatrix;
 
 public class PolynomialClient
 {

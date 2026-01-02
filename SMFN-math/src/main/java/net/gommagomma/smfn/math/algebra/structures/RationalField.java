@@ -5,6 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
 
@@ -98,6 +99,14 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
         }
 
         return new Rational(num, den);
+    }
+
+
+    // ScalarStructure impls
+    @Override
+    public Real magnitude(Rational a) {
+    	Rational aa = a.abs();
+        return RealField.INSTANCE.of((double) aa.getNumerator()/aa.getDenominator()); 
     }
 
 

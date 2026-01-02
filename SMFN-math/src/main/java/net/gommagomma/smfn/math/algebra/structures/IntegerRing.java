@@ -4,6 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
@@ -32,6 +33,13 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
             throw new IllegalArgumentException("Value " + value + " is not an integer.");
         }
         return new SignedInt(rounded);
+    }
+
+
+    // ScalarStructure impls
+    @Override
+    public Real magnitude(SignedInt a) {
+        return RealField.INSTANCE.of(a.abs().getValue()); 
     }
 
 

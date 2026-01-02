@@ -2,7 +2,7 @@ package net.gommagomma.smfn.math.algebra.numerics;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ExactElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
-import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 import net.gommagomma.smfn.math.algebra.structures.ZnRing;
 

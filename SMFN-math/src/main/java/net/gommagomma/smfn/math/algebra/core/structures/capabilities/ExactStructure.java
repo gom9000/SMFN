@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.algebra.core.structures.capabilities;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ExactElement;
-import net.gommagomma.smfn.math.algebra.core.structures.ScalarStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
 public interface ExactStructure<K extends ExactElement<K>>
 extends ScalarStructure<K>

@@ -1,7 +1,8 @@
 package net.gommagomma.smfn.math.geometry;
 
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
@@ -60,10 +61,10 @@ implements GeometryEntity<Point, Real>
             throw new IllegalArgumentException("Input point must be 2D.");
         }
 
-        RealVector displacement = point.subtract(center);
+        Vector<Real> displacement = point.subtract(center);
         Real distance = displacement.norm();
 
-        return distance.subtract(radius);
+        return RealField.INSTANCE.subtract(distance, radius);
     }
 
     // --- Getters ---

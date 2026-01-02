@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.algebra.numerics.ZnElement;
 import net.gommagomma.smfn.math.utils.MathConstants;
@@ -81,6 +82,13 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory
         if (!e.getModulus().equals(this.modulus)) {
             throw new IllegalArgumentException("Element modulus mismatch. Expected: " + modulus);
         }
+    }
+
+
+    // ScalarStructure impls
+    @Override
+    public Real magnitude(ZnElement a) {
+        return RealField.INSTANCE.of(a.getValue().abs().getValue()); 
     }
 
 

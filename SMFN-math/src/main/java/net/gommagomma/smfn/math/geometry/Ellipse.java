@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.geometry;
 
 import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.real.RealVector;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
@@ -40,8 +41,8 @@ implements GeometryEntity<Point, Real>
         this.semiAxisB = semiAxisB;
         
         // Pre-calcolo dei quadrati per evitare moltiplicazioni ripetute in implicitFunctionAt
-        this.aSquared = semiAxisA.multiply(semiAxisA);
-        this.bSquared = semiAxisB.multiply(semiAxisB);
+        this.aSquared = RealField.INSTANCE.multiply(semiAxisA, semiAxisA);
+        this.bSquared = RealField.INSTANCE.multiply(semiAxisB, semiAxisB);
     }
 
     @Override
@@ -89,11 +90,11 @@ implements GeometryEntity<Point, Real>
         Real y = relativePos.get(1);
 
         // Calcolo dei termini (x^2 / a^2) e (y^2 / b^2)
-        Real termX = x.multiply(x).divide(aSquared);
-        Real termY = y.multiply(y).divide(bSquared);
+        Real termX = RealField.INSTANCE.divide(RealField.INSTANCE.multiply(x, x), aSquared);
+        Real termY = RealField.INSTANCE.divide(RealField.INSTANCE.multiply(y, y), aSquared);
 
         // Somma dei termini meno l'unità
-        return termX.add(termY).subtract(new Real(1.0));
+        return RealField.INSTANCE.subtract(RealField.INSTANCE.add(termX, termY), RealField.INSTANCE.one());
     }
 
     // --- Getters ---
