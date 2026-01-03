@@ -9,7 +9,7 @@ extends AlgebraicStructure<E>
 {
 	S getScalarStructure();
 
-	default boolean isExact() {
-        return getScalarStructure().isExact();
-    }
+//	default boolean isExact() {
+//        return getScalarStructure().isExact();
+//    }
 }

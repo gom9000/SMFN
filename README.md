@@ -94,8 +94,8 @@ net.gommagomma.smfn/
 - interface EuclideanDomain<E extends AlgebraicElement<E>, N extends AlgebraicElement<N>> extends CommutativeRing<E> {E quotient(E a, E b); E remainder(E a, E b);	N degree(E e); default E gcd(E a, E b) {} default E lcm(E a, E b) {} default E normalize(E element) {}}
 
 ### net.gommagomma.smfn.math.algebra.core.structures.composite:
-- interface ScalarStructure<K extends ScalarElement<K>> extends Semiring<K> {Real magnitude(K element); default boolean isExact() { return this instanceof ExactStructure;   }}
-- interface CompositeStructure<K extends ScalarElement<K>, E extends CompositeElement<K, E>, S extends ScalarStructure<K>> { S getScalarStructure(); default boolean isExact() { return getScalarStructure().isExact(); }}
+- interface ScalarStructure<K extends ScalarElement<K>> extends Semiring<K> {Real magnitude(K element); boolean isExact();   }}
+- interface CompositeStructure<K extends ScalarElement<K>, E extends CompositeElement<K, E>, S extends ScalarStructure<K>> { S getScalarStructure(); }}
 - interface LinearStructure<V extends LinearElement<V, K>, K extends ScalarElement<K>, S extends ScalarStructure<K>> extends CompositeStructure<K, V, S> {  V scale(K scalar, V vector);}
 - interface Semimodule<V extends LinearElement<V, K>, K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> extends LinearStructure<V, K, S>, AdditiveMonoid<V> {}
 - interface Module<V extends LinearElement<V, K>, K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends Semimodule<V, K, S>, AbelianGroup<V> {}
