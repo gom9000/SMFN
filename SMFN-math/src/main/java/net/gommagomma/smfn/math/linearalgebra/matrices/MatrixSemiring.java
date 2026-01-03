@@ -3,6 +3,8 @@ package net.gommagomma.smfn.math.linearalgebra.matrices;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 /**
  * Implementa la struttura di Semianello per matrici quadrate n x n.
@@ -10,7 +12,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
  */
 public class MatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
 extends MatrixSemimodule<K, S>
-implements Semiring<Matrix<K>>
+implements Semiring<Matrix<K>>, ScalarStructure<Matrix<K>>
 {
     private final int n;
 
@@ -53,5 +55,26 @@ implements Semiring<Matrix<K>>
     @Override
     public boolean isOne(Matrix<K> m) {
         return areEqual(m, one());
+    }
+
+	@Override
+    public boolean isExact() {
+        return scalarStructure.isExact();
+    }
+
+	@Override
+    public Real magnitude(Matrix<K> element) {
+        validateDimensions(element);
+        double sumOfSquares = 0.0;
+        
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                // calcolo della norma di Frobenius
+                double m = scalarStructure.magnitude(element.get(i, j)).getValue();
+                sumOfSquares += m * m;
+            }
+        }
+
+        return RealField.INSTANCE.of(Math.sqrt(sumOfSquares));
     }
 }

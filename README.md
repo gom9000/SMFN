@@ -147,12 +147,12 @@ net.gommagomma.smfn/
 
 ### net.gommagomma.smfn.math.linearalgebra.matrices:
 - final class Matrix<K extends ScalarElement<K>> implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>{ private final K[] data; private final int rows; private final int cols; private final ScalarStructure<K> scalarStructure; }
-- class MatrixSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semimodule<Matrix<K>, K, S>, ScalarStructure<Matrix<K>> {}
+- class MatrixSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semimodule<Matrix<K>, K, S> {}
 - class MatrixModule<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends MatrixSemimodule<K, S> implements Module<Matrix<K>, K, S> {}
 - class MatrixSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends MatrixModule<K, S> implements LinearSpace<Matrix<K>, K, S> {}
 - class InnerProductMatrixSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends MatrixSpace<K, S> implements InnerProductSpace<Matrix<K>, K, S> {}
-- class MatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> extends MatrixSemimodule<K, S> implements Semiring<Matrix<K>> {}
-- class MatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends MatrixModule<K, S> implements Ring<Matrix<K>> {}
+- class MatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> extends MatrixSemimodule<K, S> implements Semiring<Matrix<K>>, ScalarStructure<Matrix<K>> {}
+- class MatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends MatrixModule<K, S> implements Ring<Matrix<K>>, ScalarStructure<Matrix<K>> {}
 
 // ### net.gommagomma.smfn.math.linearalgebra.core.factories:
 //- interface VectorElementFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>>{ V createVector(K[] data);  V createVector(double[] data);  V createVector(long[] data);  V createVector(int[] data);  V createZeroVector(int dimension);}

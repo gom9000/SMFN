@@ -1,15 +1,14 @@
 package net.gommagomma.smfn.math.linearalgebra.matrices;
 
+import java.util.Objects;
+
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.Semimodule;
-import net.gommagomma.smfn.math.algebra.numerics.Real;
-
-import java.util.Objects;
 
 public class MatrixSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
-implements Semimodule<Matrix<K>, K, S>, ScalarStructure<Matrix<K>>
+implements Semimodule<Matrix<K>, K, S>
 {
     protected final S scalarStructure;
     protected final int rows;
@@ -94,31 +93,6 @@ implements Semimodule<Matrix<K>, K, S>, ScalarStructure<Matrix<K>>
         }
     }
 
-	@Override
-	public Matrix<K> one() {
-		throw new UnsupportedOperationException("L'identità non è definita in un Semimodulo.");
-	}
-
-	@Override
-	public Matrix<K> multiply(Matrix<K> a, Matrix<K> b) {
-		throw new UnsupportedOperationException("La moltiplicazione non è definita in un Semimodulo.");
-	}
-
-	@Override
-    public Real magnitude(Matrix<K> element) {
-        validateDimensions(element);
-        double sumOfSquares = 0.0;
-        
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                // calcolo della norma di Frobenius
-                double m = scalarStructure.magnitude(element.get(i, j)).getValue();
-                sumOfSquares += m * m;
-            }
-        }
-
-        return net.gommagomma.smfn.math.algebra.structures.RealField.INSTANCE.of(Math.sqrt(sumOfSquares));
-    }
 
 	@Override
     public boolean isZero(Matrix<K> element) {
@@ -129,10 +103,5 @@ implements Semimodule<Matrix<K>, K, S>, ScalarStructure<Matrix<K>>
             }
         }
         return true;
-    }
-
-	@Override
-    public boolean isExact() {
-        return scalarStructure.isExact();
     }
 }

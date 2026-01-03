@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.matrices;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
  * Rappresenta l'Anello delle matrici quadrate n x n sopra un Anello K.
@@ -10,7 +11,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
  */
 public class MatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>>
 extends MatrixModule<K, S>
-implements Ring<Matrix<K>>
+implements Ring<Matrix<K>>, ScalarStructure<Matrix<K>>
 {
     private final MatrixSemiring<K, S> semiringDelegate;
 
@@ -39,4 +40,14 @@ implements Ring<Matrix<K>>
     public String getName() {
         return "Matrix Ring (" + rows + "x" + cols + ") over " + scalarStructure.getName();
     }
+
+	@Override
+    public boolean isExact() {
+        return semiringDelegate.isExact();
+    }
+
+	@Override
+	public Real magnitude(Matrix<K> element) {
+		return scalarStructure.magnitude(null);
+	}
 }
