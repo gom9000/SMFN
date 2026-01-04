@@ -4,14 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.elements.factories.CompositeElementFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.EvaluationProvider;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.CompositeStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 public class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> 
-implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>>
+implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>>, CompositeElementFactory<Polynomial<K>, List<K>>
+			, EvaluationProvider<Polynomial<K>, K, K>
 {
 	protected final S scalarStructure;
 	private final Polynomial<K> zero;
@@ -19,8 +22,8 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
 
 	public PolynomialSemiring(S scalarStructure) {
         this.scalarStructure = scalarStructure;
-        this.zero = new Polynomial<>(scalarStructure, List.of());
-        this.one = new Polynomial<>(scalarStructure, List.of(scalarStructure.one()));
+        this.zero = new Polynomial<>(this, scalarStructure, List.of());
+        this.one = new Polynomial<>(this, scalarStructure, List.of(scalarStructure.one()));
     }
 
 
@@ -65,7 +68,7 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
             resultCoeffs.add(sum);
         }
 
-        return new Polynomial<>(scalarStructure, resultCoeffs);
+        return new Polynomial<>(this, scalarStructure, resultCoeffs);
     }
 
 
@@ -102,7 +105,7 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
             }
         }
 
-        return new Polynomial<>(scalarStructure, resultCoeffs);
+        return new Polynomial<>(this, scalarStructure, resultCoeffs);
     }
 
 
@@ -128,4 +131,22 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
         }
         return true;
     }
+
+
+	@Override // EvaluationProvider impls
+    public K evaluate(Polynomial<K> p, K input) {
+        if (p.getCoefficients().isEmpty()) return scalarStructure.zero();
+        // Algoritmo di Horner: (...((an*x + an-1)*x + ... + a1)*x + a0)
+        K result = p.getCoefficient(p.degree());
+        for (int i = p.degree() - 1; i >= 0; i--) {
+            result = scalarStructure.add(scalarStructure.multiply(result, input), p.getCoefficient(i));
+        }
+        return result;
+    }
+
+
+	@Override // CompositeElementFactory impls
+	public Polynomial<K> of(List<K> coefficients) {
+		return new Polynomial<>(this, this.scalarStructure, coefficients);
+	}
 }

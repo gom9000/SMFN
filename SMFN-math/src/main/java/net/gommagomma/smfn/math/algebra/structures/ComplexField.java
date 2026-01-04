@@ -1,8 +1,8 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
+import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ApproximateStructure;
-import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathConstants;

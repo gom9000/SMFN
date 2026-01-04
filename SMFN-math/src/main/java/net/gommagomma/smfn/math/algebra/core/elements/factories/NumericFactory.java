@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.algebra.core.structures.capabilities;
+package net.gommagomma.smfn.math.algebra.core.elements.factories;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 

@@ -6,18 +6,19 @@ import java.util.List;
 import net.gommagomma.smfn.math.algebra.core.Morphism;
 import net.gommagomma.smfn.math.algebra.core.elements.CompositeElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Differentiable;
-import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Integrable;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.EvaluationProvider;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
 public final class Polynomial<K extends ScalarElement<K>> 
-implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K>, Differentiable<Polynomial<K>>, Integrable<Polynomial<K>, K>
+implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K>
 {
 	private final List<K> coefficients; // Ordinati per grado crescente: a0, a1, ... an
 	private final ScalarStructure<K> scalarStructure;
+	private final ScalarStructure<Polynomial<K>> polynomialStructure;
 
 
-	public Polynomial(ScalarStructure<K> scalarStructure, List<K> coefficients) {
+	public Polynomial(ScalarStructure<Polynomial<K>> polynomialStructure, ScalarStructure<K> scalarStructure, List<K> coefficients) {
+		this.polynomialStructure = polynomialStructure;
         this.scalarStructure = scalarStructure;
         this.coefficients = normalize(scalarStructure, coefficients);
     }
@@ -53,25 +54,11 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Mor
 
     @Override // Morphism impls
     public K apply(K input) {
-        if (coefficients.isEmpty()) return scalarStructure.zero();
-        
-        // Algoritmo di Horner per l'efficienza: (...((an*x + an-1)*x + ... + a1)*x + a0)
-        K result = getCoefficient(degree());
-        for (int i = degree() - 1; i >= 0; i--) {
-            result = scalarStructure.add(scalarStructure.multiply(result, input), getCoefficient(i));
+    	if (polynomialStructure instanceof EvaluationProvider) {
+            return ((EvaluationProvider<Polynomial<K>, K, K>) polynomialStructure).evaluate(this, input);
         }
-        return result;
+        throw new UnsupportedOperationException("Questa struttura non supporta la valutazione del polinomio.");
     }
-
-	@Override // Differentiable impls
-	public Polynomial<K> derive() {
-		return Polynomials.derivative(this);
-	}
-
-	@Override
-	public Polynomial<K> integrate(K c) {
-		return Polynomials.integrate(this, c);
-	}
 
 	@Override
     public ScalarStructure<K> getScalarStructure() {
@@ -80,12 +67,12 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Mor
 
 	@Override
     public ScalarStructure<Polynomial<K>> getStructure() {
-        return Polynomials.getStructureFor(this.getScalarStructure());
+        return polynomialStructure;
     }
 
     @Override
     public Polynomial<K> copy() {
-        return new Polynomial<>(scalarStructure, coefficients);
+        return new Polynomial<>(polynomialStructure, scalarStructure, coefficients);
     }
 
     @Override

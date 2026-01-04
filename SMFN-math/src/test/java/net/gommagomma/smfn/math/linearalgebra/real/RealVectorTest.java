@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
+import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 class RealVectorTest {

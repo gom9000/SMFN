@@ -3,9 +3,9 @@ package net.gommagomma.smfn.math.algebra.structures;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
-import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.algebra.numerics.ZnElement;

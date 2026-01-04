@@ -76,8 +76,10 @@ net.gommagomma.smfn/
 - interface Exponentiable<E extends AlgebraicElement<E>> { E power(int exponent);}
 - interface Normable<K extends ScalarElement<K>> {K norm();}
 - interface Absolutable<E extends AlgebraicElement<E>> { E abs(); int signum(); }
-- interface Differentiable<E extends AlgebraicElement<E>> {   E derive();}
-- interface Integrable<E extends AlgebraicElement<E>, K extends ScalarElement<K>> {  E integrate(K c);  }}
+
+### net.gommagomma.smfn.math.algebra.core.elements.factories:
+- interface NumericFactory<K extends ScalarElement<K>> {K zero(); K one(); K of(double value); K of(long value); K of(int value);}
+- interface CompositeElementFactory<E, D> { E of(D data); }
 
 ### net.gommagomma.smfn.math.algebra.core.structures:
 - interface AlgebraicStructure<E extends AlgebraicElement<E>>{ String getName(); boolean contains(E e); boolean areEqual(E a, E b);}
@@ -107,9 +109,11 @@ net.gommagomma.smfn/
 - interface InnerProductSpace<V extends LinearElement<V, K>, K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends NormedSpace<V, K, S>{	K innerProduct(V a, V b);}
 
 ### net.gommagomma.smfn.math.algebra.core.structures.capabilities:
-- interface NumericFactory<K extends ScalarElement<K>> {K zero(); K one(); K of(double value); K of(long value); K of(int value);}
 - interface ExactStructure<K extends ExactElement<K>> extends ScalarStructure<K> {	@Override default boolean isExact() { return true; } @Override  default boolean areEqual(K a, K b) { if (a == b) return true; if (a == null || b == null) return false;return a.equals(b); }	}
 - interface ApproximateStructure<K extends ApproximateElement<K>> extends ScalarStructure<K> {  @Override default boolean isExact() { return false; }  double epsilon();  }}
+
+- interface SymbolicDifferentiationProvider<E extends AlgebraicElement<E>>{  E derive(E element);}
+- interface SymbolicIntegrationProvider<E extends AlgebraicElement<E>, K extends ScalarElement<K>>{ E integrate(E element, K constant);}
 
 ### net.gommagomma.smfn.math.algebra.numerics:
 - final class Natural implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural> {}
@@ -128,12 +132,13 @@ net.gommagomma.smfn/
 - final class ZnRing implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.polynomial:
-- final class Polynomial<K extends ScalarElement<K>> implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K>, Differentiable<Polynomial<K>>, Integrable<Polynomial<K>, K> {}
-- class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>> {}
-- class PolynomialRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends PolynomialSemiring<K, S> implements Ring<Polynomial<K>> {}
+- final class Polynomial<K extends ScalarElement<K>> implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K> {}
+- class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>>, CompositeElementFactory<Polynomial<K>, List<K>>, EvaluationProvider<Polynomial<K>, K, K> {}
+- class PolynomialRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends PolynomialSemiring<K, S> implements Ring<Polynomial<K>>, SymbolicDifferentiationProvider<Polynomial<K>> {}
 - class CommutativePolynomialRing<K extends ScalarElement<K>, S extends CommutativeRing<K> & ScalarStructure<K>> extends PolynomialRing<K, S> implements CommutativeRing<Polynomial<K>> {}
-- class EuclideanPolynomialRing<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends CommutativePolynomialRing<K, S> implements EuclideanDomain<Polynomial<K>, Natural> {}
+- class EuclideanPolynomialRing<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends CommutativePolynomialRing<K, S> implements EuclideanDomain<Polynomial<K>, Natural>, SymbolicIntegrationProvider<Polynomial<K>, K> {}
 - final class PolynomialDivisionResult<K extends ScalarElement<K>> {}
+
 - final class Polynomials {}
 
 ## net.gommagomma.smfn.math.linearalgebra

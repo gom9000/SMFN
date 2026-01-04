@@ -1,9 +1,9 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 
+import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
-import net.gommagomma.smfn.math.algebra.core.structures.capabilities.NumericFactory;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathUtils;
