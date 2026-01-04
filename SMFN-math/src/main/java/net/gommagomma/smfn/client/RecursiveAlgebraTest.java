@@ -9,8 +9,8 @@ import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
-import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixRing;
 import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
 /**
  * Test finale di stress algebrico: Ricorsività tra Polinomi e Matrici.
@@ -26,7 +26,7 @@ public class RecursiveAlgebraTest {
         
         // A = [[1, 2], [3, 4]]
         MatrixSpace<Rational, RationalField> qSpace = new MatrixSpace<>(q, n, n);
-        MatrixRing<Rational, RationalField> qRing = new MatrixRing<>(q, n);
+        SquareMatrixRing<Rational, RationalField> qRing = new SquareMatrixRing<>(q, n);
         
         Matrix<Rational> A = new Matrix<>(n, n, q);
         A.set(0, 0, q.of(1)); A.set(0, 1, q.of(2));
@@ -48,7 +48,7 @@ public class RecursiveAlgebraTest {
         
         EuclideanPolynomialRing<Rational, RationalField> pRing = (EuclideanPolynomialRing<Rational, RationalField>) Polynomials.getStructureFor(q);
         // Usiamo MatrixRing perché il determinante ora è lì (senza obbligo di Field)
-        MatrixRing<Polynomial<Rational>, EuclideanPolynomialRing<Rational, RationalField>> polyMatrixRing = new MatrixRing<Polynomial<Rational>, EuclideanPolynomialRing<Rational, RationalField>>(pRing, n);
+        SquareMatrixRing<Polynomial<Rational>, EuclideanPolynomialRing<Rational, RationalField>> polyMatrixRing = new SquareMatrixRing<Polynomial<Rational>, EuclideanPolynomialRing<Rational, RationalField>>(pRing, n);
 
         // M(x) = [[x+1, 1], [x, x^2]]
         Matrix<Polynomial<Rational>> M = new Matrix<>(n, n, pRing);
@@ -94,7 +94,7 @@ public class RecursiveAlgebraTest {
      * P(M) = a_n*M^n + ... + a_1*M + a_0*I
      */
     private static <K extends ScalarElement<K>> Matrix<K> evaluateMatrixPolynomial(
-            Polynomial<K> p, Matrix<K> m, MatrixRing<K, ?> ring, MatrixSpace<K, ?> space) {
+            Polynomial<K> p, Matrix<K> m, SquareMatrixRing<K, ?> ring, MatrixSpace<K, ?> space) {
         
         int deg = p.degree();
         if (deg < 0) return ring.zero();

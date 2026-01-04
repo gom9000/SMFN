@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.linearalgebra.vectors;
 import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.LinearStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
 import java.util.Arrays;
@@ -13,9 +14,10 @@ import java.util.Objects;
  * È un elemento di rango 1 nella gerarchia dei tensori.
  */
 public final class Vector<K extends ScalarElement<K>> 
-    implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K> 
+implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K>
 {
     private final ScalarElement<?>[] data;
+    private final LinearStructure<Vector<K>, K, ?> vectorStructure;
     private final ScalarStructure<K> scalarStructure;
     private final int size;
 
@@ -23,7 +25,8 @@ public final class Vector<K extends ScalarElement<K>>
      * Costruttore protetto: la creazione dovrebbe passare attraverso le Factory 
      * o le Strutture Ambiente (VectorSpace, etc.).
      */
-    public Vector(ScalarStructure<K> scalarStructure, ScalarElement<?>[] data) {
+    protected Vector(LinearStructure<Vector<K>, K, ?> vectorStructure, ScalarStructure<K> scalarStructure, ScalarElement<?>[] data) {
+    	this.vectorStructure = vectorStructure;
         this.scalarStructure = Objects.requireNonNull(scalarStructure);
         this.data = Objects.requireNonNull(data);
         this.size = data.length;
@@ -105,7 +108,7 @@ public final class Vector<K extends ScalarElement<K>>
 
 	@Override
 	public Vector<K> copy() {
-		return new Vector<>(this.scalarStructure, this.toArray());
+		return new Vector<>(this.vectorStructure, this.scalarStructure, this.toArray());
 	}
 
 	@Override
@@ -115,4 +118,6 @@ public final class Vector<K extends ScalarElement<K>>
         }
         return get(indices[0]);
 	}
+
+	public LinearStructure<Vector<K>, K, ?> getStructure() { return vectorStructure; }
 }

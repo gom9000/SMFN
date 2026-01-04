@@ -30,7 +30,7 @@ implements Module<Vector<K>, K, S>
             resultData[i] = scalarStructure.negate(v.get(i));
         }
 
-        return new Vector<>(scalarStructure, resultData);
+        return new Vector<>(this, scalarStructure, resultData);
     }
 
     @Override
@@ -44,6 +44,6 @@ implements Module<Vector<K>, K, S>
             resultData[i] = scalarStructure.subtract(a.get(i), b.get(i));
         }
 
-        return new Vector<>(scalarStructure, resultData);
+        return new Vector<>(this, scalarStructure, resultData);
     }
 }

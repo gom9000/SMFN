@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.linearalgebra.vectors;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.elements.factories.CompositeElementFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.Semimodule;
@@ -8,7 +9,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.Semimodule;
 import java.util.Arrays;
 
 public class VectorSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
-implements Semimodule<Vector<K>, K, S>
+implements Semimodule<Vector<K>, K, S>, CompositeElementFactory<Vector<K>, K[]>
 {
     protected final S scalarStructure;
     protected final int dimension;
@@ -35,12 +36,11 @@ implements Semimodule<Vector<K>, K, S>
 
     @Override
     public Vector<K> zero() {
-        // Genera un array di elementi "zero" dello scalare
         ScalarElement<?>[] data = new ScalarElement[dimension];
         K zeroScalar = scalarStructure.zero();
         Arrays.fill(data, zeroScalar);
         
-        return new Vector<>(scalarStructure, data);
+        return new Vector<>(this, scalarStructure, data);
     }
 
     @Override
@@ -50,11 +50,10 @@ implements Semimodule<Vector<K>, K, S>
 
         ScalarElement<?>[] resultData = new ScalarElement[dimension];
         for (int i = 0; i < dimension; i++) {
-            // Delega l'addizione alla struttura dello scalare
             resultData[i] = scalarStructure.add(a.get(i), b.get(i));
         }
 
-        return new Vector<>(scalarStructure, resultData);
+        return new Vector<>(this, scalarStructure, resultData);
     }
 
     // --- LinearStructure ---
@@ -65,11 +64,10 @@ implements Semimodule<Vector<K>, K, S>
 
         ScalarElement<?>[] resultData = new ScalarElement[dimension];
         for (int i = 0; i < dimension; i++) {
-            // Delega la moltiplicazione per scalare
             resultData[i] = scalarStructure.multiply(scalar, vector.get(i));
         }
 
-        return new Vector<>(scalarStructure, resultData);
+        return new Vector<>(this, scalarStructure, resultData);
     }
 
     // --- Utility e Validazione ---
@@ -90,4 +88,9 @@ implements Semimodule<Vector<K>, K, S>
     public boolean areEqual(Vector<K> a, Vector<K> b) {
         return a.equals(b); 
     }
+
+	@Override
+	public Vector<K> of(K[] data) {
+		return new Vector<>(this, scalarStructure, data);
+	}
 }

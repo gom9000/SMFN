@@ -3,8 +3,8 @@ package net.gommagomma.smfn.client;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
-import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixRing;
 import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
 public class MatrixSpaceTest {
 
@@ -12,7 +12,7 @@ public class MatrixSpaceTest {
         RationalField qField = RationalField.INSTANCE;
         int size = 3;
         MatrixSpace<Rational, RationalField> qSpace = new MatrixSpace<>(qField, size, size);
-        MatrixRing<Rational, RationalField> qRing = new MatrixRing<>(qField, size);
+        SquareMatrixRing<Rational, RationalField> qRing = new SquareMatrixRing<>(qField, size);
 
         System.out.println("--- INIZIO TEST MATRIX SPACE ---");
 

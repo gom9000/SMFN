@@ -13,11 +13,11 @@ public final class Polynomial<K extends ScalarElement<K>>
 implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K>
 {
 	private final List<K> coefficients; // Ordinati per grado crescente: a0, a1, ... an
-	private final ScalarStructure<K> scalarStructure;
 	private final ScalarStructure<Polynomial<K>> polynomialStructure;
+	private final ScalarStructure<K> scalarStructure;
 
 
-	public Polynomial(ScalarStructure<Polynomial<K>> polynomialStructure, ScalarStructure<K> scalarStructure, List<K> coefficients) {
+	protected Polynomial(ScalarStructure<Polynomial<K>> polynomialStructure, ScalarStructure<K> scalarStructure, List<K> coefficients) {
 		this.polynomialStructure = polynomialStructure;
         this.scalarStructure = scalarStructure;
         this.coefficients = normalize(scalarStructure, coefficients);

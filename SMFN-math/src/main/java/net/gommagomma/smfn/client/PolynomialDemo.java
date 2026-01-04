@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
-import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixRing;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
 public class PolynomialDemo
 {
@@ -33,7 +33,7 @@ public class PolynomialDemo
         System.out.println("P(z) = " + pz);
         System.out.println("Q(z) = " + qz);
 
-        MatrixRing<Real, RealField> M = new MatrixRing<>(R, 2);
+        SquareMatrixRing<Real, RealField> M = new SquareMatrixRing<>(R, 2);
         Matrix<Real> A = new Matrix<>(2, 2, R);
         A.set(0, 0, R.of(1)); A.set(0, 1, R.of(2));
         A.set(1, 0, R.of(3)); A.set(1, 1, R.of(4));
@@ -43,7 +43,7 @@ public class PolynomialDemo
         System.out.println("\nP(m) = " + pm);
         System.out.println("\nQ(m) = " + qm);
 
-        MatrixRing<Complex, ComplexField> Mz = new MatrixRing<>(C, 2);
+        SquareMatrixRing<Complex, ComplexField> Mz = new SquareMatrixRing<>(C, 2);
         Matrix<Complex> B = new Matrix<>(2, 2, C);
         B.set(0, 0, new Complex(2, 3)); B.set(0, 1, new Complex(0, 1));
         B.set(1, 0, new Complex(1, -3)); B.set(1, 1, new Complex(2, -1));

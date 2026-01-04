@@ -3,8 +3,8 @@ package net.gommagomma.smfn.client;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
-import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixRing;
 import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixSpace;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
 public class LinearAlgebraDemo {
 
@@ -12,7 +12,7 @@ public class LinearAlgebraDemo {
         RationalField q = RationalField.INSTANCE;
         int n = 3;
         MatrixSpace<Rational, RationalField> space = new MatrixSpace<>(q, n, n);
-        MatrixRing<Rational, RationalField> ring = new MatrixRing<>(q, n);
+        SquareMatrixRing<Rational, RationalField> ring = new SquareMatrixRing<>(q, n);
 
         System.out.println("=== TEST INTEGRATO ALGEBRA LINEARE ===\n");
 

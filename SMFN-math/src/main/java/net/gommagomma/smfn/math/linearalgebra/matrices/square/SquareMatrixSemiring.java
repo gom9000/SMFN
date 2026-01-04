@@ -1,22 +1,25 @@
-package net.gommagomma.smfn.math.linearalgebra.matrices;
+package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.elements.factories.CompositeElementFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixSemimodule;
 
 /**
  * Implementa la struttura di Semianello per matrici quadrate n x n.
  * Funziona con qualsiasi scalare che sia almeno un Semiring (es. Natural).
  */
-public class MatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
+public class SquareMatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
 extends MatrixSemimodule<K, S>
 implements Semiring<Matrix<K>>, ScalarStructure<Matrix<K>>
 {
     private final int n;
 
-    public MatrixSemiring(S scalarStructure, int n) {
+    public SquareMatrixSemiring(S scalarStructure, int n) {
         super(scalarStructure, n, n);
         this.n = n;
     }
@@ -76,5 +79,16 @@ implements Semiring<Matrix<K>>, ScalarStructure<Matrix<K>>
         }
 
         return RealField.INSTANCE.of(Math.sqrt(sumOfSquares));
+    }
+
+
+    public Matrix<K> transpose() {
+        Matrix<K> result = new Matrix<>(this, scalarStructure, cols, rows);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.set(j, i, this.get(i, j));
+            }
+        }
+        return result;
     }
 }

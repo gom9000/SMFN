@@ -144,7 +144,7 @@ net.gommagomma.smfn/
 ## net.gommagomma.smfn.math.linearalgebra
 -----------------------------------------
 ### net.gommagomma.smfn.math.linearalgebra.vectors:
-- final class Vector<K extends ScalarElement<K>> implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K> { private final ScalarElement<?>[] data; private final ScalarStructure<K> scalarStructure; private final int size;}
+- final class Vector<K extends ScalarElement<K>> implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K> { private final ScalarElement<?>[] data; private final LinearStructure<Vector<K>, K, ?> vectorStructure; private final ScalarStructure<K> scalarStructure; private final int size;}
 - class VectorSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semimodule<Vector<K>, K, S> {}
 - class VectorModule<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends VectorSemimodule<K, S> implements Module<Vector<K>, K, S> {}
 - class VectorSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends VectorModule<K, S> implements LinearSpace<Vector<K>, K, S> {}
@@ -152,7 +152,7 @@ net.gommagomma.smfn/
 
 ### net.gommagomma.smfn.math.linearalgebra.matrices:
 - final class Matrix<K extends ScalarElement<K>> implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>{ private final K[] data; private final int rows; private final int cols; private final ScalarStructure<K> scalarStructure; }
-- class MatrixSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semimodule<Matrix<K>, K, S> {}
+- class MatrixSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Vector<K>, K[]> {}
 - class MatrixModule<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends MatrixSemimodule<K, S> implements Module<Matrix<K>, K, S> {}
 - class MatrixSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends MatrixModule<K, S> implements LinearSpace<Matrix<K>, K, S> {}
 - class InnerProductMatrixSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends MatrixSpace<K, S> implements InnerProductSpace<Matrix<K>, K, S> {}

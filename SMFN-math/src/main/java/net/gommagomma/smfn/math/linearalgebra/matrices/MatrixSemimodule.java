@@ -3,12 +3,13 @@ package net.gommagomma.smfn.math.linearalgebra.matrices;
 import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.elements.factories.CompositeElementFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.Semimodule;
 
 public class MatrixSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
-implements Semimodule<Matrix<K>, K, S>
+implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
 {
     protected final S scalarStructure;
     protected final int rows;
@@ -18,6 +19,11 @@ implements Semimodule<Matrix<K>, K, S>
         this.scalarStructure = Objects.requireNonNull(scalarStructure);
         this.rows = rows;
         this.cols = cols;
+    }
+
+    @Override
+    public Matrix<K> of(K[] data) {
+        return new Matrix<>(this, scalarStructure, rows, cols, data);
     }
 
     @Override
@@ -32,7 +38,7 @@ implements Semimodule<Matrix<K>, K, S>
 
     @Override
     public boolean contains(Matrix<K> m) {
-        return m != null && m.getRows() == this.rows && m.getCols() == this.cols;
+    	return m != null && m.getStructure() == this;
     }
 
     @Override
@@ -48,14 +54,12 @@ implements Semimodule<Matrix<K>, K, S>
 
     @Override
     public Matrix<K> zero() {
-        Matrix<K> zeroMatrix = new Matrix<>(rows, cols, scalarStructure);
+        K[] data = (K[]) new ScalarElement[rows * cols];
         K zeroScalar = scalarStructure.zero();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                zeroMatrix.set(i, j, zeroScalar);
-            }
+        for (int i = 0; i < data.length; i++) {
+            data[i] = zeroScalar;
         }
-        return zeroMatrix;
+        return of(data);
     }
 
     @Override
@@ -63,28 +67,21 @@ implements Semimodule<Matrix<K>, K, S>
         validateDimensions(a);
         validateDimensions(b);
         
-        Matrix<K> result = new Matrix<>(rows, cols, scalarStructure);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                K sum = scalarStructure.add(a.get(i, j), b.get(i, j));
-                result.set(i, j, sum);
-            }
+        K[] resultData = (K[]) new ScalarElement[rows * cols];
+        for (int i = 0; i < rows * cols; i++) {
+            resultData[i] = scalarStructure.add(a.get(i / cols, i % cols), b.get(i / cols, i % cols));
         }
-        return result;
+        return of(resultData);
     }
 
     @Override
     public Matrix<K> scale(K scalar, Matrix<K> m) {
         validateDimensions(m);
-        
-        Matrix<K> result = new Matrix<>(rows, cols, scalarStructure);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                K scaled = scalarStructure.multiply(scalar, m.get(i, j));
-                result.set(i, j, scaled);
-            }
+        K[] resultData = (K[]) new ScalarElement[rows * cols];
+        for (int i = 0; i < rows * cols; i++) {
+            resultData[i] = scalarStructure.multiply(scalar, m.get(i / cols, i % cols));
         }
-        return result;
+        return of(resultData);
     }
 
     protected void validateDimensions(Matrix<K> m) {
@@ -103,5 +100,18 @@ implements Semimodule<Matrix<K>, K, S>
             }
         }
         return true;
+    }
+
+
+	public Matrix<K> transpose(Matrix<K> m) {
+        validateDimensions(m);
+        K[] transposedData = (K[]) new ScalarElement[rows * cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                transposedData[j * rows + i] = m.get(i, j);
+            }
+        }
+        MatrixSemimodule<K, S> targetSpace = new MatrixSemimodule<>(scalarStructure, cols, rows);
+        return targetSpace.of(transposedData);
     }
 }

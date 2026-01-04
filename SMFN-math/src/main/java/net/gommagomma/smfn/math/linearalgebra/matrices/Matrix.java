@@ -1,26 +1,29 @@
 package net.gommagomma.smfn.math.linearalgebra.matrices;
 
+import java.util.Arrays;
+
 import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
-import net.gommagomma.smfn.math.algebra.core.structures.Ring;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.LinearStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
-public final class Matrix<K extends ScalarElement<K>> 
-implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, ScalarElement<Matrix<K>>
+public class Matrix<K extends ScalarElement<K>> 
+implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>
 {
     private final K[] data;
+    protected final LinearStructure<Matrix<K>, K, ?> matrixStructure;
+    protected final ScalarStructure<K> scalarStructure;
     private final int rows;
     private final int cols;
-    private final ScalarStructure<K> scalarStructure;
 
-    @SuppressWarnings("unchecked")
-    public Matrix(int rows, int cols, ScalarStructure<K> scalarStructure) {
+
+    protected Matrix(LinearStructure<Matrix<K>, K, ?> matrixStructure, ScalarStructure<K> scalarStructure, int rows, int cols, K[] data) {
+    	this.matrixStructure = matrixStructure;
+    	this.scalarStructure = scalarStructure;
         this.rows = rows;
         this.cols = cols;
-        this.scalarStructure = scalarStructure;
-        // Mapping lineare: rows * cols
-        this.data = (K[]) new ScalarElement[rows * cols];
+        this.data = data;
     }
 
     // --- TensorElement Implementation ---
@@ -36,34 +39,6 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, ScalarEleme
     @Override
     public K get(int... indices) {
         return get(indices[0], indices[1]);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public ScalarStructure<Matrix<K>> getStructure() {
-        // 1. Caso Matrice Quadrata -> La struttura naturale è un MatrixRing
-        if (rows == cols) {
-            if (scalarStructure instanceof Ring) {
-                return (ScalarStructure<Matrix<K>>) new MatrixRing<>(
-                    (Ring<K> & ScalarStructure<K>) scalarStructure, 
-                    rows
-                );
-            }
-            // Se è un Semiring (es. Naturali), restituiamo un MatrixSemiring
-            return (ScalarStructure<Matrix<K>>) new MatrixSemiring<>(scalarStructure, rows);
-        }
-
-        // 2. Caso Matrice Rettangolare -> Non è un Anello (non puoi moltiplicare A*A)
-        // Restituiamo il MatrixModule che definisce almeno la somma e lo scaling
-        if (scalarStructure instanceof Ring) {
-            return (ScalarStructure<Matrix<K>>) new MatrixModule<>(
-                (Ring<K> & ScalarStructure<K>) scalarStructure, 
-                rows, 
-                cols
-            );
-        }
-        
-        return (ScalarStructure<Matrix<K>>) new MatrixSemimodule<>(scalarStructure, rows, cols);
     }
 
     // --- Metodi specifici per Matrici ---
@@ -85,9 +60,7 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, ScalarEleme
 
     @Override
     public Matrix<K> copy() {
-        Matrix<K> copy = new Matrix<>(rows, cols, scalarStructure);
-        System.arraycopy(this.data, 0, copy.data, 0, data.length);
-        return copy;
+    	return new Matrix<>(matrixStructure, scalarStructure, rows, cols, data.clone());
     }
 
     @Override
@@ -109,24 +82,14 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, ScalarEleme
         if (!(obj instanceof Matrix)) return false;
         Matrix<?> other = (Matrix<?>) obj;
 
-        if (this.rows != other.rows || this.cols != other.cols) return false;
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                // Usa .equals() degli elementi K, non ==
-                if (!this.get(i, j).equals(other.get(i, j))) return false;
-            }
-        }
-        return true;
+        return rows == other.rows && cols == other.cols && Arrays.equals(data, other.data);
     }
 
-    public Matrix<K> transpose() {
-        Matrix<K> result = new Matrix<>(cols, rows, scalarStructure);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                result.set(j, i, this.get(i, j));
-            }
-        }
-        return result;
+    public LinearStructure<Matrix<K>, K, ?> getStructure() {
+        return matrixStructure;
+    }
+
+    public K[] getData() {
+        return data.clone();
     }
 }
