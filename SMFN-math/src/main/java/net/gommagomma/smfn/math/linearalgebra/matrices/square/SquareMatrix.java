@@ -26,6 +26,8 @@ implements ScalarElement<SquareMatrix<K>>, TensorElement<SquareMatrix<K>, K>
     }
 
     public K get(int r, int c) { return internalMatrix.get(r, c); }
+    public int getRows() { return internalMatrix.getRows(); }
+    public int getCols() { return internalMatrix.getCols(); }
     public int getN() { return internalMatrix.getRows(); }
     public K[] getData() { return internalMatrix.getData(); }
 

@@ -1,13 +1,19 @@
 package net.gommagomma.smfn.client;
 
+import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.algebra.polynomial.EuclideanPolynomialRing;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialDivisionResult;
+import net.gommagomma.smfn.math.algebra.polynomial.PolynomialRing;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrices;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
 public class PolynomialDemo
@@ -17,8 +23,8 @@ public class PolynomialDemo
 
 	static Polynomial<Real> p, q, dp;
     static Polynomial<Complex> pz, qz, dpz;
-	static Polynomial<Matrix<Real>> pm, qm;
-	static Polynomial<Matrix<Complex>> pmz, qmz;
+	static Polynomial<SquareMatrix<Real>> pm, qm;
+	static Polynomial<SquareMatrix<Complex>> pmz, qmz;
 
     public static void main(String[] args) {
         System.out.println("=== POLYNOMIALS DEMO ===\n");
@@ -33,88 +39,92 @@ public class PolynomialDemo
         System.out.println("P(z) = " + pz);
         System.out.println("Q(z) = " + qz);
 
-        SquareMatrixRing<Real, RealField> M = new SquareMatrixRing<>(R, 2);
-        Matrix<Real> A = new Matrix<>(2, 2, R);
-        A.set(0, 0, R.of(1)); A.set(0, 1, R.of(2));
-        A.set(1, 0, R.of(3)); A.set(1, 1, R.of(4));
-        Matrix<Real> I = M.one();
-        pm = Polynomials.of(M, I, A);
-        qm = Polynomials.of(M, A, I);
+        SquareMatrixRing<Real, RealField> M2 = new SquareMatrixRing<>(R, 2);
+        SquareMatrix<Real> A = SquareMatrices.of(R, R.of(1), R.of(2), R.of(3), R.of(4)); // M2.of(R.of(1), R.of(2), R.of(3), R.of(4));
+        SquareMatrix<Real> I = SquareMatrices.identity(R, 2);
+        pm = Polynomials.of(M2, I, A);
+        qm = Polynomials.of(M2, A, I);
         System.out.println("\nP(m) = " + pm);
         System.out.println("\nQ(m) = " + qm);
+        System.out.println("Grado P(m): " + pm.degree());
+        System.out.println("Grado Q(m): " + qm.degree());
 
-        SquareMatrixRing<Complex, ComplexField> Mz = new SquareMatrixRing<>(C, 2);
-        Matrix<Complex> B = new Matrix<>(2, 2, C);
-        B.set(0, 0, new Complex(2, 3)); B.set(0, 1, new Complex(0, 1));
-        B.set(1, 0, new Complex(1, -3)); B.set(1, 1, new Complex(2, -1));
-        Matrix<Complex> Iz = Mz.one();
-        pmz = Polynomials.of(Mz, Iz, B);
-        qmz = Polynomials.of(Mz, B, Iz);
+        SquareMatrixRing<Complex, ComplexField> M2z = new SquareMatrixRing<>(C, 2);
+        SquareMatrix<Complex> B = SquareMatrices.of(C, new Complex(2, 3), new Complex(0, 1), new Complex(1, -3), new Complex(2, -1));
+        SquareMatrix<Complex> Iz = SquareMatrices.identity(C, 2);
+        pmz = Polynomials.of(M2z, Iz, B);
+        qmz = Polynomials.of(M2z, B, Iz);
         System.out.println("\nP(mz) = " + pmz);
         System.out.println("\nQ(mz) = " + qmz);
 
-        algebraicOperationsReal();
-        algebraicOperationsComplex();
-        algebraicOperationsMatrix();
-        algebraicOperationsMatrixComplex();
-        euclideanDivisionReal();
-        euclideanDivisionComplex();
-        euclideanDivisionMatrixComplex();
-        derivateReal();
-        derivateComplex();
-        integral();
-        evaluation();
-        evaluationComplex();
-        recursiveReal();
-        recursiveComplex();
-    }
-
-    static void algebraicOperationsReal() {
         System.out.println("\n--- Algebraic Operations (Real) ---");
-        Polynomial<Real> sum = Polynomials.add(p, q);
-        Polynomial<Real> prod = Polynomials.multiply(p, q);
-        System.out.println("\nP(x) + Q(x) = " + sum);
+        PolynomialRing<Real, RealField> r_ring = new PolynomialRing<>(R);
+        Polynomial<Real> sumr = r_ring.add(p, q);
+        Polynomial<Real> prod = r_ring.multiply(p, q);
+        System.out.println("\nP(x) + Q(x) = " + sumr);
         System.out.println("P(x) * Q(x) = " + prod);
         
-    }
-    static void algebraicOperationsComplex() {
         System.out.println("\n--- Algebraic Operations (Complex) ---");
-        Polynomial<Complex> sumz = Polynomials.add(pz, qz);
-        Polynomial<Complex> prodz = Polynomials.multiply(pz, qz);
+        PolynomialRing<Complex, ComplexField> c_ring = new PolynomialRing<>(C);
+        Polynomial<Complex> sumz = c_ring.add(pz, qz);
+        Polynomial<Complex> prodz = c_ring.multiply(pz, qz);
         System.out.println("\nP(z) + Q(z) = " + sumz);
         System.out.println("P(z) * Q(z) = " + prodz);
         
-    }
-    static void euclideanDivisionReal() {
+        System.out.println("\n--- Algebraic Operations (Matrix) ---");
+        PolynomialRing<SquareMatrix<Real>, SquareMatrixRing<Real, RealField>> matrixPolyRing = new PolynomialRing<>(M2);
+        Polynomial<SquareMatrix<Real>> sumrm = matrixPolyRing.add(pm, qm);
+        System.out.println("\nP(m) + Q(m) = " + sumrm);
+
+        System.out.println("\n--- Algebraic Operations (Matrix<Complex>) ---");
+        PolynomialRing<SquareMatrix<Complex>, SquareMatrixRing<Complex, ComplexField>> matrixPolyRingc = new PolynomialRing<>(M2z);
+        Polynomial<SquareMatrix<Complex>> sum = matrixPolyRingc.add(pmz, qmz);
+        System.out.println("\nP(mz) + Q(mz) = " + sum);
+
         System.out.println("\n--- Euclidean Division (Real) ---");
-        PolynomialDivisionResult<Real> r = Polynomials.divide(p, q);
-        System.out.println("Quotient:  " + r.quotient());
+        EuclideanPolynomialRing<Real, RealField> r_ering = new EuclideanPolynomialRing<>(R);
+        PolynomialDivisionResult<Real> r = r_ering.divide(p, q);
+        System.out.println("P / Q :\nQuotient:  " + r.quotient());
         System.out.println("Remainder: " + r.remainder());
         
         var PR = p.getStructure();
-        Polynomial<Real> check = Polynomials.add( Polynomials.multiply(q, r.quotient()), r.remainder());
+        Polynomial<Real> check = r_ering.add( r_ering.multiply(q, r.quotient()), r.remainder());
         System.out.println("Verifica (p == q*Q + R) = " + PR.add(PR.multiply(q, r.quotient()), r.remainder()) + " : "  + p.equals(check));
-    }
-    static void euclideanDivisionComplex() {
+
         System.out.println("\n--- Euclidean Division (Complex) ---");
-        PolynomialDivisionResult<Complex> rz = Polynomials.divide(pz, qz);
+        EuclideanPolynomialRing<Complex, ComplexField> c_ering = new EuclideanPolynomialRing<>(C);
+        PolynomialDivisionResult<Complex> rz = c_ering.divide(pz, qz);
         System.out.println("Quotient:  " + rz.quotient());
         System.out.println("Remainder: " + rz.remainder());
         
         var PZ = pz.getStructure();
-        Polynomial<Complex> check = Polynomials.add( Polynomials.multiply(qz, rz.quotient()), rz.remainder());
-        System.out.println("Verifica (pz == qz*Q + R) = " + PZ.add(PZ.multiply(qz, rz.quotient()), rz.remainder()) + " : "  + pz.equals(check));
-    }
-    static void euclideanDivisionMatrixComplex() {
-        System.out.println("\n--- Euclidean Division (Matrix<Complex>) ---");
-        PolynomialDivisionResult<Matrix<Complex>> rmz = Polynomials.divide(pmz, qmz);
+        Polynomial<Complex> check2 = c_ering.add( c_ering.multiply(qz, rz.quotient()), rz.remainder());
+        System.out.println("Verifica (pz == qz*Q + R) = " + PZ.add(PZ.multiply(qz, rz.quotient()), rz.remainder()) + " : "  + pz.equals(check2));
+
+        System.out.println("\n--- Euclidean Division (SquareMatrix<Complex>) ---");
+        SquareMatrixField<Complex, ComplexField> MF2z = new SquareMatrixField<>(C, 2);
+        EuclideanPolynomialRing<SquareMatrix<Complex>, SquareMatrixField<Complex, ComplexField>> c_space = new EuclideanPolynomialRing<>(MF2z);
+        PolynomialDivisionResult<SquareMatrix<Complex>> rmz = c_space.divide(pmz, qmz);
         System.out.println("Quotient:  " + rmz.quotient());
         System.out.println("Remainder: " + rmz.remainder());
-        
+
         var PMZ = pmz.getStructure();
-        Polynomial<Matrix<Complex>> check = Polynomials.add( Polynomials.multiply(qmz, rmz.quotient()), rmz.remainder());
-        System.out.println("Verifica (pmz == qmz*Q + R) = " + PMZ.add(PMZ.multiply(qmz, rmz.quotient()), rmz.remainder()) + " : "  + pmz.equals(check));
+        Polynomial<SquareMatrix<Complex>> check3 = c_space.add( c_space.multiply(qmz, rmz.quotient()), rmz.remainder());
+        System.out.println("Verifica (pmz == qmz*Q + R) = " + PMZ.add(PMZ.multiply(qmz, rmz.quotient()), rmz.remainder()) + " : "  + pmz.equals(check3));
+
+        System.out.println("\n--- Polynomial of Polynomial (Real) ---");
+    	var structureOfP = p.getStructure();
+        var polyOfPoly = Polynomials.of(structureOfP, q, p); // q + p*y
+        System.out.println("\nPolinomio Ricorsivo (K[x][y]):");
+        System.out.println(polyOfPoly);
+
+    	System.out.println("\n--- Polynomial of Polynomial (Complex)---");
+    	var PZc = pz.getStructure();
+        var polyOfPolyc = Polynomials.of(PZc, qz, pz); // q + p*y
+        System.out.println("\nPolinomio Ricorsivo (K[z1][z2]):");
+        System.out.println(polyOfPolyc);
     }
+
     static void derivateReal() {
     	System.out.println("\n--- Derivative (Real) ---");
         dp = Polynomials.derivative(p);
@@ -143,28 +153,5 @@ public class PolynomialDemo
         Complex evaluation = pz.apply(input);
         System.out.println("\nValutazione P(3) = " + evaluation);
     }
-    static void recursiveReal() {
-    	System.out.println("\n--- Polynomial of Polynomial (Real) ---");
-    	var structureOfP = p.getStructure();
-        var polyOfPoly = Polynomials.of(structureOfP, q, p); // q + p*y
-        System.out.println("\nPolinomio Ricorsivo (K[x][y]):");
-        System.out.println(polyOfPoly);
-    }
-    static void recursiveComplex() {
-    	System.out.println("\n--- Polynomial of Polynomial (Complex)---");
-    	var PZ = pz.getStructure();
-        var polyOfPoly = Polynomials.of(PZ, qz, pz); // q + p*y
-        System.out.println("\nPolinomio Ricorsivo (K[z1][z2]):");
-        System.out.println(polyOfPoly);
-    }
-    static void algebraicOperationsMatrix() {
-        System.out.println("\n--- Algebraic Operations (Matrix) ---");
-        Polynomial<Matrix<Real>> sum = Polynomials.add(pm, qm);
-        System.out.println("\nP(m) + Q(m) = " + sum);
-    }
-    static void algebraicOperationsMatrixComplex() {
-        System.out.println("\n--- Algebraic Operations (Matrix<Complex>) ---");
-        Polynomial<Matrix<Complex>> sum = Polynomials.add(pmz, qmz);
-        System.out.println("\nP(mz) + Q(mz) = " + sum);
-    }
 }
+

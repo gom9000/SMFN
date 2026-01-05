@@ -256,6 +256,8 @@ net.gommagomma.smfn/
 
 # TODO:
 
+- factory of() per complex/rational
+
 - public final class DerivativeOperator<T extends Differentiable<T>> 
     implements Operator<T> {
 

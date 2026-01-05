@@ -1,6 +1,11 @@
 package net.gommagomma.smfn.math.algebra.polynomial;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.elements.factories.CompositeElementFactory;
+import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
@@ -11,6 +16,30 @@ public final class Polynomials
 {
     private Polynomials() {}
 
+    public static <K extends ScalarElement<K>> Polynomial<K> of(ScalarStructure<K> scalarStructure, List<K> coefficients) {
+        ScalarStructure<Polynomial<K>> polynomialStructure = getStructureFor(scalarStructure);
+        @SuppressWarnings("unchecked")
+		CompositeElementFactory<Polynomial<K>, List<K>> factory = (CompositeElementFactory<Polynomial<K>, List<K>>) polynomialStructure;
+        return factory.of(coefficients);
+    }
+
+    @SafeVarargs
+    public static <K extends ScalarElement<K>> Polynomial<K> of(ScalarStructure<K> scalarStructure, K... values) {
+        return of(scalarStructure, List.of(values));
+    }
+
+    public static <K extends ScalarElement<K>> Polynomial<K> of(ScalarStructure<K> scalarStructure, double... values) {
+    	@SuppressWarnings("unchecked")
+		NumericFactory<K> factory = (NumericFactory<K>) scalarStructure;
+        List<K> coefficients = new ArrayList<>(values.length);
+        for (double v : values) {
+        	coefficients.add(factory.of(v));
+        }
+
+        return of(scalarStructure, coefficients);
+    }
+    
+ 
     public static <K extends ScalarElement<K>> ScalarStructure<Polynomial<K>> getStructureFor(ScalarStructure<K> s) {
         if (s instanceof Field) {
             return createEuclidean(s);
