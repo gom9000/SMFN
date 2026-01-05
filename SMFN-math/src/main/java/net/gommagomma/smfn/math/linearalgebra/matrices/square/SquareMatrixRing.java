@@ -12,127 +12,94 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixModule;
  * Unisce le capacità di MatrixModule (sottrazione) e MatrixSemiring (moltiplicazione).
  */
 public class SquareMatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>>
-extends MatrixModule<K, S>
-implements Ring<Matrix<K>>, ScalarStructure<Matrix<K>>
+extends SquareMatrixSemiring<K, S>
+implements Ring<SquareMatrix<K>>
 {
-    private final SquareMatrixSemiring<K, S> semiringDelegate;
+	private final MatrixModule<K, S> moduleDelegate;
 
     public SquareMatrixRing(S scalarStructure, int n) {
-        super(scalarStructure, n, n);
-        // Deleghiamo la logica della moltiplicazione al semiring per non duplicare il codice
-        this.semiringDelegate = new SquareMatrixSemiring<>(scalarStructure, n);
+    	super(scalarStructure, n);
+        this.moduleDelegate = new MatrixModule<>(scalarStructure, n, n);
     }
 
-    @Override
-    public Matrix<K> one() {
-        return semiringDelegate.one();
-    }
-
-    @Override
-    public Matrix<K> multiply(Matrix<K> a, Matrix<K> b) {
-        return semiringDelegate.multiply(a, b);
-    }
-
-    @Override
-    public boolean isOne(Matrix<K> element) {
-        return semiringDelegate.isOne(element);
-    }
-    
     @Override
     public String getName() {
-        return "Matrix Ring (" + rows + "x" + cols + ") over " + scalarStructure.getName();
+        return "Square Matrix Ring (" + n + "x" + n + ") over " + scalarStructure.getName();
     }
 
-	@Override
-    public boolean isExact() {
-        return semiringDelegate.isExact();
+    @Override
+    public SquareMatrix<K> negate(SquareMatrix<K> m) {
+        Matrix<K> negated = moduleDelegate.negate(m.asMatrix());
+        return of(negated.getData());
     }
 
+    @Override
+    public SquareMatrix<K> subtract(SquareMatrix<K> a, SquareMatrix<K> b) {
+        Matrix<K> result = moduleDelegate.subtract(a.asMatrix(), b.asMatrix());
+        return of(result.getData());
+    }
+
+
 	@Override
-	public Real magnitude(Matrix<K> element) {
-		return scalarStructure.magnitude(null);
+	public Real magnitude(SquareMatrix<K> element) {
+		return super.magnitude(element);
 	}
-
-
-    public Matrix<K> multiply(Matrix<K> a, Matrix<K> b) {
-        if (a.getCols() != b.getRows()) {
-            throw new IllegalArgumentException("Dimensioni incompatibili per la moltiplicazione: " + 
-                "colonne di A (" + a.getCols() + ") != righe di B (" + b.getRows() + ")");
-        }
-
-        // Il risultato ha le righe della prima e le colonne della seconda
-        Matrix<K> result = new Matrix<>(a.getRows(), b.getCols(), scalarStructure);
-
-        for (int i = 0; i < a.getRows(); i++) {
-            for (int j = 0; j < b.getCols(); j++) {
-                K sum = scalarStructure.zero();
-                for (int k = 0; k < a.getCols(); k++) {
-                    // sum += a[i][k] * b[k][j]
-                    K prod = scalarStructure.multiply(a.get(i, k), b.get(k, j));
-                    sum = scalarStructure.add(sum, prod);
-                }
-                result.set(i, j, sum);
-            }
-        }
-        return result;
-    }
 
 
     /**
      * Calcola il determinante per via combinatoria (Laplace).
      * Non richiede la divisione, quindi funziona su Anelli (Polinomi, Interi).
      */
-    public K determinant(Matrix<K> m) {
-        if (m.getRows() != m.getCols()) {
-            throw new IllegalArgumentException("La matrice deve essere quadrata.");
-        }
-        int n = m.getRows();
+	public K determinant(SquareMatrix<K> m) {
+        validateDimensions(m);
+        return computeRecursive(m);
+    }
 
-        // Casi base per efficienza
-        if (n == 0) return scalarStructure.one(); 
-        if (n == 1) return m.get(0, 0);
-        if (n == 2) {
-            // ad - bc
+    private K computeRecursive(SquareMatrix<K> m) {
+        int size = m.getN();
+        if (size == 1) return m.get(0, 0);
+        if (size == 2) {
             K ad = scalarStructure.multiply(m.get(0, 0), m.get(1, 1));
             K bc = scalarStructure.multiply(m.get(0, 1), m.get(1, 0));
             return scalarStructure.subtract(ad, bc);
         }
 
         K det = scalarStructure.zero();
-        for (int j = 0; j < n; j++) {
-            // Sviluppo lungo la prima riga
+        for (int j = 0; j < size; j++) {
             K element = m.get(0, j);
             if (scalarStructure.isZero(element)) continue;
 
-            K cofactor = determinant(getMinor(m, 0, j));
+            SquareMatrix<K> minor = getMinor(m, 0, j);
+            K cofactor = computeRecursive(minor);
             K term = scalarStructure.multiply(element, cofactor);
 
-            if (j % 2 == 1) {
-                det = scalarStructure.subtract(det, term);
-            } else {
-                det = scalarStructure.add(det, term);
-            }
+            if (j % 2 == 1) det = scalarStructure.subtract(det, term);
+            else det = scalarStructure.add(det, term);
         }
         return det;
     }
 
-    /**
-     * Restituisce la sottomatrice (n-1)x(n-1) eliminando riga r e colonna c.
-     */
-    private Matrix<K> getMinor(Matrix<K> m, int r, int c) {
-        int n = m.getRows();
-        Matrix<K> minor = new Matrix<>(n - 1, n - 1, scalarStructure);
+    @SuppressWarnings("unchecked")
+    private SquareMatrix<K> getMinor(SquareMatrix<K> m, int r, int c) {
+        int minorN = m.getN() - 1;
+        K[] minorData = (K[]) new ScalarElement[minorN * minorN];
         int rowIdx = 0;
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < m.getN(); i++) {
             if (i == r) continue;
             int colIdx = 0;
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < m.getN(); j++) {
                 if (j == c) continue;
-                minor.set(rowIdx, colIdx, m.get(i, j));
+                minorData[rowIdx * minorN + colIdx] = m.get(i, j);
                 colIdx++;
             }
             rowIdx++;
         }
-        return minor;
+        return new SquareMatrixRing<>(scalarStructure, minorN).of(minorData);
+    }
+
+    private void validateDimensions(SquareMatrix<K> m) {
+        if (m.getN() != n) {
+            throw new IllegalArgumentException("Dimensione " + m.getN() + "x" + m.getN() + " incompatibile con anello di ordine " + n);
+        }
     }
 }

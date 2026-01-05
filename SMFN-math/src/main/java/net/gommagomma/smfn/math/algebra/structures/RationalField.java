@@ -100,7 +100,7 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
 
         return new Rational(num, den);
     }
-
+    public Rational of(long num, long den) { return new Rational(num, den); }
 
     // ScalarStructure impls
     @Override

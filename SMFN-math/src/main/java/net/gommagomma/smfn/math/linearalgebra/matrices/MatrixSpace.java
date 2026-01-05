@@ -39,39 +39,66 @@ implements LinearSpace<Matrix<K>, K, S>
 
     public Matrix<K> toRowEchelonForm(Matrix<K> original) {
         validateDimensions(original);
-        
-        // Lavoriamo su un array di lavoro per evitare set() continui sulla struttura
         K[] workingData = original.getData(); 
-        int pivotRow = 0;
+        performGauss(workingData, rows, cols);
+        return of(workingData);
+    }
 
-        for (int j = 0; j < cols && pivotRow < rows; j++) {
-            // 1. Ricerca del Pivot (Partial Pivoting per stabilità numerica)
-            int bestRow = findBestPivotInArray(workingData, j, pivotRow);
-            
-            K pivotValue = getFromData(workingData, bestRow, j);
+    protected void performGauss(K[] data, int r, int c) {
+        int pivotRow = 0;
+        for (int j = 0; j < c && pivotRow < r; j++) {
+            int bestRow = findBestPivotInArray(data, j, pivotRow, r, c);
+            K pivotValue = getFromData(data, bestRow, j, c);
             if (scalarStructure.isZero(pivotValue)) continue;
 
-            // 2. Scambio righe
-            swapRowsInArray(workingData, bestRow, pivotRow);
+            swapRowsInArray(data, bestRow, pivotRow, c);
 
-            // 3. Eliminazione
-            for (int i = pivotRow + 1; i < rows; i++) {
-                K currentVal = getFromData(workingData, i, j);
+            for (int i = pivotRow + 1; i < r; i++) {
+                K currentVal = getFromData(data, i, j, c);
                 if (!scalarStructure.isZero(currentVal)) {
-                    // factor = - (currentVal / pivotVal)
                     K factor = scalarStructure.multiply(
                         scalarStructure.negate(scalarStructure.one()),
-                        scalarStructure.divide(currentVal, getFromData(workingData, pivotRow, j))
+                        scalarStructure.divide(currentVal, getFromData(data, pivotRow, j, c))
                     );
-                    combineRowsInArray(workingData, i, pivotRow, factor);
+                    combineRowsInArray(data, i, pivotRow, factor, c);
                 }
             }
             pivotRow++;
         }
-        return of(workingData);
     }
 
+    public int findBestPivotInArray(K[] data, int col, int startRow, int r, int c) {
+        int bestRow = startRow;
+        Real maxMag = scalarStructure.magnitude(getFromData(data, startRow, col, c));
+        for (int i = startRow + 1; i < r; i++) {
+            Real currentMag = scalarStructure.magnitude(getFromData(data, i, col, c));
+            if (currentMag.isGreaterThan(maxMag)) {
+                maxMag = currentMag;
+                bestRow = i;
+            }
+        }
+        return bestRow;
+    }
 
+    public void swapRowsInArray(K[] data, int r1, int r2, int c) {
+        if (r1 == r2) return;
+        for (int j = 0; j < c; j++) {
+            K temp = getFromData(data, r1, j, c);
+            setData(data, r1, j, getFromData(data, r2, j, c), c);
+            setData(data, r2, j, temp, c);
+        }
+    }
+
+    public void combineRowsInArray(K[] data, int target, int source, K factor, int c) {
+        for (int j = 0; j < c; j++) {
+            K scaledSource = scalarStructure.multiply(factor, getFromData(data, source, j, c));
+            K newVal = scalarStructure.add(getFromData(data, target, j, c), scaledSource);
+            setData(data, target, j, newVal, c);
+        }
+    }
+
+    public K getFromData(K[] data, int r, int j, int totalCols) { return data[r * totalCols + j]; }
+    public void setData(K[] data, int r, int j, K val, int totalCols) { data[r * totalCols + j] = val; }
     
     public int rank(Matrix<K> original) {
         // Portiamo in forma a gradini
@@ -90,39 +117,4 @@ implements LinearSpace<Matrix<K>, K, S>
         }
         return rank;
     }
-
-
-
-    private int findBestPivotInArray(K[] data, int col, int startRow) {
-        int bestRow = startRow;
-        Real maxMag = scalarStructure.magnitude(getFromData(data, startRow, col));
-        for (int i = startRow + 1; i < rows; i++) {
-            Real currentMag = scalarStructure.magnitude(getFromData(data, i, col));
-            if (currentMag.isGreaterThan(maxMag)) {
-                maxMag = currentMag;
-                bestRow = i;
-            }
-        }
-        return bestRow;
-    }
-
-    private void swapRowsInArray(K[] data, int r1, int r2) {
-        if (r1 == r2) return;
-        for (int c = 0; c < cols; c++) {
-            K temp = getFromData(data, r1, c);
-            setData(data, r1, c, getFromData(data, r2, c));
-            setData(data, r2, c, temp);
-        }
-    }
-
-    private void combineRowsInArray(K[] data, int target, int source, K factor) {
-        for (int c = 0; c < cols; c++) {
-            K scaledSource = scalarStructure.multiply(factor, getFromData(data, source, c));
-            K newVal = scalarStructure.add(getFromData(data, target, c), scaledSource);
-            setData(data, target, c, newVal);
-        }
-    }
-
-    private K getFromData(K[] data, int r, int c) { return data[r * cols + c]; }
-    private void setData(K[] data, int r, int c, K val) { data[r * cols + c] = val; }
 }

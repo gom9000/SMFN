@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.LinearStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
-public class Matrix<K extends ScalarElement<K>> 
+public final class Matrix<K extends ScalarElement<K>> 
 implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>
 {
     private final K[] data;
@@ -46,10 +46,6 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>
         return data[row * cols + col];
     }
 
-    public void set(int row, int col, K value) {
-        data[row * cols + col] = value;
-    }
-
     public int getRows() { return rows; }
     public int getCols() { return cols; }
 
@@ -83,6 +79,13 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>
         Matrix<?> other = (Matrix<?>) obj;
 
         return rows == other.rows && cols == other.cols && Arrays.equals(data, other.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = java.util.Objects.hash(rows, cols);
+        result = 31 * result + Arrays.hashCode(data);
+        return result;
     }
 
     public LinearStructure<Matrix<K>, K, ?> getStructure() {

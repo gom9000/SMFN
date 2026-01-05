@@ -38,7 +38,7 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
 
     @Override
     public Complex one() { return ONE; }
-
+    public Complex of(double re, double im) { return new Complex(re, im); }
 
     // ScalarStructure impls
     @Override
