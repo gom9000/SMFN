@@ -4,6 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.factories.CompositeElementFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.Semimodule;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
@@ -14,7 +15,7 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixSemimodule;
  * Funziona con qualsiasi scalare che sia almeno un Semiring (es. Natural).
  */
 public class SquareMatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
-implements Semiring<SquareMatrix<K>>, ScalarStructure<SquareMatrix<K>>, CompositeElementFactory<SquareMatrix<K>, K[]>
+implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarStructure<SquareMatrix<K>>, CompositeElementFactory<SquareMatrix<K>, K[]>
 {
 	protected final S scalarStructure;
     protected final int n;
@@ -132,5 +133,11 @@ implements Semiring<SquareMatrix<K>>, ScalarStructure<SquareMatrix<K>>, Composit
 	@Override
 	public boolean contains(SquareMatrix<K> m) {
 		return m != null && m.getStructure() == this;
+	}
+
+	@Override
+	public SquareMatrix<K> scale(K scalar, SquareMatrix<K> vector) {
+		Matrix<K> scaledInternal = matrixDelegate.scale(scalar, vector.getInternalMatrix());
+        return new SquareMatrix<>(this, scaledInternal);
 	}
 }

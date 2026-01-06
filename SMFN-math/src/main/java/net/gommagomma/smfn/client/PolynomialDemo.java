@@ -2,6 +2,7 @@ package net.gommagomma.smfn.client;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.polynomial.EuclideanPolynomialRing;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
@@ -9,8 +10,8 @@ import net.gommagomma.smfn.math.algebra.polynomial.PolynomialDivisionResult;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialRing;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
+import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrices;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixField;
@@ -20,6 +21,7 @@ public class PolynomialDemo
 {
 	static RealField R = RealField.INSTANCE;
 	static ComplexField C = ComplexField.INSTANCE;
+	static RationalField Q = RationalField.INSTANCE;
 
 	static Polynomial<Real> p, q, dp;
     static Polynomial<Complex> pz, qz, dpz;
@@ -123,35 +125,49 @@ public class PolynomialDemo
         var polyOfPolyc = Polynomials.of(PZc, qz, pz); // q + p*y
         System.out.println("\nPolinomio Ricorsivo (K[z1][z2]):");
         System.out.println(polyOfPolyc);
+
+        System.out.println("\n--- CAYLEY-HAMILTON test ---"); // Obiettivo: Verificare che P(M) = 0 dove P è il polinomio caratteristico di M.
+        SquareMatrixField<Rational, RationalField> qMatrixField = new SquareMatrixField<>(Q, 2);
+        Rational[] data_M = { Q.of(1), Q.of(2),	Q.of(3), Q.of(4) };
+        SquareMatrix<Rational> M = qMatrixField.of(data_M);
+        Polynomial<Rational> cp = Polynomials.of(Q, -2.0, -5.0, 1.0); // P(x) = x^2 - 5x - 2
+        System.out.println("Matrice M:\n" + M);
+        System.out.println("Polinomio Caratteristico P(x): " + cp);
+        SquareMatrixRing<Rational, RationalField> qMatrixRing = new SquareMatrixRing<>(Q, 2);
+        SquareMatrix<Rational> resultCH = evaluateMatrixPolynomial(cp, M, qMatrixRing, qMatrixField);
+        System.out.println("P(M) = M^2 - 5M - 2I:\n" + resultCH);
+        System.out.println("Verifica Cayley-Hamilton: " + (qMatrixField.isZero(resultCH) ? "SUCCESSO" : "FALLITO"));
+
+        System.out.println("\n--- Matrix of Polynomial ---");
+        EuclideanPolynomialRing<Rational, RationalField> pRing = new EuclideanPolynomialRing<>(Q);
+        SquareMatrixRing<Polynomial<Rational>, EuclideanPolynomialRing<Rational, RationalField>> polyMatrixRing = new SquareMatrixRing<>(pRing, 2);
+        // M(x) = [[x+1, 1], [x, x^2]]
+        SquareMatrix<Polynomial<Rational>> D = SquareMatrices.of(pRing, Polynomials.of(Q, 1, 1), Polynomials.of(Q, 1), Polynomials.of(Q, 0, 1), Polynomials.of(Q, 0, 0, 1));
+        System.out.println("M(x):\n" + D);
+        Polynomial<Rational> det = polyMatrixRing.determinant(D); // Det = (x+1)(x^2) - (x)(1) = x^3 + x^2 - x
+        System.out.println("Det(M(x)): " + det);
+        Polynomial<Rational> expectedDet = Polynomials.of(Q, 0, -1, 1, 1); // -x + x^2 + x^3
+        System.out.println("Verifica Determinante: " + (det.equals(expectedDet) ? "OK" : "ERRORE"));
     }
 
-    static void derivateReal() {
-    	System.out.println("\n--- Derivative (Real) ---");
-        dp = Polynomials.derivative(p);
-        System.out.println("P'(x) = " + dp);
-    }
-    static void derivateComplex() {
-    	System.out.println("\n--- Derivative (Complex>) ---");
-        dpz = Polynomials.derivative(pz);
-        System.out.println("P'(z) = " + dpz);
-    }
-    static void integral() {
-    	System.out.println("\n--- Integral ---");
-    	Real constantC = R.of(5.0);
-        Polynomial<Real> intDp = Polynomials.integrate(dp, constantC); // C = 5 -> x^2 + 5
-        System.out.println("Integrale di P'(x) con C=5: " + intDp);
-    }
-    static void evaluation() {
-    	System.out.println("\n--- Evaluation ---");
-    	Real input = R.of(3.0);
-        Real evaluation = p.apply(input);
-        System.out.println("\nValutazione P(3) = " + evaluation);
-    }
-    static void evaluationComplex() {
-    	System.out.println("\n--- Evaluation (Complex) ---");
-    	Complex input = C.of(3);
-        Complex evaluation = pz.apply(input);
-        System.out.println("\nValutazione P(3) = " + evaluation);
+    /**
+     * Valuta un polinomio scalare in una matrice quadrata.
+     * P(M) = a_n*M^n + ... + a_1*M + a_0*I
+     */
+    private static <K extends ScalarElement<K>> SquareMatrix<K> evaluateMatrixPolynomial(Polynomial<K> p, SquareMatrix<K> m, SquareMatrixRing<K, ?> ring, SquareMatrixField<K, ?> space) {
+        
+        int deg = p.degree();
+        if (deg < 0) return ring.zero();
+
+        // Algoritmo di Horner per matrici: (...(a_n*M + a_{n-1})*M + ... + a_0)*I
+        SquareMatrix<K> result = space.scale(p.getCoefficient(deg), ring.one());
+        
+        for (int i = deg - 1; i >= 0; i--) {
+            result = ring.multiply(result, m); // result * M
+            SquareMatrix<K> term = space.scale(p.getCoefficient(i), ring.one()); // a_i * I
+            result = space.add(result, term);
+        }
+        return result;
     }
 }
 

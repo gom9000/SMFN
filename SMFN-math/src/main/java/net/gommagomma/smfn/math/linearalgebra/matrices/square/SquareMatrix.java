@@ -1,12 +1,13 @@
 package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
+import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
 
 public final class SquareMatrix<K extends ScalarElement<K>> 
-implements ScalarElement<SquareMatrix<K>>, TensorElement<SquareMatrix<K>, K>
+implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, TensorElement<SquareMatrix<K>, K>
 {
 	private final Matrix<K> internalMatrix;
     private final ScalarStructure<SquareMatrix<K>> structure;
@@ -88,4 +89,15 @@ implements ScalarElement<SquareMatrix<K>>, TensorElement<SquareMatrix<K>, K>
         }
         return total;
     }
+
+
+    public Matrix<K> getInternalMatrix() {
+    	return internalMatrix;
+    }
+
+
+	@Override
+	public ScalarStructure<K> getScalarStructure() {
+		return internalMatrix.getScalarStructure();
+	}
 }

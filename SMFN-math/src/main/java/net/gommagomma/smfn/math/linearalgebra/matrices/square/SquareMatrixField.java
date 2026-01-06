@@ -2,12 +2,13 @@ package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.LinearSpace;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixSpace;
 
 public class SquareMatrixField<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
 extends SquareMatrixRing<K, S>
-implements Field<SquareMatrix<K>>
+implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S>
 {
 	private final MatrixSpace<K, S> spaceDelegate;
 

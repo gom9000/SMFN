@@ -114,6 +114,7 @@ net.gommagomma.smfn/
 
 - interface SymbolicDifferentiationProvider<E extends AlgebraicElement<E>>{  E derive(E element);}
 - interface SymbolicIntegrationProvider<E extends AlgebraicElement<E>, K extends ScalarElement<K>>{ E integrate(E element, K constant);}
+- interface EvaluationProvider<E, I, O>{ O evaluate(E element, I input);}
 
 ### net.gommagomma.smfn.math.algebra.numerics:
 - final class Natural implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural> {}
@@ -138,26 +139,30 @@ net.gommagomma.smfn/
 - class CommutativePolynomialRing<K extends ScalarElement<K>, S extends CommutativeRing<K> & ScalarStructure<K>> extends PolynomialRing<K, S> implements CommutativeRing<Polynomial<K>> {}
 - class EuclideanPolynomialRing<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends CommutativePolynomialRing<K, S> implements EuclideanDomain<Polynomial<K>, Natural>, SymbolicIntegrationProvider<Polynomial<K>, K> {}
 - final class PolynomialDivisionResult<K extends ScalarElement<K>> {}
-
 - final class Polynomials {}
 
 ## net.gommagomma.smfn.math.linearalgebra
 -----------------------------------------
 ### net.gommagomma.smfn.math.linearalgebra.vectors:
 - final class Vector<K extends ScalarElement<K>> implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K> { private final ScalarElement<?>[] data; private final LinearStructure<Vector<K>, K, ?> vectorStructure; private final ScalarStructure<K> scalarStructure; private final int size;}
-- class VectorSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semimodule<Vector<K>, K, S> {}
+- class VectorSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semimodule<Vector<K>, K, S>, CompositeElementFactory<Vector<K>, K[]> {}
 - class VectorModule<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends VectorSemimodule<K, S> implements Module<Vector<K>, K, S> {}
 - class VectorSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends VectorModule<K, S> implements LinearSpace<Vector<K>, K, S> {}
 - class InnerProductVectorSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends VectorSpace<K, S> implements InnerProductSpace<Vector<K>, K, S> {}
 
 ### net.gommagomma.smfn.math.linearalgebra.matrices:
-- final class Matrix<K extends ScalarElement<K>> implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>{ private final K[] data; private final int rows; private final int cols; private final ScalarStructure<K> scalarStructure; }
+- final class Matrix<K extends ScalarElement<K>> implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>{ private final K[] data; private final int rows, cols; protected final LinearStructure<Matrix<K>, K, ?> matrixStructure;   protected final ScalarStructure<K> scalarStructure; }
 - class MatrixSemimodule<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Vector<K>, K[]> {}
 - class MatrixModule<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends MatrixSemimodule<K, S> implements Module<Matrix<K>, K, S> {}
 - class MatrixSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends MatrixModule<K, S> implements LinearSpace<Matrix<K>, K, S> {}
 - class InnerProductMatrixSpace<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends MatrixSpace<K, S> implements InnerProductSpace<Matrix<K>, K, S> {}
-- class MatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> extends MatrixSemimodule<K, S> implements Semiring<Matrix<K>>, ScalarStructure<Matrix<K>> {}
-- class MatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends MatrixModule<K, S> implements Ring<Matrix<K>>, ScalarStructure<Matrix<K>> {}
+
+### net.gommagomma.smfn.math.linearalgebra.matrices.square:
+- final class SquareMatrix<K extends ScalarElement<K>> implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, TensorElement<SquareMatrix<K>, K> { private final Matrix<K> internalMatrix; private final ScalarStructure<SquareMatrix<K>> structure;}
+- class SquareMatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarStructure<SquareMatrix<K>>, CompositeElementFactory<SquareMatrix<K>, K[]> {}
+- class SquareMatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends SquareMatrixSemiring<K, S> implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S> {}
+- class SquareMatrixField<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends SquareMatrixRing<K, S> implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S> {}
+- final class SquareMatrices {}
 
 // ### net.gommagomma.smfn.math.linearalgebra.core.factories:
 //- interface VectorElementFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>>{ V createVector(K[] data);  V createVector(double[] data);  V createVector(long[] data);  V createVector(int[] data);  V createZeroVector(int dimension);}
@@ -256,7 +261,8 @@ net.gommagomma.smfn/
 
 # TODO:
 
-- factory of() per complex/rational
+- factory of() per complex/rational;
+- raggruppare per interfacce i metodi @Override;
 
 - public final class DerivativeOperator<T extends Differentiable<T>> 
     implements Operator<T> {
@@ -268,8 +274,6 @@ net.gommagomma.smfn/
         return input.derive();
     }
 }
-
-- introduzione delle matrici quadrate (come anello moltiplicativo);
 
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 

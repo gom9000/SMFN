@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.Module;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
@@ -13,7 +14,7 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixModule;
  */
 public class SquareMatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>>
 extends SquareMatrixSemiring<K, S>
-implements Ring<SquareMatrix<K>>
+implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S>
 {
 	private final MatrixModule<K, S> moduleDelegate;
 
