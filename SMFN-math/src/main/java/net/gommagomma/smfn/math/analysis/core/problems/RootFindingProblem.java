@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.analysis.core.problems;
 
-import net.gommagomma.smfn.math.algebra.core.Morphism;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
@@ -15,5 +15,5 @@ extends AnalysisProblem<P>
      * La funzione F(V) il cui zero deve essere trovato.
      * @return La MathFunction F.
      */
-	Morphism<P, P> getFunction();
+	Mapping<P, P> getFunction();
 }

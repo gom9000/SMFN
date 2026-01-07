@@ -55,7 +55,7 @@ net.gommagomma.smfn/
 -----------------------------------
 ### net.gommagomma.smfn.math.algebra.core:
 - interface Mapping<I, O> { O apply(I input); default <V> Mapping<V, O> compose(Mapping<? super V, ? extends I> before) {  Objects.requireNonNull(before); return (V v) -> apply(before.apply(v)); } static <T> Mapping<T, T> identity() { return (T t) -> t; } }
-- interface Morphism<I, O> extends Mapping<I, O> { O evaluate(I input); }
+- interface Morphism<I, O> extends Mapping<I, O> { O evaluate(I input); @Override default O apply(I input) {  return evaluate(input); }}
 - interface Operator<T> extends Mapping<T, T>{    static <T> Operator<T> identity() {   return t -> t;  }   default Operator<T> then(Operator<T> next) { return (T t) -> next.apply(this.apply(t));  }  default Operator<T> power(int n) {        if (n < 0) throw new IllegalArgumentException("Negative power not supported for general operators."); if (n == 0) return identity(); return (T t) -> { T result = t; for (int i = 0; i < n; i++) result = this.apply(result);            return result;   };  }}
 - interface LinearOperator<T> extends Operator<T> {}
 
@@ -112,7 +112,7 @@ net.gommagomma.smfn/
 - interface ExactStructure<K extends ExactElement<K>> extends ScalarStructure<K> {	@Override default boolean isExact() { return true; } @Override  default boolean areEqual(K a, K b) { if (a == b) return true; if (a == null || b == null) return false;return a.equals(b); }	}
 - interface ApproximateStructure<K extends ApproximateElement<K>> extends ScalarStructure<K> {  @Override default boolean isExact() { return false; }  double epsilon();  }}
 
-- interface SymbolicDifferentiationProvider<E extends AlgebraicElement<E>>{  E derive(E element);}
+- interface SymbolicDifferentiationProvider<E extends AlgebraicElement<E>>{  E derivative(E element);}
 - interface SymbolicIntegrationProvider<E extends AlgebraicElement<E>, K extends ScalarElement<K>>{ E integrate(E element, K constant);}
 - interface EvaluationProvider<E, I, O>{ O evaluate(E element, I input);}
 
@@ -133,8 +133,8 @@ net.gommagomma.smfn/
 - final class ZnRing implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory<ZnElement> {}
 
 ### net.gommagomma.smfn.math.algebra.polynomial:
-- final class Polynomial<K extends ScalarElement<K>> implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K> {}
-- class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>>, CompositeElementFactory<Polynomial<K>, List<K>>, EvaluationProvider<Polynomial<K>, K, K> {}
+- final class Polynomial<K extends ScalarElement<K>> implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>> {}
+- class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>>, CompositeElementFactory<Polynomial<K>, List<K>> {}
 - class PolynomialRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends PolynomialSemiring<K, S> implements Ring<Polynomial<K>>, SymbolicDifferentiationProvider<Polynomial<K>> {}
 - class CommutativePolynomialRing<K extends ScalarElement<K>, S extends CommutativeRing<K> & ScalarStructure<K>> extends PolynomialRing<K, S> implements CommutativeRing<Polynomial<K>> {}
 - class EuclideanPolynomialRing<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends CommutativePolynomialRing<K, S> implements EuclideanDomain<Polynomial<K>, Natural>, SymbolicIntegrationProvider<Polynomial<K>, K> {}
@@ -163,6 +163,9 @@ net.gommagomma.smfn/
 - class SquareMatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends SquareMatrixSemiring<K, S> implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S> {}
 - class SquareMatrixField<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends SquareMatrixRing<K, S> implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S> {}
 - final class SquareMatrices {}
+
+### net.gommagomma.smfn.math.linearalgebra.operators:
+- class CharacteristicPolynomialMorphism<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> implements Morphism<SquareMatrix<K>, Polynomial<K>> {}
 
 // ### net.gommagomma.smfn.math.linearalgebra.core.factories:
 //- interface VectorElementFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>>{ V createVector(K[] data);  V createVector(double[] data);  V createVector(long[] data);  V createVector(int[] data);  V createZeroVector(int dimension);}
@@ -261,6 +264,8 @@ net.gommagomma.smfn/
 
 # TODO:
 
+- pulizia degli operatori/capabilities sugli operatori fuori da analysis;
+- Demo di linearalgebra con elementi ZnRing;
 - factory of() per complex/rational;
 - raggruppare per interfacce i metodi @Override;
 
@@ -313,3 +318,72 @@ Avrai bisogno di:
     PhysicsRenderer: Logica per disegnare gli oggetti fisici (es. la classe Particle dal package smfn.physics.core). Disegner√† cerchi per i corpi, frecce per le forze o i campi elettrici.
     Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
 
+
+public interface AnalysisFunction<I, O> extends Mapping<I, O> {
+}
+
+// Specializzazione K -> K
+public interface ScalarFunction<K> extends AnalysisFunction<K, K> {
+}
+public class NewtonRaphsonSolver<K extends ScalarElement<K>> {
+
+    private final Functional<ScalarFunction<K>, K, K> numericalDifferentiator;
+
+    public NewtonRaphsonSolver(Functional<ScalarFunction<K>, K, K> numericalDifferentiator) {
+        this.numericalDifferentiator = numericalDifferentiator;
+    }
+
+    public K solve(ScalarRootFindingProblem<K> problem, K initialGuess, ConvergenceParameters<K> params) {
+        K x = initialGuess;
+        ScalarFunction<K> f = problem.getFunction();
+        ScalarFunction<K> dfSymbolic = problem.getDerivative();
+
+        for (int i = 0; i < params.getMaxIterations(); i++) {
+            K fx = f.apply(x);
+            
+            // Se fx Ë abbastanza vicino a zero, abbiamo finito
+            if (params.isConverged(fx)) return x;
+
+            // Calcolo della derivata f'(x)
+            K dfx;
+            if (dfSymbolic != null) {
+                // Via Simbolica: valutiamo la funzione derivata nel punto
+                dfx = dfSymbolic.apply(x);
+            } else {
+                // Via Numerica: usiamo il funzionale di fallback (es. Forward Difference)
+                dfx = numericalDifferentiator.evaluate(f, x);
+            }
+
+            // Newton step: x_{n+1} = x_n - f(x_n) / f'(x_n)
+            // Nota: qui serve che K sia in un Field per la divisione
+            K step = fx.divide(dfx);
+            x = x.subtract(step);
+        }
+        
+        throw new RuntimeException("Raggiunto il numero massimo di iterazioni senza convergenza.");
+    }
+}
+public class DifferentialSymbolicOperator<K, S extends Ring<K>> 
+      implements SymbolicOperator<K, K, PolynomialFunction<K, S>> {
+    @Override
+    public PolynomialFunction<K, S> transform(PolynomialFunction<K, S> f) {
+        // Usa la struttura per creare un nuovo elemento algebrico (Polinomio derivato)
+        Polynomial<K> derivedPoly = f.getStructure().derivative(f.getPolynomial());
+        
+        // Restituisce una nuova proiezione analitica con lo stesso evaluator
+        return new PolynomialFunction<>(derivedPoly, f.getStructure(), null); 
+        // Nota: Qui andrebbe passata la logica per rigenerare l'evaluator corretto
+    }
+}
+
+- Mapping<I, O>
+	|- Morphism<I, O>
+	|- Operator<>
+    |	|- SymbolicOperator<I, O, M extends Morphism<I, O>
+   	|	|	|- DifferentialSymbolicOperator<I, O, M>
+   	|	|	|- IntegralSymbolicOperator<I, O, M>
+	|	|- Functional<I, K, M>
+	|	|	|- EvaluateOperator<I, K, M>
+	|	|	|- IntegralOperator<I, K, M>
+
+	

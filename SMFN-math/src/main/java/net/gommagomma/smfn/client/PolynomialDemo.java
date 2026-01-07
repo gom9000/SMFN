@@ -16,6 +16,7 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrices;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
+import net.gommagomma.smfn.math.linearalgebra.operators.CharacteristicPolynomialMorphism;
 
 public class PolynomialDemo
 {
@@ -126,18 +127,6 @@ public class PolynomialDemo
         System.out.println("\nPolinomio Ricorsivo (K[z1][z2]):");
         System.out.println(polyOfPolyc);
 
-        System.out.println("\n--- CAYLEY-HAMILTON test ---"); // Obiettivo: Verificare che P(M) = 0 dove P è il polinomio caratteristico di M.
-        SquareMatrixField<Rational, RationalField> qMatrixField = new SquareMatrixField<>(Q, 2);
-        Rational[] data_M = { Q.of(1), Q.of(2),	Q.of(3), Q.of(4) };
-        SquareMatrix<Rational> M = qMatrixField.of(data_M);
-        Polynomial<Rational> cp = Polynomials.of(Q, -2.0, -5.0, 1.0); // P(x) = x^2 - 5x - 2
-        System.out.println("Matrice M:\n" + M);
-        System.out.println("Polinomio Caratteristico P(x): " + cp);
-        SquareMatrixRing<Rational, RationalField> qMatrixRing = new SquareMatrixRing<>(Q, 2);
-        SquareMatrix<Rational> resultCH = evaluateMatrixPolynomial(cp, M, qMatrixRing, qMatrixField);
-        System.out.println("P(M) = M^2 - 5M - 2I:\n" + resultCH);
-        System.out.println("Verifica Cayley-Hamilton: " + (qMatrixField.isZero(resultCH) ? "SUCCESSO" : "FALLITO"));
-
         System.out.println("\n--- Matrix of Polynomial ---");
         EuclideanPolynomialRing<Rational, RationalField> pRing = new EuclideanPolynomialRing<>(Q);
         SquareMatrixRing<Polynomial<Rational>, EuclideanPolynomialRing<Rational, RationalField>> polyMatrixRing = new SquareMatrixRing<>(pRing, 2);
@@ -148,6 +137,18 @@ public class PolynomialDemo
         System.out.println("Det(M(x)): " + det);
         Polynomial<Rational> expectedDet = Polynomials.of(Q, 0, -1, 1, 1); // -x + x^2 + x^3
         System.out.println("Verifica Determinante: " + (det.equals(expectedDet) ? "OK" : "ERRORE"));
+
+        System.out.println("\n--- CAYLEY-HAMILTON test ---"); // Obiettivo: Verificare che P(M) = 0 dove P è il polinomio caratteristico di M.
+        SquareMatrixField<Rational, RationalField> qMatrixField = new SquareMatrixField<>(Q, 2);
+        Rational[] data_M = { Q.of(1), Q.of(2),	Q.of(3), Q.of(4) };
+        SquareMatrix<Rational> M = qMatrixField.of(data_M);
+        Polynomial<Rational> cp = (new CharacteristicPolynomialMorphism()).evaluate(M);
+        System.out.println("Matrice M:\n" + M);
+        System.out.println("Polinomio Caratteristico P(x): " + cp);
+        SquareMatrixRing<Rational, RationalField> qMatrixRing = new SquareMatrixRing<>(Q, 2);
+        SquareMatrix<Rational> resultCH = evaluateMatrixPolynomial(cp, M, qMatrixRing, qMatrixField);
+        System.out.println("P(M) = M^2 - 5M - 2I:\n" + resultCH);
+        System.out.println("Verifica Cayley-Hamilton: " + (qMatrixField.isZero(resultCH) ? "SUCCESSO" : "FALLITO"));
     }
 
     /**

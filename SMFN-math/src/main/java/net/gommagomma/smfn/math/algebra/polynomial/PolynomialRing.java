@@ -38,7 +38,7 @@ implements Ring<Polynomial<K>>, SymbolicDifferentiationProvider<Polynomial<K>>
 
 
 	@Override
-	public Polynomial<K> derive(Polynomial<K> p) {
+	public Polynomial<K> derivative(Polynomial<K> p) {
 		ScalarStructure<K> s = p.getScalarStructure();
         if (p.degree() <= 0) {
             return new PolynomialSemiring<>(s).zero();

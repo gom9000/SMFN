@@ -1,42 +1,43 @@
 package net.gommagomma.smfn.client;
 
 import net.gommagomma.smfn.math.algebra.core.Mapping;
+import net.gommagomma.smfn.math.algebra.core.structures.metric.MetricSpace;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.ForwardDifferenceDifferentiator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.NewtonRaphsonSolver;
 import net.gommagomma.smfn.math.linearalgebra.core.operators.LinearMorphism;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.MetricSpace;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.spaces.RealMetricSpace;
 
 /**
  * Classe client per dimostrare l'utilizzo del NewtonRaphsonSolver.
- * Risolve la radice di f(x) = x^2 - 2, ovvero cerca x t.c. x = sqrt(2).
+ * Risolve la radice di f(x) = x^3 - 2, ovvero cerca x t.c. x = sqrt^3(3).
  */
-public class RootSolverClient
+public class CubicRootSolverClient
 {
-	private static class ParabolaFunction implements LinearMorphism<Real, Real> {
+	static RealField R = RealField.INSTANCE;
+
+	private static class CubicFunction implements Mapping<Real, Real> {
         @Override
-        public Real evaluate(Real x) {
-            // f(x) = x^2 - 2
-            return x.multiply(x).multiply(x).subtract(new Real(2));
+        public Real apply(Real x) {
+            return R.subtract(R.multiply(R.multiply(x, x), x), R.of(2)); // f(x) = x^3 - 2
         }
     }
 
-    private static class SquareRootProblem implements ScalarRootFindingProblem<Real> {
-        private final ParabolaFunction function = new ParabolaFunction();
+    private static class CubicRootProblem implements ScalarRootFindingProblem<Real> {
+        private final CubicFunction function = new CubicFunction();
 
         @Override
-        public LinearMorphism<Real, Real> getFunction() {
+        public Mapping<Real, Real> getFunction() {
             return function;
         }
 
         @Override
-        public Mapping<Real, Real> getDerivative() {
-            // f'(x) = 2 * x
-            return x -> x.multiply(x).multiply(new Real(3.0)); // 1.2599210498948732
+        public Mapping<Real, Real> getDerivative() { // qui devi passare l'oggetto SymbolicDifferentialOperator che implementa la derivata simbolica... !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! oppure l'oggetto che esegue la derivata sul punto...
+            // f'(x) = 3 * x^2
+            return x -> R.multiply(R.multiply(x, x), R.of(3)); // 1.2599210498948732
         }
 
 //        @Override
@@ -48,7 +49,7 @@ public class RootSolverClient
     private static class AbsoluteDifferenceCriteria implements ConvergenceCriteria
     {
         @Override
-        public boolean isConverged(Real distance, ConvergenceParameters params, int iteration) {
+        public boolean isConverged(Real distance, ConvergenceParameters params, int iteration) { // qui serve misurare la distanza di uno spazio, in modo da generalizzare il criterio
             return distance.compareTo(params.getTolerance()) <= 0;
         }
     }
@@ -56,8 +57,8 @@ public class RootSolverClient
 	public static void main(String[] args)
 	{
 		// --- Setup del Problema ---
-        SquareRootProblem problem = new SquareRootProblem();
-        Real initialGuess = new Real(1.0); // Tentativo iniziale per sqrt(2)
+        CubicRootProblem problem = new CubicRootProblem();
+        Real initialGuess = new Real(1.0); // Tentativo iniziale per sqrt(3)
         
         // --- Setup dei Parametri di Convergenza ---
         Real tolerance = new Real(1e-10);
@@ -71,7 +72,7 @@ public class RootSolverClient
         ConvergenceCriteria criteria = new AbsoluteDifferenceCriteria();
 
         // Spazio Metrico (calcolo della distanza)
-        MetricSpace<?, Real> space = new RealMetricSpace("Euclidean Real Space");
+        MetricSpace<Real> space = new RealMetricSpace("Euclidean Real Space");
 
         // Funzionale (calcola la derivata numerica f'(x)
         Real differentiationStepSize = new Real(1e-6); // h piccolo

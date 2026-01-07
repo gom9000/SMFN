@@ -4,5 +4,5 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 public interface SymbolicDifferentiationProvider<E extends AlgebraicElement<E>>
 {
-    E derive(E element);
+    E derivative(E element);
 }

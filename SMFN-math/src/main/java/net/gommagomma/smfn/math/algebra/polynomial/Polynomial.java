@@ -3,14 +3,12 @@ package net.gommagomma.smfn.math.algebra.polynomial;
 import java.util.Collections;
 import java.util.List;
 
-import net.gommagomma.smfn.math.algebra.core.Morphism;
 import net.gommagomma.smfn.math.algebra.core.elements.CompositeElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
-import net.gommagomma.smfn.math.algebra.core.structures.capabilities.EvaluationProvider;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
 public final class Polynomial<K extends ScalarElement<K>> 
-implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Morphism<K, K>
+implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
 {
 	private final List<K> coefficients; // Ordinati per grado crescente: a0, a1, ... an
 	private final ScalarStructure<Polynomial<K>> polynomialStructure;
@@ -50,14 +48,6 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>, Mor
 
     public List<K> getCoefficients() {
         return Collections.unmodifiableList(coefficients);
-    }
-
-    @Override // Morphism impls
-    public K apply(K input) {
-    	if (polynomialStructure instanceof EvaluationProvider) {
-            return ((EvaluationProvider<Polynomial<K>, K, K>) polynomialStructure).evaluate(this, input);
-        }
-        throw new UnsupportedOperationException("Questa struttura non supporta la valutazione del polinomio.");
     }
 
 	@Override
