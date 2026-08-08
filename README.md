@@ -1,7 +1,12 @@
 # SMFN eXPerience
+**Type**:  Java Math Library | **Status**: Continuous Research (Sawdust alert!)
+
+A "slow-burning" Java experimental library for mathematical modelling. It is not designed for performance, but rather to represent abstract mathematical structures and use them to perform symbolic and numerical calculations, making it possible to handle symbolic polynomial arithmetic, solve differential equations or simulate quantum mechanics problems.
+
+
 ------------------------------------------------------------------------    
 
-## struttura dei package
+## Packages Structure
 <pre>
 net.gommagomma.smfn/
 |-- math/
@@ -44,7 +49,7 @@ net.gommagomma.smfn/
 |   \-- plotting/                           # (FunctionPlotter, CartesianAxisPlotter, ScatterPlotter)
 |-- physics                                 # Package per le applicazioni fisiche (Elettromagnetismo, MQ, RG)
 |   |-- core/                               (Interfacce fisiche base: particella, forza...)
-|   |-- mechanics/                          (Dinamica, gravità , cinematica)
+|   |-- mechanics/                          (Dinamica, gravitÃ Â , cinematica)
 |   |-- em                                  # Classi per campi E e B
 |   |-- mq                                  # Classi per funzioni d'onda, operatori (HamiltonianOperator, Observable, ...)
 |   |   |-- core								 # Observable
@@ -310,7 +315,7 @@ extends RingMatrixModule<K, V, M> {@Override Field<K> getScalarStructure(); @Ove
 
 
 
-# TODO:
+# TODO & Notes:
 
 // Marker per atomi numerici
 interface ScalarElement extends AlgebraicElement {} 
@@ -321,7 +326,7 @@ interface ExactElement extends ScalarElement {}
 // Marker per dati approssimati (Real, Complex)
 interface ApproximateElement extends ScalarElement {}
 
-// Marker per TensorElement (che hai già)
+// Marker per TensorElement (che hai giÃ )
 interface StructuredElement<K extends SemiringElement<K>> extends AlgebraicElement {
     Semiring<K> getScalarStructure();
 }
@@ -337,12 +342,12 @@ interface StructuredElement<K extends SemiringElement<K>> extends AlgebraicEleme
 - Polinomi: Evaluatable<X, X>  - interfaccia chiave che definisca il concetto di "radice" (valutazione)
 
 - ComplexVector: Dot Product
-Stai calcolando <v,w>=SOMMA(v(i) x w(i)\). Questa è la convenzione standard dei Matematici (lineare nel primo argomento, antilineare nel secondo).
-Attenzione per il package mq (Quantum Mechanics): Nella notazione di Dirac (Fisica), il prodotto scalare (bra-ket <phi|psi> è, per convenzione, antilineare nel primo argomento (bra) e lineare nel secondo (ket): <phi|psi>=SOMMA(phi(i)\ x psi(i))
-Se userai questa classe ComplexVector per i tuoi StateVector quantistici, dovrai ricordarti che v.dotProduct(w) calcolerà matematicamente <w|v> (o invertire la logica nella classe HilbertSpace specifica per la MQ).
+Stai calcolando <v,w>=SOMMA(v(i) x w(i)\). Questa Ã¨ la convenzione standard dei Matematici (lineare nel primo argomento, antilineare nel secondo).
+Attenzione per il package mq (Quantum Mechanics): Nella notazione di Dirac (Fisica), il prodotto scalare (bra-ket <phi|psi> Ã¨, per convenzione, antilineare nel primo argomento (bra) e lineare nel secondo (ket): <phi|psi>=SOMMA(phi(i)\ x psi(i))
+Se userai questa classe ComplexVector per i tuoi StateVector quantistici, dovrai ricordarti che v.dotProduct(w) calcolerÃ  matematicamente <w|v> (o invertire la logica nella classe HilbertSpace specifica per la MQ).
 
 - Complex.sqrt() : 
-// Attuale: magnitude + real può andare in overflow se entrambi sono enormi
+// Attuale: magnitude + real puÃ² andare in overflow se entrambi sono enormi
 double magnitude = this.modulus(); 
 
 // Alternativa numericamente stabile (Algorithm 312, ACM):
@@ -368,14 +373,14 @@ interface AffineTransform<K extends FieldElement<K, ?>, V extends VectorElement<
 }
 impl (in linearalgebra.real):
 class RealAffineTransform implements AffineTransform<Real, RealVector> {//...}
-- Suggerimento: Vincola l'interfaccia HermitianOperator in modo più stretto, non solo a VectorElement, ma a InnerProductSpaceElement.
-// Vincolo più stretto per i problemi di MQ:
+- Suggerimento: Vincola l'interfaccia HermitianOperator in modo piÃ¹ stretto, non solo a VectorElement, ma a InnerProductSpaceElement.
+// Vincolo piÃ¹ stretto per i problemi di MQ:
 public interface HermitianOperator<K extends FieldElement<K, ?> & Normable<Real, K>, 
                                   V extends InnerProductSpaceElement<K, V>, 
                                   O extends HermitianOperator<K, V, O>> 
     extends LinearOperator<K, V, O> {
 
-    Real expectationValue(V state); // Funziona solo se il prodotto scalare è definito
+    Real expectationValue(V state); // Funziona solo se il prodotto scalare Ã¨ definito
 }
 
 
@@ -392,6 +397,6 @@ math.linearalgebra.solvers: Algoritmo di Lanczos o Arnoldi
 - Per la Fisica (Simulazione e Animazione)
 Avrai bisogno di:
     SimulationPanel: Un pannello che esegue un loop di aggiornamento a tempo fisso (es. 60 FPS).
-    PhysicsRenderer: Logica per disegnare gli oggetti fisici (es. la classe Particle dal package smfn.physics.core). DisegnerÃ  cerchi per i corpi, frecce per le forze o i campi elettrici.
+    PhysicsRenderer: Logica per disegnare gli oggetti fisici (es. la classe Particle dal package smfn.physics.core). DisegnerÃƒÂ  cerchi per i corpi, frecce per le forze o i campi elettrici.
     Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
 
