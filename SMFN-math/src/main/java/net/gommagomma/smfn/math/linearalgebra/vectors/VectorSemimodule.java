@@ -86,7 +86,11 @@ implements Semimodule<Vector<K>, K, S>, CompositeElementFactory<Vector<K>, K[]>
 
     @Override
     public boolean areEqual(Vector<K> a, Vector<K> b) {
-        return a.equals(b); 
+        if (!contains(a) || !contains(b)) return false;
+        for (int i = 0; i < dimension; i++) {
+            if (!scalarStructure.areEqual(a.get(i), b.get(i))) return false;
+        }
+        return true;
     }
 
 	@Override

@@ -16,7 +16,7 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrices;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixAlgebra;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
-import net.gommagomma.smfn.math.linearalgebra.operators.CharacteristicPolynomialMorphism;
+import net.gommagomma.smfn.math.linearalgebra.operators.CharacteristicPolynomialMapping;
 
 public class PolynomialDemo
 {
@@ -104,6 +104,7 @@ public class PolynomialDemo
         Polynomial<Complex> check2 = c_ering.add( c_ering.multiply(qz, rz.quotient()), rz.remainder());
         System.out.println("Verifica (pz == qz*Q + R) = " + PZ.add(PZ.multiply(qz, rz.quotient()), rz.remainder()) + " : "  + pz.equals(check2));
 
+        /*
         System.out.println("\n--- Euclidean Division (SquareMatrix<Complex>) ---");
         SquareMatrixAlgebra<Complex, ComplexField> MF2z = new SquareMatrixAlgebra<>(C, 2);
         EuclideanPolynomialRing<SquareMatrix<Complex>, SquareMatrixAlgebra<Complex, ComplexField>> c_space = new EuclideanPolynomialRing<>(MF2z);
@@ -114,7 +115,8 @@ public class PolynomialDemo
         var PMZ = pmz.getStructure();
         Polynomial<SquareMatrix<Complex>> check3 = c_space.add( c_space.multiply(qmz, rmz.quotient()), rmz.remainder());
         System.out.println("Verifica (pmz == qmz*Q + R) = " + PMZ.add(PMZ.multiply(qmz, rmz.quotient()), rmz.remainder()) + " : "  + pmz.equals(check3));
-
+        */
+        
         System.out.println("\n--- Polynomial of Polynomial (Real) ---");
     	var structureOfP = p.getStructure();
         var polyOfPoly = PolynomialElementFactory.of(structureOfP, q, p); // q + p*y
@@ -142,7 +144,7 @@ public class PolynomialDemo
         SquareMatrixAlgebra<Rational, RationalField> qMatrixField = new SquareMatrixAlgebra<>(Q, 2);
         Rational[] data_M = { Q.of(1), Q.of(2),	Q.of(3), Q.of(4) };
         SquareMatrix<Rational> M = qMatrixField.of(data_M);
-        Polynomial<Rational> cp = (new CharacteristicPolynomialMorphism()).evaluate(M);
+        Polynomial<Rational> cp = (new CharacteristicPolynomialMapping()).apply(M);
         System.out.println("Matrice M:\n" + M);
         System.out.println("Polinomio Caratteristico P(x): " + cp);
         SquareMatrixRing<Rational, RationalField> qMatrixRing = new SquareMatrixRing<>(Q, 2);

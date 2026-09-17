@@ -104,7 +104,7 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
 
 	@Override
     public boolean areEqual(SquareMatrix<K> a, SquareMatrix<K> b) {
-        return a.asMatrix().equals(b.asMatrix());
+        return matrixDelegate.areEqual(a.asMatrix(), b.asMatrix());
     }
 	
 	@Override

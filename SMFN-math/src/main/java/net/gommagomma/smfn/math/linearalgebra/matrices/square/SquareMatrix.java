@@ -1,13 +1,26 @@
 package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
+import net.gommagomma.smfn.math.algebra.core.LinearOperator;
 import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
+import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
 
+/**
+ * Una matrice quadrata n x n e', per costruzione, un operatore lineare su
+ * Vector<K>: applicarla a un vettore e' il prodotto matrice-vettore usuale,
+ * che rispetta additivita' e omogeneita' per definizione della formula
+ * (nessuna verifica a parte serve: la linearita' discende direttamente dalla
+ * distributivita' dello scalare sottostante). Implementando LinearOperator
+ * (che estende Operator, che estende Mapping) SquareMatrix ottiene gratis
+ * compose() e power(n) -- la composizione di operatori coincide esattamente
+ * con il prodotto tra matrici gia' definito in SquareMatrixSemiring.
+ */
 public final class SquareMatrix<K extends ScalarElement<K>> 
-implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, TensorElement<SquareMatrix<K>, K>
+implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, TensorElement<SquareMatrix<K>, K>, LinearOperator<Vector<K>>
 {
 	private final Matrix<K> internalMatrix;
     private final ScalarStructure<SquareMatrix<K>> structure;
@@ -40,6 +53,33 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
 
     public Matrix<K> asMatrix() {
         return internalMatrix;
+    }
+
+    /**
+     * Applica la matrice a un vettore: y = A*x. E' questo metodo che rende
+     * SquareMatrix un LinearOperator<Vector<K>> -- non un'interfaccia a parte,
+     * solo la formula del prodotto matrice-vettore gia' nota in algebra lineare.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Vector<K> apply(Vector<K> v) {
+        int n = getN();
+        if (v.size() != n) {
+            throw new IllegalArgumentException("Dimensione del vettore incompatibile: attesa " + n + ", ricevuta " + v.size());
+        }
+
+        ScalarStructure<K> scalarStructure = getScalarStructure();
+        K[] resultData = (K[]) new ScalarElement[n];
+        for (int i = 0; i < n; i++) {
+            K sum = scalarStructure.zero();
+            for (int j = 0; j < n; j++) {
+                sum = scalarStructure.add(sum, scalarStructure.multiply(get(i, j), v.get(j)));
+            }
+            resultData[i] = sum;
+        }
+
+        VectorSemimodule<K, ScalarStructure<K>> vectorSpace = new VectorSemimodule<>(scalarStructure, n);
+        return vectorSpace.of(resultData);
     }
 
 

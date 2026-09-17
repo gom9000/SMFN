@@ -2,14 +2,25 @@ package net.gommagomma.smfn.math.linearalgebra.matrices;
 
 import java.util.Arrays;
 
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.LinearStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
+import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
 
+/**
+ * Una matrice m x n rappresenta un'applicazione lineare K^n -> K^m: non e'
+ * un endomorfismo (dominio e codominio hanno dimensione diversa in generale),
+ * quindi implementa Mapping<Vector<K>,Vector<K>> e non Operator/LinearOperator
+ * -- compose()/power() presuppongono un endomorfismo e per una matrice
+ * rettangolare non avrebbero senso dimensionale. SquareMatrix, che e' sempre
+ * un endomorfismo, resta l'unica a implementare LinearOperator.
+ */
 public final class Matrix<K extends ScalarElement<K>> 
-implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>
+implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, Mapping<Vector<K>, Vector<K>>
 {
     private final K[] data;
     protected final LinearStructure<Matrix<K>, K, ?> matrixStructure;
@@ -52,6 +63,31 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>
     @Override
     public ScalarStructure<K> getScalarStructure() {
         return scalarStructure;
+    }
+
+    /**
+     * Applica la matrice a un vettore: y = A*x, con x di dimensione cols e
+     * y di dimensione rows. E' questo metodo, non un'interfaccia a parte, che
+     * rende Matrix un'applicazione lineare K^n -> K^m.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Vector<K> apply(Vector<K> v) {
+        if (v.size() != cols) {
+            throw new IllegalArgumentException("Dimensione del vettore incompatibile: attesa " + cols + ", ricevuta " + v.size());
+        }
+
+        K[] resultData = (K[]) new ScalarElement[rows];
+        for (int i = 0; i < rows; i++) {
+            K sum = scalarStructure.zero();
+            for (int j = 0; j < cols; j++) {
+                sum = scalarStructure.add(sum, scalarStructure.multiply(get(i, j), v.get(j)));
+            }
+            resultData[i] = sum;
+        }
+
+        VectorSemimodule<K, ScalarStructure<K>> codomain = new VectorSemimodule<>(scalarStructure, rows);
+        return codomain.of(resultData);
     }
 
     @Override

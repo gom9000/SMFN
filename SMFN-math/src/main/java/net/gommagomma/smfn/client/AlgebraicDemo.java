@@ -11,7 +11,7 @@ import net.gommagomma.smfn.math.algebra.structures.ZnRing;
  * Classe client di esempio per dimostrare l'uso delle diverse strutture 
  * algebriche implementate (Z, Q, Zn) e della capacità CreatableFromDouble.
  */
-public class AlgebraicClient
+public class AlgebraicDemo
 {
 	static IntegerRing Z = IntegerRing.INSTANCE;
 	static RationalField Q = RationalField.INSTANCE;

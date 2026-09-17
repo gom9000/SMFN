@@ -14,7 +14,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.analysis.fractals.JuliaFunction;
 
-public class JuliaFunctionClient {
+public class JuliaPlot {
     public static void main(String[] args) {
         // --- 1. Definizione della funzione matematica 
         final int MAX_ITERATIONS = 100;

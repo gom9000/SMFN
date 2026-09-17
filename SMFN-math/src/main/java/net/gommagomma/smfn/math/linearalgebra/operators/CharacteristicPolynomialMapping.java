@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.operators;
 
-import net.gommagomma.smfn.math.algebra.core.Morphism;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
@@ -10,11 +10,11 @@ import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
-public class CharacteristicPolynomialMorphism<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> 
-implements Morphism<SquareMatrix<K>, Polynomial<K>>
+public class CharacteristicPolynomialMapping<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> 
+implements Mapping<SquareMatrix<K>, Polynomial<K>>
 {
     @Override
-    public Polynomial<K> evaluate(SquareMatrix<K> matrix) {
+    public Polynomial<K> apply(SquareMatrix<K> matrix) {
         @SuppressWarnings("unchecked")
         S scalarStructure = (S) matrix.getScalarStructure();
         PolynomialRing<K, S> polyRing = new PolynomialRing<K, S>(scalarStructure); 

@@ -14,7 +14,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.analysis.fractals.MandelbrotFunction;
 
-public class MandelbrotFunctionClient {
+public class MandelbrotPlot {
     public static void main(String[] args) {
         // --- 1. Definizione della funzione matematica (Mandelbrot Set) ---
         final int MAX_ITERATIONS = 100;
