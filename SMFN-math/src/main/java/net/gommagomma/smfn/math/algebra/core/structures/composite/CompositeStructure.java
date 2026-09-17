@@ -8,8 +8,4 @@ public interface CompositeStructure<K extends ScalarElement<K>, E extends Compos
 extends AlgebraicStructure<E>
 {
 	S getScalarStructure();
-
-//	default boolean isExact() {
-//        return getScalarStructure().isExact();
-//    }
 }

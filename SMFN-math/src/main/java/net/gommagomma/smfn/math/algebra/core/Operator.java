@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.algebra.core;
 
-public interface Operator<T> extends Mapping<T, T>
+public interface Operator<T>
+extends Mapping<T, T>
 {
     static <T> Operator<T> identity() {
         return t -> t;
