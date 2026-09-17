@@ -135,23 +135,25 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
         int swaps = 0;
 
         for (int j = 0; j < n; j++) {
-            // Ricerca pivot (logica semplificata)
-            int pivot = j; // Trova riga con valore max nel campo
-            if (pivot != j) {
-                // swap e det = det * -1
+            // Ricerca del pivot di modulo massimo nella colonna j, dalla riga j in giu'
+            int pivotRow = spaceDelegate.findBestPivotInArray(data, j, j, n, n);
+            if (pivotRow != j) {
+                spaceDelegate.swapRowsInArray(data, pivotRow, j, n);
                 swaps++;
             }
-            K pivotVal = data[j * n + j];
+
+            K pivotVal = spaceDelegate.getFromData(data, j, j, n);
             if (scalarStructure.isZero(pivotVal)) return scalarStructure.zero();
-            
+
             det = scalarStructure.multiply(det, pivotVal);
-            
-            // Eliminazione sotto
+
+            // Eliminazione sotto il pivot
             for (int i = j + 1; i < n; i++) {
-                K factor = scalarStructure.divide(data[i * n + j], pivotVal);
+                K factor = scalarStructure.divide(spaceDelegate.getFromData(data, i, j, n), pivotVal);
                 for (int k = j; k < n; k++) {
-                    K sub = scalarStructure.multiply(factor, data[j * n + k]);
-                    data[i * n + k] = scalarStructure.subtract(data[i * n + k], sub);
+                    K sub = scalarStructure.multiply(factor, spaceDelegate.getFromData(data, j, k, n));
+                    K newVal = scalarStructure.subtract(spaceDelegate.getFromData(data, i, k, n), sub);
+                    spaceDelegate.setData(data, i, k, newVal, n);
                 }
             }
         }

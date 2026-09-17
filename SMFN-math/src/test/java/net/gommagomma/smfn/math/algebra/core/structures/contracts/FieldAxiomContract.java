@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.algebra.core.structures.contracts;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -52,6 +53,13 @@ extends CommutativeRingAxiomContract<E>
 		@DisplayName("Divisione per zero non  definita")
 		void divisionByZeroIsUndefined() {
 			assertThrows(ArithmeticException.class, () -> structure().divide(a(), structure().zero()));
+		}
+
+		@Test
+		@DisplayName("isInvertible(): vero per a, falso per zero")
+		void isInvertibleMatchesInverse() {
+			assertTrue(structure().isInvertible(a()));
+			assertFalse(structure().isInvertible(structure().zero()));
 		}
 	}
 }
