@@ -38,11 +38,9 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
 
     @Override
     public boolean contains(Matrix<K> m) {
-    	if (m == null) return false;
-        if (m.getStructure() != this) {
-            return m.getRows() == this.rows && m.getCols() == this.cols;
-        }
-        return true;
+        return m != null
+            && m.getRows() == this.rows && m.getCols() == this.cols
+            && m.getScalarStructure().equals(this.scalarStructure);
     }
 
     @Override

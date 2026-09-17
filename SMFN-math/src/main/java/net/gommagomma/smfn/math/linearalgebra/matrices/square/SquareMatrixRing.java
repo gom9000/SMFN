@@ -4,7 +4,6 @@ import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.Module;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
-import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixModule;
 
@@ -39,12 +38,6 @@ implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S>
         Matrix<K> result = moduleDelegate.subtract(a.asMatrix(), b.asMatrix());
         return of(result.getData());
     }
-
-
-	@Override
-	public Real magnitude(SquareMatrix<K> element) {
-		return super.magnitude(element);
-	}
 
 
     /**

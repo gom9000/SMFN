@@ -132,7 +132,8 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
 
 	@Override
 	public boolean contains(SquareMatrix<K> m) {
-		return m != null && m.getStructure() == this;
+		return m != null && m.getN() == this.n
+			&& m.getScalarStructure().equals(this.scalarStructure);
 	}
 
 	@Override
