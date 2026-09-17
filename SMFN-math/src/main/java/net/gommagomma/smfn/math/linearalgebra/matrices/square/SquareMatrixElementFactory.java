@@ -5,14 +5,16 @@ import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
-import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.core.structures.Ring;
-import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
-public final class SquareMatrices
+/**
+ * Fabbrica pura di SquareMatrix<K>: dati degli elementi, restituisce l'istanza.
+ * Nessuna decisione algebrica qui dentro -- quella la fa SquareMatrixStructureFactory,
+ * a cui questa classe si appoggia per sapere quale struttura usare.
+ */
+public final class SquareMatrixElementFactory
 {
-    private SquareMatrices() {}
+    private SquareMatrixElementFactory() {}
 
     /**
      * Crea una matrice quadrata da una lista di elementi.
@@ -24,11 +26,11 @@ public final class SquareMatrices
             throw new IllegalArgumentException(
                 "Il numero di elementi (" + totalElements + ") non permette di creare una matrice quadrata.");
         }
-        ScalarStructure<SquareMatrix<K>> matrixStruct = getStructureFor(s, size);
-        
+        ScalarStructure<SquareMatrix<K>> matrixStruct = SquareMatrixStructureFactory.getStructureFor(s, size);
+
         @SuppressWarnings("unchecked")
         K[] data = (K[]) elements.toArray(new ScalarElement[0]);
-        
+
         if (matrixStruct instanceof SquareMatrixSemiring) {
             return ((SquareMatrixSemiring<K, ?>) matrixStruct).of(data);
         }
@@ -48,7 +50,7 @@ public final class SquareMatrices
      */
     public static <K extends ScalarElement<K>> SquareMatrix<K> of(ScalarStructure<K> s, int size, double... values) {
         if (!(s instanceof NumericFactory)) {
-            throw new UnsupportedOperationException("La struttura non è una NumericFactory");
+            throw new UnsupportedOperationException("La struttura non e' una NumericFactory");
         }
         @SuppressWarnings("unchecked")
         NumericFactory<K> factory = (NumericFactory<K>) s;
@@ -59,22 +61,8 @@ public final class SquareMatrices
         return of(s, elements);
     }
 
-    /**
-     * Identifica la struttura algebrica corretta per la matrice quadrata.
-     */
-    @SuppressWarnings("unchecked")
-    public static <K extends ScalarElement<K>> ScalarStructure<SquareMatrix<K>> getStructureFor(ScalarStructure<K> s, int size) {
-        if (s instanceof Field) {
-            return new SquareMatrixAlgebra<>((Field<K> & ScalarStructure<K>) s, size);
-        }
-        if (s instanceof Ring) {
-            return new SquareMatrixRing<>((Ring<K> & ScalarStructure<K>) s, size);
-        }
-        return new SquareMatrixSemiring<>((Semiring<K> & ScalarStructure<K>) s, size);
-    }
-
     public static <K extends ScalarElement<K>> SquareMatrix<K> identity(ScalarStructure<K> s, int size) {
-        SquareMatrixRing<K, ?> ring = (SquareMatrixRing<K, ?>) getStructureFor(s, size);
+        SquareMatrixRing<K, ?> ring = (SquareMatrixRing<K, ?>) SquareMatrixStructureFactory.getStructureFor(s, size);
         return ring.one();
     }
 }

@@ -7,14 +7,14 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.polynomial.EuclideanPolynomialRing;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialDivisionResult;
-import net.gommagomma.smfn.math.algebra.polynomial.PolynomialRing;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
+import net.gommagomma.smfn.math.algebra.polynomial.PolynomialRing;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrices;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixAlgebra;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 import net.gommagomma.smfn.math.linearalgebra.operators.CharacteristicPolynomialMapping;
 
@@ -43,8 +43,8 @@ public class PolynomialDemo
         System.out.println("Q(z) = " + qz);
 
         SquareMatrixRing<Real, RealField> M2 = new SquareMatrixRing<>(R, 2);
-        SquareMatrix<Real> A = SquareMatrices.of(R, R.of(1), R.of(2), R.of(3), R.of(4)); // M2.of(R.of(1), R.of(2), R.of(3), R.of(4));
-        SquareMatrix<Real> I = SquareMatrices.identity(R, 2);
+        SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, R.of(1), R.of(2), R.of(3), R.of(4)); // M2.of(R.of(1), R.of(2), R.of(3), R.of(4));
+        SquareMatrix<Real> I = SquareMatrixElementFactory.identity(R, 2);
         pm = PolynomialElementFactory.of(M2, I, A);
         qm = PolynomialElementFactory.of(M2, A, I);
         System.out.println("\nP(m) = " + pm);
@@ -53,8 +53,8 @@ public class PolynomialDemo
         System.out.println("Grado Q(m): " + qm.degree());
 
         SquareMatrixRing<Complex, ComplexField> M2z = new SquareMatrixRing<>(C, 2);
-        SquareMatrix<Complex> B = SquareMatrices.of(C, new Complex(2, 3), new Complex(0, 1), new Complex(1, -3), new Complex(2, -1));
-        SquareMatrix<Complex> Iz = SquareMatrices.identity(C, 2);
+        SquareMatrix<Complex> B = SquareMatrixElementFactory.of(C, new Complex(2, 3), new Complex(0, 1), new Complex(1, -3), new Complex(2, -1));
+        SquareMatrix<Complex> Iz = SquareMatrixElementFactory.identity(C, 2);
         pmz = PolynomialElementFactory.of(M2z, Iz, B);
         qmz = PolynomialElementFactory.of(M2z, B, Iz);
         System.out.println("\nP(mz) = " + pmz);
@@ -133,7 +133,7 @@ public class PolynomialDemo
         EuclideanPolynomialRing<Rational, RationalField> pRing = new EuclideanPolynomialRing<>(Q);
         SquareMatrixRing<Polynomial<Rational>, EuclideanPolynomialRing<Rational, RationalField>> polyMatrixRing = new SquareMatrixRing<>(pRing, 2);
         // M(x) = [[x+1, 1], [x, x^2]]
-        SquareMatrix<Polynomial<Rational>> D = SquareMatrices.of(pRing, PolynomialElementFactory.of(Q, 1, 1), PolynomialElementFactory.of(Q, 1), PolynomialElementFactory.of(Q, 0, 1), PolynomialElementFactory.of(Q, 0, 0, 1));
+        SquareMatrix<Polynomial<Rational>> D = SquareMatrixElementFactory.of(pRing, PolynomialElementFactory.of(Q, 1, 1), PolynomialElementFactory.of(Q, 1), PolynomialElementFactory.of(Q, 0, 1), PolynomialElementFactory.of(Q, 0, 0, 1));
         System.out.println("M(x):\n" + D);
         Polynomial<Rational> det = polyMatrixRing.determinant(D); // Det = (x+1)(x^2) - (x)(1) = x^3 + x^2 - x
         System.out.println("Det(M(x)): " + det);
