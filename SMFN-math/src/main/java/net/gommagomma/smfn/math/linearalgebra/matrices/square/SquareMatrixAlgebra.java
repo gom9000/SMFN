@@ -2,13 +2,24 @@ package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.core.structures.capabilities.InvertibleElements;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.LinearSpace;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixSpace;
 
+/**
+ * Matrici quadrate n x n sopra un campo K: uno spazio vettoriale (LinearSpace)
+ * dove, in piu', alcune matrici (quelle non singolari) sono invertibili.
+ *
+ * Non dichiara Field<SquareMatrix<K>>: un campo richiede sia la commutativita'
+ * della moltiplicazione (falsa per le matrici, n >= 2) sia un inverso per
+ * ogni elemento non nullo (falso per le matrici singolari, che sono non nulle
+ * ma non invertibili). InvertibleElements dice esattamente cosa e' vero:
+ * l'inverso esiste solo per alcuni elementi, va verificato caso per caso.
+ */
 public class SquareMatrixAlgebra<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
 extends SquareMatrixRing<K, S>
-implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S>
+implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K>>
 {
 	private final MatrixSpace<K, S> spaceDelegate;
 
@@ -20,12 +31,18 @@ implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S>
 
     @Override
     public String getName() {
-        return "Square Matrix Field (" + n + "x" + n + ") over " + scalarStructure.getName();
+        return "Square Matrix Algebra (" + n + "x" + n + ") over " + scalarStructure.getName();
+    }
+
+    @Override
+    public boolean isInvertible(SquareMatrix<K> m) {
+        return !scalarStructure.isZero(determinant(m));
     }
 
     /**
      * Calcola l'inversa della matrice.
      * Implementazione tramite matrice aumentata [A | I] e riduzione a gradini.
+     * @throws ArithmeticException se m e' singolare (non invertibile).
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -59,7 +76,7 @@ implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S>
     /**
      * Trasforma la matrice aumentata in forma RREF (Reduced Row Echelon Form).
      * Al termine, se la matrice originale era invertibile, la parte sinistra [0..n-1] 
-     * sarà l'identità e la parte destra [n..2n-1] sarà l'inversa.
+     * sar l'identit e la parte destra [n..2n-1] sar l'inversa.
      */
     private void performGaussJordan(K[] data, int rows, int cols) {
         int pivotRow = 0;
@@ -89,7 +106,7 @@ implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S>
                     K factor = spaceDelegate.getFromData(data, i, j, cols);
                     if (!scalarStructure.isZero(factor)) {
                         // Riga_i = Riga_i - (factor * Riga_pivot)
-                        // Il factor da passare a combineRowsInArray è -factor
+                        // Il factor da passare a combineRowsInArray  -factor
                         K negFactor = scalarStructure.negate(factor);
                         spaceDelegate.combineRowsInArray(data, i, pivotRow, negFactor, cols);
                     }
@@ -100,12 +117,12 @@ implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S>
     }
 
     /**
-     * In un Field, possiamo sovrascrivere il determinante di Laplace (O(n!))
-     * con l'eliminazione Gaussiana (O(n^3)), molto più efficiente.
+     * In un campo, possiamo sovrascrivere il determinante di Laplace (O(n!))
+     * con l'eliminazione Gaussiana (O(n^3)), molto pi efficiente.
      */
     @Override
     public K determinant(SquareMatrix<K> m) {
-        // Se n è piccolo, Laplace va bene, altrimenti Gauss
+        // Se n  piccolo, Laplace va bene, altrimenti Gauss
         if (n <= 3) return super.determinant(m);
         
         return calculateDeterminantViaGauss(m);
