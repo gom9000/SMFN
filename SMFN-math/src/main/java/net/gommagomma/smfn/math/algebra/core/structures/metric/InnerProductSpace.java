@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.algebra.core.structures.metric;
 
 import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Conjugable;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
@@ -9,4 +10,16 @@ public interface InnerProductSpace<V extends LinearElement<V, K>, K extends Scal
 extends NormedSpace<V, K, S>
 {
 	K innerProduct(V a, V b);
+
+	/**
+	 * Coniuga lo scalare se K supporta la coniugazione (es. Complex),
+	 * altrimenti lo restituisce inalterato
+	 */
+	@SuppressWarnings("unchecked")
+	default K conjugateIfPossible(K value) {
+		if (value instanceof Conjugable) {
+			return (K) ((Conjugable<K>) value).conjugate();
+		}
+		return value;
+	}
 }

@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.algebra.numerics;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ApproximateElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Conjugable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Sqrtable;
@@ -9,7 +10,7 @@ import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 public final class Complex
-implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, Sqrtable<Complex>
+implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, Sqrtable<Complex>, Conjugable<Complex>
 {
     private final double real;
     private final double imaginary;
@@ -38,6 +39,7 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
         return real * real + imaginary * imaginary;
     }
  
+    @Override // Conjugable impls
     public Complex conjugate()
     {
     	return new Complex(real, -imaginary);
@@ -99,7 +101,7 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
     }
 
 
-    @Override // Sqrtable impls
+    @Override // Squertable impls
     public Complex sqrt() {
         ComplexField field = ComplexField.INSTANCE;
         if (field.isZero(this)) return field.zero();

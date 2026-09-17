@@ -18,7 +18,9 @@ implements InnerProductSpace<Vector<K>, K, S>
 	public K innerProduct(Vector<K> a, Vector<K> b) {
 		K result = scalarStructure.zero();
 		for (int i = 0; i < dimension; i++) {
-			K prod = scalarStructure.multiply(a.get(i), b.get(i));
+			// Prodotto interno hermitiano: <a,b> = sum conj(a_i) * b_i
+			K conjAi = conjugateIfPossible(a.get(i));
+			K prod = scalarStructure.multiply(conjAi, b.get(i));
 			result = scalarStructure.add(result, prod);
 		}
 		return result;
