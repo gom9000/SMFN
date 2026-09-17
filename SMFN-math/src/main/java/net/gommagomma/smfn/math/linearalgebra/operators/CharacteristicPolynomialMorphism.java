@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialRing;
-import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
+import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
@@ -36,10 +36,10 @@ implements Morphism<SquareMatrix<K>, Polynomial<K>>
                 K val = matrix.get(i, j);
                 if (i == j) {
                     // Diagonale: a_ii - 1x
-                    polyData[i * n + j] = Polynomials.of(scalarStructure, val, scalarStructure.negate(one));
+                    polyData[i * n + j] = PolynomialElementFactory.of(scalarStructure, val, scalarStructure.negate(one));
                 } else {
                     // Extra: a_ij (grado 0)
-                    polyData[i * n + j] = Polynomials.of(scalarStructure, val);
+                    polyData[i * n + j] = PolynomialElementFactory.of(scalarStructure, val);
                 }
             }
         }

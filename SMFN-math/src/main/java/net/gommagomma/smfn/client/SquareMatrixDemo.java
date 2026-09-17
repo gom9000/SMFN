@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixField;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixAlgebra;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
 public class SquareMatrixDemo {
@@ -35,7 +35,7 @@ public class SquareMatrixDemo {
         
         // 2. Uso di SquareMatrixField con Reali (Inversa e Gauss)
         RealField rf = RealField.INSTANCE;
-        SquareMatrixField<Real, RealField> m2 = new SquareMatrixField<>(rf, 2);
+        SquareMatrixAlgebra<Real, RealField> m2 = new SquareMatrixAlgebra<>(rf, 2);
         Real[] dataInv = { 
             rf.of(4), rf.of(7),
             rf.of(2), rf.of(6)
@@ -55,7 +55,7 @@ public class SquareMatrixDemo {
 
         // 3. Uso di SquareMatrixField con Rational (Inversa e Gauss)
         RationalField Q = RationalField.INSTANCE;
-        SquareMatrixField<Rational, RationalField> qField = new SquareMatrixField<>(Q, 2);
+        SquareMatrixAlgebra<Rational, RationalField> qField = new SquareMatrixAlgebra<>(Q, 2);
         Rational[] dataQ = {
         		Q.of(1, 2), Q.of(1, 3),
         		Q.of(1, 1), Q.of(1, 4)
@@ -79,7 +79,7 @@ public class SquareMatrixDemo {
 
         // 4. Uso di SquareMatrixField con Complex (Inversa e Gauss)
         ComplexField C = ComplexField.INSTANCE;
-        SquareMatrixField<Complex, ComplexField> cField = new SquareMatrixField<>(C, 2);
+        SquareMatrixAlgebra<Complex, ComplexField> cField = new SquareMatrixAlgebra<>(C, 2);
         Complex[] dataA = {
         		C.of(0, 1), C.of(1, 0),
         		C.of(1, 0), C.of(0, 1)

@@ -90,7 +90,9 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
     
     @Override
     public boolean contains(Complex e) {
-        return e != null && !Double.isNaN(e.getRe()) && !Double.isInfinite(e.getRe());
+    	return e != null
+    	        && !Double.isNaN(e.getRe()) && !Double.isInfinite(e.getRe())
+    	        && !Double.isNaN(e.getIm()) && !Double.isInfinite(e.getIm());
     }
 
    @Override
@@ -100,6 +102,6 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
         double diffRe = a.getRe() - b.getRe();
         double diffIm = a.getIm() - b.getIm();
 
-        return (diffRe * diffRe + diffIm * diffIm) < (epsilon * epsilon);
+        return (diffRe * diffRe + diffIm * diffIm) < (epsilon() * epsilon());
     }
 }

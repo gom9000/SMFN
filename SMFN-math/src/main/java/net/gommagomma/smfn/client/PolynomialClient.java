@@ -11,7 +11,7 @@ import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
-import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
+import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 public class PolynomialClient
@@ -37,7 +37,7 @@ public class PolynomialClient
         RealField R = RealField.INSTANCE;
         Real[] coeffs = {new Real(-2.0), new Real(-5.0), new Real(3.0), new Real(1.5)};
 
-        Polynomial<Real> cubicPolynomial = Polynomials.of(R, coeffs);
+        Polynomial<Real> cubicPolynomial = PolynomialElementFactory.of(R, coeffs);
 
         System.out.println("Polinomio da plottare: P(x) = " + cubicPolynomial);
 

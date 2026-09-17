@@ -9,197 +9,90 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.structures.CommutativeRing;
+import net.gommagomma.smfn.math.algebra.core.structures.contracts.CommutativeRingAxiomContract;
 import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.algebra.numerics.ZnElement;
 
-@DisplayName("ZnRing: Test della struttura dell'Anello Z/nZ")
-class ZnRingTest {
+@DisplayName("ZnRing: assiomi di Anello Commutativo (Z/nZ)")
+class ZnRingTest extends CommutativeRingAxiomContract<ZnElement>
+{
+	// Modulo 7 (primo): usato per gli assiomi generici di CommutativeRing,
+	// che devono valere indipendentemente dalla primalita' del modulo.
+	private final ZnRing z7 = ZnRing.of(new SignedInt(7));
 
-    private final ZnRing Z_7 = new ZnRing(new SignedInt(7));
-    private final ZnRing Z_12 = new ZnRing(new SignedInt(12));
+	private ZnElement zn(long value) {
+		return z7.getElement(new SignedInt(value));
+	}
 
-    // Helper per creare ZnElement direttamente da Z_7
-    private ZnElement zn7(long value) {
-        return Z_7.getElement(new SignedInt(value));
-    }
+	@Override
+	protected CommutativeRing<ZnElement> structure() {
+		return z7;
+	}
 
-    // ======================================================================================
-    // 1. COSTRUTTORE E PROPRIETÀ BASE
-    // ======================================================================================
+	@Override
+	protected ZnElement a() { return zn(2); }
+	@Override
+	protected ZnElement b() { return zn(3); }
+	@Override
+	protected ZnElement c() { return zn(5); }
 
-    @Test
-    @DisplayName("Costruttore: Modulo non valido")
-    void constructorInvalidModulus() {
-        assertThrows(IllegalArgumentException.class, () -> new ZnRing(SignedInt.ZERO));
-        assertThrows(IllegalArgumentException.class, () -> new ZnRing(new SignedInt(-5)));
-    }
+	@Test
+	@DisplayName("Costruttore: modulo non valido")
+	void constructorInvalidModulus() {
+		assertThrows(IllegalArgumentException.class, () -> ZnRing.of(new SignedInt(0)));
+		assertThrows(IllegalArgumentException.class, () -> ZnRing.of(new SignedInt(-5)));
+	}
 
-    @Test
-    @DisplayName("Proprietà Statiche e Identità")
-    void basicProperties() {
-        assertEquals("Z/7Z Ring", Z_7.getName());
-        assertEquals(new SignedInt(7), Z_7.getModulus());
+	@Test
+	@DisplayName("Nome e modulo")
+	void nameAndModulus() {
+		assertEquals("Z/7Z Ring", z7.getName());
+		assertEquals(new SignedInt(7), z7.getModulus());
+	}
 
-        // Identità Additiva (Zero)
-        ZnElement zero = Z_7.additiveIdentity();
-        assertEquals(0L, zero.getValue().getValue());
-        
-        // Identità Moltiplicativa (One)
-        ZnElement one = Z_7.multiplicativeIdentity();
-        assertEquals(1L, one.getValue().getValue());
-    }
+	@Test
+	@DisplayName("Factory: getElement normalizza il valore")
+	void getElementFactory() {
+		ZnElement result = z7.getElement(new SignedInt(10)); // 10 mod 7 = 3
+		assertEquals(3L, result.getValue().getValue());
+		assertEquals(new SignedInt(7), result.getModulus());
+	}
 
-    @Test
-    @DisplayName("contains: Verifica che l'elemento appartenga all'anello")
-    void containsElements() {
-        ZnElement elementIn7 = zn7(5);
-        ZnElement elementIn12 = Z_12.getElement(new SignedInt(5));
-        
-        assertTrue(Z_7.contains(elementIn7), "Z_7 contiene i suoi elementi.");
-        assertFalse(Z_7.contains(elementIn12), "Z_7 non contiene elementi di Z_12.");
-    }
+	@Test
+	@DisplayName("Factory: of(double/long/int)")
+	void ofMethods() {
+		assertEquals(zn(3), z7.of(3.0));
+		assertEquals(zn(15), z7.of(15L));
+		assertEquals(zn(4), z7.of(4));
 
-    @Test
-    @DisplayName("Factory: getElement")
-    void getElementFactory() {
-        // La factory deve normalizzare il valore
-        ZnElement result = Z_7.getElement(new SignedInt(10)); // 10 mod 7 = 3
-        assertEquals(3L, result.getValue().getValue());
-        assertEquals(new SignedInt(7), result.getModulus());
-    }
+		assertThrows(IllegalArgumentException.class, () -> z7.of(Double.MAX_VALUE));
+		assertThrows(IllegalArgumentException.class, () -> z7.of(3.5));
+	}
 
-    @Test
-    @DisplayName("Factory: of(double/long/int)")
-    void ofMethods() {
-        assertEquals(zn7(3), Z_7.of(3.0));
-        assertEquals(zn7(15), Z_7.of(15L));
-        assertEquals(zn7(4), Z_7.of(4));
-        
-        // Test overflow (deve delegare a SignedInt e lanciare)
-        assertThrows(ArithmeticException.class, () -> Z_7.of(Double.MAX_VALUE));
-        
-        // Test non intero
-        assertThrows(IllegalArgumentException.class, () -> Z_7.of(3.5));
-    }
+	// Nota: ZnRing e' final e implementa solo CommutativeRing, mai Field --
+	// come per NaturalSemiring, e' una garanzia data dal compilatore in base
+	// alla dichiarazione della classe, non qualcosa da verificare a runtime.
+	// Quello che vale davvero la pena verificare e' la CONSEGUENZA pratica
+	// di questa scelta: con un modulo non primo esistono divisori dello zero.
+	@Nested
+	@DisplayName("Onesta' algebrica: conseguenze del non dichiararsi Field")
+	class FieldHonestyChecks
+	{
+		private final ZnRing z12 = ZnRing.of(new SignedInt(12)); // 12 non e' primo
 
-    // ======================================================================================
-    // 2. VERIFICA DEGLI ASSIOMI DI ANELLO
-    // ======================================================================================
-    
-    private final ZnElement a = zn7(2); // [2]
-    private final ZnElement b = zn7(3); // [3]
-    private final ZnElement c = zn7(5); // [5]
-    private final ZnElement ZERO = Z_7.additiveIdentity();
-    private final ZnElement ONE = Z_7.multiplicativeIdentity();
+		@Test
+		@DisplayName("Con modulo non primo esistono divisori dello zero: nessun inverso funzionante")
+		void nonPrimeModulusHasZeroDivisors() {
+			// In Z/12Z, 4 * 3 = 12 = 0, pur essendo entrambi non nulli:
+			// un vero campo non potrebbe avere questa proprieta'.
+			ZnElement four = z12.getElement(new SignedInt(4));
+			ZnElement three = z12.getElement(new SignedInt(3));
+			ZnElement product = z12.multiply(four, three);
 
-    @Nested
-    @DisplayName("Assiomi Additivi (Gruppo Commutativo)")
-    class AdditiveAxioms {
-        
-        @Test
-        @DisplayName("A1: Chiusura (Verificata indirettamente da ZnElement)")
-        void closure() {
-            ZnElement result = a.add(b); // [2] + [3] = [5]
-            assertTrue(Z_7.contains(result));
-            assertEquals(5L, result.getValue().getValue());
-
-            ZnElement result2 = zn7(5).add(zn7(4)); // [5] + [4] = [9] = [2] mod 7
-            assertTrue(Z_7.contains(result2));
-            assertEquals(2L, result2.getValue().getValue());
-        }
-
-        @Test
-        @DisplayName("A2: Associatività")
-        void associativity() {
-            // ([2] + [3]) + [5] = [5] + [5] = [10] = [3]
-            ZnElement left = a.add(b).add(c);
-            // [2] + ([3] + [5]) = [2] + [8] = [2] + [1] = [3]
-            ZnElement right = a.add(b.add(c));
-            assertEquals(left, right, "L'addizione deve essere associativa.");
-        }
-        
-        @Test
-        @DisplayName("A3: Identità Additiva (Zero)")
-        void identity() {
-            assertEquals(a, a.add(ZERO), "a + 0 == a");
-            assertEquals(a, ZERO.add(a), "0 + a == a");
-        }
-        
-        @Test
-        @DisplayName("A4: Inverso Additivo (Negate)")
-        void inverse() {
-            ZnElement inverseA = a.negate(); // -[2] = [5] mod 7
-            assertEquals(ZERO, a.add(inverseA), "a + (-a) == 0");
-            assertEquals(ZERO, inverseA.add(a), "(-a) + a == 0");
-        }
-        
-        @Test
-        @DisplayName("A5: Commutatività")
-        void commutativity() {
-            assertEquals(a.add(b), b.add(a), "L'addizione deve essere commutativa.");
-        }
-    }
-
-    @Nested
-    @DisplayName("Assiomi Moltiplicativi (Monoide Commutativo)")
-    class MultiplicativeAxioms {
-        
-        @Test
-        @DisplayName("M1: Chiusura")
-        void closure() {
-            ZnElement result = a.multiply(b); // [2] * [3] = [6]
-            assertTrue(Z_7.contains(result));
-            assertEquals(6L, result.getValue().getValue());
-
-            ZnElement result2 = zn7(4).multiply(zn7(4)); // [4] * [4] = [16] = [2] mod 7
-            assertTrue(Z_7.contains(result2));
-            assertEquals(2L, result2.getValue().getValue());
-        }
-
-        @Test
-        @DisplayName("M2: Associatività")
-        void associativity() {
-            // ([2] * [3]) * [5] = [6] * [5] = [30] = [2] mod 7
-            ZnElement left = a.multiply(b).multiply(c);
-            // [2] * ([3] * [5]) = [2] * [15] = [2] * [1] = [2] mod 7
-            ZnElement right = a.multiply(b.multiply(c));
-            assertEquals(left, right, "La moltiplicazione deve essere associativa.");
-        }
-        
-        @Test
-        @DisplayName("M3: Identità Moltiplicativa (Uno)")
-        void identity() {
-            assertEquals(a, a.multiply(ONE), "a * 1 == a");
-            assertEquals(a, ONE.multiply(a), "1 * a == a");
-        }
-        
-        @Test
-        @DisplayName("M4: Commutatività")
-        void commutativity() {
-            assertEquals(a.multiply(b), b.multiply(a), "La moltiplicazione deve essere commutativa.");
-        }
-    }
-
-    @Nested
-    @DisplayName("Assiomi di Collegamento")
-    class LinkageAxioms {
-        
-        @Test
-        @DisplayName("D: Distributività")
-        void distributivity() {
-            // [2] * ([3] + [5]) = [2] * [8] = [2] * [1] = [2] mod 7
-            ZnElement left = a.multiply(b.add(c));
-            // ([2] * [3]) + ([2] * [5]) = [6] + [10] = [6] + [3] = [9] = [2] mod 7
-            ZnElement right = a.multiply(b).add(a.multiply(c));
-            
-            assertEquals(left, right, "La moltiplicazione deve essere distributiva sull'addizione.");
-        }
-        
-        @Test
-        @DisplayName("Assorbimento di Zero")
-        void zeroAbsorption() {
-            assertEquals(ZERO, a.multiply(ZERO), "a * 0 == 0");
-            assertEquals(ZERO, ZERO.multiply(a), "0 * a == 0");
-        }
-    }
+			assertTrue(z12.isZero(product), "4 * 3 deve annullarsi modulo 12, pur essendo entrambi non nulli");
+			assertFalse(z12.isZero(four));
+			assertFalse(z12.isZero(three));
+		}
+	}
 }

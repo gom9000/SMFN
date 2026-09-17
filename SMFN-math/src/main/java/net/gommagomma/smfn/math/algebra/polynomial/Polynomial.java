@@ -62,7 +62,8 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
 
     @Override
     public Polynomial<K> copy() {
-        return new Polynomial<>(polynomialStructure, scalarStructure, coefficients);
+        // Essendo immutabile, possiamo restituire this: non c' stato da duplicare.
+        return this;
     }
 
     @Override

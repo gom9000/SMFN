@@ -1,85 +1,58 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.numerics.Real;
-
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.core.structures.contracts.FieldAxiomContract;
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 
-public class RealFieldTest {
+@DisplayName("RealField: assiomi di Campo (R)")
+public class RealFieldTest extends FieldAxiomContract<Real>
+{
+	private final RealField realField = RealField.INSTANCE;
 
-    private final Field<Real> realField = RealField.getInstance();
+	@Override
+	protected Field<Real> structure() {
+		return realField;
+	}
 
-    @Test
-    void testGetInstanceIsSingleton() {
-        assertSame(RealField.INSTANCE, realField);
-        assertSame(RealField.getInstance(), realField);
-    }
+	@Override
+	protected Real a() { return new Real(10.0); }
+	@Override
+	protected Real b() { return new Real(-2.0); }
+	@Override
+	protected Real c() { return new Real(4.0); }
 
-    @Test
-    void testName() {
-        assertEquals("Real Field (R)", realField.getName());
-    }
+	@Test
+	void isSingleton() {
+		assertSame(RealField.INSTANCE, realField);
+	}
 
-    @Test
-    void testIdentities() {
-        // Additive Identity (Zero)
-        assertTrue(realField.additiveIdentity().isMathematicallyEqualTo(Real.ZERO));
+	@Test
+	void name() {
+		assertEquals("Real Field (R)", realField.getName());
+	}
 
-        // Multiplicative Identity (One)
-        assertTrue(realField.multiplicativeIdentity().isMathematicallyEqualTo(Real.ONE));
-    }
-    
-    @Test
-    void testNumericFactoryMethods() {
-        // From double
-        Real fromDouble = realField.of(3.14159);
-        assertTrue(fromDouble.isMathematicallyEqualTo(new Real(3.14159)));
+	@Test
+	void numericFactoryMethods() {
+		assertTrue(realField.areEqual(realField.of(3.14159), new Real(3.14159)));
+		assertTrue(realField.areEqual(realField.of(1234567890123L), new Real(1234567890123.0)));
+		assertTrue(realField.areEqual(realField.of(-42), new Real(-42.0)));
+	}
 
-        // From long
-        Real fromLong = realField.of(1234567890123L);
-        assertTrue(fromLong.isMathematicallyEqualTo(new Real(1234567890123.0)));
+	@Test
+	void containsRejectsNonFiniteValues() {
+		assertTrue(realField.contains(new Real(1.0)));
+		assertTrue(realField.contains(realField.zero()));
 
-        // From int
-        Real fromInt = realField.of(-42);
-        assertTrue(fromInt.isMathematicallyEqualTo(new Real(-42.0)));
-    }
-    
-    @Test
-    void testContains() {
-        // Valid real numbers
-        assertTrue(realField.contains(new Real(1.0)));
-        assertTrue(realField.contains(Real.ZERO));
-        assertTrue(realField.contains(new Real(-99.9)));
-
-        // Invalid cases (NaN and Infinity)
-        assertFalse(realField.contains(new Real(Double.NaN)));
-        assertFalse(realField.contains(new Real(Double.POSITIVE_INFINITY)));
-        assertFalse(realField.contains(new Real(Double.NEGATIVE_INFINITY)));
-        assertFalse(realField.contains(null));
-    }
-
-    @Test
-    void testFieldAxioms() {
-        Real a = new Real(10.0);
-        Real b = new Real(-2.0);
-        Real zero = realField.additiveIdentity();
-        Real one = realField.multiplicativeIdentity();
-
-        // Additive Inverse: a + (-a) = 0
-        assertTrue(a.add(a.negate()).isMathematicallyEqualTo(zero));
-
-        // Multiplicative Inverse: a * a^-1 = 1
-        assertTrue(a.multiply(a.inverse()).isMathematicallyEqualTo(one));
-
-        // Division Test: a / b = a * b^-1
-        Real divisionResult = a.divide(b);
-        Real inverseMultiplyResult = a.multiply(b.inverse());
-        assertTrue(divisionResult.isMathematicallyEqualTo(inverseMultiplyResult));
-
-        // Zero test for division
-        assertThrows(ArithmeticException.class, () -> a.divide(zero));
-    }
+		assertFalse(realField.contains(new Real(Double.NaN)));
+		assertFalse(realField.contains(new Real(Double.POSITIVE_INFINITY)));
+		assertFalse(realField.contains(new Real(Double.NEGATIVE_INFINITY)));
+	}
 }

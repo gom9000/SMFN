@@ -1,108 +1,81 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.gommagomma.smfn.math.algebra.core.structures.Field;
-import net.gommagomma.smfn.math.algebra.numerics.Rational;
-
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.core.structures.contracts.FieldAxiomContract;
+import net.gommagomma.smfn.math.algebra.numerics.Rational;
 
-public class RationalFieldTest {
+@DisplayName("RationalField: assiomi di Campo (Q)")
+public class RationalFieldTest extends FieldAxiomContract<Rational>
+{
+	private final RationalField rationalField = RationalField.INSTANCE;
 
-    private final Field<Rational> rationalField = RationalField.getInstance();
+	@Override
+	protected Field<Rational> structure() {
+		return rationalField;
+	}
 
-    @Test
-    void testGetInstanceIsSingleton() {
-        assertSame(RationalField.INSTANCE, rationalField);
-        assertSame(RationalField.getInstance(), rationalField);
-    }
+	@Override
+	protected Rational a() { return new Rational(3, 4); }
+	@Override
+	protected Rational b() { return new Rational(-1, 2); }
+	@Override
+	protected Rational c() { return new Rational(2, 3); }
 
-    @Test
-    void testName() {
-        assertEquals("Rational Field (Q)", rationalField.getName());
-    }
+	@Test
+	void isSingleton() {
+		assertSame(RationalField.INSTANCE, rationalField);
+	}
 
-    @Test
-    void testIdentities() {
-        // Additive Identity (Zero)
-        assertTrue(rationalField.additiveIdentity().isMathematicallyEqualTo(Rational.ZERO));
+	@Test
+	void name() {
+		assertEquals("Rational Field (Q)", rationalField.getName());
+	}
 
-        // Multiplicative Identity (One)
-        assertTrue(rationalField.multiplicativeIdentity().isMathematicallyEqualTo(Rational.ONE));
-    }
-    
-    @Test
-    void testContains() {
-        assertTrue(rationalField.contains(new Rational(1, 2)));
-        assertFalse(rationalField.contains(null));
-    }
+	@Test
+	void containsRejectsNull() {
+		assertTrue(rationalField.contains(new Rational(1, 2)));
+		assertFalse(rationalField.contains(null));
+	}
 
-    // --- Numeric Factory Tests ---
-    
-    @Test
-    void testOfFromLongAndInt() {
-        // From long
-        Rational fromLong = rationalField.of(123L);
-        assertTrue(fromLong.isMathematicallyEqualTo(new Rational(123, 1)));
+	@Test
+	void ofFromLongAndInt() {
+		assertEquals(new Rational(123, 1), rationalField.of(123L));
+		assertEquals(new Rational(-42, 1), rationalField.of(-42));
+	}
 
-        // From int
-        Rational fromInt = rationalField.of(-42);
-        assertTrue(fromInt.isMathematicallyEqualTo(new Rational(-42, 1)));
-    }
-    
-    @Test
-    void testOfFromDoubleIntegerValues() {
-        // Integer value
-        Rational r1 = rationalField.of(10.0);
-        assertTrue(r1.isMathematicallyEqualTo(new Rational(10, 1)));
-        
-        // Large integer value (testing long conversion)
-        Rational r2 = rationalField.of(1234567890123.0);
-        assertTrue(r2.isMathematicallyEqualTo(new Rational(1234567890123L, 1)));
-        
-        // Zero
-        assertTrue(rationalField.of(0.0).isMathematicallyEqualTo(Rational.ZERO));
-    }
+	@Test
+	void ofFromDoubleIntegerValues() {
+		assertEquals(new Rational(10, 1), rationalField.of(10.0));
+		assertEquals(new Rational(1234567890123L, 1), rationalField.of(1234567890123.0));
+		assertEquals(rationalField.zero(), rationalField.of(0.0));
+	}
 
-    @Test
-    void testOfFromDoubleFractionalValues() {
-        // 0.5 (1/2)
-        Rational r_half = rationalField.of(0.5);
-        assertTrue(r_half.isMathematicallyEqualTo(new Rational(1, 2)), 
-                   "0.5 conversion failed: " + r_half.toString());
+	@Test
+	void ofFromDoubleFractionalValues() {
+		assertEquals(new Rational(1, 2), rationalField.of(0.5));
+		assertEquals(new Rational(3, 4), rationalField.of(0.75));
+		assertEquals(new Rational(-1, 8), rationalField.of(-0.125));
 
-        // 0.75 (3/4)
-        Rational r_3_4 = rationalField.of(0.75);
-        assertTrue(r_3_4.isMathematicallyEqualTo(new Rational(3, 4)),
-                   "0.75 conversion failed: " + r_3_4.toString());
+		// 0.1 (decimale) non e' rappresentabile esattamente in binario: verifichiamo
+		// che venga preservata la rappresentazione IEEE 754 esatta, non un arrotondamento decimale.
+		Rational r_0_1 = rationalField.of(0.1);
+		assertEquals(3602879701896397L, r_0_1.getNumerator());
+		assertEquals(36028797018963968L, r_0_1.getDenominator());
+	}
 
-        // -0.125 (-1/8)
-        Rational r_neg_1_8 = rationalField.of(-0.125);
-        assertTrue(r_neg_1_8.isMathematicallyEqualTo(new Rational(-1, 8)),
-                   "-0.125 conversion failed: " + r_neg_1_8.toString());
-
-        // Value that requires full IEEE 754 logic and reduction
-        // 0.1 (decimal) is 0.0001100110011... (binary), represented as 3602879701896397/36028797018963968
-        // We only check if it is reduced and correctly derived from the double's floating point representation.
-        double d_0_1 = 0.1;
-        Rational r_0_1 = rationalField.of(d_0_1);
-        assertEquals(3602879701896397L, r_0_1.getNumerator());
-        assertEquals(36028797018963968L, r_0_1.getDenominator());
-        // Note: The denominator should be 2^55, but the reduction is already done in the constructor.
-        // The check here is just for the specific value representation of 0.1
-    }
-    
-    @Test
-    void testOfFromDoubleInvalid() {
-        // NaN, Infinity
-        assertThrows(IllegalArgumentException.class, () -> rationalField.of(Double.NaN));
-        assertThrows(IllegalArgumentException.class, () -> rationalField.of(Double.POSITIVE_INFINITY));
-
-        // Overflow due to large exponent in IEEE 754 representation
-        // The implementation has a limit on exponent magnitude for long denominator shift (powerOfTwo > 62)
-        // This is a difficult test to trigger precisely without manipulating bits, but we check the exception type.
-        // A value close to Double.MIN_VALUE requires a huge power of two in the denominator.
-        assertThrows(ArithmeticException.class, () -> rationalField.of(Double.MIN_VALUE / 1000.0)); 
-    }
+	@Test
+	void ofFromDoubleInvalid() {
+		assertThrows(IllegalArgumentException.class, () -> rationalField.of(Double.NaN));
+		assertThrows(IllegalArgumentException.class, () -> rationalField.of(Double.POSITIVE_INFINITY));
+		assertThrows(ArithmeticException.class, () -> rationalField.of(Double.MIN_VALUE));
+	}
 }

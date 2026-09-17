@@ -99,7 +99,7 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
     }
 
 
-    @Override // Squertable impls
+    @Override // Sqrtable impls
     public Complex sqrt() {
         ComplexField field = ComplexField.INSTANCE;
         if (field.isZero(this)) return field.zero();

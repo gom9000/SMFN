@@ -63,6 +63,11 @@ implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }
         if (exponent == 0) { return ring.one(); }
+        if (exponent < 0) {
+            if (this.value == 1L) return ring.one();
+            if (this.value == -1L) return (exponent % 2 == 0) ? ring.one() : new SignedInt(-1);
+            throw new ArithmeticException("Cannot represent a negative power of " + this.value + " as a SignedInt.");
+        }
 
         long base = this.value;
         long result = 1;

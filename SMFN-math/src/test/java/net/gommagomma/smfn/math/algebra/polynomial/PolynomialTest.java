@@ -1,75 +1,79 @@
 package net.gommagomma.smfn.math.algebra.polynomial;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.util.TreeMap;
 
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.linearalgebra.real.RealMatrix;
-import net.gommagomma.smfn.math.linearalgebra.core.structures.specialized.RealMatrixRing;
 
-class PolynomialTest {
+@DisplayName("Polynomial<K>: comportamento dell'elemento (normalizzazione, grado, uguaglianza)")
+class PolynomialTest
+{
+	private final RealField R = RealField.INSTANCE;
 
-    private final RealField R = RealField.getInstance();
+	@Test
+	@DisplayName("La normalizzazione scarta gli zeri finali e riduce il grado")
+	void normalizationDropsTrailingZeros() {
+		Polynomial<Real> p = PolynomialElementFactory.of(R, List.of(R.of(1.0), R.of(2.0), R.of(0.0), R.of(0.0)));
+		assertEquals(1, p.degree());
+	}
 
-    @Test
-    void testScalarPolynomialOperations() {
-        // Creiamo P(x) = x + 2
-        TreeMap<Integer, Real> coeffs1 = new TreeMap<>();
-        coeffs1.put(1, R.of(1.0));
-        coeffs1.put(0, R.of(2.0));
-        GeneralPolynomial<Real> p1 = new GeneralPolynomial<>(coeffs1, R);
+	@Test
+	@DisplayName("Il polinomio nullo ha grado -1")
+	void zeroPolynomialHasDegreeMinusOne() {
+		Polynomial<Real> zero = PolynomialElementFactory.of(R, List.of());
+		assertEquals(-1, zero.degree());
+		assertTrue(R.areEqual(zero.getCoefficient(0), R.zero()));
+	}
 
-        // Creiamo Q(x) = x - 2
-        TreeMap<Integer, Real> coeffs2 = new TreeMap<>();
-        coeffs2.put(1, R.of(1.0));
-        coeffs2.put(0, R.of(-2.0));
-        GeneralPolynomial<Real> p2 = new GeneralPolynomial<>(coeffs2, R);
+	@Test
+	@DisplayName("getCoefficient oltre il grado restituisce zero, non un errore")
+	void getCoefficientOutOfRangeReturnsZero() {
+		Polynomial<Real> p = PolynomialElementFactory.of(R, 1.0, 2.0); // grado 1
+		assertTrue(R.areEqual(p.getCoefficient(5), R.zero()));
+		assertTrue(R.areEqual(p.getCoefficient(-1), R.zero()));
+	}
 
-        // Test Moltiplicazione: (x + 2)(x - 2) = x^2 - 4
-        GeneralPolynomial<Real> product = p1.multiply(p2);
-        
-        assertEquals(2, product.degree());
-        assertTrue(product.getCoefficient(2).isMathematicallyEqualTo(R.of(1.0)));
-        assertTrue(product.getCoefficient(1).isMathematicallyEqualTo(R.zero()));
-        assertTrue(product.getCoefficient(0).isMathematicallyEqualTo(R.of(-4.0)));
+	@Test
+	@DisplayName("equals/hashCode dipendono solo dai coefficienti normalizzati")
+	void equalsAndHashCode() {
+		Polynomial<Real> p1 = PolynomialElementFactory.of(R, 1.0, 2.0);
+		Polynomial<Real> p2 = PolynomialElementFactory.of(R, 1.0, 2.0);
+		Polynomial<Real> p3 = PolynomialElementFactory.of(R, 1.0, 2.0, 0.0); // stesso valore, coefficiente finale nullo
 
-        // Test Valutazione: P(3) = 3 + 2 = 5
-        Real result = p1.evaluate(R.of(3.0));
-        assertTrue(result.isMathematicallyEqualTo(R.of(5.0)));
-    }
+		assertEquals(p1, p2);
+		assertEquals(p1.hashCode(), p2.hashCode());
+		assertEquals(p1, p3, "Uno zero finale non deve cambiare l'uguaglianza dopo la normalizzazione");
 
-    @Test
-    void testMatrixPolynomialEvaluation() {
-        int n = 2;
-        RealMatrixRing matrixRing = new RealMatrixRing(n);
-        
-        // Creiamo P(x) = x^2 (Polinomio a coefficienti matriciali)
-        // Per testare P(A) = A^2, i coefficienti devono essere matrici.
-        // a2 = I, a1 = 0, a0 = 0
-        TreeMap<Integer, RealMatrix> matrixCoeffs = new TreeMap<>();
-        matrixCoeffs.put(2, matrixRing.getIdentity()); 
-        
-        GeneralPolynomial<RealMatrix> poly = new GeneralPolynomial<>(matrixCoeffs, matrixRing);
+		Polynomial<Real> different = PolynomialElementFactory.of(R, 1.0, 3.0);
+		assertFalse(p1.equals(different));
+	}
 
-        // Creiamo una matrice A = [[1, 2], [3, 4]]
-        double[][] data = {{1, 2}, {3, 4}};
-        RealMatrix A = matrixRing.createMatrix(data);
+	@Test
+	@DisplayName("copy() restituisce la stessa istanza, essendo Polynomial immutabile")
+	void copyReturnsThis() {
+		Polynomial<Real> p = PolynomialElementFactory.of(R, 1.0, 2.0);
+		assertSame(p, p.copy());
+	}
 
-        // Valutiamo P(A) -> dovrebbe restituire A * A
-        RealMatrix result = poly.evaluate(A);
-        RealMatrix expected = A.multiply(A);
+	@Test
+	@DisplayName("toString produce la forma leggibile dal grado piu' alto al piu' basso")
+	void toStringFormat() {
+		Polynomial<Real> p = PolynomialElementFactory.of(R, 1.0, 1.0); // 1 + 1x
+		assertEquals("(1.0)x + (1.0)", p.toString());
+	}
 
-        assertTrue(result.isMathematicallyEqualTo(expected), 
-            "P(A) con P(x)=x^2 dovrebbe essere uguale ad A*A");
-    }
-
-    @Test
-    void testZeroPolynomial() {
-        GeneralPolynomial<Real> p = new GeneralPolynomial<>(new TreeMap<>(), R);
-        assertTrue(p.isZero());
-        assertEquals(-1, p.degree());
-        assertTrue(p.evaluate(R.of(10.0)).isMathematicallyEqualTo(R.zero()));
-    }
+	@Test
+	@DisplayName("toString del polinomio nullo e' \"0\"")
+	void toStringOfZero() {
+		Polynomial<Real> zero = PolynomialElementFactory.of(R, List.of());
+		assertEquals("0", zero.toString());
+	}
 }

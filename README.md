@@ -9,16 +9,17 @@ net.gommagomma.smfn/
 |   |   |-- core/
 |   |   |   |-- elements/                   (...)
 |   |   |   |   |-- tensors/                (TensorElement)
-|   |   |   |   \-- capabilities/           (Absolutable,Exponentiable,Normable,Sqrtable,Orderable,Differentiable,Integrable)
+|   |   |   |   \-- capabilities/           (Absolutable,Exponentiable,Normable,Sqrtable,Orderable)
+|   |   |   |   \-- factories/           	  (NumericFactory,CompositeElementFactory)
 |   |   |   |-- structures/                 (AdditiveMonoid,MultiplicativeMonoid,ComutativeMultiplicativeMonoid,Semiring,Ring,CommutativeRing,Group, AbelianGroup,Field)
 |   |   |   |   \-- capabilities/           (ApproximateStructure,ExactStructure,NumericFactory)
 |   |   |-- numerics/                       (Natural, Signedint, ZnElement, Rational, Real, Complex)
 |   |   |-- structures/                     (NaturalSemiring, IntegerRing, ZnRing, RationalField, RealField, ComplexField)
 |   |   \-- polynomial/
 |   |-- linearalgebra                       # Vettori, Matrici e Spazi
-|   |   |-- core                   		  # Interfacce per Vettori, Matrici, Spazi
-|   |   |   |-- elements/                   (...)
-|   |   |   \-- structures/                 (...)
+|   |   |-- operators/                      # (CharacteristicPolynomialMorphism)
+|   |   |-- matrices/                       # (...)
+|   |   \-- vectors/                        # (...)
 |   |-- geometry/								  # (GeometryEntity, Point, Circle, Ellipse)
 |   |-- analysis/                           # Calcolo (Funzioni, Derivate, Integrali, Risolutori Numerici)
 |   |   |-- core								  # core interface per functionals, operators, problems, solvers
@@ -112,10 +113,6 @@ net.gommagomma.smfn/
 - interface ExactStructure<K extends ExactElement<K>> extends ScalarStructure<K> {	@Override default boolean isExact() { return true; } @Override  default boolean areEqual(K a, K b) { if (a == b) return true; if (a == null || b == null) return false;return a.equals(b); }	}
 - interface ApproximateStructure<K extends ApproximateElement<K>> extends ScalarStructure<K> {  @Override default boolean isExact() { return false; }  double epsilon();  }}
 
-- interface SymbolicDifferentiationProvider<E extends AlgebraicElement<E>>{  E derivative(E element);}
-- interface SymbolicIntegrationProvider<E extends AlgebraicElement<E>, K extends ScalarElement<K>>{ E integrate(E element, K constant);}
-- interface EvaluationProvider<E, I, O>{ O evaluate(E element, I input);}
-
 ### net.gommagomma.smfn.math.algebra.numerics:
 - final class Natural implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural> {}
 - final class SignedInt implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>, Exponentiable<SignedInt> {}
@@ -135,9 +132,9 @@ net.gommagomma.smfn/
 ### net.gommagomma.smfn.math.algebra.polynomial:
 - final class Polynomial<K extends ScalarElement<K>> implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>> {}
 - class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>>, CompositeElementFactory<Polynomial<K>, List<K>> {}
-- class PolynomialRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends PolynomialSemiring<K, S> implements Ring<Polynomial<K>>, SymbolicDifferentiationProvider<Polynomial<K>> {}
+- class PolynomialRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends PolynomialSemiring<K, S> implements Ring<Polynomial<K>> {}
 - class CommutativePolynomialRing<K extends ScalarElement<K>, S extends CommutativeRing<K> & ScalarStructure<K>> extends PolynomialRing<K, S> implements CommutativeRing<Polynomial<K>> {}
-- class EuclideanPolynomialRing<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends CommutativePolynomialRing<K, S> implements EuclideanDomain<Polynomial<K>, Natural>, SymbolicIntegrationProvider<Polynomial<K>, K> {}
+- class EuclideanPolynomialRing<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends CommutativePolynomialRing<K, S> implements EuclideanDomain<Polynomial<K>, Natural> {}
 - final class PolynomialDivisionResult<K extends ScalarElement<K>> {}
 - final class Polynomials {}
 
@@ -161,15 +158,11 @@ net.gommagomma.smfn/
 - final class SquareMatrix<K extends ScalarElement<K>> implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, TensorElement<SquareMatrix<K>, K> { private final Matrix<K> internalMatrix; private final ScalarStructure<SquareMatrix<K>> structure;}
 - class SquareMatrixSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarStructure<SquareMatrix<K>>, CompositeElementFactory<SquareMatrix<K>, K[]> {}
 - class SquareMatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> extends SquareMatrixSemiring<K, S> implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S> {}
-- class SquareMatrixField<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends SquareMatrixRing<K, S> implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S> {}
+- class SquareMatrixAlgebra<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>> extends SquareMatrixRing<K, S> implements Field<SquareMatrix<K>>, LinearSpace<SquareMatrix<K>, K, S> {}
 - final class SquareMatrices {}
 
 ### net.gommagomma.smfn.math.linearalgebra.operators:
 - class CharacteristicPolynomialMorphism<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>> implements Morphism<SquareMatrix<K>, Polynomial<K>> {}
-
-// ### net.gommagomma.smfn.math.linearalgebra.core.factories:
-//- interface VectorElementFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>>{ V createVector(K[] data);  V createVector(double[] data);  V createVector(long[] data);  V createVector(int[] data);  V createZeroVector(int dimension);}
-//- interface MatrixElementFactory<K extends SemiringElement<K>, V extends SemimoduleElement<K, V>, M extends SemiringMatrixElement<K, V, M>>{ M createMatrix(K[][] data); 	M createMatrix(double[][] data);M createMatrix(long[][] data);	M createMatrix(int[][] data);	M createZeroMatrix(int rows, int cols);}
 
 // ### net.gommagomma.smfn.math.linearalgebra.core.operators:
 // - interface LinearMapping<K, V, M extends LinearMapping<K, V, M>> extends Scalable<K, M>, Morphism<V, V> {	default V transform(V vector) {	return apply(vector);	}}

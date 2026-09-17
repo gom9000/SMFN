@@ -52,7 +52,10 @@ implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural>
     	if (semiring.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }
-        if (exponent == 0) { return semiring.one(); }
+        if (exponent == 0 || this.value == 1L) { return semiring.one(); }
+        if (exponent < 0) {
+            throw new ArithmeticException("Cannot represent a negative power of " + this.value + " as a Natural number.");
+        }
 
         long base = this.value;
         long result = 1;

@@ -8,13 +8,13 @@ import net.gommagomma.smfn.math.algebra.polynomial.EuclideanPolynomialRing;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialDivisionResult;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialRing;
-import net.gommagomma.smfn.math.algebra.polynomial.Polynomials;
+import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrices;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixField;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixAlgebra;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 import net.gommagomma.smfn.math.linearalgebra.operators.CharacteristicPolynomialMorphism;
 
@@ -32,21 +32,21 @@ public class PolynomialDemo
     public static void main(String[] args) {
         System.out.println("=== POLYNOMIALS DEMO ===\n");
 
-        p = Polynomials.of(R, -1.0, 0.0, 1.0); // -1 + 0x + 1x^2
-        q = Polynomials.of(R, -1.0, 1.0);      // -1 + 1x
+        p = PolynomialElementFactory.of(R, -1.0, 0.0, 1.0); // -1 + 0x + 1x^2
+        q = PolynomialElementFactory.of(R, -1.0, 1.0);      // -1 + 1x
         System.out.println("P(x) = " + p);
         System.out.println("Q(x) = " + q);
 
-        pz = Polynomials.of(C, new Complex(0, 1),  new Complex(2, 0), new Complex(1, 1)); 
-        qz = Polynomials.of(C, new Complex(1, -1), new Complex(1, 0));
+        pz = PolynomialElementFactory.of(C, new Complex(0, 1),  new Complex(2, 0), new Complex(1, 1)); 
+        qz = PolynomialElementFactory.of(C, new Complex(1, -1), new Complex(1, 0));
         System.out.println("P(z) = " + pz);
         System.out.println("Q(z) = " + qz);
 
         SquareMatrixRing<Real, RealField> M2 = new SquareMatrixRing<>(R, 2);
         SquareMatrix<Real> A = SquareMatrices.of(R, R.of(1), R.of(2), R.of(3), R.of(4)); // M2.of(R.of(1), R.of(2), R.of(3), R.of(4));
         SquareMatrix<Real> I = SquareMatrices.identity(R, 2);
-        pm = Polynomials.of(M2, I, A);
-        qm = Polynomials.of(M2, A, I);
+        pm = PolynomialElementFactory.of(M2, I, A);
+        qm = PolynomialElementFactory.of(M2, A, I);
         System.out.println("\nP(m) = " + pm);
         System.out.println("\nQ(m) = " + qm);
         System.out.println("Grado P(m): " + pm.degree());
@@ -55,8 +55,8 @@ public class PolynomialDemo
         SquareMatrixRing<Complex, ComplexField> M2z = new SquareMatrixRing<>(C, 2);
         SquareMatrix<Complex> B = SquareMatrices.of(C, new Complex(2, 3), new Complex(0, 1), new Complex(1, -3), new Complex(2, -1));
         SquareMatrix<Complex> Iz = SquareMatrices.identity(C, 2);
-        pmz = Polynomials.of(M2z, Iz, B);
-        qmz = Polynomials.of(M2z, B, Iz);
+        pmz = PolynomialElementFactory.of(M2z, Iz, B);
+        qmz = PolynomialElementFactory.of(M2z, B, Iz);
         System.out.println("\nP(mz) = " + pmz);
         System.out.println("\nQ(mz) = " + qmz);
 
@@ -105,8 +105,8 @@ public class PolynomialDemo
         System.out.println("Verifica (pz == qz*Q + R) = " + PZ.add(PZ.multiply(qz, rz.quotient()), rz.remainder()) + " : "  + pz.equals(check2));
 
         System.out.println("\n--- Euclidean Division (SquareMatrix<Complex>) ---");
-        SquareMatrixField<Complex, ComplexField> MF2z = new SquareMatrixField<>(C, 2);
-        EuclideanPolynomialRing<SquareMatrix<Complex>, SquareMatrixField<Complex, ComplexField>> c_space = new EuclideanPolynomialRing<>(MF2z);
+        SquareMatrixAlgebra<Complex, ComplexField> MF2z = new SquareMatrixAlgebra<>(C, 2);
+        EuclideanPolynomialRing<SquareMatrix<Complex>, SquareMatrixAlgebra<Complex, ComplexField>> c_space = new EuclideanPolynomialRing<>(MF2z);
         PolynomialDivisionResult<SquareMatrix<Complex>> rmz = c_space.divide(pmz, qmz);
         System.out.println("Quotient:  " + rmz.quotient());
         System.out.println("Remainder: " + rmz.remainder());
@@ -117,13 +117,13 @@ public class PolynomialDemo
 
         System.out.println("\n--- Polynomial of Polynomial (Real) ---");
     	var structureOfP = p.getStructure();
-        var polyOfPoly = Polynomials.of(structureOfP, q, p); // q + p*y
+        var polyOfPoly = PolynomialElementFactory.of(structureOfP, q, p); // q + p*y
         System.out.println("\nPolinomio Ricorsivo (K[x][y]):");
         System.out.println(polyOfPoly);
 
     	System.out.println("\n--- Polynomial of Polynomial (Complex)---");
     	var PZc = pz.getStructure();
-        var polyOfPolyc = Polynomials.of(PZc, qz, pz); // q + p*y
+        var polyOfPolyc = PolynomialElementFactory.of(PZc, qz, pz); // q + p*y
         System.out.println("\nPolinomio Ricorsivo (K[z1][z2]):");
         System.out.println(polyOfPolyc);
 
@@ -131,15 +131,15 @@ public class PolynomialDemo
         EuclideanPolynomialRing<Rational, RationalField> pRing = new EuclideanPolynomialRing<>(Q);
         SquareMatrixRing<Polynomial<Rational>, EuclideanPolynomialRing<Rational, RationalField>> polyMatrixRing = new SquareMatrixRing<>(pRing, 2);
         // M(x) = [[x+1, 1], [x, x^2]]
-        SquareMatrix<Polynomial<Rational>> D = SquareMatrices.of(pRing, Polynomials.of(Q, 1, 1), Polynomials.of(Q, 1), Polynomials.of(Q, 0, 1), Polynomials.of(Q, 0, 0, 1));
+        SquareMatrix<Polynomial<Rational>> D = SquareMatrices.of(pRing, PolynomialElementFactory.of(Q, 1, 1), PolynomialElementFactory.of(Q, 1), PolynomialElementFactory.of(Q, 0, 1), PolynomialElementFactory.of(Q, 0, 0, 1));
         System.out.println("M(x):\n" + D);
         Polynomial<Rational> det = polyMatrixRing.determinant(D); // Det = (x+1)(x^2) - (x)(1) = x^3 + x^2 - x
         System.out.println("Det(M(x)): " + det);
-        Polynomial<Rational> expectedDet = Polynomials.of(Q, 0, -1, 1, 1); // -x + x^2 + x^3
+        Polynomial<Rational> expectedDet = PolynomialElementFactory.of(Q, 0, -1, 1, 1); // -x + x^2 + x^3
         System.out.println("Verifica Determinante: " + (det.equals(expectedDet) ? "OK" : "ERRORE"));
 
         System.out.println("\n--- CAYLEY-HAMILTON test ---"); // Obiettivo: Verificare che P(M) = 0 dove P è il polinomio caratteristico di M.
-        SquareMatrixField<Rational, RationalField> qMatrixField = new SquareMatrixField<>(Q, 2);
+        SquareMatrixAlgebra<Rational, RationalField> qMatrixField = new SquareMatrixAlgebra<>(Q, 2);
         Rational[] data_M = { Q.of(1), Q.of(2),	Q.of(3), Q.of(4) };
         SquareMatrix<Rational> M = qMatrixField.of(data_M);
         Polynomial<Rational> cp = (new CharacteristicPolynomialMorphism()).evaluate(M);
@@ -155,7 +155,7 @@ public class PolynomialDemo
      * Valuta un polinomio scalare in una matrice quadrata.
      * P(M) = a_n*M^n + ... + a_1*M + a_0*I
      */
-    private static <K extends ScalarElement<K>> SquareMatrix<K> evaluateMatrixPolynomial(Polynomial<K> p, SquareMatrix<K> m, SquareMatrixRing<K, ?> ring, SquareMatrixField<K, ?> space) {
+    private static <K extends ScalarElement<K>> SquareMatrix<K> evaluateMatrixPolynomial(Polynomial<K> p, SquareMatrix<K> m, SquareMatrixRing<K, ?> ring, SquareMatrixAlgebra<K, ?> space) {
         
         int deg = p.degree();
         if (deg < 0) return ring.zero();

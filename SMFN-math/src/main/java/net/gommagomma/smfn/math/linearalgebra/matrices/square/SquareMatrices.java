@@ -65,7 +65,7 @@ public final class SquareMatrices
     @SuppressWarnings("unchecked")
     public static <K extends ScalarElement<K>> ScalarStructure<SquareMatrix<K>> getStructureFor(ScalarStructure<K> s, int size) {
         if (s instanceof Field) {
-            return new SquareMatrixField<>((Field<K> & ScalarStructure<K>) s, size);
+            return new SquareMatrixAlgebra<>((Field<K> & ScalarStructure<K>) s, size);
         }
         if (s instanceof Ring) {
             return new SquareMatrixRing<>((Ring<K> & ScalarStructure<K>) s, size);
