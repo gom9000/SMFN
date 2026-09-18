@@ -8,13 +8,19 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
+/**
+ * Rappresenta l'anello commutativo unitario degli interi (Z) strutturato come dominio euclideo.
+ * Gestisce l'aritmetica esatta a 64 bit con controllo degli overflow, le operazioni di divisione euclidea 
+ * con resto non negativo e le funzioni di fabbrica per gli elementi interi.
+ */
 public final class IntegerRing
 implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, NumericFactory<SignedInt>
 {
-	private static final SignedInt ZERO = new SignedInt(0);
-	private static final SignedInt ONE = new SignedInt(1);
+    private static final SignedInt ZERO = new SignedInt(0);
+    private static final SignedInt ONE = new SignedInt(1);
 
-	public static final IntegerRing INSTANCE = new IntegerRing();
+    /** Istanza singleton predefinita dell'anello degli interi. */
+    public static final IntegerRing INSTANCE = new IntegerRing();
     private IntegerRing() {}
 
 
@@ -23,6 +29,7 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
     @Override public SignedInt one() { return ONE; }
     @Override public SignedInt of(long value) { return new SignedInt(value); }
     @Override public SignedInt of(int value) { return new SignedInt(value); }
+    
     @Override
     public SignedInt of(double value) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
@@ -60,7 +67,7 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
     // AdditiveGroup impls
     @Override
     public SignedInt negate(SignedInt e) {
-    	if (e.getValue() == Long.MIN_VALUE) {
+        if (e.getValue() == Long.MIN_VALUE) {
             throw new ArithmeticException("Integer overflow: negation of Long.MIN_VALUE");
         }
         return new SignedInt(-e.getValue());
@@ -90,13 +97,14 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
         return new SignedInt(rem);
     }
 
-	@Override
-	public Natural degree(SignedInt e) {
-		return new Natural(Math.abs(e.getValue()));
-	}
+    @Override
+    public Natural degree(SignedInt e) {
+        return new Natural(Math.abs(e.getValue()));
+    }
 
 
-    @Override // AlgebraicStructure impls
+    // AlgebraicStructure impls
+    @Override
     public String getName()
     {
         return "Integer Ring (Z)";
@@ -105,6 +113,6 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
     @Override
     public boolean contains(SignedInt e)
     {
-    	return (e != null);
+        return (e != null);
     }
 }

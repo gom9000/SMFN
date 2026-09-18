@@ -104,18 +104,6 @@ public class PolynomialDemo
         Polynomial<Complex> check2 = c_ering.add( c_ering.multiply(qz, rz.quotient()), rz.remainder());
         System.out.println("Verifica (pz == qz*Q + R) = " + PZ.add(PZ.multiply(qz, rz.quotient()), rz.remainder()) + " : "  + pz.equals(check2));
 
-        /*
-        System.out.println("\n--- Euclidean Division (SquareMatrix<Complex>) ---");
-        SquareMatrixAlgebra<Complex, ComplexField> MF2z = new SquareMatrixAlgebra<>(C, 2);
-        EuclideanPolynomialRing<SquareMatrix<Complex>, SquareMatrixAlgebra<Complex, ComplexField>> c_space = new EuclideanPolynomialRing<>(MF2z);
-        PolynomialDivisionResult<SquareMatrix<Complex>> rmz = c_space.divide(pmz, qmz);
-        System.out.println("Quotient:  " + rmz.quotient());
-        System.out.println("Remainder: " + rmz.remainder());
-
-        var PMZ = pmz.getStructure();
-        Polynomial<SquareMatrix<Complex>> check3 = c_space.add( c_space.multiply(qmz, rmz.quotient()), rmz.remainder());
-        System.out.println("Verifica (pmz == qmz*Q + R) = " + PMZ.add(PMZ.multiply(qmz, rmz.quotient()), rmz.remainder()) + " : "  + pmz.equals(check3));
-        */
         
         System.out.println("\n--- Polynomial of Polynomial (Real) ---");
     	var structureOfP = p.getStructure();

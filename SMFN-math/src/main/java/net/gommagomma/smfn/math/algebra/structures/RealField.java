@@ -6,14 +6,27 @@ import net.gommagomma.smfn.math.algebra.core.structures.capabilities.Approximate
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
+/**
+ * Rappresenta il campo algebrico dei numeri reali (R) in aritmetica a virgola mobile approssimata.
+ * Implementa le operazioni di campo (somma, prodotto, inversione), la gestione della tolleranza numerica 
+ * basata su epsilon per il confronto tra valori reali e le funzioni di fabbrica per gli elementi reali.
+ */
 public final class RealField
 implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>
 {
-	private static final Real ZERO = new Real(0.0);
-	private static final Real ONE = new Real(1.0);
+    private static final Real ZERO = new Real(0.0);
+    private static final Real ONE = new Real(1.0);
 
-	public static final RealField INSTANCE = new RealField(MathConstants.EPSILON);
-	private final double epsilon;
+    /** Istanza singleton predefinita del campo reale basata sulla tolleranza standard di {@link MathConstants#EPSILON}. */
+    public static final RealField INSTANCE = new RealField(MathConstants.EPSILON);
+    
+    private final double epsilon;
+
+    /**
+     * Costruisce un campo reale con una specifica tolleranza epsilon per i confronti approssimati.
+     * 
+     * @param epsilon la tolleranza numerica per l'uguaglianza e la precisione
+     */
     private RealField(double epsilon) { this.epsilon = epsilon; }
 
 
@@ -32,7 +45,7 @@ implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>
     // ScalarStructure impls
     @Override
     public Real magnitude(Real a) {
-    	return a.abs();
+        return a.abs();
     }
 
 
@@ -60,28 +73,28 @@ implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>
     // MultiplicativeGroup impls
     @Override
     public Real inverse(Real e) {
-    	if (isZero(e)) throw new ArithmeticException("Division by zero");
+        if (isZero(e)) throw new ArithmeticException("Division by zero");
 
         return new Real(1.0 / e.getValue());
     }
 
 
     // AlgebraicStructure impls
-	@Override
-	public String getName()	{
-		return "Real Field (R)";
-	}
+    @Override
+    public String getName()    {
+        return "Real Field (R)";
+    }
 
-	@Override
-	public boolean contains(Real e)	{
-		return e != null && !Double.isNaN(e.getValue()) && !Double.isInfinite(e.getValue());
-	}
+    @Override
+    public boolean contains(Real e)    {
+        return e != null && !Double.isNaN(e.getValue()) && !Double.isInfinite(e.getValue());
+    }
 
-	@Override
-	public boolean areEqual(Real a, Real b) {
-	    if (a == b) return true;
-	    if (a == null || b == null) return false;
+    @Override
+    public boolean areEqual(Real a, Real b) {
+        if (a == b) return true;
+        if (a == null || b == null) return false;
 
-	    return Math.abs(a.getValue() - b.getValue()) < epsilon();
-	}
+        return Math.abs(a.getValue() - b.getValue()) < epsilon();
+    }
 }

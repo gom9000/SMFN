@@ -5,16 +5,11 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
- * Una retta nel piano 2D, definita da un punto di riferimento e una
- * direzione: f(P) = distanza con segno di P dalla retta.
- *
- * La normale alla direzione (dx,dy) e' (-dy,dx). f(P) e' la proiezione dello
- * spostamento (P - origine) sulla normale normalizzata: positiva da un lato
- * della retta, negativa dall'altro, zero esattamente sulla retta -- non solo
- * un segnale binario, ma una vera distanza con segno, coerente con
- * Circle/Ellipse.
+ * Rappresenta una retta geometrica bidimensionale definita da un punto di origine 
+ * e da un vettore direzione dx, dy. s
  */
-public final class Line implements GeometryEntity<Point, Real>
+public final class Line
+implements GeometryEntity<Point, Real>
 {
 	private static final RealField R = RealField.INSTANCE;
 
@@ -23,6 +18,14 @@ public final class Line implements GeometryEntity<Point, Real>
 	private final Real dy;
 	private final Real directionLength;
 
+	/**
+     * Costruisce una nuova retta passante per l'origine specificata e dotata del vettore direzione dato.
+     * 
+     * @param origin il punto di origine della retta (deve essere 2D)
+     * @param dx la componente x del vettore direzione
+     * @param dy la componente y del vettore direzione
+     * @throws IllegalArgumentException se il punto di origine non è 2D o se il vettore direzione è nullo
+     */
 	public Line(Point origin, Real dx, Real dy) {
 		if (origin.dimension() != 2) {
 			throw new IllegalArgumentException("Il punto di riferimento di una retta deve essere 2D.");
@@ -37,7 +40,13 @@ public final class Line implements GeometryEntity<Point, Real>
 		this.directionLength = new Real(len);
 	}
 
-	/** Retta passante per due punti distinti. */
+	/**
+     * Crea e restituisce una retta passante per due punti distinti specificati.
+     * 
+     * @param a il primo punto
+     * @param b il secondo punto
+     * @return la Line passante per a e b
+     */
 	public static Line through(Point a, Point b) {
 		Real[] direction = b.displacementTo(a); // b - a
 		return new Line(a, direction[0], direction[1]);
@@ -51,7 +60,14 @@ public final class Line implements GeometryEntity<Point, Real>
 		return Math.abs(implicitFunctionAt(point).getValue()) < MathConstants.EPSILON;
 	}
 
-	/** f(P) = ((dx,dy) x (P-origine)) / |(dx,dy)| -- distanza con segno. */
+	/**
+     * Valuta la funzione implicita associata alla retta nel punto P:
+     * f(P) = ((dx,dy) x (P-origine)) / |(dx,dy)|, che rappresenta la distanza con segno.
+     * 
+     * @param point il punto 2D in cui valutare la funzione
+     * @return la distanza con segno del punto dalla retta
+     * @throws IllegalArgumentException se il punto non è 2D
+     */
 	@Override
 	public Real implicitFunctionAt(Point point) {
 		if (point.dimension() != 2) {
@@ -66,13 +82,35 @@ public final class Line implements GeometryEntity<Point, Real>
 		return R.divide(cross, directionLength);
 	}
 
-	/** Distanza (sempre non negativa) di un punto dalla retta. */
+	/**
+     * Calcola la distanza euclidea di un punto dalla retta.
+     * 
+     * @param point il punto di cui calcolare la distanza
+     * @return la distanza non negativa sotto forma di Real
+     */
 	public Real distanceTo(Point point) {
 		return implicitFunctionAt(point).abs();
 	}
 
+	/**
+     * Restituisce il punto di origine della retta.
+     * 
+     * @return il punto di origine
+     */
 	public Point getOrigin() { return origin; }
+
+	/**
+     * Restituisce la componente x del vettore direzione della retta.
+     * 
+     * @return il valore di $\Delta x$
+     */
 	public Real getDirectionX() { return dx; }
+
+	/**
+     * Restituisce la componente y del vettore direzione della retta.
+     * 
+     * @return il valore di $\Delta y$
+     */
 	public Real getDirectionY() { return dy; }
 
 	@Override

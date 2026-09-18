@@ -9,12 +9,18 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
 
+/**
+ * Rappresenta il campo algebrico dei numeri razionali (Q) con aritmetica esatta basata su frazioni.
+ * Gestisce le operazioni di campo (somma, prodotto, inversione), la conversione precisa da valori in virgola mobile 
+ * a doppia precisione (IEEE 754) tramite scomposizione binaria e le funzioni di fabbrica per gli elementi razionali.
+ */
 public final class RationalField
 implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
 {
-	private static final Rational ZERO = new Rational(0, 1);
+    private static final Rational ZERO = new Rational(0, 1);
     private static final Rational ONE = new Rational(1, 1);
     
+    /** Istanza singleton predefinita del campo dei numeri razionali. */
     public static final RationalField INSTANCE = new RationalField();
     private RationalField() {}
 
@@ -23,7 +29,8 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
     @Override public Rational zero() { return ZERO; }
     @Override public Rational one() { return ONE; }
     @Override public Rational of(long value) { return new Rational(value); }
-	@Override public Rational of(int value) { return new Rational(value);}
+    @Override public Rational of(int value) { return new Rational(value);}
+    
     @Override
     public Rational of(double value) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
@@ -72,7 +79,7 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
         long den;
 
         if (exponent >= 0) {
-        	// Calcolo del numeratore (Mantissa * 2^Exponent)
+            // Calcolo del numeratore (Mantissa * 2^Exponent)
             num = Math.multiplyExact(mantissa, MathUtils.power(2L, exponent));
             
             // Il denominatore corretto è 2^52 (la scala della mantissa)
@@ -100,12 +107,20 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
 
         return new Rational(num, den);
     }
+
+    /**
+     * Crea un numero razionale specificando direttamente numeratore e denominatore.
+     * 
+     * @_param num il numeratore
+     * @_param den il denominatore
+     * @return il numero razionale corrispondente ridotto ai minimi termini
+     */
     public Rational of(long num, long den) { return new Rational(num, den); }
 
     // ScalarStructure impls
     @Override
     public Real magnitude(Rational a) {
-    	Rational aa = a.abs();
+        Rational aa = a.abs();
         return RealField.INSTANCE.of((double) aa.getNumerator()/aa.getDenominator()); 
     }
 
@@ -147,15 +162,15 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
     }
 
 
-	@Override // AlgebraicStructure impls
-	public String getName()
-	{
-		return "Rational Field (Q)";
-	}
+    @Override // AlgebraicStructure impls
+    public String getName()
+    {
+        return "Rational Field (Q)";
+    }
 
-	@Override
-	public boolean contains(Rational e)
-	{
-		return (e != null);
-	}
+    @Override
+    public boolean contains(Rational e)
+    {
+        return (e != null);
+    }
 }

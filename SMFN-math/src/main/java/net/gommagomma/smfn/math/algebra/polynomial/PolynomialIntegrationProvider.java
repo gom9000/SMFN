@@ -10,37 +10,49 @@ import net.gommagomma.smfn.math.algebra.core.structures.capabilities.SymbolicInt
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
 /**
- * Meccanismo esterno che sa calcolare l'integrale simbolico indefinito di un
- * Polynomial<K>, data una costante di integrazione.
- *
- * Richiede un Field (non solo un Ring) perch la formula a_i / (i+1) implica
- * una divisione: senza inverso moltiplicativo l'integrazione simbolica di un
- * polinomio non  definibile in generale (es. non ha senso su un anello puro
- * come i polinomi a coefficienti interi).
+ * Provider per il calcolo dell'integrale simbolico indefinito di polinomi definiti su un campo.
+ * Implementa l'interfaccia SymbolicIntegrationProvider applicando l'integrazione termine a termine 
+ * e gestendo la costante di integrazione arbitraria come termine noto.
+ * 
+ * @param <K> il tipo degli elementi scalari (coefficienti) definiti su un campo
+ * @param <S> il tipo della struttura algebrica che funge da campo, struttura scalare e fabbrica numerica per i coefficienti
  */
 public class PolynomialIntegrationProvider<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K> & NumericFactory<K>>
 implements SymbolicIntegrationProvider<K, Polynomial<K>>
 {
-	private final S scalarStructure;
-	private final PolynomialRing<K, S> polynomialRing;
+    private final S scalarStructure;
+    private final PolynomialRing<K, S> polynomialRing;
 
-	public PolynomialIntegrationProvider(S scalarStructure) {
-		this.scalarStructure = scalarStructure;
-		this.polynomialRing = new PolynomialRing<>(scalarStructure);
-	}
+    /**
+     * Costruisce un provider di integrazione per i polinomi basato sul campo scalare specificato.
+     * 
+     * @param scalarStructure la struttura di campo dei coefficienti scalari
+     */
+    public PolynomialIntegrationProvider(S scalarStructure) {
+        this.scalarStructure = scalarStructure;
+        this.polynomialRing = new PolynomialRing<>(scalarStructure);
+    }
 
-	@Override
-	public Polynomial<K> integrate(Polynomial<K> p, K constant) {
-		int oldDegree = p.degree();
-		List<K> newCoeffs = new ArrayList<>(oldDegree + 2);
-		newCoeffs.add(constant);
+    /**
+     * Calcola l'integrale indefinito del polinomio specificato, aggiungendo la costante di integrazione 
+     * fornita come termine noto ($a_0$).
+     * 
+     * @param p il polinomio da integrare
+     * @param constant la costante di integrazione iniziale
+     * @return il polinomio risultante dall'integrazione simbolica
+     */
+    @Override
+    public Polynomial<K> integrate(Polynomial<K> p, K constant) {
+        int oldDegree = p.degree();
+        List<K> newCoeffs = new ArrayList<>(oldDegree + 2);
+        newCoeffs.add(constant);
 
-		for (int i = 0; i <= oldDegree; i++) {
-			K ai = p.getCoefficient(i);
-			K divisor = scalarStructure.of(i + 1);
-			newCoeffs.add(scalarStructure.divide(ai, divisor));
-		}
+        for (int i = 0; i <= oldDegree; i++) {
+            K ai = p.getCoefficient(i);
+            K divisor = scalarStructure.of(i + 1);
+            newCoeffs.add(scalarStructure.divide(ai, divisor));
+        }
 
-		return polynomialRing.of(newCoeffs);
-	}
+        return polynomialRing.of(newCoeffs);
+    }
 }

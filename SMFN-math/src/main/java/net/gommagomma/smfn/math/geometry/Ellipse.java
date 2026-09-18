@@ -7,7 +7,8 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 /**
  * Un'ellisse nel piano 2D: f(P) = (x-cx)^2/a^2 + (y-cy)^2/b^2 - 1.
  */
-public final class Ellipse implements GeometryEntity<Point, Real>
+public final class Ellipse
+implements GeometryEntity<Point, Real>
 {
 	private static final RealField R = RealField.INSTANCE;
 

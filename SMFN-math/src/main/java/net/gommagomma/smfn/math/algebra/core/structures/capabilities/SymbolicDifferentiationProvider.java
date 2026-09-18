@@ -4,13 +4,19 @@ import net.gommagomma.smfn.math.algebra.core.elements.CompositeElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 
 /**
- * Capacit di calcolare la derivata simbolica (formale) di un elemento composto E,
- * costruito su uno scalare K (es. i coefficienti di un polinomio).
+ * Fornisce le capacità di calcolo della derivata simbolica per elementi composti 
+ * (come espressioni algebriche o polinomi).
  *
- * Non ogni AlgebraicElement ha una nozione di derivata: solo le strutture composte
- * che si appoggiano a uno scalare K la possono definire algebricamente.
+ * @param <K> il tipo degli scalari di supporto
+ * @param <E> il tipo dell'elemento composto su cui operare
  */
 public interface SymbolicDifferentiationProvider<K extends ScalarElement<K>, E extends CompositeElement<K, E>>
 {
+	/**
+     * Calcola la derivata simbolica dell'elemento composto specificato.
+     * 
+     * @param element l'elemento da derivare
+     * @return un nuovo elemento composto che rappresenta la derivata
+     */
 	E derivative(E element);
 }

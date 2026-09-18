@@ -7,7 +7,8 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 /**
  * Un cerchio nel piano 2D: f(P) = dist(P, C) - r.
  */
-public final class Circle implements GeometryEntity<Point, Real>
+public final class Circle
+implements GeometryEntity<Point, Real>
 {
 	private static final RealField R = RealField.INSTANCE;
 

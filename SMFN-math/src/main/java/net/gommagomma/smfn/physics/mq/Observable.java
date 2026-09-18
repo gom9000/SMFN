@@ -4,18 +4,20 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 
 /**
- * Un Osservabile e', per definizione fisica, un operatore hermitiano:
- * M = M^dagger (autovalori reali). Non e' una gerarchia di tipo a parte --
- * e' un vincolo verificato al momento della costruzione, sfruttando
- * isHermitian() gia' disponibile su SquareMatrix. Un SquareMatrix<Complex>
- * qualunque puo' rappresentare un operatore lineare (lo e' gia', via
- * LinearOperator); un Observable garantisce in piu' che sia fisicamente
- * valido come quantita' misurabile.
+ * Rappresenta un osservabile fisico in meccanica quantistica, modellato matematicamente 
+ * come un operatore hermitiano ($M = M^\dagger$) caratterizzato da autovalori reali.
  */
 public final class Observable
 {
 	private final SquareMatrix<Complex> operator;
 
+	/**
+     * Costruisce un nuovo osservabile a partire dalla matrice quadrata complessa specificata,
+     * verificando che l'operatore soddisfi la proprietà di hermiticità.
+     * 
+     * @param operator la matrice quadrata complessa che rappresenta l'operatore
+     * @throws IllegalArgumentException se la matrice non è hermitiana
+     */
 	public Observable(SquareMatrix<Complex> operator) {
 		if (!operator.isHermitian()) {
 			throw new IllegalArgumentException("Un Observable deve essere rappresentato da un operatore hermitiano (M = M^dagger).");
@@ -23,6 +25,11 @@ public final class Observable
 		this.operator = operator;
 	}
 
+	/**
+     * Restituisce la matrice quadrata complessa associata all'operatore sottostante dell'osservabile.
+     * 
+     * @return la matrice operatore
+     */
 	public SquareMatrix<Complex> asOperator() {
 		return operator;
 	}

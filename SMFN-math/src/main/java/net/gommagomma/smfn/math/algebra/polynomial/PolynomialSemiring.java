@@ -11,27 +11,42 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
+/**
+ * Rappresenta un semianello di polinomi (R[x]) i cui coefficienti appartengono 
+ * a un semianello scalare sottostante. Implementa la struttura algebrica di semianello, 
+ * la struttura scalare composita e funge da fabbrica per la creazione di elementi polinomiali.
+ * 
+ * @param <K> il tipo degli elementi scalari (coefficienti) del polinomio
+ * @param <S> il tipo della struttura algebrica scalare sottostante (semianello e struttura scalare)
+ */
 public class PolynomialSemiring<K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>> 
 implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, ScalarStructure<Polynomial<K>>, CompositeElementFactory<Polynomial<K>, List<K>>
 {
-	protected final S scalarStructure;
-	private final Polynomial<K> zero;
+    protected final S scalarStructure;
+    private final Polynomial<K> zero;
     private final Polynomial<K> one;
 
-	public PolynomialSemiring(S scalarStructure) {
+    /**
+     * Costruisce un semianello di polinomi basato sulla struttura scalare specificata.
+     * 
+     * @param scalarStructure la struttura algebrica dei coefficienti
+     */
+    public PolynomialSemiring(S scalarStructure) {
         this.scalarStructure = scalarStructure;
         this.zero = new Polynomial<>(this, scalarStructure, List.of());
         this.one = new Polynomial<>(this, scalarStructure, List.of(scalarStructure.one()));
     }
 
 
-	@Override // CompositeStructure impls
+    @Override // CompositeStructure impls
     public boolean isExact() {
         return scalarStructure.isExact();
     }
 
-	@Override 
-    public S getScalarStructure() { return scalarStructure;	}
+    @Override 
+    public S getScalarStructure() { 
+        return scalarStructure; 
+    }
 
 
     @Override // ScalarStructure impls
@@ -51,7 +66,7 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
     }
  
 
-	@Override // AdditiveMonoid impls
+    @Override // AdditiveMonoid impls
     public Polynomial<K> zero() {
         return zero;
     }
@@ -87,7 +102,7 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
             resultCoeffs.add(scalarStructure.zero());
         }
 
-        // algoritmo di convoluzione standard: c_k = sum_{i+j=k} (a_i * b_j)
+        // Algoritmo di convoluzione standard: c_k = sum_{i+j=k} (a_i * b_j)
         for (int i = 0; i <= a.degree(); i++) {
             K ai = a.getCoefficient(i);
             if (scalarStructure.isZero(ai)) continue;
@@ -120,7 +135,7 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
 
     @Override
     public boolean areEqual(Polynomial<K> a, Polynomial<K> b) {
-    	if (a == b) return true;
+        if (a == b) return true;
         if (a.degree() != b.degree()) return false;
         for (int i = 0; i <= a.degree(); i++) {
             if (!scalarStructure.areEqual(a.getCoefficient(i), b.getCoefficient(i))) {
@@ -131,8 +146,8 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
     }
 
 
-	@Override // CompositeElementFactory impls
-	public Polynomial<K> of(List<K> coefficients) {
-		return new Polynomial<>(this, this.scalarStructure, coefficients);
-	}
+    @Override // CompositeElementFactory impls
+    public Polynomial<K> of(List<K> coefficients) {
+        return new Polynomial<>(this, this.scalarStructure, coefficients);
+    }
 }

@@ -8,12 +8,10 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
 /**
- * Equazione di Schrodinger dipendente dal tempo: d|psi>/dt = (-i/hbar) H|psi>.
- * hbar = 1 in unita' naturali.
+ * Equazione di Schrodinger dipendente dal tempo: d|psi>/dt = (-i/hbar) H|psi>
+ * (assumendo hbar = 1 in unita' naturali).
  *
- * E' esattamente un DifferentialEquationProblem<Complex, Vector<Complex>> --
- * lo stesso concetto generalizzato in analysis per accogliere stati a
- * valori complessi, non serviva nessuna estensione ulteriore.
+ * Implementa l'interfaccia DifferentialEquationProblem per stati vettoriali a valori complessi.
  */
 public final class SchrodingerEquationSystem
 implements DifferentialEquationProblem<Complex, Vector<Complex>>

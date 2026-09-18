@@ -6,12 +6,22 @@ import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
 
+/**
+ * Rappresenta un numero naturale esatto (non negativo), basato su un valore primitivo a 64 bit (long).
+ * Implementa le interfacce per la gestione degli elementi esatti, l'ordinamento e l'elevamento a potenza.
+ */
 public final class Natural
 implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural>
 {
-	private final long value;
+    private final long value;
 
-
+    /**
+     * Costruisce un numero naturale a partire da un valore intero a 64 bit.
+     * 
+     * @pram value il valore numerico long
+     * @param value il valore numerico long
+     * @throws IllegalArgumentException se il valore è negativo
+     */
     public Natural(long value)
     {
         if (value < 0) {
@@ -20,18 +30,20 @@ implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural>
         this.value = value;
     }
 
+    /**
+     * Restituisce il valore primitivo sottostante del numero naturale.
+     * 
+     * @return il valore long
+     */
     public long getValue() { return value; }
-
 
     @Override // ScalarElement impls
     public ScalarStructure<Natural> getStructure() {
         return NaturalSemiring.INSTANCE;
     }
 
-
     @Override  // AlgebraicElement impls
     public Natural copy() { return new Natural(value); }
-
 
     @Override // Orderable impls
     public int compareTo(Natural other)
@@ -44,12 +56,11 @@ implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural>
         return this.value < other.value;
     }
 
-
     @Override // Exponentiable impls
     public Natural power(int exponent)
     {
-    	NaturalSemiring semiring = NaturalSemiring.INSTANCE;
-    	if (semiring.isZero(this) && exponent < 0) {
+        NaturalSemiring semiring = NaturalSemiring.INSTANCE;
+        if (semiring.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }
         if (exponent == 0 || this.value == 1L) { return semiring.one(); }
@@ -71,17 +82,16 @@ implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural>
         return new Natural(result);
     }
 
-
     @Override // Java Standard impls
     public String toString()
     {
-    	return String.valueOf(this.value);
+        return String.valueOf(this.value);
     }
 
     @Override // Java Standard impls
     public final boolean equals(Object other) 
     {
-    	if (this == other) {
+        if (this == other) {
             return true;
         }
 

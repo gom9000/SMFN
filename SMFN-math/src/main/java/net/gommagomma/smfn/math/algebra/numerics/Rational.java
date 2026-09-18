@@ -9,20 +9,33 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
 import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.utils.MathUtils;
 
+/**
+ * Rappresenta un numero razionale esatto sotto forma di frazione irriducibile (n/d), 
+ * basato su valori numerici a 64 bit (long) per numeratore e denominatore. 
+ * Il denominatore è sempre mantenuto positivo normalizzando il segno sul numeratore.
+ */
 public final class Rational
 implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absolutable<Rational>, Exponentiable<Rational>
 {
-	private final long numerator;
+    private final long numerator;
     private final long denominator;
 
-
+    /**
+     * Costruisce un numero razionale semplificato a partire da numeratore e denominatore.
+     * Il segno viene normalizzato affinché il denominatore sia sempre positivo e la frazione 
+     * viene ridotta ai minimi termini tramite il massimo comun divisore (MCD).
+     * 
+     * @param numerator il numeratore
+     * @param denominator il denominatore
+     * @throws IllegalArgumentException se il denominatore è zero
+     */
     public Rational(long numerator, long denominator)
     {
-    	if (denominator == 0) {
+        if (denominator == 0) {
             throw new IllegalArgumentException("Denominator cannot be zero");
         }
 
-    	// denominator is always positive, the sign is moved to the numerator
+        // denominator is always positive, the sign is moved to the numerator
         if (denominator < 0) {
             numerator = -numerator;
             denominator = -denominator;
@@ -33,30 +46,42 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
         this.denominator = denominator / gcd;
     }
 
+    /**
+     * Costruisce un numero razionale rappresentante un numero intero (con denominatore pari a 1).
+     * 
+     * @param value il valore intero long
+     */
     public Rational(long value)
     {
         this(value, 1);
     }
 
+    /**
+     * Restituisce il numeratore della frazione ridotta.
+     * 
+     * @return il valore del numeratore
+     */
     public long getNumerator() { return numerator; }
-    public long getDenominator() {  return denominator; }
 
+    /**
+     * Restituisce il denominatore della frazione ridotta (sempre positivo).
+     * 
+     * @return il valore del denominatore
+     */
+    public long getDenominator() {  return denominator; }
 
     @Override // ScalarElement impls
     public ScalarStructure<Rational> getStructure() {
         return RationalField.INSTANCE;
     }
 
-
     @Override // AlgebraicElement impls
     public Rational copy() { return new Rational(numerator, denominator); }
-
 
     @Override // Normable
     public Real norm() {
         return new Real((double) Math.abs(numerator) / denominator);
     }
-
 
     @Override // Orderable impls
     public int compareTo(Rational other)
@@ -71,7 +96,6 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
         return Math.multiplyExact(this.numerator, other.denominator) < Math.multiplyExact(other.numerator, this.denominator);
     }
 
-
     @Override // Absolutable impls
     public Rational abs() {
         return new Rational(Math.abs(numerator), denominator);
@@ -82,11 +106,10 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
         return Long.signum(numerator);
     }
 
-
     @Override // Exponentiable impls
     public Rational power(int exponent)
     {
-    	RationalField field = RationalField.INSTANCE;
+        RationalField field = RationalField.INSTANCE;
         if (field.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }
@@ -108,12 +131,11 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
         return exponent < 0 ? field.inverse(result) : result;
     }
 
-
     @Override // Java Standard impls
     public String toString()
     {
         if (denominator == 1) {
-        	return String.valueOf(numerator);
+            return String.valueOf(numerator);
         }
 
         return numerator + "/" + denominator;

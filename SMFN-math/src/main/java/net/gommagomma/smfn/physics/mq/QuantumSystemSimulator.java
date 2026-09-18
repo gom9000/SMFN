@@ -6,14 +6,21 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.InnerProductVectorSpace;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
- * Misura un osservabile su uno stato: valore di aspettazione <psi|H|psi>.
- *
- * E' letteralmente il prodotto interno hermitiano gia' costruito e
- * verificato in InnerProductVectorSpace -- nessun HilbertSpace a parte
- * serve, era il pacchetto "spaces" fantasma gia' scartato.
+ * Simulatore per sistemi quantistici per misurare un osservabile, 
+ * calcolando il valore di aspettazione (valore medio) su un dato stato quantistico: 
+ * <psi|H|psi>.
  */
 public final class QuantumSystemSimulator
 {
+	/**
+     * Calcola il valore di aspettazione di un osservabile per uno stato quantistico specificato, 
+     * sfruttando il prodotto interno hermitiano dello spazio vettoriale sottostante.
+     * 
+     * @param space lo spazio vettoriale con prodotto interno che ospita lo stato
+     * @param observable l'osservabile hermitiano da misurare (H)
+     * @param state il vettore di stato quantistico normalizzato o non normalizzato (|psi>)
+     * @return il valore di aspettazione sotto forma di Real (garantito reale per operatori hermitiani)
+     */
 	public Real measure(InnerProductVectorSpace<Complex, ?> space, Observable observable, Vector<Complex> state) {
 		Vector<Complex> H_psi = observable.asOperator().apply(state);
 		Complex expectation = space.innerProduct(state, H_psi);

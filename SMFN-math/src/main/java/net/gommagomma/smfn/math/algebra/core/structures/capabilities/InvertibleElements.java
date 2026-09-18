@@ -3,19 +3,26 @@ package net.gommagomma.smfn.math.algebra.core.structures.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Capacit di una struttura di invertire alcuni dei propri elementi -- a
- * differenza di MultiplicativeGroup, che garantisce un inverso per ogni
- * elemento non nullo, qui l'invertibilit va verificata elemento per
- * elemento (l'esempio tipico sono le matrici quadrate: non ogni matrice
- * non nulla  invertibile, anche se lo scalare sottostante  un campo).
+ * Rappresenta la capacità di una struttura di gestire elementi che ammettono un inverso 
+ * rispetto a un'operazione, fornendo i metodi per calcolarlo e verificarne l'invertibilità.
+ *
+ * @param <E> il tipo degli elementi
  */
 public interface InvertibleElements<E extends AlgebraicElement<E>>
 {
 	/**
-	 * Calcola l'inverso di e, se esiste.
-	 * @throws ArithmeticException se e non  invertibile.
-	 */
+     * Calcola l'inverso dell'elemento specificato.
+     * 
+     * @param e l'elemento da invertire
+     * @return l'elemento inverso
+     */
 	E inverse(E e);
 
+	/**
+     * Verifica se l'elemento specificato è invertibile all'interno della struttura.
+     * 
+     * @param e l'elemento da verificare
+     * @return true se l'elemento è invertibile, false altrimenti
+     */
 	boolean isInvertible(E e);
 }

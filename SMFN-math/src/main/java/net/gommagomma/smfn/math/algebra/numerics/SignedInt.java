@@ -7,29 +7,40 @@ import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Orderable;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 
+/**
+ * Rappresenta un numero intero con segno esatto, basato su un valore primitivo a 64 bit (long).
+ * Modella gli elementi all'interno dell'anello degli interi, implementando le capacità 
+ * di ordinamento, valore assoluto ed elevamento a potenza.
+ */
 public final class SignedInt
 implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>, Exponentiable<SignedInt>
 {
-	private final long value;
+    private final long value;
 
-
+    /**
+     * Costruisce un numero intero con segno a partire da un valore long.
+     * 
+     * @param value il valore numerico intero
+     */
     public SignedInt(long value)
     {
         this.value = value;
     }
 
+    /**
+     * Restituisce il valore primitivo sottostante dell'intero.
+     * 
+     * @return il valore long
+     */
     public long getValue() { return value; }
-
 
     @Override // ScalarElement impls
     public ScalarStructure<SignedInt> getStructure() {
         return IntegerRing.INSTANCE;
     }
 
-
     @Override // AlgebraicElement impls
     public SignedInt copy() {  return new SignedInt(this.value); }
-
 
     @Override // Orderable impls
     public int compareTo(SignedInt other)
@@ -42,7 +53,6 @@ implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>
         return this.value < other.value;
     }
 
-
     @Override // Absolutable impls
     public SignedInt abs() {
         if (this.value == Long.MIN_VALUE) throw new ArithmeticException("Overflow in abs()");
@@ -54,12 +64,11 @@ implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>
         return Long.signum(this.value);
     }
 
-
     @Override // Exponentiable impls
     public SignedInt power(int exponent)
     {
-    	IntegerRing ring = IntegerRing.INSTANCE;
-    	if (ring.isZero(this) && exponent < 0) {
+        IntegerRing ring = IntegerRing.INSTANCE;
+        if (ring.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }
         if (exponent == 0) { return ring.one(); }
@@ -85,17 +94,16 @@ implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>
         return new SignedInt(result);
     }
 
-
     @Override // Java Standard impls
     public String toString()
     {
-    	return String.valueOf(this.value);
+        return String.valueOf(this.value);
     }
 
     @Override
     public final boolean equals(Object other) 
     {
-    	if (this == other) {
+        if (this == other) {
             return true;
         }
 

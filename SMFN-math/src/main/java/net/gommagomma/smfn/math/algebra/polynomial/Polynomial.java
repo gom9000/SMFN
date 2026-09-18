@@ -7,21 +7,43 @@ import net.gommagomma.smfn.math.algebra.core.elements.CompositeElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
+/**
+ * Rappresenta un polinomio in un'indeterminata a coefficienti in un anello o campo scalare.
+ * Implementa sia l'interfaccia di elemento composito sia quella di elemento scalare per permettere 
+ * la trattazione ricorsiva e l'incapsulamento all'interno di strutture algebriche.
+ * 
+ * @param <K> il tipo degli elementi scalari (coefficienti) del polinomio
+ */
 public final class Polynomial<K extends ScalarElement<K>> 
 implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
 {
-	private final List<K> coefficients; // Ordinati per grado crescente: a0, a1, ... an
-	private final ScalarStructure<Polynomial<K>> polynomialStructure;
-	private final ScalarStructure<K> scalarStructure;
+    private final List<K> coefficients; // Ordinati per grado crescente: a0, a1, ... an
+    private final ScalarStructure<Polynomial<K>> polynomialStructure;
+    private final ScalarStructure<K> scalarStructure;
 
 
-	protected Polynomial(ScalarStructure<Polynomial<K>> polynomialStructure, ScalarStructure<K> scalarStructure, List<K> coefficients) {
-		this.polynomialStructure = polynomialStructure;
+    /**
+     * Costruisce un nuovo polinomio associato a una struttura polinomiale, a una struttura scalare 
+     * e a una lista di coefficienti (normalizzati automaticamente rimuovendo i termini nulli di grado superiore).
+     * 
+     * @_param polynomialStructure la struttura algebrica dei polinomi di riferimento
+     * @_param scalarStructure la struttura algebrica dei coefficienti scalari
+     * @param coefficients la lista dei coefficienti ordinati per grado crescente
+     */
+    protected Polynomial(ScalarStructure<Polynomial<K>> polynomialStructure, ScalarStructure<K> scalarStructure, List<K> coefficients) {
+        this.polynomialStructure = polynomialStructure;
         this.scalarStructure = scalarStructure;
         this.coefficients = normalize(scalarStructure, coefficients);
     }
 
-	private List<K> normalize(ScalarStructure<K> struct, List<K> coeffs) {
+    /**
+     * Normalizza la lista dei coefficienti rimuovendo i coefficienti nulli finali per determinare il grado reale.
+     * 
+     * @param struct la struttura scalare per testare lo zero
+     * @param coeffs la lista grezza dei coefficienti
+     * @return una lista immutabile normalizzata dei coefficienti
+     */
+    private List<K> normalize(ScalarStructure<K> struct, List<K> coeffs) {
         if (coeffs.isEmpty()) return List.of();
         
         int lastNonZero = -1;
@@ -35,10 +57,22 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
         return List.copyOf(coeffs.subList(0, lastNonZero + 1));
     }
 
+    /**
+     * Restituisce il grado algebrico del polinomio.
+     * 
+     * @return il grado del polinomio, oppure $-1$ se il polinomio è il polinomio zero
+     */
     public int degree() {
         return coefficients.isEmpty() ? -1 : coefficients.size() - 1;
     }
 
+    /**
+     * Restituisce il coefficiente corrispondente al grado specificato.
+     * Se il grado supera la dimensione del polinomio, restituisce lo zero scalare.
+     * 
+     * @param degree l'esponente/grado del termine di cui si vuole il coefficiente
+     * @return il coefficiente scalare associato
+     */
     public K getCoefficient(int degree) {
         if (degree < 0 || degree >= coefficients.size()) {
             return scalarStructure.zero();
@@ -46,23 +80,28 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
         return coefficients.get(degree);
     }
 
+    /**
+     * Restituisce la lista non modificabile di tutti i coefficienti del polinomio ordinati per grado crescente.
+     * 
+     * @return la lista dei coefficienti
+     */
     public List<K> getCoefficients() {
         return Collections.unmodifiableList(coefficients);
     }
 
-	@Override
+    @Override
     public ScalarStructure<K> getScalarStructure() {
         return scalarStructure;
     }
 
-	@Override
+    @Override
     public ScalarStructure<Polynomial<K>> getStructure() {
         return polynomialStructure;
     }
 
     @Override
     public Polynomial<K> copy() {
-        // Essendo immutabile, possiamo restituire this: non c' stato da duplicare.
+        // Essendo immutabile, possiamo restituire this: non c'è stato da duplicare.
         return this;
     }
 

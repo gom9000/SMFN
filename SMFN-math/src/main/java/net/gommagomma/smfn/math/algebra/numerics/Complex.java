@@ -9,57 +9,103 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
+/**
+ * Rappresenta un numero complesso in forma algebrica (z = a + bi), 
+ * basato su valori in virgola doppia precisione (double) per la parte reale e immaginaria.
+ * Implementa le capacità numeriche e algebriche per operare all'interno del campo complesso.
+ */
 public final class Complex
 implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, Sqrtable<Complex>, Conjugable<Complex>
 {
     private final double real;
     private final double imaginary;
 
-
+    /**
+     * Costruisce un numero complesso a partire dalla sua parte reale e immaginaria.
+     * 
+     * @param real la parte reale
+     * @param imaginary la parte immaginaria
+     */
     public Complex(double real, double imaginary)
     {
         this.real = real;
         this.imaginary = imaginary;
     }
 
+    /**
+     * Costruisce un numero complesso puramente reale con parte immaginaria nulla.
+     * 
+     * @param real la parte reale
+     */
     public Complex(double real) { this(real, 0.0); }
+
+    /**
+     * Costruisce un numero complesso a partire da un'istanza di {@link Real}.
+     * 
+     * @param real l'elemento reale
+     */
     public Complex(Real real) { this(real.getValue(), 0.0); }
 
+    /**
+     * Restituisce la parte reale del numero complesso.
+     * 
+     * @return il valore della parte reale
+     */
     public double getRe() { return this.real; }
-    public double getIm() {	return this.imaginary; }
 
+    /**
+     * Restituisce la parte immaginaria del numero complesso.
+     * 
+     * @return il valore della parte immaginaria
+     */
+    public double getIm() {    return this.imaginary; }
 
+    /**
+     * Calcola il modulo (o valore assoluto) del numero complesso.
+     * 
+     * @return la magnitudine complessa $\sqrt{a^2 + b^2}$
+     */
     public double modulus()
     {
         return Math.sqrt(real * real + imaginary * imaginary);
     }
 
+    /**
+     * Calcola il quadrato del modulo del numero complesso, utile per evitare 
+     * l'operazione di radice quadrata quando serve solo il confronto o la norma al quadrato.
+     * 
+     * @return il quadrato della magnitudine $a^2 + b^2$
+     */
     public double modulusSquared()
     {
         return real * real + imaginary * imaginary;
     }
  
     @Override // Conjugable impls
+    /**
+     * Calcola il complesso coniugato ($a - bi$).
+     * 
+     * @return un nuovo numero complesso coniugato
+     */
     public Complex conjugate()
     {
-    	return new Complex(real, -imaginary);
+        return new Complex(real, -imaginary);
     }
 
     /**
      * Calcola l'argomento (fase) del numero complesso in radianti.
-     * Restituisce un valore nell'intervallo (-pi, pi].
-     * @return L'angolo in radianti.
+     * Restituisce un valore nell'intervallo $(-\pi, \pi]$.
+     * 
+     * @return l'angolo di fase in radianti
      */
     public double argument() {
         return Math.atan2(imaginary, real);
     }
 
-
     @Override // ScalarElement impls
     public ScalarStructure<Complex> getStructure() {
         return ComplexField.INSTANCE;
     }
-
 
     @Override // AlgebraicElement impls
     public Complex copy()
@@ -67,18 +113,16 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
         return new Complex(this.real, this.imaginary);
     }
 
-
     @Override // Normable impls
     public Real norm()
     {
         return RealField.INSTANCE.of(this.modulus());
     }
 
-
     @Override // Exponentiable impls
     public Complex power(int exponent)
     {
-    	ComplexField field = ComplexField.INSTANCE;
+        ComplexField field = ComplexField.INSTANCE;
         if (field.isZero(this) && exponent < 0) {
             throw new ArithmeticException("Cannot raise zero to a negative power.");
         }
@@ -100,8 +144,7 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
         return exponent < 0 ? field.inverse(result) : result;
     }
 
-
-    @Override // Squertable impls
+    @Override // Sqrtable impls
     public Complex sqrt() {
         ComplexField field = ComplexField.INSTANCE;
         if (field.isZero(this)) return field.zero();
@@ -126,7 +169,6 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
         }
     }
 
-
     @Override // Java Standard impls
     public String toString()
     {
@@ -149,7 +191,7 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
     @Override
     public final boolean equals(Object other)
     {
-    	if (this == other) {
+        if (this == other) {
             return true;
         }
 
@@ -159,12 +201,12 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
 
         Complex complex = (Complex) other;
         return Double.doubleToLongBits(this.real) == Double.doubleToLongBits(complex.real) &&
-        		Double.doubleToLongBits(this.imaginary) == Double.doubleToLongBits(complex.imaginary);
+                Double.doubleToLongBits(this.imaginary) == Double.doubleToLongBits(complex.imaginary);
     }
 
     @Override
     public final int hashCode()
     {
-    	return java.util.Objects.hash(this.real, this.imaginary);
+        return java.util.Objects.hash(this.real, this.imaginary);
     }
 }

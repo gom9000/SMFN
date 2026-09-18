@@ -3,6 +3,12 @@ package net.gommagomma.smfn.math.algebra.core.structures.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.ExactElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
+/**
+ * Rappresenta una struttura algebrica basata su elementi esatti 
+ * (es. aritmetica intera o razionale senza errori di arrotondamento).
+ *
+ * @param <K> il tipo degli elementi scalari esatti
+ */
 public interface ExactStructure<K extends ExactElement<K>>
 extends ScalarStructure<K>
 {

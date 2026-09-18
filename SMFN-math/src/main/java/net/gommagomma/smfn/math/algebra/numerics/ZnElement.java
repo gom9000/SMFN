@@ -6,33 +6,53 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
 import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 import net.gommagomma.smfn.math.algebra.structures.ZnRing;
 
+/**
+ * Rappresenta un elemento dell'anello delle classi resto modulo n ($\mathbb{Z}/n\mathbb{Z}$).
+ * Ciascun elemento incapsula un valore intero normalizzato rispetto a un dato modulo positivo 
+ * e implementa le capacità per l'aritmetica modulare esatta e l'elevamento a potenza.
+ */
 public final class ZnElement 
 implements ExactElement<ZnElement>, Exponentiable<ZnElement>
 {
     private final SignedInt value; 
     private final SignedInt modulus;
 
+    /**
+     * Costruisce un elemento modulare $\mathbb{Z}_n$ normalizzando il valore rispetto al modulo specificato.
+     * 
+     * @param value il valore intero iniziale
+     * @param modulus il modulo dell'anello (deve essere strettamente positivo)
+     * @throws IllegalArgumentException se il modulo è minore o uguale a zero
+     */
     public ZnElement(SignedInt value, SignedInt modulus) {
-    	if (modulus.getValue() <= 0) {
+        if (modulus.getValue() <= 0) {
             throw new IllegalArgumentException("Modulus must be positive.");
         }
         this.modulus = modulus;
         this.value = IntegerRing.INSTANCE.remainder(value, modulus);
     }
 
+    /**
+     * Restituisce il valore rappresentativo normalizzato (compreso tra $0$ e $modulus - 1$).
+     * 
+     * @return il valore intero con segno normalizzato
+     */
     public SignedInt getValue() { return value; }
-    public SignedInt getModulus() { return modulus; }
 
+    /**
+     * Restituisce il modulo associato a questo elemento.
+     * 
+     * @return il modulo dell'anello $\mathbb{Z}_n$
+     */
+    public SignedInt getModulus() { return modulus; }
 
     @Override // ScalarElement impls
     public ScalarStructure<ZnElement> getStructure() {
-    	return ZnRing.of(this.modulus);
+        return ZnRing.of(this.modulus);
     }
-
 
     @Override // AlgebraicElement impls
     public ZnElement copy() { return new ZnElement(this.value, this.modulus); }
-
 
     @Override // Exponentiable impls
     public ZnElement power(int exponent) {
@@ -52,12 +72,18 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
         }
         return result;
     }
-    // Helper interno per la potenza
+
+    /**
+     * Metodo di supporto interno per la moltiplicazione modulare tra elementi dello stesso anello.
+     * 
+     * @param a il primo operando
+     * @param b il secondo operando
+     * @return il risultato della moltiplicazione ridotto modulo $n$
+     */
     private ZnElement multiplyInternal(ZnElement a, ZnElement b) {
         SignedInt prod = IntegerRing.INSTANCE.multiply(a.value, b.value);
         return new ZnElement(prod, a.modulus);
     }
-
 
     @Override // Java Standard impls
     public String toString() {
