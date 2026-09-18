@@ -1,8 +1,16 @@
 # SMFN-library  
 Type: Java Math Library | Status: Continuous Research (Sawdust alert!)
 
-Libreria sperimentale in Java per la modellazione matematica. Non orientata alle prestazioni pure, ma alla rappresentazione delle strutture matematiche astratte, e al calcolo sia simbolico che numerico: dalla gestione dell'aritmetica polinomiale alla risoluzione di equazioni differenziali, fino alla simulazione di sistemi di meccanica quantistica.
+Libreria in Java per la sperimentazione nella modellazione matematica. Non orientata alle prestazioni pure, ma alla rappresentazione delle strutture matematiche astratte, e al calcolo sia simbolico che numerico: dalla gestione dell'aritmetica polinomiale alla risoluzione di equazioni differenziali, fino alla simulazione di sistemi di meccanica quantistica.
 
+**Elenco delle features**:
+- **Architettura Algebrica Astratta**: Disaccoppiamento netto tra elementi immutabili e strutture operative, con gerarchia assiomatica rigorosa (Semiring $\rightarrow$ Ring $\rightarrow$ Field) e supporto al calcolo generico.
+- **Aritmetica Polinomiale Simbolica**: Manipolazione simbolica dei polinomi su scalari arbitrari, con promozione dinamica della struttura fino all'Anello Euclideo (divisione, MCD, schema di Horner).
+- **Algebra Lineare Generica**: Spazi vettoriali e matrici operanti su qualsiasi campo o anello, con algoritmi adattivi (es. calcolo del determinante via Gauss su Field o Laplace su Ring).
+- **Frattali**: Calcolo ed esplorazione di insiemi frattali (Mandelbrot e Julia) basati su solutori iterativi generici nel campo complesso e renderizzati in tempo reale.
+- **Entità Geometriche**: Modellazione delle entità geometriche (Punto, Retta, Cerchio, Ellisse, Piano) come funzioni implicite con gradiente esatto e capacità di intersezione di figure qualsiasi via root-finding generico.
+- **Modellazione e Solutori Fisico-Matematici**: Algoritmi numerici per la risoluzione di equazioni differenziali ordinarie (ODE) e la simulazione di sistemi fisici.
+- **Visualizzazione Grafica 1D, 2D**: Un motore di rendering integrato per il plot di funzioni, forme geometriche implicite e trasformazioni generiche $f(D) \rightarrow C$ (es. funzioni di variabile complessa) tramite adattamento di dominio e color mapping personalizzato.
 
 ## Guida all'Uso
 
