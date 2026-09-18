@@ -80,4 +80,46 @@ class SquareMatrixTest
 		assertEquals(rotation90, copy);
 		assertEquals(rotation90.hashCode(), copy.hashCode());
 	}
+
+	@Test
+	@DisplayName("conjugateTranspose(): scambia indici e coniuga ogni elemento")
+	void conjugateTransposeSwapsAndConjugates() {
+		SquareMatrix<Complex> m = M2.of(new Complex[] {
+			new Complex(1, 1), new Complex(2, -2),
+			new Complex(3, 0), new Complex(4, 5)
+		});
+		SquareMatrix<Complex> mDagger = m.conjugateTranspose();
+
+		// M^dagger[i][j] = conj(M[j][i])
+		assertTrue(C.areEqual(mDagger.get(0, 0), new Complex(1, -1)));
+		assertTrue(C.areEqual(mDagger.get(0, 1), new Complex(3, 0)));
+		assertTrue(C.areEqual(mDagger.get(1, 0), new Complex(2, 2)));
+		assertTrue(C.areEqual(mDagger.get(1, 1), new Complex(4, -5)));
+	}
+
+	@Test
+	@DisplayName("isHermitian(): vero per Pauli-X, falso per una matrice asimmetrica")
+	void isHermitianDistinguishesCorrectly() {
+		SquareMatrix<Complex> pauliX = M2.of(new Complex[] {
+			new Complex(0, 0), new Complex(1, 0),
+			new Complex(1, 0), new Complex(0, 0)
+		});
+		SquareMatrix<Complex> notHermitian = M2.of(new Complex[] {
+			new Complex(1, 0), new Complex(1, 0),
+			new Complex(0, 0), new Complex(1, 0)
+		});
+
+		assertTrue(pauliX.isHermitian());
+		assertTrue(!notHermitian.isHermitian());
+	}
+
+	@Test
+	@DisplayName("isHermitian(): una matrice reale simmetrica e' hermitiana (coniugazione e' l'identita' su Real)")
+	void realSymmetricMatrixIsHermitian() {
+		SquareMatrix<Complex> realSymmetric = M2.of(new Complex[] {
+			new Complex(2, 0), new Complex(7, 0),
+			new Complex(7, 0), new Complex(-1, 0)
+		});
+		assertTrue(realSymmetric.isHermitian());
+	}
 }
