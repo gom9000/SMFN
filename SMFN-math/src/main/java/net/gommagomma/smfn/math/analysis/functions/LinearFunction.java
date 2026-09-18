@@ -2,10 +2,14 @@ package net.gommagomma.smfn.math.analysis.functions;
 
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
-import net.gommagomma.smfn.math.algebra.core.structures.Field;
+import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 
 /**
- * f(x) = m*x + q, funzione affine (lineare + traslazione) su un campo K.
+ * f(x) = m*x + q, funzione affine (lineare + traslazione) su un anello K.
+ *
+ * Richiede solo Ring<K> (add, multiply), non Field<K>: apply()/compose()/add()
+ * non usano mai divisione o inverso. Un campo sarebbe una richiesta piu'
+ * forte di quella che l'aritmetica usata richiede davvero.
  *
  * Non e' un elemento di anello sotto (addizione, composizione): la
  * composizione di funzioni affini non distribuisce a sinistra sull'addizione
@@ -18,12 +22,12 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 public final class LinearFunction<K extends ScalarElement<K>>
 implements Mapping<K, K>
 {
-	private final Field<K> field;
+	private final Ring<K> field;
     private final K m; // coefficiente angolare
     private final K q; // intercetta
 
 
-    public LinearFunction(Field<K> field, K m, K q) {
+    public LinearFunction(Ring<K> field, K m, K q) {
         if (m == null || q == null) {
             throw new IllegalArgumentException("I coefficienti m e q non possono essere nulli.");
         }
@@ -54,7 +58,7 @@ implements Mapping<K, K>
 
     public K getSlope() { return m; }
     public K getIntercept() { return q; }
-    public Field<K> getField() { return field; }
+    public Ring<K> getField() { return field; }
 
     @Override
     public boolean equals(Object o) {

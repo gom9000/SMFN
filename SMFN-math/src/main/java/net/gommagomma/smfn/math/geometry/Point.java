@@ -9,12 +9,6 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
 /**
  * Un punto nello spazio affine N-dimensionale (tipicamente 2D o 3D).
  *
- * A differenza di un vettore, un punto non si somma con un altro punto --
- * si sottrae da un altro punto (ottenendo uno spostamento) o si trasla
- * tramite uno spostamento. Deliberatamente autonomo da
- * linearalgebra.vectors.Vector: Point e' un primitivo di geometria,
- * concreto e a bassa dimensione, e non ha bisogno della generalita' di
- * un Module/LinearSpace generico su K.
  */
 public final class Point implements AlgebraicElement<Point>
 {

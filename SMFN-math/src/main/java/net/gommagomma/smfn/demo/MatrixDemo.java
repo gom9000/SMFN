@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.client;
+package net.gommagomma.smfn.demo;
 
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;

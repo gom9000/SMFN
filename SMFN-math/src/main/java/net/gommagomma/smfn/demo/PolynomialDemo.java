@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.client;
+package net.gommagomma.smfn.demo;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;

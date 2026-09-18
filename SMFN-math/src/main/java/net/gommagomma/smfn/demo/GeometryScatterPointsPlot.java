@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.client;
+package net.gommagomma.smfn.demo;
 
 import java.awt.Color;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import net.gommagomma.smfn.graphics.plotting.ScatterPlotter;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.geometry.Point;
 
-public class ScatterPointsClient
+public class GeometryScatterPointsPlot
 {
     public static void main(String[] args)
     {

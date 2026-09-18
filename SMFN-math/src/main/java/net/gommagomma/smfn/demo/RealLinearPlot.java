@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.client;
+package net.gommagomma.smfn.demo;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
@@ -12,78 +12,62 @@ import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.functions.LinearFunction;
 
-public class RealLinearFunctionClient
+public class RealLinearPlot
 {
     public static void main(String[] args)
     {
-        // --- 1. Definizione della funzione matematica (y = mx + q)
-        LinearFunction<Real> linearFunction1 = new LinearFunction<>(new Real(0.5), new Real(0.0));
-        LinearFunction<Real> linearFunction2 = new LinearFunction<>(new Real(2.0), new Real(5.0));
+        // --- 1. Definizione della funzione matematica (y = mx + q) ---
+        RealField R = RealField.INSTANCE;
+        LinearFunction<Real> linearFunction1 = new LinearFunction<>(R, new Real(0.5), new Real(0.0));
+        LinearFunction<Real> linearFunction2 = new LinearFunction<>(R, new Real(2.0), new Real(5.0));
         Mapping<Real, Real> linearFunction = linearFunction1.compose(linearFunction2);
 
         // --- 2. Setup del contesto grafico ---
         int width = 800;
         int height = 600;
 
-        // Inizializza il renderer Swing
         SwingRenderer1D renderer = new SwingRenderer1D(width, height);
-        
-        // Prepara la finestra Swing
+
         JFrame frame = new JFrame("SMFN Linear Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(renderer);
         frame.pack();
         frame.setVisible(true);
-        renderer.initBufferStrategy(); // Necessario per il buffer
+        renderer.initBufferStrategy();
 
-        // Definisci l'area matematica da visualizzare:
         Viewport viewport = new Viewport(-10.0, 10.0, -10.0, 20.0, width, height);
 
-        // --- 3. Definizione degli adattatori (Adapter Pattern) ---
-        // Adattatore da double a Real (per il dominio)
+        // --- 3. Adattatori double <-> Real ---
         Function<Double, Real> domainAdapter = Real::new;
-        // Adattatore da Real a double (per il codominio)
-        Function<Real, Double> codomainAdapter = Real::getValue; // Assumo esista getValue() in Real
+        Function<Real, Double> codomainAdapter = Real::getValue;
 
-        // --- 4. Processo di rendering (Composizione dei grafici) ---
-        renderer.startDrawing(); 
-
-        // Pulisci lo sfondo
+        // --- 4. Rendering ---
+        renderer.startDrawing();
         renderer.clear(Color.BLACK);
-
-        // Disegna gli assi cartesiani
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
 
-        // Disegna la funzione lineare (in blu)
         renderer.setColor(Color.BLUE);
-        FunctionPlotter1D.plotFunction(
-            renderer, viewport, linearFunction, domainAdapter, codomainAdapter
-        );
+        FunctionPlotter1D.plotFunction(renderer, viewport, linearFunction, domainAdapter, codomainAdapter);
         renderer.setColor(Color.GREEN);
-        FunctionPlotter1D.plotFunction(
-                renderer, viewport, linearFunction1, domainAdapter, codomainAdapter
-            );
+        FunctionPlotter1D.plotFunction(renderer, viewport, linearFunction1, domainAdapter, codomainAdapter);
         renderer.setColor(Color.RED);
-        FunctionPlotter1D.plotFunction(
-                renderer, viewport, linearFunction2, domainAdapter, codomainAdapter
-            );
-        // Calcola l'ampiezza del range matematico
+        FunctionPlotter1D.plotFunction(renderer, viewport, linearFunction2, domainAdapter, codomainAdapter);
+
         double rangeX = viewport.maxX - viewport.minX;
         double rangeY = viewport.maxY - viewport.minY;
 
-        DecimalFormat DF = new DecimalFormat("0.000E0"); // Formattazione scientifica
+        DecimalFormat DF = new DecimalFormat("0.000E0");
         String infoText1 = "Range X: [" + DF.format(viewport.minX) + ", " + DF.format(viewport.maxX) + "] (Ampiezza: " + DF.format(rangeX) + ")";
         String infoText2 = "Range Y: [" + DF.format(viewport.minY) + ", " + DF.format(viewport.maxY) + "] (Ampiezza: " + DF.format(rangeY) + ")";
-        String infoText3 = "Zoom: " + DF.format(3.0 / rangeX) + "x"; // Calcolo dello zoom relativo all'ampiezza iniziale di 3.0
+        String infoText3 = "Zoom: " + DF.format(3.0 / rangeX) + "x";
 
-        // Disegna il testo in overlay (coordinate pixel fisse)
         renderer.drawOverlayText(infoText1, 10, 20, Color.RED);
         renderer.drawOverlayText(infoText2, 10, 35, Color.RED);
         renderer.drawOverlayText(infoText3, 10, 50, Color.RED);
 
-        // Mostra il risultato a schermo
         renderer.endDrawingAndFlush();
     }
 }
