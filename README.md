@@ -1,6 +1,7 @@
-# SMFN eXPerience
-------------------------------------------------------------------------    
+# SMFN-library  
+Type: Java Math Library | Status: Continuous Research (Sawdust alert!)
 
+A "slow-burning" Java experimental library for mathematical modelling. It is not designed for performance, but rather to represent abstract mathematical structures and use them to perform symbolic and numerical calculations, making it possible to handle symbolic polynomial arithmetic, solve differential equations or simulate quantum mechanics problems.
 
 
 ## struttura dei package
@@ -40,7 +41,7 @@ net.gommagomma.smfn/
 |   \-- plotting/                           # (FunctionPlotter, CartesianAxisPlotter, ScatterPlotter)
 |-- physics                                 # Package per le applicazioni fisiche (Elettromagnetismo, MQ, RG)
 |   |-- core/                               (Interfacce fisiche base: particella, forza...)
-|   |-- mechanics/                          (Dinamica, gravità , cinematica)
+|   |-- mechanics/                          (Dinamica, gravitï¿½, cinematica)
 |   |-- em                                  # Classi per campi E e B
 |   |-- mq                                  # Classi per funzioni d'onda, operatori (HamiltonianOperator, Observable, ...)
 |   |   |-- core								 # Observable
@@ -66,7 +67,7 @@ VectorField2D field = (x, y) -> matrixMultiply(A, x, y);
 VectorFieldPlotter plotter = new VectorFieldPlotter()
     .gridDensity(25, 25)          // Risoluzione della griglia
     .maxArrowLength(0.8)         // Limite per evitare sovrapposizioni
-    .colorMapper(v -> Color.BLUE); // Colore basato sull'intensità
+    .colorMapper(v -> Color.BLUE); // Colore basato sull'intensitï¿½
 
 // 3. Rendering nel frame
 renderer.startDrawing();
@@ -81,9 +82,9 @@ renderer.endDrawingAndFlush();
 - Per robustezza assoluta in librerie matematiche generiche, si preferisce un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 
 - ComplexVector: Dot Product
-Stai calcolando <v,w>=SOMMA(v(i) x w(i)\). Questa è la convenzione standard dei Matematici (lineare nel primo argomento, antilineare nel secondo).
-Attenzione per il package mq (Quantum Mechanics): Nella notazione di Dirac (Fisica), il prodotto scalare (bra-ket <phi|psi> è, per convenzione, antilineare nel primo argomento (bra) e lineare nel secondo (ket): <phi|psi>=SOMMA(phi(i)\ x psi(i))
-Se userai questa classe ComplexVector per i tuoi StateVector quantistici, dovrai ricordarti che v.dotProduct(w) calcolerà matematicamente <w|v> (o invertire la logica nella classe HilbertSpace specifica per la MQ).
+Stai calcolando <v,w>=SOMMA(v(i) x w(i)\). Questa ï¿½ la convenzione standard dei Matematici (lineare nel primo argomento, antilineare nel secondo).
+Attenzione per il package mq (Quantum Mechanics): Nella notazione di Dirac (Fisica), il prodotto scalare (bra-ket <phi|psi> ï¿½, per convenzione, antilineare nel primo argomento (bra) e lineare nel secondo (ket): <phi|psi>=SOMMA(phi(i)\ x psi(i))
+Se userai questa classe ComplexVector per i tuoi StateVector quantistici, dovrai ricordarti che v.dotProduct(w) calcolerï¿½ matematicamente <w|v> (o invertire la logica nella classe HilbertSpace specifica per la MQ).
 
 - Soluzione Architetturale: Nelle implementazioni concrete (es. RealMatrix), considera di usare internamente double[] o double[][] primitivi per lo storage, e crea gli oggetti Real "on the fly" solo quando richiesti tramite get(row, col).
 
