@@ -1,24 +1,30 @@
 package net.gommagomma.smfn.demo;
 
-import net.gommagomma.smfn.math.algebra.core.Mapping;
+import java.util.List;
+
 import net.gommagomma.smfn.math.algebra.core.structures.metric.MetricSpace;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableVectorProblem;
+import net.gommagomma.smfn.math.analysis.core.functions.MultivariateFunction;
+import net.gommagomma.smfn.math.analysis.core.problems.MultivariateFunctionSystemProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.VectorNewtonRaphsonSolver;
 import net.gommagomma.smfn.math.geometry.Circle;
 import net.gommagomma.smfn.math.geometry.Line;
 import net.gommagomma.smfn.math.geometry.Point;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixAlgebra;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
 /**
  * Intersezione cerchio-retta come ricerca di radici vettoriale:
  * F(x,y) = (dist(P,centro) - raggio, distanza con segno di P dalla retta) = (0,0).
+ *
+ * A differenza della prima versione di questa demo, qui nessuna Jacobiana
+ * e' scritta a mano: MultivariateFunctionSystemProblem non sa nulla di "cerchio"
+ * o "retta" -- usa il gradiente esatto di ciascuna figura (getGradient(),
+ * gia' formalizzato in Circle/Line) tramite lo stesso schema instanceof
+ * gia' visto altrove nella libreria.
  */
 public class CircleLineIntersectionDemo
 {
@@ -33,7 +39,8 @@ public class CircleLineIntersectionDemo
 		System.out.println("Retta:   " + line);
 		System.out.println("\nSoluzioni analitiche attese: x = " + (2 + Math.sqrt(2) / 2) + " oppure x = " + (2 - Math.sqrt(2) / 2) + "  (y = 4 - x)");
 
-		DifferentiableVectorProblem<Real> problem = intersectionProblem(circle, line);
+		MultivariateFunctionSystemProblem<Real, RealField> problem =
+			new MultivariateFunctionSystemProblem<>(List.of((MultivariateFunction<Real>) circle, line), R, new Real(1e-6));
 
 		SquareMatrixAlgebra<Real, RealField> matrixAlgebra = new SquareMatrixAlgebra<>(R, 2);
 		VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(matrixAlgebra, V2);
@@ -51,55 +58,15 @@ public class CircleLineIntersectionDemo
 		Vector<Real> guess1 = V2.of(new Real[] { new Real(3.0), new Real(1.0) });
 		Vector<Real> intersection1 = solver.solve(problem, guess1,
 			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space);
-		System.out.println("\nPartendo da (3,1): intersezione = " + toPoint(intersection1));
+		System.out.println("\nPartendo da (3,1): intersezione = " + intersection1);
 
 		Vector<Real> guess2 = V2.of(new Real[] { new Real(1.0), new Real(3.0) });
 		Vector<Real> intersection2 = solver.solve(problem, guess2,
 			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space);
-		System.out.println("Partendo da (1,3): intersezione = " + toPoint(intersection2));
+		System.out.println("Partendo da (1,3): intersezione = " + intersection2);
 
 		System.out.println("\nVerifica isOnEntity su entrambe le figure:");
-		System.out.println("  Intersezione 1 -> cerchio: " + circle.isOnEntity(toPoint(intersection1)) + ", retta: " + line.isOnEntity(toPoint(intersection1)));
-		System.out.println("  Intersezione 2 -> cerchio: " + circle.isOnEntity(toPoint(intersection2)) + ", retta: " + line.isOnEntity(toPoint(intersection2)));
-	}
-
-	private static DifferentiableVectorProblem<Real> intersectionProblem(Circle circle, Line line) {
-		Point center = circle.getCenter();
-
-		Real ldx = line.getDirectionX();
-		Real ldy = line.getDirectionY();
-		Real lineLength = R.add(R.multiply(ldx, ldx), R.multiply(ldy, ldy)).sqrt();
-
-		return new DifferentiableVectorProblem<Real>() {
-			@Override
-			public Vector<Real> apply(Vector<Real> v) {
-				Point p = toPoint(v);
-				return V2.of(new Real[] { circle.implicitFunctionAt(p), line.implicitFunctionAt(p) });
-			}
-
-			@Override
-			public Mapping<Vector<Real>, SquareMatrix<Real>> getJacobian() {
-				return v -> {
-					Point p = toPoint(v);
-					Real dist = p.distanceTo(center);
-
-					// df1/dx = (x-cx)/dist, df1/dy = (y-cy)/dist  (gradiente della distanza dal centro)
-					Real dxC = R.subtract(p.getX(), center.getX());
-					Real dyC = R.subtract(p.getY(), center.getY());
-					Real df1dx = R.divide(dxC, dist);
-					Real df1dy = R.divide(dyC, dist);
-
-					// df2/dx = -ldy/L, df2/dy = ldx/L  (la retta e' affine: Jacobiana costante)
-					Real df2dx = R.divide(R.negate(ldy), lineLength);
-					Real df2dy = R.divide(ldx, lineLength);
-
-					return SquareMatrixElementFactory.of(R, df1dx, df1dy, df2dx, df2dy);
-				};
-			}
-		};
-	}
-
-	private static Point toPoint(Vector<Real> v) {
-		return new Point(v.get(0), v.get(1));
+		System.out.println("  Intersezione 1 -> cerchio: " + circle.isOnEntity(intersection1) + ", retta: " + line.isOnEntity(intersection1));
+		System.out.println("  Intersezione 2 -> cerchio: " + circle.isOnEntity(intersection2) + ", retta: " + line.isOnEntity(intersection2));
 	}
 }

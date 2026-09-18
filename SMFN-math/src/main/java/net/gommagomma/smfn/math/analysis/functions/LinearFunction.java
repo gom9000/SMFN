@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.analysis.functions;
 
-import net.gommagomma.smfn.math.algebra.core.Mapping;
+import net.gommagomma.smfn.math.analysis.core.functions.ScalarFunction;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 
@@ -20,7 +20,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Ring;
  * Mapping<K,K>, esattamente come Polynomial/PolynomialFunction.
  */
 public final class LinearFunction<K extends ScalarElement<K>>
-implements Mapping<K, K>
+implements ScalarFunction<K>
 {
 	private final Ring<K> field;
     private final K m; // coefficiente angolare

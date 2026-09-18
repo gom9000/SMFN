@@ -1,26 +1,28 @@
 package net.gommagomma.smfn.math.geometry;
 
-import java.util.Arrays;
-
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.linearalgebra.vectors.InnerProductVectorSpace;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
  * Un punto nello spazio affine N-dimensionale (tipicamente 2D o 3D).
- *
  */
-public final class Point implements AlgebraicElement<Point>
+public final class Point
+implements AlgebraicElement<Point>
 {
-	private static final RealField R = RealField.INSTANCE;
+	private final Vector<Real> position;
 
-	private final Real[] coordinates;
-
-	public Point(Real... coordinates) {
-		if (coordinates == null || coordinates.length == 0) {
+	public Point(Vector<Real> position) {
+		if (position == null || position.size() == 0) {
 			throw new IllegalArgumentException("Un punto richiede almeno una coordinata.");
 		}
-		this.coordinates = coordinates.clone();
+		this.position = position;
+	}
+
+	public Point(Real... coordinates) {
+		this(spaceFor(coordinates.length).of(coordinates));
 	}
 
 	public Point(double... coordinates) {
@@ -33,14 +35,13 @@ public final class Point implements AlgebraicElement<Point>
 		return result;
 	}
 
-	public int dimension() { return coordinates.length; }
-
-	public Real get(int index) {
-		if (index < 0 || index >= coordinates.length) {
-			throw new IndexOutOfBoundsException("Indice " + index + " fuori dai limiti per un punto " + coordinates.length + "D.");
-		}
-		return coordinates[index];
+	private static InnerProductVectorSpace<Real, RealField> spaceFor(int dimension) {
+		return new InnerProductVectorSpace<>(RealField.INSTANCE, dimension);
 	}
+
+	public int dimension() { return (int) position.size(); }
+
+	public Real get(int index) { return position.get(index); }
 
 	public Real getX() { return get(0); }
 
@@ -54,34 +55,26 @@ public final class Point implements AlgebraicElement<Point>
 		return get(2);
 	}
 
-	/** Sottrazione di due punti: P1 - P2 = spostamento, come componenti. */
-	public Real[] displacementTo(Point other) {
+	/** Il punto come Vector<Real> -- per chi deve collegarsi a linearalgebra/analysis. */
+	public Vector<Real> asVector() { return position; }
+
+	/** Sottrazione di due punti: P1 - P2 = spostamento. */
+	public Vector<Real> displacementTo(Point other) {
 		requireSameDimension(other.dimension());
-		Real[] result = new Real[dimension()];
-		for (int i = 0; i < dimension(); i++) {
-			result[i] = R.subtract(this.coordinates[i], other.coordinates[i]);
-		}
-		return result;
+		return spaceFor(dimension()).subtract(this.position, other.position);
 	}
 
 	/** Distanza euclidea tra due punti: ||P1 - P2||. */
 	public Real distanceTo(Point other) {
-		Real[] displacement = displacementTo(other);
-		Real sumOfSquares = R.zero();
-		for (Real component : displacement) {
-			sumOfSquares = R.add(sumOfSquares, R.multiply(component, component));
-		}
-		return sumOfSquares.sqrt();
+		return spaceFor(dimension()).norm(displacementTo(other));
 	}
 
 	/** Traslazione di un punto: P + spostamento = P'. */
 	public Point translate(Real... displacement) {
 		requireSameDimension(displacement.length);
-		Real[] result = new Real[dimension()];
-		for (int i = 0; i < dimension(); i++) {
-			result[i] = R.add(this.coordinates[i], displacement[i]);
-		}
-		return new Point(result);
+		InnerProductVectorSpace<Real, RealField> space = spaceFor(dimension());
+		Vector<Real> disp = space.of(displacement);
+		return new Point(space.add(this.position, disp));
 	}
 
 	private void requireSameDimension(int otherDimension) {
@@ -92,27 +85,27 @@ public final class Point implements AlgebraicElement<Point>
 
 	@Override
 	public Point copy() {
-		return new Point(coordinates.clone());
+		return new Point(position.copy());
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof Point)) return false;
-		return Arrays.equals(this.coordinates, ((Point) o).coordinates);
+		return this.position.equals(((Point) o).position);
 	}
 
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(coordinates);
+		return position.hashCode();
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("P(");
-		for (int i = 0; i < coordinates.length; i++) {
-			sb.append(coordinates[i]);
-			if (i < coordinates.length - 1) sb.append(", ");
+		for (int i = 0; i < dimension(); i++) {
+			sb.append(get(i));
+			if (i < dimension() - 1) sb.append(", ");
 		}
 		return sb.append(")").toString();
 	}

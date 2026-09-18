@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.math.analysis.functions;
 
-import net.gommagomma.smfn.math.algebra.core.Mapping;
+import net.gommagomma.smfn.math.analysis.core.functions.ScalarFunction;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.analysis.core.functionals.EvaluationFunctional;
 import net.gommagomma.smfn.math.analysis.core.functionals.HornerEvaluator.CoefficientSequence;
 
 public class PolynomialFunction<K extends ScalarElement<K>, S extends Ring<K>>
-implements Mapping<K, K>, CoefficientSequence<K>
+implements ScalarFunction<K>, CoefficientSequence<K>
 {
 	private final Polynomial<K> polynomial;
     private final S structure;

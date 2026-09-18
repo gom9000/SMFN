@@ -11,8 +11,11 @@ import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.geometry.Circle;
 import net.gommagomma.smfn.math.geometry.Point;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
+import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
 
 public class GeometryCirclePlot {
     public static void main(String[] args) {
@@ -33,7 +36,8 @@ public class GeometryCirclePlot {
 
         Viewport viewport = new Viewport(-5, 5, -5, 5, width, height);
 
-        BiFunction<Double, Double, Point> domainAdapter = (x, y) -> new Point(new Real(x), new Real(y));
+        VectorSemimodule<Real, RealField> V2 = new VectorSemimodule<>(RealField.INSTANCE, 2);
+        BiFunction<Double, Double, Vector<Real>> domainAdapter = (x, y) -> V2.of(new Real[] { new Real(x), new Real(y) });
 
         // value = dist(P,C) - r: bordo in blu, interno/esterno distinti per sfumatura
         ColorMapper<Real> colorMapper = new ColorMapper<>() {

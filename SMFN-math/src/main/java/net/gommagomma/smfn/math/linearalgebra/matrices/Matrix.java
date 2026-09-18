@@ -2,12 +2,12 @@ package net.gommagomma.smfn.math.linearalgebra.matrices;
 
 import java.util.Arrays;
 
-import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.LinearStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
+import net.gommagomma.smfn.math.analysis.core.functions.VectorFunction;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
 
@@ -20,7 +20,7 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
  * un endomorfismo, resta l'unica a implementare LinearOperator.
  */
 public final class Matrix<K extends ScalarElement<K>> 
-implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, Mapping<Vector<K>, Vector<K>>
+implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, VectorFunction<K>
 {
     private final K[] data;
     protected final LinearStructure<Matrix<K>, K, ?> matrixStructure;
