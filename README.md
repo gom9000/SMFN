@@ -1,7 +1,7 @@
 # SMFN-library  
 Type: Java Math Library | Status: Continuous Research (Sawdust alert!)
 
-A "slow-burning" Java experimental library for mathematical modelling. It is not designed for performance, but rather to represent abstract mathematical structures and use them to perform symbolic and numerical calculations, making it possible to handle symbolic polynomial arithmetic, solve differential equations or simulate quantum mechanics problems.
+Libreria sperimentale in Java per la modellazione matematica. Non orientata alle prestazioni pure, ma alla rappresentazione delle strutture matematiche astratte, e al calcolo sia simbolico che numerico: dalla gestione dell'aritmetica polinomiale alla risoluzione di equazioni differenziali, fino alla simulazione di sistemi di meccanica quantistica.
 
 
 ## Guida all'Uso
