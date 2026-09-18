@@ -1,46 +1,37 @@
 package net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.linearalgebra.core.operators.LinearMapping;
-import net.gommagomma.smfn.math.linearalgebra.core.operators.LinearMorphism;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
+import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
 
 /**
- * Differenziatore numerico basato sulle differenze centrali.
- * K deve essere un FieldElement che è intrinsecamente Scalable e CommutativeMonoid.
+ * Differenziatore numerico a differenze centrali: f'(x) ~ (f(x+h) - f(x-h)) / (2h).
+ *
+ * E' un SymbolicOperator<K,K,Mapping<K,K>>: trasforma una funzione in
+ * un'altra funzione -- esattamente il concetto gia' pulito in
+ * analysis.core.operators, non serviva nessun modello a parte.
  */
-public class CentralDifferenceDifferentiator<K extends FieldElement<K>> 
-implements LinearMapping<K, LinearMorphism<K, K>, CentralDifferenceDifferentiator<K>>
+public class CentralDifferenceDifferentiator<K extends ScalarElement<K>>
+implements Mapping<Mapping<K, K>, Mapping<K, K>>
 {
-    private final K h;
+	private final Field<K> field;
+	private final K h;
 
-    public CentralDifferenceDifferentiator(K h) {
-        if (h == null || h.isZero()) {
-            throw new IllegalArgumentException("Step size 'h' cannot be null or zero.");
-        }
-        this.h = h.copy();
-    }
+	public CentralDifferenceDifferentiator(Field<K> field, K h) {
+		if (h == null || field.isZero(h)) {
+			throw new IllegalArgumentException("Il passo h non puo' essere nullo o zero.");
+		}
+		this.field = field;
+		this.h = h;
+	}
 
-    @Override
-    public LinearMorphism<K, K> apply(LinearMorphism<K, K> f) {
-        // Implementazione tramite classe anonima o lambda
-        return x -> {
-            K fPlus = f.evaluate(x.add(h));
-            K fMinus = f.evaluate(x.subtract(h));
-            
-            K twoH = h.add(h);
-            
-            // Formula: (f(x+h) - f(x-h)) * (1/2h)
-            return fPlus.subtract(fMinus).scale(twoH.inverse());
-        };
-    }
-
-    @Override
-    public LinearMorphism<K, K> evaluate(LinearMorphism<K, K> input) {
-        return apply(input);
-    }
-
-    @Override
-    public CentralDifferenceDifferentiator<K> scale(K scalar) {
-        throw new UnsupportedOperationException("Scaling operator not yet implemented.");
-    }
+	@Override
+	public Mapping<K, K> apply(Mapping<K, K> f) {
+		return x -> {
+			K fPlus = f.apply(field.add(x, h));
+			K fMinus = f.apply(field.subtract(x, h));
+			K twoH = field.add(h, h);
+			return field.divide(field.subtract(fPlus, fMinus), twoH);
+		};
+	}
 }

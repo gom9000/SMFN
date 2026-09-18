@@ -1,19 +1,15 @@
-
 package net.gommagomma.smfn.math.analysis.core.problems;
 
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Definisce un Problema di Punto Fisso: trovare T_k+1 = G(T_k).
- * T: Lo stato del sistema (il tipo di elemento iterato).
+ * apply(T) rappresenta il passo T_k+1 = G(T_k): si itera per osservare il
+ * comportamento dell'orbita (convergenza a un punto fisso, divergenza, ciclo
+ * -- come nell'iterazione di Mandelbrot/Julia). nextIteration e' solo un
+ * alias leggibile di apply, stessa forma sotto: non promette nulla in piu'.
  */
-public interface FixedPointProblem<T extends AlgebraicElement<T>> 
-extends AnalysisProblem<T>
+public interface FixedPointProblem<T extends AlgebraicElement<T>>
+extends IterationProblem<T>
 {
-    /**
-     * La funzione di mappatura G(x) che definisce il passo iterativo: x_{k+1} = G(x_k).
-     * @param current Lo stato T all'iterazione k.
-     * @return Lo stato T all'iterazione k+1.
-     */
-    T nextIteration(T current);
+	default T nextIteration(T current) { return apply(current); }
 }

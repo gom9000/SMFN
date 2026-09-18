@@ -1,21 +1,24 @@
 package net.gommagomma.smfn.math.analysis.core.solvers;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
+import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
+import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.structures.Ring;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.Module;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentialEquationProblem;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
 
-
-public interface IntervalODEStepSolver<K extends FieldElement<K>, T extends VectorElement<K, T>>
-extends IntervalSolver<K, T>
+public interface IntervalODEStepSolver<K extends ScalarElement<K>, V extends LinearElement<V, K>, S extends Ring<K> & ScalarStructure<K>>
+extends IntervalSolver<K, V, S>
 {
-	/**
-     * Esegue un singolo passo di integrazione temporale utilizzando l'algoritmo specifico.
-     *  @param system Il problema ODE (fornisce la derivata dy/dt).
+    /**
+     * Esegue un singolo passo di integrazione temporale.
+     * @param system Il problema ODE (fornisce la derivata dy/dt).
      * @param currentState Lo stato y(t) corrente.
      * @param currentTime Il tempo t corrente.
      * @param deltaTime La dimensione del passo h.
+     * @param space La struttura che sa sommare e scalare gli stati V.
      * @return Lo stato y(t + h) approssimato.
      */
-	T step(DifferentialEquationProblem<K, T> system, T currentState, Real currentTime, Real deltaTime);
+    V step(DifferentialEquationProblem<K, V> system, V currentState, Real currentTime, Real deltaTime, Module<V, K, S> space);
 }

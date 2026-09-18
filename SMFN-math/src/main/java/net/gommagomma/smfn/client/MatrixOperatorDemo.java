@@ -79,7 +79,7 @@ public class MatrixOperatorDemo {
             new PolynomialRing<>(MF2z);
 
         SquareMatrix<Complex> identity = M2z.of(new Complex[] {
-            new Complex(1, 0), new Complex(0, 0),
+            new Complex(1, 0), new Complex(0, 1),
             new Complex(0, 0), new Complex(1, 0)
         });
 

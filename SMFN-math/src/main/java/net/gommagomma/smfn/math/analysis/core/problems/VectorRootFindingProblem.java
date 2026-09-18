@@ -1,19 +1,11 @@
 package net.gommagomma.smfn.math.analysis.core.problems;
 
-import net.gommagomma.smfn.math.algebra.core.Mapping;
-import net.gommagomma.smfn.math.algebra.core.Morphism;
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
-import net.gommagomma.smfn.math.linearalgebra.core.operators.LinearOperator;
+import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
-public interface VectorRootFindingProblem<K extends FieldElement<K>, V extends VectorElement<K, V>> 
-extends RootFindingProblem<V>
-{
-	@Override
-	Morphism<V, V> getFunction();
-
-	// Lo Jacobiano restituisce una Matrice (LinearOperator) per ogni punto V
-	default Mapping<V, LinearOperator<K, V, ?>> getJacobian() {
-		throw new UnsupportedOperationException();
-	}
-}
+/**
+ * Specializzazione vettoriale (dimensione n): Vector<K> -> Vector<K>.
+ */
+public interface VectorRootFindingProblem<K extends ScalarElement<K>>
+extends RootFindingProblem<Vector<K>>
+{}

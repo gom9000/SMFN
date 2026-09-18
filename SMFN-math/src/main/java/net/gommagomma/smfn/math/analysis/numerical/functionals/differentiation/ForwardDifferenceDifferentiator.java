@@ -1,52 +1,32 @@
 package net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.linearalgebra.core.operators.LinearMapping;
-import net.gommagomma.smfn.math.linearalgebra.core.operators.LinearMorphism;
+import net.gommagomma.smfn.math.algebra.core.Mapping;
+import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.structures.Field;
 
 /**
- * Differenziatore numerico basato sulle differenze in avanti (Forward Difference).
- * Implementa LinearMapping per essere usato dai solutori iterativi.
+ * Differenziatore numerico a differenze in avanti: f'(x) ~ (f(x+h) - f(x)) / h.
  */
-public class ForwardDifferenceDifferentiator<R extends FieldElement<R>> 
-implements LinearMapping<R, LinearMorphism<R, R>, ForwardDifferenceDifferentiator<R>>
-{    
-    private final R h;
+public class ForwardDifferenceDifferentiator<K extends ScalarElement<K>>
+implements Mapping<Mapping<K, K>, Mapping<K, K>>
+{
+	private final Field<K> field;
+	private final K h;
 
-    public ForwardDifferenceDifferentiator(R h) {
-        if (h == null || h.isZero()) {
-            throw new IllegalArgumentException("Step size 'h' cannot be null or zero.");
-        }
-        this.h = h.copy();
-    }
+	public ForwardDifferenceDifferentiator(Field<K> field, K h) {
+		if (h == null || field.isZero(h)) {
+			throw new IllegalArgumentException("Il passo h non puo' essere nullo o zero.");
+		}
+		this.field = field;
+		this.h = h;
+	}
 
-    /**
-     * Applica l'operatore differenziale: f -> f'
-     */
-    @Override
-    public LinearMorphism<R, R> apply(LinearMorphism<R, R> f) {
-        return new LinearMorphism<R, R>() {
-            @Override
-            public R evaluate(R x) {
-                // Formula Forward Difference: f'(x) ≈ [f(x + h) - f(x)] / h
-                R fXPlusH = f.evaluate(x.add(h));
-                R fX = f.evaluate(x);
-                
-                // Usiamo .scale(h.inverse()) per coerenza con la capability Scalable
-                return fXPlusH.subtract(fX).scale(h.inverse());
-            }
-        };
-    }
-
-    @Override
-    public LinearMorphism<R, R> evaluate(LinearMorphism<R, R> input) {
-        return apply(input);
-    }
-
-    // --- Metodi Algebrici necessari per LinearMapping ---
-
-    @Override
-    public ForwardDifferenceDifferentiator<R> scale(R scalar) {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public Mapping<K, K> apply(Mapping<K, K> f) {
+		return x -> {
+			K fXPlusH = f.apply(field.add(x, h));
+			K fX = f.apply(x);
+			return field.divide(field.subtract(fXPlusH, fX), h);
+		};
+	}
 }
