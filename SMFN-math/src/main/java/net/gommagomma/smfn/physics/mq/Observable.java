@@ -1,16 +1,29 @@
 package net.gommagomma.smfn.physics.mq;
 
-import net.gommagomma.smfn.math.algebra.core.elements.multiplicative.FieldElement;
-import net.gommagomma.smfn.math.linearalgebra.core.elements.vectors.VectorElement;
-import net.gommagomma.smfn.math.linearalgebra.core.operators.HermitianMapping;
-
+import net.gommagomma.smfn.math.algebra.numerics.Complex;
+import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 
 /**
- * Un Osservabile è, per definizione fisica, un operatore hermitiano.
- * Questa interfaccia funge da marker semantico per il dominio della fisica.
+ * Un Osservabile e', per definizione fisica, un operatore hermitiano:
+ * M = M^dagger (autovalori reali). Non e' una gerarchia di tipo a parte --
+ * e' un vincolo verificato al momento della costruzione, sfruttando
+ * isHermitian() gia' disponibile su SquareMatrix. Un SquareMatrix<Complex>
+ * qualunque puo' rappresentare un operatore lineare (lo e' gia', via
+ * LinearOperator); un Observable garantisce in piu' che sia fisicamente
+ * valido come quantita' misurabile.
  */
-public interface Observable<K extends FieldElement<K>, 
-                            V extends VectorElement<K, V>, 
-                            O extends Observable<K, V, O>> 
-extends HermitianMapping<K, V, O>
-{}
+public final class Observable
+{
+	private final SquareMatrix<Complex> operator;
+
+	public Observable(SquareMatrix<Complex> operator) {
+		if (!operator.isHermitian()) {
+			throw new IllegalArgumentException("Un Observable deve essere rappresentato da un operatore hermitiano (M = M^dagger).");
+		}
+		this.operator = operator;
+	}
+
+	public SquareMatrix<Complex> asOperator() {
+		return operator;
+	}
+}

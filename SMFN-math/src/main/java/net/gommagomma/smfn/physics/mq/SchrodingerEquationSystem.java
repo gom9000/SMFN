@@ -2,31 +2,35 @@ package net.gommagomma.smfn.physics.mq;
 
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentialEquationProblem;
-import net.gommagomma.smfn.math.linearalgebra.complex.ComplexVector;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
+import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
-
-public class SchrodingerEquationSystem
-implements DifferentialEquationProblem<Complex, ComplexVector>
+/**
+ * Equazione di Schrodinger dipendente dal tempo: d|psi>/dt = (-i/hbar) H|psi>.
+ * hbar = 1 in unita' naturali.
+ *
+ * E' esattamente un DifferentialEquationProblem<Complex, Vector<Complex>> --
+ * lo stesso concetto generalizzato in analysis per accogliere stati a
+ * valori complessi, non serviva nessuna estensione ulteriore.
+ */
+public final class SchrodingerEquationSystem
+implements DifferentialEquationProblem<Complex, Vector<Complex>>
 {
-	private final Observable<Complex, ComplexVector, ?> H;
-    // hbar (costante di Planck ridotta) è spesso 1.0 in unità naturali per MQ
+	private static final Complex MINUS_I = new Complex(0.0, -1.0);
 
-    public SchrodingerEquationSystem(Observable<Complex, ComplexVector, ?> h) {
-        this.H = h;
-    }
+	private final Observable hamiltonian;
+	private final VectorSpace<Complex, ComplexField> space;
 
-    @Override
-    public ComplexVector derivative(ComplexVector state, Real time) {
-        // L'equazione è d|psi>/dt = (-i/hbar) * H * |psi>
-        
-        // 1. Calcola H * |psi> (moltiplicazione Matrice-Vettore)
-        ComplexVector H_psi = H.apply(state); // evaluate() è il metodo ereditato da MathFunction/LinearOperator
+	public SchrodingerEquationSystem(Observable hamiltonian, int dimension) {
+		this.hamiltonian = hamiltonian;
+		this.space = new VectorSpace<>(ComplexField.INSTANCE, dimension);
+	}
 
-        // 2. Calcola lo scalare (-i/hbar). Usiamo hbar = 1.0
-        Complex minusIOverHbar = new Complex(0.0, -1.0); 
-
-        // 3. Moltiplica il vettore H_psi per lo scalare (-i/hbar)
-        return H_psi.scale(minusIOverHbar);
-    }
+	@Override
+	public Vector<Complex> derivative(Vector<Complex> state, Real time) {
+		Vector<Complex> H_psi = hamiltonian.asOperator().apply(state);
+		return space.scale(MINUS_I, H_psi);
+	}
 }

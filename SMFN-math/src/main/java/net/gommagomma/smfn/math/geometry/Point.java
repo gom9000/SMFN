@@ -1,117 +1,125 @@
 package net.gommagomma.smfn.math.geometry;
 
+import java.util.Arrays;
+
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
-
-import java.util.Objects;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 /**
- * Rappresenta un punto (posizione) nello spazio affine N-dimensionale.
- * A differenza di un vettore, un punto non supporta operazioni di somma tra simili.
+ * Un punto nello spazio affine N-dimensionale (tipicamente 2D o 3D).
+ *
+ * A differenza di un vettore, un punto non si somma con un altro punto --
+ * si sottrae da un altro punto (ottenendo uno spostamento) o si trasla
+ * tramite uno spostamento. Deliberatamente autonomo da
+ * linearalgebra.vectors.Vector: Point e' un primitivo di geometria,
+ * concreto e a bassa dimensione, e non ha bisogno della generalita' di
+ * un Module/LinearSpace generico su K.
  */
-public final class Point
-implements AlgebraicElement<Point>
+public final class Point implements AlgebraicElement<Point>
 {
-    private final Vector<Real> position;
+	private static final RealField R = RealField.INSTANCE;
 
-    // --- Costruttori ---
-    public Point(Vector<Real> position) {
-        this.position = Objects.requireNonNull(position, "Position vector cannot be null");
-    }
+	private final Real[] coordinates;
 
-    public Point(Real... components) {
-        this(new RealVector(components));
-    }
+	public Point(Real... coordinates) {
+		if (coordinates == null || coordinates.length == 0) {
+			throw new IllegalArgumentException("Un punto richiede almeno una coordinata.");
+		}
+		this.coordinates = coordinates.clone();
+	}
 
-    public Point(Real x, Real y) {
-        this(new RealVector(x, y));
-    }
+	public Point(double... coordinates) {
+		this(toReals(coordinates));
+	}
 
-    public Point(Real x, Real y, Real z) {
-        this(new RealVector(x, y, z));
-    }
+	private static Real[] toReals(double[] values) {
+		Real[] result = new Real[values.length];
+		for (int i = 0; i < values.length; i++) result[i] = new Real(values[i]);
+		return result;
+	}
 
-    // --- Proprietà Geometriche ---
-    
-    public int dimension() {
-        return position.dimension();
-    }
+	public int dimension() { return coordinates.length; }
 
-    public Real get(int index) {
-        return position.get(index);
-    }
+	public Real get(int index) {
+		if (index < 0 || index >= coordinates.length) {
+			throw new IndexOutOfBoundsException("Indice " + index + " fuori dai limiti per un punto " + coordinates.length + "D.");
+		}
+		return coordinates[index];
+	}
 
-    // Metodi di accesso rapido con fail-fast invece di NaN
-    public Real getX() { return get(0); }
-    
-    public Real getY() {
-        if (dimension() < 2) throw new IndexOutOfBoundsException("Point is 1D, no Y coordinate.");
-        return get(1);
-    }
-    
-    public Real getZ() {
-        if (dimension() < 3) throw new IndexOutOfBoundsException("Point is less than 3D, no Z coordinate.");
-        return get(2);
-    }
+	public Real getX() { return get(0); }
 
-    // --- Operazioni Affini ---
+	public Real getY() {
+		if (dimension() < 2) throw new IndexOutOfBoundsException("Il punto e' 1D, nessuna coordinata Y.");
+		return get(1);
+	}
 
-    /**
-     * Calcola la distanza tra questo punto e un altro punto.
-     * Matematicamente: ||P1 - P2||
-     */
-    public Real distanceTo(Point other) {
-        return this.subtract(other).norm();
-    }
+	public Real getZ() {
+		if (dimension() < 3) throw new IndexOutOfBoundsException("Il punto ha meno di 3 dimensioni, nessuna coordinata Z.");
+		return get(2);
+	}
 
-    /**
-     * Sottrazione di due punti: P1 - P2 = V (restituisce un vettore).
-     */
-    public RealVector subtract(Point other) {
-        if (this.dimension() != other.dimension()) {
-            throw new IllegalArgumentException("Dimension mismatch in point subtraction.");
-        }
-        return this.position.subtract(other.position);
-    }
+	/** Sottrazione di due punti: P1 - P2 = spostamento, come componenti. */
+	public Real[] displacementTo(Point other) {
+		requireSameDimension(other.dimension());
+		Real[] result = new Real[dimension()];
+		for (int i = 0; i < dimension(); i++) {
+			result[i] = R.subtract(this.coordinates[i], other.coordinates[i]);
+		}
+		return result;
+	}
 
-    /**
-     * Traslazione di un punto tramite un vettore: P + V = P'
-     */
-    public Point translate(RealVector vector) {
-        return new Point(this.position.add(vector));
-    }
+	/** Distanza euclidea tra due punti: ||P1 - P2||. */
+	public Real distanceTo(Point other) {
+		Real[] displacement = displacementTo(other);
+		Real sumOfSquares = R.zero();
+		for (Real component : displacement) {
+			sumOfSquares = R.add(sumOfSquares, R.multiply(component, component));
+		}
+		return sumOfSquares.sqrt();
+	}
 
-    // --- Implementazione AlgebraicElement ---
+	/** Traslazione di un punto: P + spostamento = P'. */
+	public Point translate(Real... displacement) {
+		requireSameDimension(displacement.length);
+		Real[] result = new Real[dimension()];
+		for (int i = 0; i < dimension(); i++) {
+			result[i] = R.add(this.coordinates[i], displacement[i]);
+		}
+		return new Point(result);
+	}
 
-    @Override
-    public boolean isMathematicallyEqualTo(Point other) {
-        if (other == null) return false;
-        if (this.dimension() != other.dimension()) return false;
-        return this.position.isMathematicallyEqualTo(other.position);
-    }
+	private void requireSameDimension(int otherDimension) {
+		if (dimension() != otherDimension) {
+			throw new IllegalArgumentException("Dimensioni incompatibili: " + dimension() + " contro " + otherDimension + ".");
+		}
+	}
 
-    @Override
-    public Point copy() {
-        return new Point(this.position.copy());
-    }
+	@Override
+	public Point copy() {
+		return new Point(coordinates.clone());
+	}
 
-    // --- Metodi Standard ---
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Point)) return false;
+		return Arrays.equals(this.coordinates, ((Point) o).coordinates);
+	}
 
-    @Override
-    public String toString() {
-        return "P" + position.toString();
-    }
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(coordinates);
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Point)) return false;
-        return isMathematicallyEqualTo((Point) o);
-    }
-
-    @Override
-    public int hashCode() {
-        return position.hashCode();
-    }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("P(");
+		for (int i = 0; i < coordinates.length; i++) {
+			sb.append(coordinates[i]);
+			if (i < coordinates.length - 1) sb.append(", ");
+		}
+		return sb.append(")").toString();
+	}
 }

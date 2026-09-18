@@ -1,8 +1,11 @@
 package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
+import java.util.Arrays;
+
 import net.gommagomma.smfn.math.algebra.core.LinearOperator;
 import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
+import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Conjugable;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
@@ -128,6 +131,40 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
             total = internalMatrix.getScalarStructure().add(total, get(i, i));
         }
         return total;
+    }
+
+    /**
+     * Trasposta coniugata (aggiunta hermitiana): M^dagger[i][j] = conj(M[j][i]).
+     * Su scalari senza coniugazione (Real, Rational) coincide con la trasposta.
+     */
+    @SuppressWarnings("unchecked")
+    public SquareMatrix<K> conjugateTranspose() {
+        int n = getN();
+        K[] data = (K[]) new ScalarElement[n * n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                data[i * n + j] = conjugateIfPossible(get(j, i));
+            }
+        }
+        return SquareMatrixElementFactory.of(getScalarStructure(), Arrays.asList(data));
+    }
+
+    @SuppressWarnings("unchecked")
+    private K conjugateIfPossible(K value) {
+        if (value instanceof Conjugable) {
+            return (K) ((Conjugable<K>) value).conjugate();
+        }
+        return value;
+    }
+
+    /**
+     * Una matrice e' hermitiana se coincide con la propria trasposta coniugata:
+     * M = M^dagger. E' la proprieta' che rende un operatore fisicamente un
+     * "Observable" (autovalori reali) -- non serve una gerarchia di tipo a
+     * parte, e' un fatto verificabile su una SquareMatrix qualunque.
+     */
+    public boolean isHermitian() {
+        return getStructure().areEqual(this, conjugateTranspose());
     }
 
 
