@@ -28,7 +28,7 @@ implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K>
     protected Vector(LinearStructure<Vector<K>, K, ?> vectorStructure, ScalarStructure<K> scalarStructure, ScalarElement<?>[] data) {
     	this.vectorStructure = vectorStructure;
         this.scalarStructure = Objects.requireNonNull(scalarStructure);
-        this.data = Objects.requireNonNull(data);
+        this.data = Objects.requireNonNull(data).clone();
         this.size = data.length;
     }
 
@@ -79,14 +79,7 @@ implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K>
         if (!(o instanceof Vector)) return false;
         Vector<?> vector = (Vector<?>) o;
         if (size != vector.size) return false;
-        
-        // Deleghiamo il confronto dell'uguaglianza alla struttura scalare
-        for (int i = 0; i < size; i++) {
-            if (!scalarStructure.areEqual(this.get(i), (K) vector.get(i))) {
-                return false;
-            }
-        }
-        return true;
+        return Arrays.equals(data, vector.data);
     }
 
     @Override

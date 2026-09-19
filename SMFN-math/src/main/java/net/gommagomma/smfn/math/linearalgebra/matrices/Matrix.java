@@ -34,7 +34,7 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, VectorFunct
     	this.scalarStructure = scalarStructure;
         this.rows = rows;
         this.cols = cols;
-        this.data = data;
+        this.data = data.clone();
     }
 
     // --- TensorElement Implementation ---
