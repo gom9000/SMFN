@@ -1,4 +1,4 @@
-# Part 7: Graphics Subsystem
+# Part 6: Graphics Subsystem
 The graphics subsystem of `SMFN-library` provides a decoupled visualization framework designed to bridge abstract mathematical models with graphical rendering. The design enforces a strict separation of concerns: mathematical models hold no knowledge of pixels or UI components, and rendering engines hold no knowledge of math.
 
 ![smfn-plot-example](smfn-plot-example.png)
