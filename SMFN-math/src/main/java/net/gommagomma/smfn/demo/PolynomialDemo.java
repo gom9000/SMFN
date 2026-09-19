@@ -139,6 +139,22 @@ public class PolynomialDemo
         SquareMatrix<Rational> resultCH = evaluateMatrixPolynomial(cp, M, qMatrixRing, qMatrixField);
         System.out.println("P(M) = M^2 - 5M - 2I:\n" + resultCH);
         System.out.println("Verifica Cayley-Hamilton: " + (qMatrixField.isZero(resultCH) ? "SUCCESSO" : "FALLITO"));
+        
+        
+        ComplexField C = ComplexField.INSTANCE;
+        EuclideanPolynomialRing<Complex, ComplexField> p = new EuclideanPolynomialRing<>(C);
+        SquareMatrixRing<Polynomial<Complex>, EuclideanPolynomialRing<Complex, ComplexField>> M22 =
+            new SquareMatrixRing<>(p, 2);
+
+        // M(x) = [[x+i, 1], [2x, x^2-i]] -- entries are themselves polynomials
+        SquareMatrix<Polynomial<Complex>> M_ = SquareMatrixElementFactory.of(p,
+            PolynomialElementFactory.of(C, C.of(0, 1), C.of(1, 0)),           // x + i
+            PolynomialElementFactory.of(C, C.of(1, 0)),                       // 1
+            PolynomialElementFactory.of(C, C.of(0), C.of(2)),                 // 2x
+            PolynomialElementFactory.of(C, C.of(0, -1), C.of(0), C.of(1)));   // x^2 -i
+
+        Polynomial<Complex> det2 = M22.determinant(M_);  // x^3 + ix^2 - (2 + i)x + 1
+        System.out.println("M=" + M_ + "\ndet2=" + det2);
     }
 
     /**

@@ -1,283 +1,103 @@
-# SMFN-library  
-Type: Java Math Library | Status: Continuous Research (Sawdust alert!)
+# SMFN-library 
+> **Type:** Java Mathematical & Scientific Library  
+> **Status:** Continuous Research & Experimental Modeling
 
-Libreria in Java per la sperimentazione nella modellazione matematica. Non orientata alle prestazioni pure, ma alla rappresentazione delle strutture matematiche astratte, e al calcolo sia simbolico che numerico: dalla gestione dell'aritmetica polinomiale alla risoluzione di equazioni differenziali, fino alla simulazione di sistemi di meccanica quantistica.
+SMFN is a pure Java mathematical and scientific library for mathematical modelling, symbolic computation, and numerical analysis. Rather than optimizing for raw performance, SMFN emphasizes mathematical abstraction, explicit structure, and composability across different numeric domains, ranging from polynomial arithmetic and differential equations to quantum mechanical simulations and geometric visualization.
 
-**Elenco delle features**:
-- **Architettura Algebrica Astratta**: Disaccoppiamento netto tra elementi immutabili e strutture operative, con gerarchia assiomatica rigorosa (Semiring $\rightarrow$ Ring $\rightarrow$ Field) e supporto al calcolo generico.
-- **Aritmetica Polinomiale Simbolica**: Manipolazione simbolica dei polinomi su scalari arbitrari, con promozione dinamica della struttura fino all'Anello Euclideo (divisione, MCD, schema di Horner).
-- **Algebra Lineare Generica**: Spazi vettoriali e matrici operanti su qualsiasi campo o anello, con algoritmi adattivi (es. calcolo del determinante via Gauss su Field o Laplace su Ring).
-- **Frattali**: Calcolo ed esplorazione di insiemi frattali (Mandelbrot e Julia) basati su solutori iterativi generici nel campo complesso e renderizzati in tempo reale.
-- **Entità Geometriche**: Modellazione delle entità geometriche (Punto, Retta, Cerchio, Ellisse, Piano) come funzioni implicite con gradiente esatto e capacità di intersezione di figure qualsiasi via root-finding generico.
-- **Modellazione e Solutori Fisico-Matematici**: Algoritmi numerici per la risoluzione di equazioni differenziali ordinarie (ODE) e la simulazione di sistemi fisici.
-- **Visualizzazione Grafica 1D, 2D**: Un motore di rendering integrato per il plot di funzioni, forme geometriche implicite e trasformazioni generiche $f(D) \rightarrow C$ (es. funzioni di variabile complessa) tramite adattamento di dominio e color mapping personalizzato.
 
-## Guida all'Uso
+## Core Features
 
-### Elementi e Strutture Algebriche
-Gli **elementi** (`Real`, `Complex`, `Polynomial`, `Vector`, `Matrix`) sono oggetti immutabili privi di metodi operativi. Tutte le operazioni algebriche vivono esclusivamente all'interno delle **strutture** (`RealField`, `PolynomialRing`, `VectorSpace`).
+### Mathematical Foundations & Solvers
+* **Abstract Algebraic Architecture:** A structure-oriented algebraic hierarchy ($Semiring → Ring → Field$) with a clear separation between mathematical elements and the structures that define their operations.
+* **Symbolic Polynomial Arithmetic:** Symbolic operations over arbitrary scalar fields, supporting dynamic structure promotion to Euclidean Rings (GCD, polynomial division, Horner scheme).
+* **Generic Linear Algebra:** Vector spaces and matrices over arbitrary rings and fields, with algorithms selected according to the available algebraic structure (e.g. determinant via Gauss elimination on fields or Laplace expansion on rings).
+* **Numerical Solvers & Analysis:** Root-finding algorithms, numerical differentiation, ODE integration, and iterative solvers based on unified state-history models.
 
+### Applications & Domains
+* **Implicit Geometry:** Representation of geometric entities (lines, circles, ellipses, planes) as implicit functions with analytically defined gradients and numerical intersection solvers.
+* **Fractals & Complex Maps:** Mandelbrot and Julia set exploration and visualization through generic complex-domain operations.
+* **Quantum Mechanics Simulations:** Quantum state evolution, Schrodinger equation system integration, and measurement of physical observables.
+* **Graphics Subsystem:** Decoupled 1D/2D plotting framework with separate rendering and plotting layers.
+
+
+## Technical Specifications & Requirements
+* **JDK Version:** Java 11+
+* **Dependencies:** Zero external dependencies (Pure Java SE)
+* **Build System:** Maven
+
+
+## Quick Start Example
+
+#### Closure under composition:
 ```java
-RealField R = RealField.INSTANCE;
-Real a = new Real(3.0), b = new Real(4.0);
-
-Real c = R.add(a, b);
-Real d = R.multiply(a, b);
-```
-
-![SMFN-algebra-elements](resources/SMFN-algebra-elements.png)
-
----
-
-#### 1. Numeri, Natura e Capability
-Gli elementi numerici della libreria si dividono in due categorie fondamentali:
-
-* **Tipi Esatti:** (`Natural`, `SignedInt`, `Rational`, `ZnElement`). L'uguaglianza e le operazioni sono matematicamente esatte e prive di errore di arrotondamento.
-
-* **Tipi Approssimati:** (`Real`, `Complex`). Basati su rappresentazione floating-point (`double`). L'uguaglianza esatta non viene mai usata ed è sostituita dal confronto con tolleranza, per cui due valori $a$ e $b$ sono considerati uguali se $\vert{}a - b\vert{} < \varepsilon$. La costante globale di tolleranza utilizzata da tutto il motore algebrico è definita centralmente in `net.gommagomma.smfn.math.utils.MathConstants`.
-
-Gli elementi implementano interfacce di capacità (`Capability`) che definiscono proprietà e trasformazioni proprie del singolo valore, come confronti (`.isLessThan()`), valori assoluti (`.abs()`) o radici (`.sqrt()`).
-
-| Tipo | Natura | Descrizione | Capability Implementate (Metodi d'istanza) |
-|---|---|---|---|
-| `Natural` | Esatto | Interi $\ge 0$ | `Orderable`, `Exponentiable` |
-| `SignedInt` | Esatto | Interi con segno | `Orderable`, `Absolutable`, `Exponentiable` |
-| `Rational` | Esatto | Frazioni esatte | `Orderable`, `Absolutable`, `Exponentiable`, `Normable` |
-| `ZnElement` | Esatto | Interi modulo $n$ | — |
-| `Real` | Approssimato | Virgola mobile (`double`) | `Orderable`, `Absolutable`, `Exponentiable`, `Sqrtable`, `Normable` |
-| `Complex` | Approssimato | Numeri complessi | `Normable`, `Exponentiable`, `Sqrtable`, `Conjugable` |
-
-```java
-Real x = new Real(2.5);
-Complex z = new Complex(3.0, 4.0);
-
-x.isLessThan(new Real(3.0)); // Orderable
-x.abs();                     // Absolutable
-x.sqrt();                    // Sqrtable
-z.conjugate();               // Conjugable
-z.modulus();                 // Normable (|z|)
-```
-
----
-
-#### 2. Strutture algebriche
-Le strutture definiscono le operazioni matematiche e le regole algebriche valide per un determinato tipo di elemento. Segue la gerarchia assiomatica implementata:
-
-* **`Semiring`**: Definisce le operazioni di base (`add`, `multiply`) e gli elementi neutri (`zero()`, `one()`).
-  * **`Ring`**: Aggiunge l'opposto additivo (`negate`) e la sottrazione (`subtract`).
-    * **`CommutativeRing`**: Garantisce la commutatività della moltiplicazione (stessa API di `Ring`, garanzia semantica).
-      * **`Field`**: Aggiunge l'inverso moltiplicativo (`inverse`) e la divisione (`divide`).
-        * **`EuclideanDomain`**: Aggiunge la divisione con resto (`quotient`, `remainder`) e gli algoritmi di `gcd` e `lcm`.
-
-![SMFN-algebra-structures](resources/SMFN-algebra-structures.png)
-
-Poiché un elemento non possiede logica algebrica propria, **è la struttura a definire cosa significano "0" e "1"** in quel determinato contesto:
-
-* **`zero()`**: L'elemento neutro dell'addizione ($x + 0 = x$). A seconda della struttura, rappresenta lo zero numerico (`0.0`), il polinomio nullo, il vettore nullo o la matrice nulla $0_{n \times n}$.
-
-* **`one()`**: L'elemento neutro della moltiplicazione ($x \cdot 1 = x$). Rappresenta l'unità scalare (`1.0`), il polinomio costante $1$ o la matrice identità $I_n$.
-
-Questi metodi sono fondamentali per la scrittura di **algoritmi generici**: permettono a solutori e accumulatori di inizializzare somme, prodotti o condizioni di arresto senza conoscere la natura concreta degli elementi trattati.
-
-Le strutture si dividono in istanze esatte (singleton o parametrizzate) e approssimate:
-
-* `NaturalSemiring.INSTANCE` ($\mathbb{N}$) - Struttura esatta (nessuna sottrazione/divisione).
-* `IntegerRing.INSTANCE` ($\mathbb{Z}$) - Struttura esatta.
-* `RationalField.INSTANCE` ($\mathbb{Q}$) - Struttura esatta (frazioni ridotte ai minimi termini).
-* `RealField.INSTANCE` ($\mathbb{R}$), `ComplexField.INSTANCE` ($\mathbb{C}$) - Strutture approssimate basate su `MathConstants.EPSILON`.
-* `new ZnRing(n)` - Anello $\mathbb{Z}/n\mathbb{Z}$ (istanziato in base al modulo $n$).
-
-Nelle strutture approssimate, i metodi di confronto e di azzeramento integrano la tolleranza globale $\varepsilon$:
-* **`areEqual(a, b)`**: Restituisce `true` se la distanza tra $a$ e $b$ è inferiore a `EPSILON`.
-* **`isZero(x)`**: Restituisce `true` se la norma/valore assoluto di $x$ è inferiore a `EPSILON`.
-
-```java
-RealField R = RealField.INSTANCE;
-
-// Accesso agli elementi neutri della struttura
-Real zero = R.zero(); // Real con valore 0.0
-Real one  = R.one();  // Real con valore 1.0
-
-// Operazioni definite sulla struttura
-Real a = R.of(6.0), b = R.of(2.0);
-Real sum = R.add(a, b);    // 8.0
-Real div = R.divide(a, b); // 3.0 (Richiede che la struttura sia un Field)
-
-// Valutazioni con tolleranza (MathConstants.EPSILON = 1e-12)
-boolean isNull = R.isZero(R.of(1E-15));  // true (|x| < MathConstants.EPSILON)
-boolean equals = R.areEqual(a, R.of(6.0000000000001)); // true
-
-// Algebra modulare Zn Ring
-ZnRing Z5 = ZnRing.of(Z.of(5));
-ZnElement a = Z5.getElement(new SignedInt(17)); // a = [17] mod 5 = [2]
-ZnElement b = Z5.getElement(new SignedInt(4)); // b = [4] mod 5 = [4]
-
-ZnElement c = Z5.multiply(a, b); // Calcolo: [2] * [4] = [8] mod 5 = [3]
-ZnElement d = Z5.add(b, b); // Calcolo: [4] + [4] = [8] mod 5 = [3]
-```
-
----
-
-#### 3. Polinomi
-Un `Polynomial<K>` è una struttura dati immutabile che modella unicamente la sequenza ordinata dei coefficienti ($a_0, a_1, .. , a_n$). Come gli elementi numerici è privo di metodi operativi: l'aritmetica, la divisione e la valutazione sono interamente delegate alla struttura algebrica associata, derivata dinamicamente tramite  `PolynomialStructureFactory`.
-
-Il livello algebrico dello scalare $K$ determina la classe della struttura e le operazioni matematiche disponibili:
-| Struttura dello Scalare $K$ | Struttura Polinomiale Generata | Operazioni e Capacità Sbloccate |
-|---|---|---|
-| `Semiring` | `PolynomialSemiring<K>` | Somma (`add`), moltiplicazione (`multiply`), prodotto per scalare. |
-| `Ring` | `PolynomialRing<K>` | Opposto (`negate`), sottrazione (`subtract`). |
-| `CommutativeRing` | `CommutativePolynomialRing<K>` | Garanzia di commutatività della moltiplicazione polinomiale. |
-| `Field` | `EuclideanPolynomialRing<K>` | Divisione euclidea (`divide`, `quotient`, `remainder`), $GCD$ e $LCM$. |
-
-```java
-RealField R = RealField.INSTANCE;
-
-// P(x) = 3x^2 - 5x - 2 (coefficienti dal grado 0 al più alto)
-Polynomial<Real> p = PolynomialElementFactory.of(R, R.of(-2), R.of(-5), R.of(3));
-p.degree();             // 2
-p.getCoefficient(1);    // 5.0
-
-// Ottenimento automatico della struttura corretta
-ScalarStructure<Polynomial<Real>> polyStructure = PolynomialStructureFactory.getStructureFor(R);
-// Field  → EuclideanPolynomialRing  (ha anche quotient/remainder/gcd)
-// Ring   → CommutativePolynomialRing o PolynomialRing, a seconda che K commuti
-// Semiring → PolynomialSemiring
-```
-
-##### Operazioni e Solutori
-```java
-// Operazioni Standard
-PolynomialRing<Real, RealField> ring = new PolynomialRing<>(R);
-Polynomial<Real> sum = ring.add(p, q);
-Polynomial<Real> product = ring.multiply(p, q);
-
-// Divisione Euclidea (richiede che K sia un Field)
-EuclideanPolynomialRing<Real, RealField> euclid = new EuclideanPolynomialRing<>(R);
-PolynomialDivisionResult<Real> res = euclid.divide(p, q);
-
-// Divisione per coefficienti non-commutativi (es. Matrici Quadrate)
-PolynomialDivisionProvider<SquareMatrix<Complex>, SquareMatrixAlgebra<Complex, ComplexField>> divProvider = 
-    new PolynomialDivisionProvider<>(matrixAlgebra);
-
-// Valutazione P(x) in un punto con una strategia di valutazione (HornerEvaluator)
-HornerEvaluator<Real, PolynomialFunction<Real, RealField RealField,>> horner = new HornerEvaluator<>(R);
-PolynomialFunction<Real, RealField> f = new PolynomialFunction<>(p, R, horner);
-Real y = f.apply(R.of(2.0)); // P(2.0)
-
-// Derivata e integrale simbolici
-PolynomialDifferentiationProvider<Real, RealField> diff = new PolynomialDifferentiationProvider<>(R);
-Polynomial<Real> pPrime = diff.derivative(p);
-
-PolynomialIntegrationProvider<Real, RealField> integ = new PolynomialIntegrationProvider<>(R);
-Polynomial<Real> integral = integ.integrate(p, R.zero());  // costante di integrazione esplicita
-
-// Trovare tutte le radici (Newton-Raphson + deflazione, esatta su un campo algebricamente chiuso come Complex)
+// determinant() only requires the coefficient domain to provide a Ring.
+// Therefore the same matrix algorithm works for Rational, Complex, Polynomial<Complex>, etc.
 ComplexField C = ComplexField.INSTANCE;
-MetricSpace<Complex> space = (a, b) -> new Real(C.subtract(a, b).modulus());
-PolynomialRootSolver<Complex, ComplexField> rootSolver = new PolynomialRootSolver<>(
-    C, new Complex(1e-6, 0), space, new Complex(0.4, 0.9), new ConvergenceParameters(new Real(1e-10), 100));
+EuclideanPolynomialRing<Complex, ComplexField> p = new EuclideanPolynomialRing<>(C);
+SquareMatrixRing<Polynomial<Complex>, EuclideanPolynomialRing<Complex, ComplexField>> M2 = new SquareMatrixRing<>(p, 2);
 
-List<Complex> roots = rootSolver.findAllRoots(polynomial);
+// M(x) = [[x+i, 1], [2x, x^2-i]] -- entries are themselves polynomials
+SquareMatrix<Polynomial<Complex>> M = SquareMatrixElementFactory.of(p,
+    PolynomialElementFactory.of(C, C.of(0, 1), C.of(1, 0)),           // x + i
+    PolynomialElementFactory.of(C, C.of(1, 0)),                       // 1
+    PolynomialElementFactory.of(C, C.of(0), C.of(2)),                 // 2x
+    PolynomialElementFactory.of(C, C.of(0, -1), C.of(0), C.of(1))     // x^2 -i
+);
+
+Polynomial<Complex> det = M2.determinant(M);  // x^3 + ix^2 - (2 + i)x + 1
 ```
-
----
-
-#### 4. Spazi, Vettori e Matrici
-Tutte le strutture composite trasversali implementano `LinearElement<V, K>` e si articolano secondo le garanzie algebriche dello scalare $K$ e delle metriche definite sullo spazio.
-
-![SMFN-linearalgebra-spaces](resources/SMFN-linearalgebra-spaces.png)
-
-##### Spazi Vettoriali e Moduli
-Le strutture che gestiscono vettori riflettono la gerarchia assiomatica dei moduli e degli spazi metrici:
-
-| Struttura dello Spazio | Requisiti su $K$ / Spazio | Operazioni Sbloccate |
-|---|---|---|
-| `Semimodule` | $K \in \text{Semiring}$ | Somma vettoriale (`add`), scaling per scalare positivo (`scale`). |
-| `Module` | $K \in \text{Ring}$ | Vettore opposto (`negate`), sottrazione vettoriale (`subtract`). |
-| `LinearSpace` (Vector Space) | $K \in \text{Field}$ | Divisione per scalare, basi, dimensione, combinazioni lineari generiche. |
-| `NormedSpace` | $K \in \text{Field}$ + Norma | Calcolo della lunghezza/norma (`norm()`), distanza tra vettori. |
-| `InnerProductSpace` | $K \in \text{Field}$ + Prod. Interno | Prodotto scalare / Hermitiano (`innerProduct()`), ortogonalità, proiezioni. |
-
-![SMFN-linearalgebra-vector-elements](resources/SMFN-linearalgebra-vector-elements.png)
-
+#### Operators, not just values:
 ```java
+// A SquareMatrix is also a linear operator: apply(), compose() and power()
+// are provided through the Mapping -> Operator -> LinearOperator hierarchy
 RealField R = RealField.INSTANCE;
-VectorSpace<Real, RealField> V3 = new VectorSpace<>(R, 3);
+SquareMatrixRing<Real, RealField> M2 = new SquareMatrixRing<>(R, 2);
+InnerProductVectorSpace<Real, RealField> space = new InnerProductVectorSpace<>(R, 2);
 
-Vector<Real> v = V3.of(R.of(1), R.of(2), R.of(3));
-Vector<Real> scaled = V3.scale(R.of(2.0), v);
+// A 90-degree rotation matrix
+SquareMatrix<Real> rotate90 = SquareMatrixElementFactory.of(R, R.of(0), R.of(-1), R.of(1), R.of(0));
+Vector<Real> point = space.of(new Real[]{ R.of(1.0), R.of(0.0) });
 
-// Prodotto scalare Hermitiano (adotta la convenzione usata in fisica: coniuga il primo argomento).
-// Sui tipi Reali la coniugazione equivale automaticamente all'identità.
-InnerProductVectorSpace<Complex, ComplexField> ipC = new InnerProductVectorSpace<>(ComplexField.INSTANCE, 2);
-Complex dot = ipC.innerProduct(v1, v2); 
-Real norm = ipC.norm(a);
+Vector<Real> rotatedOnce  = rotate90.apply(point);                   // (0, 1)
+Vector<Real> rotatedTwice = rotate90.compose(rotate90).apply(point); // (-1, 0) — same as (rotate90 * rotate90)
+Vector<Real> fullCircle   = rotate90.power(4).apply(point);          // (1, 0) — back to start
+
+// Rotation preserves length: the norm is unchanged
+Real originalNorm = space.norm(point);      // 1.0
+Real rotatedNorm  = space.norm(rotatedOnce); // 1.0, exactly
 ```
 
-##### Matrici
-Stessa gerarchia dei vettori (`MatrixSemimodule` → `MatrixModule` → `MatrixSpace` → `InnerProductMatrixSpace`).
-Le matrici si dividono in due famiglie strutturali in base alla forma e alle proprietà algebriche disponibili:
 
-| Struttura / Classe | Forma | Operazioni e Algoritmi Sbloccati |
-|---|---|---|
-| **`MatrixSpace`** (`Matrix<K>`) | Rettangolare $m \times n$ | Somma tra matrici, prodotto per scalare, applicazione a un vettore come trasformazione lineare ($A \cdot x$). |
-| **`SquareMatrixAlgebra`** (`SquareMatrix<K>`) | Quadrata $n \times n$ | Prodotto matriciale ($A \cdot B$), potenze $A^k$, traccia, determinante (Gauss $O(n^3)$ su `Field`, Laplace $O(n!)$ su `Ring`), inversione (`inverse()`). |
+## Documentation & User Guide
 
-![SMFN-linearalgebra-matrix-elements](resources/SMFN-linearalgebra-matrix-elements.png)
+### [Part 1: Foundations](docs/smfn-guide-1-foundations.md)
+- Scope and Philosophy
+- Core Modeling Concepts
 
-```java
-// Matrici rettangolari
-MatrixSpace<Real, RealField> M23 = new MatrixSpace<>(R, 2, 3);
-Matrix<Real> A = M23.of(new Real[] { new Real(1),new Real(0),new Real(2), new Real(0),new Real(1),new Real(-1) });
+### [Part 2: Algebra & Numeric Systems](docs/smfn-guide-2-algebra.md)
+- Element Architecture
+- Axiomatic Structure Hierarchy & Factories
+- Polynomials
+- Functional Mappings & Linear Operators
 
-M23.transpose(A);
-M23.rank(A);
+### [Part 3: Linear Algebra](docs/smfn-guide-3-linear-algebra.md)
+- Spaces
+- Vectors
+- Matrices
+- Square Matrices
 
-// Matrici quadrate
-SquareMatrixAlgebra<Complex, ComplexField> M2 = new SquareMatrixAlgebra<>(ComplexField.INSTANCE, 2);
-ScalarStructure<SquareMatrix<K>> structure = SquareMatrixStructureFactory.getStructureFor(scalarStructure, n);
-// Field  → SquareMatrixAlgebra   (Gauss per il determinante se n>3, InvertibleElements, LinearSpace — MAI Field!)
-// Ring   → SquareMatrixRing      (Laplace per il determinante, funziona su qualunque anello)
-// Semiring → SquareMatrixSemiring
+### [Part 4: Numerical Analysis](docs/smfn-guide-4-numerical-analysis.md)
+- The Problem-Solver Model
+- Root Finding
+- Integration and Differential Equations
 
-// Determinante (Gauss O(n^3) per Field; Laplace O(n!) per Ring generici)
-Complex det = M2.determinant(A);
-squareMatrixRing.determinant(m);      // Laplace, O(n!), funziona su qualunque Ring (anche Polynomial<Rational>)
-squareMatrixAlgebra.determinant(m);   // Gauss, O(n^3), solo se K è un Field — più veloce per n>3
+### [Part 5: Physical Modelling](docs/smfn-guide-5-physical-modelling.md)
+- General Method of Physical Modelling
+- Classical Mechanics
+- Electromagnetism
+- Quantum Mechanics
 
-// Inversione (gestita tramite interfaccia InvertibleElements)
-if (M2.isInvertible(A)) {
-    SquareMatrix<Complex> inv = M2.inverse(A);
-}
-
-// Una matrice quadrata non è commutativa (n≥2) e non tutte le matrici non nulle sono invertibili
-SquareMatrixAlgebra<Complex, ComplexField> M2 = new SquareMatrixAlgebra<>(ComplexField.INSTANCE, 2);
-M2.isInvertible(matrix);       // verifica caso per caso, via determinante
-SquareMatrix<Complex> inv = M2.inverse(matrix);   // lancia ArithmeticException se singolare
-
-// Matrici hermitiane
-matrix.conjugateTranspose();   // trasposta coniugata (identità su Real, coniuga su Complex)
-matrix.isHermitian();          // matrix == matrix.conjugateTranspose(), con tolleranza epsilon
-```
-
-`Matrix<K>` **è anche una `VectorFunction<K>`** (`Mapping<Vector<K>,Vector<K>>`): si applica direttamente a un vettore, prodotto matrice-vettore, anche se rettangolare (`m×n`, con `m≠n`):
-
-```java
-Vector<Real> result = A.apply(x);   // A*x
-```
-
-`SquareMatrix<K>` **è anche un `LinearOperator<Vector<K>>`**: applicarla a un vettore è il prodotto matrice-vettore, `compose()` coincide con il prodotto tra matrici, `power(n)` con la potenza di matrice — tutto ereditato gratis da `Mapping`/`Operator`:
-
-```java
-Vector<K> y = squareMatrix.apply(x);
-Mapping<Vector<K>,Vector<K>> combined = m1.compose(m2);   // = m1 applicata a (m2 applicata a x)
-Operator<Vector<K>> cubed = squareMatrix.power(3);
-```
-
----
-
-#### 5. Operatori
-
-#### 6. Funzioni
-
-#### 5. Problems
+### [Part 6: Graphics Subsystem](docs/smfn-guide-6-graphics.md)
+- Architecture & Decoupling Philosophy
+- Core Infrastructure
+- Plotting Layer
