@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.utils;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,5 +49,16 @@ class MathUtilsTest
         long expectedGcd = 11111111111111L; // a/b = 8
         long result = MathUtils.greatestCommonDivisor(a, b);
         assertThat(result).isEqualTo(expectedGcd);
+    }
+
+    @Test
+    void gcdRejectsLongMinValue()
+    {
+        // Math.abs(Long.MIN_VALUE) va in overflow e resta negativo: senza guardia
+        // esplicita, il ciclo dell'algoritmo di Euclide lavorerebbe su un valore
+        // ancora negativo, producendo un "gcd" scorretto (potenzialmente negativo,
+        // contro il contratto dichiarato dal metodo stesso).
+        assertThrows(ArithmeticException.class, () -> MathUtils.greatestCommonDivisor(Long.MIN_VALUE, 5));
+        assertThrows(ArithmeticException.class, () -> MathUtils.greatestCommonDivisor(5, Long.MIN_VALUE));
     }
 }

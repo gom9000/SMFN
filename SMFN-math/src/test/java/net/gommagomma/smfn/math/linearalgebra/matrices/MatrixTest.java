@@ -93,4 +93,22 @@ class MatrixTest
 		assertEquals(a.hashCode(), same.hashCode());
 		assertFalse(a.equals(different));
 	}
+
+	@Test
+	@DisplayName("Immutabilita': mutare l'array esterno dopo la costruzione non deve toccare la Matrix")
+	void constructorDefendsAgainstExternalMutation() {
+		Real[] myArray = { new Real(1.0), new Real(2.0), new Real(0.0), new Real(0.0), new Real(1.0), new Real(-1.0) };
+		Matrix<Real> m = M23.of(myArray);
+
+		myArray[1] = new Real(999.0); // mutazione dell'array originale
+
+		assertEquals(new Real(2.0), m.get(0, 1), "La matrice non deve risentire della mutazione dell'array esterno");
+	}
+
+	@Test
+	@DisplayName("of(): array di lunghezza sbagliata lancia IllegalArgumentException")
+	void ofRejectsWrongLength() {
+		Real[] wrongLength = { new Real(1.0), new Real(2.0) }; // servono 6 elementi (2x3), non 2
+		assertThrows(IllegalArgumentException.class, () -> M23.of(wrongLength));
+	}
 }

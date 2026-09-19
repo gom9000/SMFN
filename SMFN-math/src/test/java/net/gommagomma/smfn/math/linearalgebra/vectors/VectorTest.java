@@ -86,4 +86,41 @@ class VectorTest
 	void toStringFormat() {
 		assertEquals("[1.0, 2.0, 3.0]", v(1.0, 2.0, 3.0).toString());
 	}
+
+	@Test
+	@DisplayName("Immutabilita': mutare l'array esterno dopo la costruzione non deve toccare il Vector")
+	void constructorDefendsAgainstExternalMutation() {
+		Real[] myArray = { new Real(1.0), new Real(2.0), new Real(3.0) };
+		Vector<Real> v = V3.of(myArray);
+
+		myArray[1] = new Real(999.0); // mutazione dell'array originale, tenuto in mano dal chiamante
+
+		assertEquals(new Real(2.0), v.get(1), "Il vettore non deve risentire della mutazione dell'array esterno");
+	}
+
+	@Test
+	@DisplayName("equals() e' esatto (bit a bit), non tollerante all'epsilon: due vettori epsilon-vicini ma non identici non sono uguali")
+	void equalsIsExactNotEpsilonTolerant() {
+		Vector<Real> a = V3size2(1.0, 2.0);
+		Vector<Real> b = V3size2(1.0 + 1e-13, 2.0); // differenza sotto l'EPSILON usato da RealField.areEqual
+
+		assertFalse(a.equals(b), "equals() esatto deve distinguere 1.0 da 1.0+1e-13");
+	}
+
+	@Test
+	@DisplayName("Coerenza equals()/hashCode(): vettori equals() devono avere lo stesso hashCode, sempre")
+	void equalsAndHashCodeStayConsistent() {
+		Vector<Real> a = v(1.0, 2.0, 3.0);
+		Vector<Real> b = v(1.0, 2.0, 3.0);
+
+		assertTrue(a.equals(b));
+		assertEquals(a.hashCode(), b.hashCode(), "Il contratto Java richiede hashCode uguali per oggetti equals()");
+	}
+
+	private Vector<Real> V3size2(double... values) {
+		VectorSemimodule<Real, RealField> V2 = new VectorSemimodule<>(R, values.length);
+		Real[] data = new Real[values.length];
+		for (int i = 0; i < values.length; i++) data[i] = new Real(values[i]);
+		return V2.of(data);
+	}
 }

@@ -96,4 +96,68 @@ public class RationalTest {
         Rational largeRational = new Rational(halfMax, 1);
         assertThrows(ArithmeticException.class, () -> Q.multiply(largeRational, new Rational(2, 1)));
     }
+
+    // --- Casi limite legati a Long.MIN_VALUE / Integer.MIN_VALUE ---
+
+    @Test
+    void constructorRejectsLongMinValueDenominator() {
+        // new Rational(1, Long.MIN_VALUE): normalizzare il segno del denominatore
+        // richiederebbe -Long.MIN_VALUE, che va in overflow. Deve lanciare, non
+        // restituire un razionale con denominatore ancora negativo.
+        assertThrows(ArithmeticException.class, () -> new Rational(1, Long.MIN_VALUE));
+    }
+
+    @Test
+    void constructorRejectsLongMinValueNumeratorWithNegativeDenominator() {
+        // new Rational(Long.MIN_VALUE, -1): normalizzare richiederebbe -Long.MIN_VALUE
+        // sul numeratore, overflow silenzioso che lascerebbe il segno sbagliato.
+        assertThrows(ArithmeticException.class, () -> new Rational(Long.MIN_VALUE, -1));
+    }
+
+    @Test
+    void constructorRejectsLongMinValueNumeratorEvenWithPositiveDenominator() {
+        // Scoperta eseguendo il test, non solo leggendo il codice: anche quando
+        // il denominatore e' gia' positivo (nessun cambio di segno necessario),
+        // il costruttore chiama comunque greatestCommonDivisor(numerator, denominator)
+        // per ridurre ai minimi termini -- e quella chiamata rifiuta Long.MIN_VALUE
+        // incondizionatamente, a prescindere dal segno. Rational non puo' quindi
+        // rappresentare Long.MIN_VALUE in NESSUN caso, non solo quando serve
+        // negare per normalizzare il segno.
+        assertThrows(ArithmeticException.class, () -> new Rational(Long.MIN_VALUE, 1));
+    }
+
+    // NB: la guardia esplicita dentro abs() ("if (numerator == Long.MIN_VALUE) throw")
+    // e' di conseguenza codice morto e irraggiungibile: nessuna istanza di Rational
+    // puo' mai avere numerator == Long.MIN_VALUE, dato il test sopra. Innocua, ma
+    // non testabile (non esiste un modo di costruire il fixture necessario) -- non
+    // e' un problema, e' solo la prova che la protezione a monte (nel costruttore)
+    // rende ridondante quella a valle.
+
+    @Test
+    void powerHandlesIntegerMinValueExponent() {
+        // Base vicina a 1: il vero risultato resta finito, non sfonda il range di un double.
+        // Verifica che l'esponente venga trattato come |Integer.MIN_VALUE| senza
+        // overflow (che lo lascerebbe negativo e farebbe rientrare erroneamente nel
+        // ramo "esponente zero", restituendo sempre 1).
+        Rational base = new Rational(1); // 1^n = 1 per ogni n, incluso Integer.MIN_VALUE
+        assertEquals(Q.one(), base.power(Integer.MIN_VALUE));
+
+        // Con una base diversa da 1, l'esponente e' cosi' grande che il numeratore/denominatore
+        // esatto risultante non sta in un long: deve lanciare, non restituire un
+        // valore silenziosamente sbagliato (es. 1, come accadrebbe col vecchio bug).
+        Rational two = new Rational(2, 1);
+        assertThrows(ArithmeticException.class, () -> two.power(Integer.MIN_VALUE));
+    }
+
+    @Test
+    void compareToDoesNotSilentlyOverflowOnLargeValues() {
+        // Prodotti incrociati (4 miliardi * 4 miliardi) superano abbondantemente
+        // Long.MAX_VALUE: compareTo() deve accorgersene (lanciando, come isLessThan()
+        // gia' fa), non restituire un ordinamento sbagliato per overflow silenzioso.
+        Rational big = new Rational(4_000_000_000L, 1);
+        Rational tiny = new Rational(1, 4_000_000_000L);
+
+        assertThrows(ArithmeticException.class, () -> big.compareTo(tiny));
+        assertThrows(ArithmeticException.class, () -> big.isLessThan(tiny));
+    }
 }

@@ -49,4 +49,17 @@ class VectorSemimoduleTest extends SemimoduleAxiomContract<Vector<Natural>, Natu
 	void factoryMethods() {
 		assertEquals(v(0, 0, 0), V3.zero());
 	}
+
+	@Test
+	@DisplayName("of(): array di lunghezza sbagliata lancia IllegalArgumentException")
+	void ofRejectsWrongLength() {
+		Natural[] tooShort = { new Natural(1), new Natural(2) };
+		assertThrows(IllegalArgumentException.class, () -> V3.of(tooShort));
+	}
+
+	@Test
+	@DisplayName("of(): array null lancia IllegalArgumentException")
+	void ofRejectsNull() {
+		assertThrows(IllegalArgumentException.class, () -> V3.of(null));
+	}
 }

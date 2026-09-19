@@ -69,6 +69,20 @@ public class ComplexTest {
     }
 
     @Test
+    void powerHandlesIntegerMinValueExponent() {
+        // Math.abs(Integer.MIN_VALUE) va in overflow e resta negativo: se non
+        // gestito col cast a long, il ciclo di elevamento a potenza non
+        // eseguirebbe mai, restituendo silenziosamente 1 invece del vero valore.
+        // Base vicina a 1: il vero risultato resta rappresentabile come double.
+        Complex nearOne = new Complex(1.0000000001, 0.0);
+        Complex result = nearOne.power(Integer.MIN_VALUE);
+
+        double expected = 1.0 / Math.exp(Math.abs((long) Integer.MIN_VALUE) * 1e-10);
+        assertEquals(expected, result.getRe(), 1e-6);
+        assertEquals(0.0, result.getIm(), 1e-6);
+    }
+
+    @Test
     void sqrtable() {
         Complex minusOne = new Complex(-1.0, 0.0);
         assertTrue(C.areEqual(minusOne.sqrt(), i));

@@ -146,7 +146,7 @@ implements IntervalODEStepSolver<K, T, S>
 				double stateNorm = normedSpace.norm(currentState).getValue();
 				double errorRatio = errorNorm / (tolerance.getValue() * Math.max(stateNorm, 1.0));
 
-				double scaleFactor = (errorRatio <= 1e-12) ? 5.0 : SAFETY * Math.pow(errorRatio, P_INV);
+				double scaleFactor = (errorRatio <= 1e-12) ? 5.0 : SAFETY * Math.pow(errorRatio, -P_INV);
 				Real h_new_abs = new Real(h_to_execute_modulus.getValue() * scaleFactor);
 
 				if (errorRatio <= 1.0) {

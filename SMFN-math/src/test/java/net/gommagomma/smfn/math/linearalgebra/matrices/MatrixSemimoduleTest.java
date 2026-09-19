@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.matrices;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
@@ -41,5 +42,12 @@ class MatrixSemimoduleTest extends SemimoduleAxiomContract<Matrix<Natural>, Natu
 	void transposeIsInvolution() {
 		Matrix<Natural> a = a();
 		assertTrue(structure().areEqual(M22.transpose(M22.transpose(a)), a));
+	}
+
+	@Test
+	@DisplayName("of(): array di lunghezza sbagliata lancia IllegalArgumentException")
+	void ofRejectsWrongLength() {
+		Natural[] tooShort = { new Natural(1), new Natural(2) }; // servono 4 elementi (2x2), non 2
+		assertThrows(IllegalArgumentException.class, () -> M22.of(tooShort));
 	}
 }
