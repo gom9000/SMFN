@@ -29,7 +29,7 @@ Real d = R.multiply(a, b);
 
 ---
 
-#### 1. Numeri, Natura e Capability (`algebra.numerics`)
+#### 1. Numeri, Natura e Capability
 Gli elementi numerici della libreria si dividono in due categorie fondamentali:
 
 * **Tipi Esatti:** (`Natural`, `SignedInt`, `Rational`, `ZnElement`). L'uguaglianza e le operazioni sono matematicamente esatte e prive di errore di arrotondamento.
@@ -52,16 +52,16 @@ Real x = new Real(2.5);
 Complex z = new Complex(3.0, 4.0);
 
 x.isLessThan(new Real(3.0)); // Orderable
-x.abs();                    // Absolutable
-x.sqrt();                   // Sqrtable
-z.conjugate();              // Conjugable
-z.modulus();                // Normable (|z|)
+x.abs();                     // Absolutable
+x.sqrt();                    // Sqrtable
+z.conjugate();               // Conjugable
+z.modulus();                 // Normable (|z|)
 ```
 
 ---
 
-#### 2. Strutture (`algebra.structures`)
-Le strutture definiscono le operazioni matematiche e le regole algebriche valide per un determinato tipo di elemento. Seguono una gerarchia assiomatica rigorosa:
+#### 2. Strutture algebriche
+Le strutture definiscono le operazioni matematiche e le regole algebriche valide per un determinato tipo di elemento. Segue la gerarchia assiomatica implementata:
 
 * **`Semiring`**: Definisce le operazioni di base (`add`, `multiply`) e gli elementi neutri (`zero()`, `one()`).
   * **`Ring`**: Aggiunge l'opposto additivo (`negate`) e la sottrazione (`subtract`).
@@ -118,7 +118,7 @@ ZnElement d = Z5.add(b, b); // Calcolo: [4] + [4] = [8] mod 5 = [3]
 
 ---
 
-#### 3. Polinomi (`algebra.polynomial`)
+#### 3. Polinomi
 Un `Polynomial<K>` è una struttura dati immutabile che modella unicamente la sequenza ordinata dei coefficienti ($a_0, a_1, .. , a_n$). Come gli elementi numerici è privo di metodi operativi: l'aritmetica, la divisione e la valutazione sono interamente delegate alla struttura algebrica associata, derivata dinamicamente tramite  `PolynomialStructureFactory`.
 
 Il livello algebrico dello scalare $K$ determina la classe della struttura e le operazioni matematiche disponibili:
@@ -145,7 +145,6 @@ ScalarStructure<Polynomial<Real>> polyStructure = PolynomialStructureFactory.get
 ```
 
 ##### Operazioni e Solutori
-
 ```java
 // Operazioni Standard
 PolynomialRing<Real, RealField> ring = new PolynomialRing<>(R);
@@ -183,12 +182,12 @@ List<Complex> roots = rootSolver.findAllRoots(polynomial);
 
 ---
 
-#### 4. Spazi, Vettori e Matrici (`linearalgebra`)
+#### 4. Spazi, Vettori e Matrici
 Tutte le strutture composite trasversali implementano `LinearElement<V, K>` e si articolano secondo le garanzie algebriche dello scalare $K$ e delle metriche definite sullo spazio.
 
 ![SMFN-linearalgebra-spaces](resources/SMFN-linearalgebra-spaces.png)
 
-##### Spazi Vettoriali e Moduli (`Vector<K>`)
+##### Spazi Vettoriali e Moduli
 Le strutture che gestiscono vettori riflettono la gerarchia assiomatica dei moduli e degli spazi metrici:
 
 | Struttura dello Spazio | Requisiti su $K$ / Spazio | Operazioni Sbloccate |
@@ -208,14 +207,14 @@ VectorSpace<Real, RealField> V3 = new VectorSpace<>(R, 3);
 Vector<Real> v = V3.of(R.of(1), R.of(2), R.of(3));
 Vector<Real> scaled = V3.scale(R.of(2.0), v);
 
-// Prodotto scalare Hermitiano (coniuga il primo argomento su Complex) e norma
-//   su Real (che non implementa Conjugable) la coniugazione è automaticamente l'identità
+// Prodotto scalare Hermitiano (adotta la convenzione usata in fisica: coniuga il primo argomento).
+// Sui tipi Reali la coniugazione equivale automaticamente all'identità.
 InnerProductVectorSpace<Complex, ComplexField> ipC = new InnerProductVectorSpace<>(ComplexField.INSTANCE, 2);
 Complex dot = ipC.innerProduct(v1, v2); 
 Real norm = ipC.norm(a);
 ```
 
-##### Matrici (`Matrix<K>` e `SquareMatrix<K>`)
+##### Matrici
 Stessa gerarchia dei vettori (`MatrixSemimodule` → `MatrixModule` → `MatrixSpace` → `InnerProductMatrixSpace`).
 Le matrici si dividono in due famiglie strutturali in base alla forma e alle proprietà algebriche disponibili:
 
@@ -274,3 +273,11 @@ Vector<K> y = squareMatrix.apply(x);
 Mapping<Vector<K>,Vector<K>> combined = m1.compose(m2);   // = m1 applicata a (m2 applicata a x)
 Operator<Vector<K>> cubed = squareMatrix.power(3);
 ```
+
+---
+
+#### 5. Operatori
+
+#### 6. Funzioni
+
+#### 5. Problems
