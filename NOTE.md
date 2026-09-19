@@ -1,9 +1,3 @@
-# SMFN-library  
-Type: Java Math Library | Status: Continuous Research (Sawdust alert!)
-
-A "slow-burning" Java experimental library for mathematical modelling. It is not designed for performance, but rather to represent abstract mathematical structures and use them to perform symbolic and numerical calculations, making it possible to handle symbolic polynomial arithmetic, solve differential equations or simulate quantum mechanics problems.
-
-
 ## struttura dei package
 <pre>
 net.gommagomma.smfn/
@@ -58,6 +52,9 @@ net.gommagomma.smfn/
 
 
 # TODO:
+- Semiring dice correttamente che l'addizione è commutativa, ma non c'è nessuna CommutativeAdditiveMonoid. Quindi il type system non rappresenta completamente l'assioma.
+  Lo stesso per EuclideanDomain che estende CommutativeRing, ma non c'è alcuna rappresentazione dell'assenza di divisori dello zero.
+- Newton usa solo la distanza tra iterazioni e non il residuo. forse un ConvergenceCriteria più ricco per esprimere contemporaneamente e separatamente la distanza ed il residuo...
 - VectorFieldPlotter
 // 1. Definiamo la matrice di trasformazione o il campo
 SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, R.of(0), R.of(-1), R.of(1), R.of(0)); // Es. rotazione pura

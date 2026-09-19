@@ -158,7 +158,6 @@ implements IntervalODEStepSolver<K, T, S>
 					break;
 				} else {
 					h_abs = new Real(Math.min(h_new_abs.getValue(), maxStepSize.getValue()));
-					h_abs = new Real(Math.max(h_abs.getValue(), minStepSize.getValue()));
 
 					if (h_abs.isLessThan(minStepSize)) {
 						throw new RuntimeException("Risoluzione ODE fallita: passo adattivo (" + h_abs + ") troppo piccolo.");

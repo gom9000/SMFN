@@ -67,15 +67,19 @@ implements IntervalODEStepSolver<K, T, S>
 	@Override
 	public T integrate(InitialValueProblem<K, T> problem, Real endTime, IntegrationParameters params, Module<T, K, S> space) {
 		Real fixedDeltaTime = params.fixedStepSize;
-		if (fixedDeltaTime == null || R.isZero(fixedDeltaTime)) {
-			throw new IllegalArgumentException("RungeKutta4Solver richiede un parametro fixedStepSize non nullo e non zero.");
+		if (fixedDeltaTime == null) {
+		    throw new IllegalArgumentException("RungeKutta4Solver richiede un parametro fixedStepSize non nullo.");
+		}
+		Real stepMagnitude = fixedDeltaTime.abs();
+		if (R.isZero(stepMagnitude)) {
+		    throw new IllegalArgumentException("RungeKutta4Solver richiede un parametro fixedStepSize non zero.");
 		}
 
 		T currentState = problem.getInitialState();
 		Real currentTime = problem.getStartTime();
 
 		boolean forward = currentTime.isLessThan(endTime);
-		Real effectiveDeltaTime = forward ? fixedDeltaTime : R.negate(fixedDeltaTime);
+		Real effectiveDeltaTime = forward ? stepMagnitude : R.negate(stepMagnitude);
 
 		while ((forward && currentTime.isLessThan(endTime)) || (!forward && endTime.isLessThan(currentTime))) {
 			Real remainingTime = R.subtract(endTime, currentTime);

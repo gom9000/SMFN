@@ -32,7 +32,7 @@ class SchrodingerEquationSystemTest
 	@DisplayName("derivative() calcola -i*H*psi correttamente")
 	void derivativeIsMinusIHPsi() {
 		Observable H = new Observable(pauliX);
-		SchrodingerEquationSystem system = new SchrodingerEquationSystem(H, 2);
+		SchrodingerEquationSystem system = new SchrodingerEquationSystem(H);
 
 		Vector<Complex> psi = V2.of(new Complex[] { new Complex(1, 0), new Complex(0, 0) });
 		Vector<Complex> derivative = system.derivative(psi, new Real(0.0));
@@ -46,7 +46,7 @@ class SchrodingerEquationSystemTest
 	@DisplayName("Integrazione RK4 coincide con la soluzione analitica esatta: psi(t) = (cos t, -i sin t)")
 	void integrationMatchesAnalyticSolution() {
 		Observable H = new Observable(pauliX);
-		SchrodingerEquationSystem system = new SchrodingerEquationSystem(H, 2);
+		SchrodingerEquationSystem system = new SchrodingerEquationSystem(H);
 
 		Vector<Complex> psi0 = V2.of(new Complex[] { new Complex(1, 0), new Complex(0, 0) });
 		InitialValueProblem<Complex, Vector<Complex>> problem = new InitialValueProblem<>() {

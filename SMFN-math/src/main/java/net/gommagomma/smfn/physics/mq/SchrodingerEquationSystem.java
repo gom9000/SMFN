@@ -21,9 +21,9 @@ implements DifferentialEquationProblem<Complex, Vector<Complex>>
 	private final Observable hamiltonian;
 	private final VectorSpace<Complex, ComplexField> space;
 
-	public SchrodingerEquationSystem(Observable hamiltonian, int dimension) {
+	public SchrodingerEquationSystem(Observable hamiltonian) {
 		this.hamiltonian = hamiltonian;
-		this.space = new VectorSpace<>(ComplexField.INSTANCE, dimension);
+		this.space = new VectorSpace<>(ComplexField.INSTANCE, hamiltonian.asOperator().getN());
 	}
 
 	@Override
