@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * Rappresenta un'applicazione matematica o mappa f: I -> O.
- * È l'astrazione fondamentale per qualsiasi legge di corrispondenza tra un dominio e un codominio.
+ * E' l'astrazione fondamentale per qualsiasi legge di corrispondenza tra un dominio e un codominio.
  *
  * @param <I> il tipo del dominio (input)
  * @param <O> il tipo del codominio (output)

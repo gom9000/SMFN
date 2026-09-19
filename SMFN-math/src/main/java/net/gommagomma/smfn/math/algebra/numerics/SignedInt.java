@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.algebra.structures.IntegerRing;
 
 /**
  * Rappresenta un numero intero con segno esatto, basato su un valore primitivo a 64 bit (long).
- * Modella gli elementi all'interno dell'anello degli interi, implementando le capacità 
+ * Modella gli elementi all'interno dell'anello degli interi, implementando le capacità
  * di ordinamento, valore assoluto ed elevamento a potenza.
  */
 public final class SignedInt

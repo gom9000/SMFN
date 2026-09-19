@@ -60,7 +60,7 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
     /**
      * Restituisce il grado algebrico del polinomio.
      * 
-     * @return il grado del polinomio, oppure $-1$ se il polinomio è il polinomio zero
+     * @return il grado del polinomio, oppure -1 se il polinomio è il polinomio zero
      */
     public int degree() {
         return coefficients.isEmpty() ? -1 : coefficients.size() - 1;

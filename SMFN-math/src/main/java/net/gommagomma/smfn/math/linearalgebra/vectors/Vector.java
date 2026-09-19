@@ -11,7 +11,7 @@ import java.util.Objects;
 
 /**
  * Rappresenta un vettore denso di elementi scalari K.
- * È un elemento di rango 1 nella gerarchia dei tensori.
+ * E' un elemento di rango 1 nella gerarchia dei tensori.
  */
 public final class Vector<K extends ScalarElement<K>> 
 implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K>
@@ -64,8 +64,7 @@ implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K>
         return scalarStructure;
     }
 
-    // --- Metodi di utilità ---
-
+    // Metodi di utilità
     /**
      * Restituisce una copia difensiva dell'array interno.
      */
