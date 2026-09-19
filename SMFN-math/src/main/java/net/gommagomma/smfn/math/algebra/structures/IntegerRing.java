@@ -81,10 +81,15 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
         
         long aVal = a.getValue();
         long bVal = b.getValue();
-        
+
+        if (aVal == Long.MIN_VALUE && bVal == -1) {
+            throw new ArithmeticException("Integer overflow: Long.MIN_VALUE / -1 is not representable as a long");
+        }
+
         // Per gli interi, a = qb + r. Se r deve essere >= 0:
         long r = aVal % bVal;
-        if (r < 0) r += Math.abs(bVal);
+        long absB = (bVal == Long.MIN_VALUE) ? bVal : Math.abs(bVal);
+        if (r < 0) r += absB;
         
         return new SignedInt((aVal - r) / bVal);
     }
@@ -92,13 +97,18 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
     @Override
     public SignedInt remainder(SignedInt a, SignedInt b) {
         if (isZero(b)) throw new ArithmeticException("Modulo by zero");
-        long rem = a.getValue() % b.getValue();
-        if (rem < 0) rem += Math.abs(b.getValue());
+        long bVal = b.getValue();
+        long rem = a.getValue() % bVal;
+        long absB = (bVal == Long.MIN_VALUE) ? bVal : Math.abs(bVal);
+        if (rem < 0) rem += absB;
         return new SignedInt(rem);
     }
 
     @Override
     public Natural degree(SignedInt e) {
+    	if (e.getValue() == Long.MIN_VALUE) {
+            throw new ArithmeticException("Cannot compute the degree of Long.MIN_VALUE: its absolute value overflows a long.");
+        }
         return new Natural(Math.abs(e.getValue()));
     }
 

@@ -130,7 +130,7 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
 
         Complex base = this;
         Complex result = field.one();
-        int exp = Math.abs(exponent);
+        long exp = Math.abs((long)exponent); // evita l'overflow di Math.abs(Integer.MIN_VALUE)
 
         while (exp > 0)
         {

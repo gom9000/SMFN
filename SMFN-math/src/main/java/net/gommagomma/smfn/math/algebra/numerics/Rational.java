@@ -37,6 +37,9 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
 
         // denominator is always positive, the sign is moved to the numerator
         if (denominator < 0) {
+        	if (numerator == Long.MIN_VALUE || denominator == Long.MIN_VALUE) {
+                throw new ArithmeticException("Impossibile rappresentare questo razionale: negare Long.MIN_VALUE causa overflow.");
+            }
             numerator = -numerator;
             denominator = -denominator;
         }
@@ -86,8 +89,8 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
     @Override // Orderable impls
     public int compareTo(Rational other)
     {
-        long ad = this.numerator * other.denominator;
-        long bc = other.numerator * this.denominator;
+    	long ad = Math.multiplyExact(this.numerator, other.denominator);
+        long bc = Math.multiplyExact(other.numerator, this.denominator);
         return Long.compare(ad, bc);
     }
 
@@ -98,6 +101,9 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
 
     @Override // Absolutable impls
     public Rational abs() {
+    	if (numerator == Long.MIN_VALUE) {
+            throw new ArithmeticException("Impossibile calcolare il valore assoluto di Long.MIN_VALUE come long.");
+        }
         return new Rational(Math.abs(numerator), denominator);
     }
 
@@ -116,7 +122,7 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
         if (exponent == 0) { return field.one(); }
 
         Rational base = this;
-        int exp = Math.abs(exponent);
+        long exp = Math.abs((long)exponent); // evita l'overflow di Math.abs(Integer.MIN_VALUE)
         Rational result = field.one();
 
         while (exp > 0)

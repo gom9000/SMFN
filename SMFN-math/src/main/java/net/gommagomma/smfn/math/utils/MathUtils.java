@@ -70,6 +70,10 @@ public final class MathUtils
      */
     public static long greatestCommonDivisor(long a, long b)
     {
+    	if (a == Long.MIN_VALUE || b == Long.MIN_VALUE) {
+            throw new ArithmeticException("greatestCommonDivisor non supporta Long.MIN_VALUE (il suo valore assoluto va in overflow).");
+        }
+
         a = Math.abs(a);
         b = Math.abs(b);
 
