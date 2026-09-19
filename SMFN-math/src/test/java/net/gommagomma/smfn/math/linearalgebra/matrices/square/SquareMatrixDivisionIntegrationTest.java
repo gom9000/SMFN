@@ -40,6 +40,50 @@ class SquareMatrixDivisionIntegrationTest
 	}
 
 	@Test
+	@DisplayName("Quoziente e resto coincidono con i valori attesi, calcolati a mano indipendentemente dal codice")
+	void divisionProducesTheCorrectQuotientAndRemainder() {
+		SquareMatrix<Complex> identity = m(1, 0, 0, 1);
+		SquareMatrix<Complex> rotation90 = m(0, -1, 1, 0);
+
+		// pmz(x) = I + R90*x, qmz(x) = R90 + I*x -- coefficiente di testa del divisore = R90, invertibile
+		Polynomial<SquareMatrix<Complex>> pmz = polyRing.of(List.of(identity, rotation90));
+		Polynomial<SquareMatrix<Complex>> qmz = polyRing.of(List.of(rotation90, identity));
+
+		PolynomialDivisionResult<SquareMatrix<Complex>> result = provider.divide(pmz, qmz);
+
+		// Calcolo a mano (fuori dal codice in prova): confrontando i coefficienti di
+		// pmz = Q*qmz + R con Q, R costanti (grado 0, essendo deg(pmz)=deg(qmz)=1):
+		//   grado 1: R90 = Q*I = Q                => Q = R90
+		//   grado 0: I = Q*R90 + R = R90*R90 + R = -I + R  => R = 2I
+		SquareMatrix<Complex> expectedQuotient = rotation90;
+		SquareMatrix<Complex> expectedRemainder = m(2, 0, 0, 2);
+
+		assertTrue(M2.areEqual(result.quotient().getCoefficient(0), expectedQuotient),
+			"Quoziente atteso R90, trovato " + result.quotient());
+		assertTrue(M2.areEqual(result.remainder().getCoefficient(0), expectedRemainder),
+			"Resto atteso 2I, trovato " + result.remainder());
+	}
+
+	@Test
+	@DisplayName("Il resto ha grado minore del divisore -- esclude l'implementazione degenere quoziente=0, resto=dividendo")
+	void remainderHasLowerDegreeThanDivisor() {
+		// Un'implementazione che non facesse nulla (quoziente=0, resto=dividendo)
+		// soddisferebbe comunque l'identita' dividendo = quoziente*divisore + resto,
+		// ma il resto avrebbe lo stesso grado del dividendo, non minore del divisore:
+		// questo test la esclude esplicitamente.
+		SquareMatrix<Complex> identity = m(1, 0, 0, 1);
+		SquareMatrix<Complex> rotation90 = m(0, -1, 1, 0);
+
+		Polynomial<SquareMatrix<Complex>> pmz = polyRing.of(List.of(identity, rotation90));
+		Polynomial<SquareMatrix<Complex>> qmz = polyRing.of(List.of(rotation90, identity));
+
+		PolynomialDivisionResult<SquareMatrix<Complex>> result = provider.divide(pmz, qmz);
+
+		assertTrue(result.remainder().degree() < qmz.degree(),
+			"Grado del resto (" + result.remainder().degree() + ") deve essere minore del grado del divisore (" + qmz.degree() + ")");
+	}
+
+	@Test
 	@DisplayName("dividendo = quoziente*divisore + resto, verificato nel verso corretto (K non commuta)")
 	void divisionIdentityHoldsInCorrectOrder() {
 		SquareMatrix<Complex> identity = m(1, 0, 0, 1);
