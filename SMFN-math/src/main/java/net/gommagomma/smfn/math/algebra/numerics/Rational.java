@@ -83,6 +83,9 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
 
     @Override // Normable
     public Real norm() {
+    	if (numerator == Long.MIN_VALUE) {
+            throw new ArithmeticException("Cannot compute the norm: numerator is Long.MIN_VALUE, whose absolute value overflows a long.");
+        }
         return new Real((double) Math.abs(numerator) / denominator);
     }
 
