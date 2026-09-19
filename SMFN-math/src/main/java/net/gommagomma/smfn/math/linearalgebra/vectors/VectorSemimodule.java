@@ -95,6 +95,9 @@ implements Semimodule<Vector<K>, K, S>, CompositeElementFactory<Vector<K>, K[]>
 
 	@Override
 	public Vector<K> of(K[] data) {
+		if (data == null || data.length != dimension) {
+	        throw new IllegalArgumentException("Vector dimension mismatch. Expected " + dimension + ", got " + (data == null? "null" : data.length));
+	    }
 		return new Vector<>(this, scalarStructure, data);
 	}
 }

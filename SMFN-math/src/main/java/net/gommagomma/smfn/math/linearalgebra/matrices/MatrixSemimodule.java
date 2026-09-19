@@ -23,6 +23,9 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
 
     @Override
     public Matrix<K> of(K[] data) {
+    	if (data.length != rows * cols) {
+            throw new IllegalArgumentException("Matrix dimensions mismatch. Expected " + (rows * cols) + " elements (" + rows + "x" + cols + "), got " + data.length);
+        }
         return new Matrix<>(this, scalarStructure, rows, cols, data);
     }
 

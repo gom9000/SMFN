@@ -48,7 +48,7 @@ public final class SquareMatrixElementFactory
     /**
      * Crea una matrice quadrata da double (comodissimo per Real e Rational).
      */
-    public static <K extends ScalarElement<K>> SquareMatrix<K> of(ScalarStructure<K> s, int size, double... values) {
+    public static <K extends ScalarElement<K>> SquareMatrix<K> of(ScalarStructure<K> s, double... values) {
         if (!(s instanceof NumericFactory)) {
             throw new UnsupportedOperationException("La struttura non e' una NumericFactory");
         }
