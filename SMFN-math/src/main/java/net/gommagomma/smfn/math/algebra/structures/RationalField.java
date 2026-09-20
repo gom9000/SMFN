@@ -81,12 +81,16 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
         long den;
 
         if (exponent >= 0) {
-            // Calcolo del numeratore (Mantissa * 2^Exponent)
-            num = Math.multiplyExact(mantissa, MathUtils.power(2L, exponent));
-            
-            // Il denominatore corretto è 2^52 (la scala della mantissa)
-            // 2^52 = 4503599627370496L
-            den = 1L << 52; // Usiamo 1L << 52 per coerenza
+            // mantissa * 2^esponente puo' superare abbondantemente il range di un
+            // long, anche quando il valore -- una volta ridotto ai minimi termini --
+            // ci sta comodamente (mantissa e denominatore condividono fattori di 2).
+            // Riduciamo PRIMA di tornare a long, non dopo: stesso principio della
+            // correzione gia' fatta in ZnRing per lo stesso tipo di overflow.
+            java.math.BigInteger bigNum = java.math.BigInteger.valueOf(mantissa).shiftLeft(exponent);
+            java.math.BigInteger bigDen = java.math.BigInteger.valueOf(1L << 52);
+            java.math.BigInteger gcd = bigNum.gcd(bigDen);
+            num = bigNum.divide(gcd).longValueExact();
+            den = bigDen.divide(gcd).longValueExact();
         } else {
             // Potenza di due nel denominatore
             long powerOfTwo = 52 - exponent; // Es: 0.5 -> 52 - (-1) = 53

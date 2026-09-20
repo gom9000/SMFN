@@ -59,7 +59,11 @@ implements KeyListener // Manteniamo KeyListener solo per conformità, i metodi s
             int h = Math.abs(startY - endY);
             updateHandler.onTemporaryDraw(x, y, w, h);
 
-        } else if (e.getButton() == MouseEvent.BUTTON1) {
+        } else if ((e.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) != 0) {
+            // NB: durante mouseDragged, MouseEvent.getButton() restituisce sempre
+            // NOBUTTON per specifica AWT -- il bottone premuto si legge solo dai
+            // modificatori, non da getButton() (che invece e' corretto in
+            // mousePressed/mouseReleased, dove non va toccato).
             // Modalità Panning (trascinamento libero)
 
             // Calcola lo spostamento in pixel dall'inizio del drag o dall'ultima chiamata a dragged

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
+import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
 /**
@@ -62,7 +63,12 @@ public final class SquareMatrixElementFactory
     }
 
     public static <K extends ScalarElement<K>> SquareMatrix<K> identity(ScalarStructure<K> s, int size) {
-        SquareMatrixRing<K, ?> ring = (SquareMatrixRing<K, ?>) SquareMatrixStructureFactory.getStructureFor(s, size);
-        return ring.one();
+        // Cast al livello comune (Semiring<SquareMatrix<K>>), non a SquareMatrixRing:
+        // getStructureFor puo' restituire un SquareMatrixSemiring (se s e' solo un
+        // Semiring), che NON e' un SquareMatrixRing -- il cast stretto lanciava
+        // ClassCastException in quel caso. one() e' gia' disponibile al livello Semiring.
+        @SuppressWarnings("unchecked")
+        Semiring<SquareMatrix<K>> structure = (Semiring<SquareMatrix<K>>) SquareMatrixStructureFactory.getStructureFor(s, size);
+        return structure.one();
     }
 }

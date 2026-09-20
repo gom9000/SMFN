@@ -81,8 +81,7 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
      * @return il risultato della moltiplicazione ridotto modulo $n$
      */
     private ZnElement multiplyInternal(ZnElement a, ZnElement b) {
-        SignedInt prod = IntegerRing.INSTANCE.multiply(a.value, b.value);
-        return new ZnElement(prod, a.modulus);
+        return ZnRing.of(a.modulus).multiply(a, b);
     }
 
     @Override // Java Standard impls

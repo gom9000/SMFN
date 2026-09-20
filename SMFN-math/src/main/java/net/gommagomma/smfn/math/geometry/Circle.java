@@ -58,6 +58,10 @@ implements GeometryEntity<Real>
 		return v -> {
 			Point p = new Point(v);
 			Real dist = p.distanceTo(center);
+			if (R.isZero(dist)) {
+				throw new ArithmeticException("Il gradiente del cerchio non e' definito esattamente nel centro "
+					+ "(la distanza dal centro, e quindi la direzione del gradiente, non ha un valore univoco in quel punto).");
+			}
 			Real gx = R.divide(R.subtract(p.getX(), center.getX()), dist);
 			Real gy = R.divide(R.subtract(p.getY(), center.getY()), dist);
 			return V2.of(new Real[] { gx, gy });
