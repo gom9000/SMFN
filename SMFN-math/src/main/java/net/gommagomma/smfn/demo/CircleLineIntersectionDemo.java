@@ -12,6 +12,7 @@ import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.VectorNewtonRap
 import net.gommagomma.smfn.math.geometry.Circle;
 import net.gommagomma.smfn.math.geometry.Line;
 import net.gommagomma.smfn.math.geometry.Point;
+import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceJacobianEstimator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.linear.GaussianEliminationSolver;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
@@ -43,7 +44,8 @@ public class CircleLineIntersectionDemo
 			new MultivariateFunctionSystemProblem<>(List.of((MultivariateFunction<Real>) circle, line), R, new Real(1e-6));
 
 		GaussianEliminationSolver<Real, RealField> linearSolver = new GaussianEliminationSolver<>(R, 2);
-		VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(linearSolver, V2);
+		CentralDifferenceJacobianEstimator<Real, RealField> jacobianFallback = new CentralDifferenceJacobianEstimator<>(R, new Real(1e-6));
+		VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(linearSolver, V2, jacobianFallback);
 
 		MetricSpace<Vector<Real>> space = (a, b) -> {
 			Real dx = R.subtract(a.get(0), b.get(0));

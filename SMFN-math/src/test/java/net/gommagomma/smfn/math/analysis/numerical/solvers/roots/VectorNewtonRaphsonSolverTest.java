@@ -14,6 +14,7 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.functions.MultivariateFunction;
 import net.gommagomma.smfn.math.analysis.core.problems.MultivariateFunctionSystemProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceJacobianEstimator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.linear.GaussianEliminationSolver;
 import net.gommagomma.smfn.math.geometry.Circle;
 import net.gommagomma.smfn.math.geometry.Line;
@@ -27,7 +28,8 @@ class VectorNewtonRaphsonSolverTest
 	private static final RealField R = RealField.INSTANCE;
 	private final VectorSpace<Real, RealField> V2 = new VectorSpace<>(R, 2);
 	private final GaussianEliminationSolver<Real, RealField> linearSolver = new GaussianEliminationSolver<>(R, 2);
-	private final VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(linearSolver, V2);
+	private final CentralDifferenceJacobianEstimator<Real, RealField> jacobianFallback = new CentralDifferenceJacobianEstimator<>(R, new Real(1e-6));
+	private final VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(linearSolver, V2, jacobianFallback);
 
 	private final MetricSpace<Vector<Real>> space = (a, b) -> {
 		Real dx = R.subtract(a.get(0), b.get(0));
