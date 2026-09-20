@@ -33,7 +33,7 @@ The `Renderer` interface defines the low-level API contract required by all plot
 * **Frame Lifecycle & State Operations:**
   * `startDrawing()`: Initializes a rendering frame.
   * `endDrawingAndFlush()`: Finalizes the frame and flushes drawing commands to the target buffer/screen.
-  * `clear()`: Clears the active rendering buffer.
+  * `clear(Color color)`: Clears the active rendering buffer.
   * `setColor(Color color)`: Sets the active drawing color.
 
 * **Primitives (Viewport-transformed):**
@@ -42,7 +42,7 @@ The `Renderer` interface defines the low-level API contract required by all plot
   * `drawText(String text, int x, int y)`: Renders textual labels transformed via viewport coordinates.
 
 * **HUD Overlay Primitives (Viewport-independent):**
-  * `drawOverlayText(String text, int x, int y)`: Renders screen-fixed Heads-Up Display (HUD) overlays directly in pixel coordinates $[0, w] \times [0, h]$, bypassing viewport transforms (e.g., displaying viewport bounds, mouse inspection coordinates, or solver runtime metrics).
+  * `drawOverlayText(String text, int x, int y, Color color)`: Renders screen-fixed Heads-Up Display (HUD) overlays directly in pixel coordinates $[0, w] \times [0, h]$, bypassing viewport transforms (e.g., displaying viewport bounds, mouse inspection coordinates, or solver runtime metrics).
 
 ### Renderer Specializations
 * **`Renderer1D`**: Specialized for continuous 1D curve sampling and line-based drawing.
@@ -75,6 +75,44 @@ void plotFunction(
         Function<C, Double> codomainAdapter)   /* Codomain adapter from C to double (e.g., Real -> Double) */
 ```
 
+### 1D Usage Example: Function Visualization
+This example shows how to plot a continuous single-variable function ($P(x) = x^2 - 2$). The polynomial is evaluated using the library's Real type, while the driver handles frame rendering and AWT panel integration. The domain and codomain adapters act as the only bridge between the mathematical model and the rendering pipeline, keeping math logic completely separate from pixel coordinates.
+
+```java
+RealField R = RealField.INSTANCE;
+
+// Mathematical model: P(x) = x^2 - 2, wrapped as a Mapping<Real,Real>
+Polynomial<Real> p = PolynomialElementFactory.of(R, R.of(-2), R.of(0), R.of(1));
+HornerEvaluator<Real, RealField, PolynomialFunction<Real, RealField>> horner = new HornerEvaluator<>(R);
+PolynomialFunction<Real, RealField> f = new PolynomialFunction<>(p, R, horner);
+
+// Concrete driver
+int width = 600, height = 400;
+SwingRenderer1D renderer = new SwingRenderer1D(width, height);
+JFrame frame = new JFrame("SMFN: P(x) = x^2 - 2");
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+frame.add(renderer);
+frame.pack();
+frame.setVisible(true);
+renderer.initBufferStrategy();
+
+// Coordinate mapping
+Viewport viewport = new Viewport(-3.0, 3.0, -3.0, 6.0, width, height);
+
+// Adapters: bridge Real <-> double, the only place the mathematical model meets pixels
+Function<Double, Real> domainAdapter = Real::new;
+Function<Real, Double> codomainAdapter = Real::getValue;
+
+// Plotter orchestrator
+renderer.startDrawing();
+renderer.clear(Color.WHITE);
+CartesianAxisPlotter.plotAxes(renderer, viewport, Color.LIGHT_GRAY, true);
+renderer.setColor(Color.BLUE);
+FunctionPlotter1D.plotFunction(renderer, viewport, f, domainAdapter, codomainAdapter);
+renderer.endDrawingAndFlush();
+```
+
+
 ### 2D Function Plotting (`FunctionPlotter2D`)
 `FunctionPlotter2D` evaluates a mathematical mapping $f: D \to C$ across pixel grids. It requires two functional adapters to maintain independence from concrete mathematical types:
 
@@ -92,6 +130,51 @@ void plotFunction(
 ```
 
 This pipeline enables the visualization of scalar fields, complex functions, fractals (Mandelbrot/Julia sets), and heatmaps.
+
+### 2D Usage Example: Complex Dynamics Visualization
+This example shows how to visualize a 2D scalar field by rendering a Julia set fractal ($z \mapsto z^2 + c$). The core function calculates escape-time iteration counts (`Natural`) without any graphical code. A domain adapter builds Complex numbers from Cartesian coordinates, while a `ColorMapper` converts iteration counts into colors to render the plot across the `Viewport`.
+
+```java
+// Mathematical model: z -> z^2 + c, iterated -- a FixedPointProblem<Complex>,
+// exposed here as Mapping<Complex,Natural> (escape iteration count)
+int maxIterations = 100;
+Complex c = new Complex(0.27334, 0.00742);
+JuliaFunction juliaFunction = new JuliaFunction(c, maxIterations);
+
+// Concrete driver
+int width = 800, height = 600;
+SwingRenderer2D renderer = new SwingRenderer2D(width, height);
+JFrame frame = new JFrame("SMFN Julia Set (c = " + c + ")");
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+frame.add(renderer);
+frame.pack();
+frame.setVisible(true);
+renderer.initBufferStrategy();
+
+// Coordinate mapping
+Viewport viewport = new Viewport(-1.5, 1.5, -1.5, 1.5, width, height);
+
+// domainAdapter: combines (x,y) into a single Complex input
+BiFunction<Double, Double, Complex> domainAdapter = Complex::new;
+
+// colorMapper: escape iteration count -> color; points that never escape are black
+ColorMapper<Natural> colorMapper = new ColorMapper<>() {
+    @Override
+    public Color map(Natural iterations) {
+        double value = iterations.getValue();
+        if (value == 0 || value >= maxIterations) return Color.BLACK;
+        float hue = (float) Math.sqrt(value / maxIterations);
+        return Color.getHSBColor(0.6f, 1.0f, hue);
+    }
+};
+
+// Plotter orchestrator
+renderer.startDrawing();
+renderer.clear(Color.WHITE);
+FunctionPlotter2D.plotFunction(renderer, viewport, juliaFunction, domainAdapter, colorMapper);
+CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+renderer.endDrawingAndFlush();
+```
 
 ### Discrete Data & Geometric Rendering (`ScatterPlotter`)
 `ScatterPlotter` renders discrete collections of mathematical `Point` objects. It is used for:

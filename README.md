@@ -88,8 +88,7 @@ Real rotatedNorm  = space.norm(rotatedOnce); // 1.0, exactly
 
 ### [Part 4: Numerical Analysis](docs/smfn-guide-4-numerical-analysis.md)
 - The Problem-Solver Model
-- Root Finding
-- Integration and Differential Equations
+- Solvers
 
 ### [Part 5: Physical Modelling](docs/smfn-guide-5-physical-modelling.md)
 - General Method of Physical Modelling
