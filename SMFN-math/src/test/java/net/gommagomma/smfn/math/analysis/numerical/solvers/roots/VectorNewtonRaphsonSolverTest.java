@@ -14,10 +14,10 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.functions.MultivariateFunction;
 import net.gommagomma.smfn.math.analysis.core.problems.MultivariateFunctionSystemProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.numerical.solvers.linear.GaussianEliminationSolver;
 import net.gommagomma.smfn.math.geometry.Circle;
 import net.gommagomma.smfn.math.geometry.Line;
 import net.gommagomma.smfn.math.geometry.Point;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixAlgebra;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
@@ -26,8 +26,8 @@ class VectorNewtonRaphsonSolverTest
 {
 	private static final RealField R = RealField.INSTANCE;
 	private final VectorSpace<Real, RealField> V2 = new VectorSpace<>(R, 2);
-	private final SquareMatrixAlgebra<Real, RealField> matrixAlgebra = new SquareMatrixAlgebra<>(R, 2);
-	private final VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(matrixAlgebra, V2);
+	private final GaussianEliminationSolver<Real, RealField> linearSolver = new GaussianEliminationSolver<>(R, 2);
+	private final VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(linearSolver, V2);
 
 	private final MetricSpace<Vector<Real>> space = (a, b) -> {
 		Real dx = R.subtract(a.get(0), b.get(0));
@@ -67,7 +67,7 @@ class VectorNewtonRaphsonSolverTest
 	}
 
 	@Test
-	@DisplayName("Jacobiana singolare: SquareMatrixAlgebra.inverse() lancia, il solver non restituisce un risultato scorretto")
+	@DisplayName("Jacobiana singolare: GaussianEliminationSolver lancia, il solver non restituisce un risultato scorretto")
 	void throwsWhenJacobianIsSingular() {
 		// Due equazioni identiche: f1(x,y) = f2(x,y) = x - 1. Jacobiana costante
 		// [[1,0],[1,0]], singolare ovunque -- non esiste un'unica soluzione isolata.

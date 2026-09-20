@@ -9,8 +9,8 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableVectorProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.numerical.solvers.linear.GaussianEliminationSolver;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixAlgebra;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
@@ -21,14 +21,18 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
  * numerico (richiederebbe n valutazioni di F per ogni passo, una per
  * colonna della Jacobiana, con conversione del passo h in K): lasciato
  * per un'estensione futura, se servira' davvero.
+ *
+ * Il passo si ottiene risolvendo J*step = F(x) con GaussianEliminationSolver,
+ * non calcolando J^-1 per poi applicarla una volta sola: piu' veloce e
+ * numericamente piu' stabile, dato che l'inversa non serve mai per se stessa.
  */
 public class VectorNewtonRaphsonSolver<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
 {
-	private final SquareMatrixAlgebra<K, S> matrixAlgebra;
+	private final GaussianEliminationSolver<K, S> linearSolver;
 	private final Module<Vector<K>, K, S> vectorSpace;
 
-	public VectorNewtonRaphsonSolver(SquareMatrixAlgebra<K, S> matrixAlgebra, Module<Vector<K>, K, S> vectorSpace) {
-		this.matrixAlgebra = matrixAlgebra;
+	public VectorNewtonRaphsonSolver(GaussianEliminationSolver<K, S> linearSolver, Module<Vector<K>, K, S> vectorSpace) {
+		this.linearSolver = linearSolver;
 		this.vectorSpace = vectorSpace;
 	}
 
@@ -43,9 +47,8 @@ public class VectorNewtonRaphsonSolver<K extends ScalarElement<K>, S extends Fie
 
 			Vector<K> fValue = problem.apply(current);
 			SquareMatrix<K> jacobian = problem.getJacobian().apply(current);
-			SquareMatrix<K> jacobianInverse = matrixAlgebra.inverse(jacobian);
 
-			Vector<K> step = jacobianInverse.apply(fValue); // J^-1 * F(x), riusando SquareMatrix come LinearOperator
+			Vector<K> step = linearSolver.solve(jacobian, fValue);
 			current = vectorSpace.subtract(current, step);
 
 			Real distance = space.distance(current, previous);
