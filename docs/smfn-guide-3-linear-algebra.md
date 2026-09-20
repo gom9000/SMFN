@@ -3,7 +3,7 @@
 ## Spaces
 The structures governing vectors and matrices directly mirror the axiomatic hierarchy of algebraic modules and metric spaces:
 
-![SMFN-linearalgebra-spaces](SMFN-linearalgebra-spaces.png)
+![SMFN-lalgebra-spaces](SMFN-algebra-spaces.png)
 
 | Space Structure | Requirements on $K$ / Domain | Key Operations Unlocked |
 | :--- | :--- | :--- |
@@ -28,7 +28,7 @@ Vector<Real> sum = V3.add(v, w);          // (5.0, 1.0, 5.0)
 Vector<Real> scaled = V3.scale(R.of(2.0), v); // (2.0, 4.0, 6.0)
 ```
 
-![SMFN-linearalgebra-vector-elements](SMFN-linearalgebra-vector-elements.png)
+![SMFN-linearalgebra-vectors](SMFN-linearalgebra-vectors.png)
 
 The operational capabilities of vector structures scale dynamically with the algebraic strength guaranteed by the underlying scalar type  `K`:
 
@@ -60,7 +60,7 @@ Matrix<Real> At = M23.transpose(A);   // 3x2, from MatrixSemimodule (available a
 int rank = M23.rank(A);               // Row-echelon reduction (requires K to be a Field)
 ```
 
-![SMFN-linearalgebra-matrix-elements](SMFN-linearalgebra-matrix-elements.png)
+![SMFN-linearalgebra-matrices](SMFN-linearalgebra-matrices.png)
 
 
 Like vectors, the operational capabilities of matrices structures scale dynamically with the algebraic strength guaranteed by the underlying scalar type  `K`:
@@ -105,6 +105,7 @@ Vector<Real> once  = rotate90.apply(point);                    // Single 90-degr
 Vector<Real> twice = rotate90.compose(rotate90).apply(point);  // Equivalent to (rotate90 * rotate90).apply(point)
 Vector<Real> back   = rotate90.power(4).apply(point);          // Four full rotations (identity operation)
 ```
+![SMFN-linearalgebra-squarematrices](SMFN-linearalgebra-squarematrices.png)
 
 Complex conjugation and transposed operations are exposed directly on element instances whenever `K` supports conjugation traits:
 

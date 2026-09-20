@@ -32,10 +32,10 @@ public interface Mapping<I, O>
     }
 
     /**
-     * Restituisce il mapping identità f(x) = x.
+     * Restituisce il mapping identitÃ  f(x) = x.
      * 
      * @param <T> il tipo degli elementi
-     * @return un mapping identità
+     * @return un mapping identitï¿½
      */
     static <T> Mapping<T, T> identity() {
         return (T t) -> t;
