@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -124,7 +125,7 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory
     @Override
     public ZnElement add(ZnElement a, ZnElement b) {
         checkModulus(a); checkModulus(b);
-        return new ZnElement(IntegerRing.INSTANCE.add(a.getValue(), b.getValue()), modulus);
+        return new ZnElement(reducedResult(a, b, BigInteger::add), modulus);
     }
 
 
@@ -132,7 +133,21 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory
     @Override
     public ZnElement multiply(ZnElement a, ZnElement b) {
         checkModulus(a); checkModulus(b);
-        return new ZnElement(IntegerRing.INSTANCE.multiply(a.getValue(), b.getValue()), modulus);
+        return new ZnElement(reducedResult(a, b, BigInteger::multiply), modulus);
+    }
+
+    /**
+     * Applica l'operazione a due valori gia' ridotti modulo n, poi riduce di nuovo
+     * modulo n -- tutto in BigInteger, per evitare l'overflow di un long quando n e'
+     * vicino a Long.MAX_VALUE (a*b o a+b, prima della riduzione, possono superare
+     * abbondantemente il range di un long anche se a e b singolarmente non lo fanno).
+     */
+    private SignedInt reducedResult(ZnElement a, ZnElement b, java.util.function.BinaryOperator<BigInteger> op) {
+        BigInteger bigA = BigInteger.valueOf(a.getValue().getValue());
+        BigInteger bigB = BigInteger.valueOf(b.getValue().getValue());
+        BigInteger bigN = BigInteger.valueOf(modulus.getValue());
+        BigInteger reduced = op.apply(bigA, bigB).mod(bigN);
+        return new SignedInt(reduced.longValueExact());
     }
 
 
