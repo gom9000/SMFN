@@ -37,6 +37,7 @@ implements DifferentiableVectorProblem<K>
 	@Override
 	@SuppressWarnings("unchecked")
 	public Vector<K> apply(Vector<K> v) {
+		checkDimension(v);
 		K[] values = (K[]) new ScalarElement[functions.size()];
 		for (int i = 0; i < functions.size(); i++) {
 			values[i] = functions.get(i).apply(v);
@@ -47,6 +48,7 @@ implements DifferentiableVectorProblem<K>
 	@Override
 	public Mapping<Vector<K>, SquareMatrix<K>> getJacobian() {
 		return v -> {
+			checkDimension(v);
 			int n = functions.size();
 			@SuppressWarnings("unchecked")
 			K[] data = (K[]) new ScalarElement[n * n];
@@ -57,6 +59,11 @@ implements DifferentiableVectorProblem<K>
 					? ((DifferentiableMultivariateFunction<K>) f).getGradient().apply(v)
 					: numericFallback.estimateAt(f, v);
 
+				if (gradient.size() != n) {
+					throw new IllegalStateException("Il gradiente della funzione " + i + " ha dimensione " + gradient.size()
+						+ ", attesa " + n + " (il sistema e' quadrato: n funzioni, n incognite).");
+				}
+
 				for (int j = 0; j < n; j++) {
 					data[i * n + j] = gradient.get(j);
 				}
@@ -64,5 +71,12 @@ implements DifferentiableVectorProblem<K>
 
 			return SquareMatrixElementFactory.of(vectorSpace.getScalarStructure(), Arrays.asList(data));
 		};
+	}
+
+	private void checkDimension(Vector<K> v) {
+		if (v.size() != functions.size()) {
+			throw new IllegalArgumentException("Vector dimension mismatch. Expected " + functions.size()
+				+ " (il sistema e' quadrato: n funzioni, n incognite), got " + v.size());
+		}
 	}
 }

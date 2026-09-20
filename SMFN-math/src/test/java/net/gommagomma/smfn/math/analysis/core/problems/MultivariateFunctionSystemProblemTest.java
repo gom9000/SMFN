@@ -118,4 +118,17 @@ class MultivariateFunctionSystemProblemTest
 		assertThrows(IllegalArgumentException.class, () -> new MultivariateFunctionSystemProblem<>(List.of(), R, new Real(1e-6)));
 		assertThrows(IllegalArgumentException.class, () -> new MultivariateFunctionSystemProblem<Real, RealField>(null, R, new Real(1e-6)));
 	}
+
+	@Test
+	@DisplayName("apply() e getJacobian() rifiutano un vettore di dimensione sbagliata")
+	void rejectsMismatchedVectorDimension() {
+		MultivariateFunctionSystemProblem<Real, RealField> problem =
+			new MultivariateFunctionSystemProblem<>(List.of(exactLinear, plainQuadratic), R, new Real(1e-6));
+
+		VectorSemimodule<Real, RealField> V3 = new VectorSemimodule<>(R, 3);
+		Vector<Real> wrongSize = V3.of(new Real[] { new Real(1.0), new Real(2.0), new Real(3.0) }); // 3, non 2
+
+		assertThrows(IllegalArgumentException.class, () -> problem.apply(wrongSize));
+		assertThrows(IllegalArgumentException.class, () -> problem.getJacobian().apply(wrongSize));
+	}
 }
