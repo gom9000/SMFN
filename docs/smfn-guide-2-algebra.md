@@ -139,7 +139,7 @@ Complex zSquared = z.power(2);     // -7.0 + 24.0i
 
 ```java
 // Modular Integer Ring Execution (ZnRing)
-ZnRing Z5 = ZnRing.of(new SignedInt(5));
+ZnRing Z5 = ZnRing.forModulus(new SignedInt(5));
 ZnElement a = Z5.getElement(new SignedInt(17)); // [17] mod 5 = [2]
 ZnElement b = Z5.getElement(new SignedInt(4));  // [4] mod 5 = [4]
 

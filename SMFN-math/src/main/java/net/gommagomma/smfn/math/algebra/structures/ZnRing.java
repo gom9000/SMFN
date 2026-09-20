@@ -49,7 +49,7 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory
      * @p_aram modulus il modulo dell'anello
      * @return l'istanza di {@link ZnRing} corrispondente
      */
-    public static ZnRing of(SignedInt modulus) {
+    public static ZnRing forModulus(SignedInt modulus) {
         return CACHE.computeIfAbsent(modulus, ZnRing::new);
     }
 

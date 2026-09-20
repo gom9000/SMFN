@@ -19,8 +19,8 @@ class ZnElementTest {
 
     private static final SignedInt MOD_7 = new SignedInt(7);
     private static final SignedInt MOD_12 = new SignedInt(12);
-    private final ZnRing Z7 = ZnRing.of(MOD_7);
-    private final ZnRing Z12 = ZnRing.of(MOD_12);
+    private final ZnRing Z7 = ZnRing.forModulus(MOD_7);
+    private final ZnRing Z12 = ZnRing.forModulus(MOD_12);
 
     private ZnElement zn7(long value) {
         return new ZnElement(new SignedInt(value), MOD_7);

@@ -48,7 +48,7 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
 
     @Override // ScalarElement impls
     public ScalarStructure<ZnElement> getStructure() {
-        return ZnRing.of(this.modulus);
+        return ZnRing.forModulus(this.modulus);
     }
 
     @Override // AlgebraicElement impls
@@ -63,7 +63,7 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
         }
         // Square-and-multiply algorithm
         ZnElement base = this;
-        ZnElement result = ZnRing.of(modulus).one();
+        ZnElement result = ZnRing.forModulus(modulus).one();
         int exp = exponent;
         while (exp > 0) {
             if (exp % 2 == 1) result = multiplyInternal(result, base);
@@ -81,7 +81,7 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
      * @return il risultato della moltiplicazione ridotto modulo $n$
      */
     private ZnElement multiplyInternal(ZnElement a, ZnElement b) {
-        return ZnRing.of(a.modulus).multiply(a, b);
+        return ZnRing.forModulus(a.modulus).multiply(a, b);
     }
 
     @Override // Java Standard impls

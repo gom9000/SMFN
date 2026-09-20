@@ -15,7 +15,7 @@ public class AlgebraicDemo
 {
 	static IntegerRing Z = IntegerRing.INSTANCE;
 	static RationalField Q = RationalField.INSTANCE;
-	static ZnRing Z5 = ZnRing.of(Z.of(5));
+	static ZnRing Z5 = ZnRing.forModulus(Z.of(5));
 
     public static void main(String[] args) {
         

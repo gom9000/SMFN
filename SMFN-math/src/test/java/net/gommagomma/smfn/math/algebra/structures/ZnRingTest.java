@@ -19,7 +19,7 @@ class ZnRingTest extends CommutativeRingAxiomContract<ZnElement>
 {
 	// Modulo 7 (primo): usato per gli assiomi generici di CommutativeRing,
 	// che devono valere indipendentemente dalla primalita' del modulo.
-	private final ZnRing z7 = ZnRing.of(new SignedInt(7));
+	private final ZnRing z7 = ZnRing.forModulus(new SignedInt(7));
 
 	private ZnElement zn(long value) {
 		return z7.getElement(new SignedInt(value));
@@ -40,8 +40,8 @@ class ZnRingTest extends CommutativeRingAxiomContract<ZnElement>
 	@Test
 	@DisplayName("Costruttore: modulo non valido")
 	void constructorInvalidModulus() {
-		assertThrows(IllegalArgumentException.class, () -> ZnRing.of(new SignedInt(0)));
-		assertThrows(IllegalArgumentException.class, () -> ZnRing.of(new SignedInt(-5)));
+		assertThrows(IllegalArgumentException.class, () -> ZnRing.forModulus(new SignedInt(0)));
+		assertThrows(IllegalArgumentException.class, () -> ZnRing.forModulus(new SignedInt(-5)));
 	}
 
 	@Test
@@ -79,7 +79,7 @@ class ZnRingTest extends CommutativeRingAxiomContract<ZnElement>
 	@DisplayName("Onesta' algebrica: conseguenze del non dichiararsi Field")
 	class FieldHonestyChecks
 	{
-		private final ZnRing z12 = ZnRing.of(new SignedInt(12)); // 12 non e' primo
+		private final ZnRing z12 = ZnRing.forModulus(new SignedInt(12)); // 12 non e' primo
 
 		@Test
 		@DisplayName("Con modulo non primo esistono divisori dello zero: nessun inverso funzionante")
