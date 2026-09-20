@@ -124,81 +124,13 @@ Root-finding implementations drive residuals to zero over scalar, vector, or pol
   Real root = solver.solve(problem, initialGuess, criteria, params, metricSpace);
   ```
 
-* **`VectorNewtonRaphsonSolver`**: Solves $n \times n$ non-linear systems by inverting the local Jacobian matrix at each iteration. Requires a `DifferentiableVectorProblem<K>`.
-  ```java
-  // Multi-variable Newton-Raphson
-  SquareMatrixAlgebra<Real, RealField> matrixAlgebra = new SquareMatrixAlgebra<>(R, dimensione);
-  VectorSpace<Real, RealField> vectorSpace = new VectorSpace<>(R, dimensione);
-  VectorNewtonRaphsonSolver<Real, RealField> vectorSolver = new VectorNewtonRaphsonSolver<>(matrixAlgebra, vectorSpace);
-  Vector<Real> solution = vectorSolver.solve(multivariateProblem, initialGuess, criteria, params, vectorMetricSpace);
-  ```
-
-* **`PolynomialRootSolver`**: Computes *all* roots of a polynomial via iterative root finding followed by exact synthetic division (deflation). Full factorizability is guaranteed when operating over algebraically closed fields (e.g., `Complex`).
-  ```java
-  // All roots of a polynomial (Newton-Raphson + deflation)
-  ComplexField C = ComplexField.INSTANCE;
-  PolynomialRootSolver<Complex, ComplexField> rootSolver = new PolynomialRootSolver<>(
-      C, new Complex(1e-6, 0), metricSpace, new Complex(0.4, 0.9), params);
-  List<Complex> roots = rootSolver.findAllRoots(polynomial);
-  ```
-
-### Ordinary Differential Equations Solvers (`numerical.solvers.ode`)
-Integrators compute time evolution for systems satisfying `InitialValueProblem<K, V>`:
-
-* **`RungeKutta4Solver`**: Fixed-step integration via the classical 4th-order stages ($k_1, k_2, k_3, k_4$). Step direction is derived from start/end times, not from the sign of the step supplied. Requires `Ring & ScalarStructure & NumericFactory`.
-  ```java
-  // Fixed-step integration
-  RungeKutta4Solver<Real, Vector<Real>, RealField> rk4 = new RungeKutta4Solver<>();
-  Vector<Real> finalState = rk4.integrate(ivp, endTime, new IntegrationParameters(R.of(0.01)), vectorModule);
-  ```
-
-* **`EmbeddedRK23Solver`**: Adaptive-step integration. Uses embedded RK2(3) pairs to estimate local truncation error at each step, rejecting and retrying with a smaller step when the estimate exceeds tolerance, and raising an exception once the required step drops below the configured minimum. Requires `Field & ScalarStructure & NumericFactory` — division is needed to rescale the step.
-  ```java
-  // Adaptive-step integration
-  EmbeddedRK23Solver<Real, Vector<Real>, RealField> rk23 = new EmbeddedRK23Solver<>();
-  IntegrationParameters params = new IntegrationParameters(null, R.of(1e-8), R.of(0.1), R.of(1e-6));
-  Vector<Real> finalState = rk23.integrate(ivp, endTime, params, vectorModule);
-  ```
-
-| Solver | Step Strategy | Required Algebraic Structure | Mechanism |
-| :--- | :--- | :--- | :--- |
-| `RungeKutta4Solver` | Fixed Step | `Ring & ScalarStructure & NumericFactory` | Classical 4th-order evaluation stages ($k_1, k_2, k_3, k_4$). Step direction is derived from start/end times. |
-| `EmbeddedRK23Solver` | Adaptive Step | `Field & ScalarStructure & NumericFactory` | Uses embedded RK2(3) pairs to estimate local truncation error and dynamically resize steps within defined limits. |
-
-
-### Differentiation & Gradient Adapters (`numerical.functionals.differentiation`)
-Differentiation utilities act as higher-order function transformers. They are used independently or injected into iterative solvers as fallback mechanisms.
-
-* **`CentralDifferenceDifferentiator` & `ForwardDifferenceDifferentiator`**: Implement `Mapping<Mapping<K,K>, Mapping<K,K>>` to map a scalar function to its numerical derivative.
-  ```java
-  // Scalar derivative fallback
-  CentralDifferenceDifferentiator<Real> diff = new CentralDifferenceDifferentiator<>(R, R.of(1e-6));
-  Mapping<Real, Real> derivative = diff.apply(scalarFunction);
-  ```
-
-* **`CentralDifferenceGradientEstimator`**: Computes $\nabla f(v)$ for a `MultivariateFunction<K>` by applying central differences component-by-component across vector dimensions.
-  ```java
-  // Multivariate gradient estimation
-  CentralDifferenceGradientEstimator<Real, RealField> gradEst = new CentralDifferenceGradientEstimator<>(R, R.of(1e-6));
-  Vector<Real> gradient = gradEst.estimateAt(multivariateFunction, point);
-  ```
-
-### Root-Finding Solvers (`numerical.solvers.roots`)
-Root-finding implementations drive residuals to zero over scalar, vector, or polynomial domains:
-
-* **`NewtonRaphsonSolver`**: Solves scalar problems ($T \to T$). It inspects the problem via `instanceof DifferentiableScalarProblem`; if absent, it falls back to a constructor-supplied `CentralDifferenceDifferentiator`.
-  ```java
-  // One-variable Newton-Raphson
-  NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, numericDifferentiator);
-  Real root = solver.solve(problem, initialGuess, criteria, params, metricSpace);
-  ```
-
-* **`VectorNewtonRaphsonSolver`**: Solves $n×n$ non-linear systems by solving the local Jacobian system directly at each iteration via `GaussianEliminationSolver`. Requires a `DifferentiableVectorProblem<K>`.
+* **`VectorNewtonRaphsonSolver`**: solves $n \times n$ non-linear systems by solving the local Jacobian system directly at each iteration (via `GaussianEliminationSolver`). Same optional-capability pattern as the scalar case: uses `getJacobian()` if the problem implements `DifferentiableVectorProblem<K>`, otherwise falls back to `CentralDifferenceJacobianEstimator` (numeric, one column per extra evaluation of `F`).
   ```java
   // Multi-variable Newton-Raphson
   GaussianEliminationSolver<Real, RealField> linearSolver = new GaussianEliminationSolver<>(R, dimensione);
   VectorSpace<Real, RealField> vectorSpace = new VectorSpace<>(R, dimensione);
-  VectorNewtonRaphsonSolver<Real, RealField> vectorSolver = new VectorNewtonRaphsonSolver<>(linearSolver, vectorSpace);
+  CentralDifferenceJacobianEstimator<Real, RealField> jacobianFallback = new CentralDifferenceJacobianEstimator<>(R, R.of(1e-6));
+  VectorNewtonRaphsonSolver<Real, RealField> vectorSolver = new VectorNewtonRaphsonSolver<>(linearSolver, vectorSpace, jacobianFallback);
   Vector<Real> solution = vectorSolver.solve(multivariateProblem, initialGuess, criteria, params, vectorMetricSpace);
   ```
 
@@ -250,4 +182,11 @@ Differentiation utilities act as higher-order function transformers. They are us
   // Multivariate gradient estimation
   CentralDifferenceGradientEstimator<Real, RealField> gradEst = new CentralDifferenceGradientEstimator<>(R, R.of(1e-6));
   Vector<Real> gradient = gradEst.estimateAt(multivariateFunction, point);
+  ```
+
+* **`CentralDifferenceJacobianEstimator`**: Estimates the full $n \times n$ Jacobian of a `Mapping<Vector<K>, Vector<K>>` one column at a time, perturbing dimension $j$ and evaluating $F$ once yields column $j$ for every row simultaneously.
+  ```java
+  // Full Jacobian estimation
+  CentralDifferenceJacobianEstimator<Real, RealField> jacobianEst = new CentralDifferenceJacobianEstimator<>(R, R.of(1e-6));
+  SquareMatrix<Real> jacobian = jacobianEst.estimateAt(problem, point);
   ```
