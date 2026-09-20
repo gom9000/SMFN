@@ -83,7 +83,7 @@ implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K>
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(scalarStructure, size);
+        int result = Objects.hash(size);
         result = 31 * result + Arrays.hashCode(data);
         return result;
     }

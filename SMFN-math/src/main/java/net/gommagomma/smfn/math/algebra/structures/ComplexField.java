@@ -119,6 +119,7 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
    @Override
     public boolean areEqual(Complex a, Complex b) {
         if (a == b) return true;
+        if (a == null || b == null) return false;
 
         double diffRe = a.getRe() - b.getRe();
         double diffIm = a.getIm() - b.getIm();

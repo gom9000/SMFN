@@ -42,11 +42,13 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
         }
 
         if (value == Math.floor(value)) {
-            try {
-                return of((long) value); 
-            } catch (ArithmeticException e) {
+            // Il cast (long) non lancia mai per un double fuori dal range di long:
+            // si limita a "bloccarsi" silenziosamente su Long.MAX_VALUE/MIN_VALUE.
+            // Va escluso esplicitamente, prima del cast, non dopo.
+            if (value >= 9223372036854775808.0 || value < -9223372036854775808.0) {
                 throw new ArithmeticException("Integer value " + value + " is outside the Long range.");
             }
+            return of((long) value);
         }
 
         // --- Standard IEEE 754 (64-bit double) ---
