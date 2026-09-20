@@ -1,5 +1,4 @@
 # Part 2: Algebra & Numeric Systems
-
 This section details the algebraic foundations of the **SMFN** framework, covering the taxonomy of elements, capability interfaces, the axiomatic hierarchy of algebraic structures, dynamic polynomial mechanics, and functional mappings.
 
 
@@ -25,7 +24,7 @@ Properties specific to individual elements (e.g., order relations, sign extracti
 * **`Conjugable`**: Exposes complex conjugation via `conjugate(): E`.
 
 ### Scalar Numeric Classes
-Concrete scalar types located in `math.algebra.numerics` implement fine-grained capability traits defined in `math.algebra.core.elements.capabilities`. This decouple feature contracts from class hierarchies.
+Concrete scalar types located in `math.algebra.numerics` implement fine-grained capability traits defined in `math.algebra.core.elements.capabilities`. This decouples feature contracts from class hierarchies.
 
 | Type | Nature | Fields / Internal State | Implemented Capability Interfaces (Instance Methods) |
 | :--- | :--- | :--- | :--- |
@@ -35,6 +34,8 @@ Concrete scalar types located in `math.algebra.numerics` implement fine-grained 
 | `Rational` | Exact | `numerator: long`, `denominator: long` | `Orderable`, `Absolutable`, `Exponentiable`, `Normable` |
 | `Real` | Approximate | `value: double` | `Orderable`, `Absolutable`, `Exponentiable`, `Sqrtable`, `Normable` |
 | `Complex` | Approximate | `real: double`, `imaginary: double` | `Normable`, `Exponentiable`, `Sqrtable`, `Conjugable` |
+
+\**Note: ZnRing is never statically promoted to a Field, even when the modulus is prime. Algebraic guarantees for every structure in SMFN are enforced at compile time, whereas primality is a runtime property.*
 
 ```java
 Real x = new Real(2.5);
@@ -82,6 +83,8 @@ Identities are contextual to the structure. They allow algorithms to instantiate
 
 
 ### Usage Examples
+The following examples illustrate the usage of each scalar domain alongside its governing algebraic structure and native capabilities:
+
 ```java
 // Natural: a Semiring only -- no subtraction, no negative numbers
 NaturalSemiring N = NaturalSemiring.INSTANCE;
@@ -146,9 +149,13 @@ ZnElement d = Z5.add(b, b);      // [4] + [4] = [8] mod 5 = [3]
 
 
 ## Polynomials
-A `Polynomial<K>` is an immutable container encapsulating an ordered list of coefficients $(a_0, a_1, \dots, a_n)$. Operations on polynomials are dispatched to a dynamically resolved structure provided by `PolynomialStructureFactory`.
+A `Polynomial<K>` is an immutable data structure that models the ordered sequence of scalar coefficients $a_0, a_1, .., a_n \in K$. Like numeric elements, it carries no operational domain logic: arithmetic operations, polynomial division, and evaluation are entirely delegated to its associated algebraic structure, dynamically resolved by `PolynomialStructureFactory` according to the capabilities of the underlying scalar structure.
 
-### Dynamic Capability Elevation Matrix
+$K$ is not restricted to primitive numeric types. The only requirement is that $K$ satisfy at least a `Ring`. Because composite elements such as `SquareMatrix<K>` and `Polynomial<K>` itself implement `ScalarElement`, they qualify as valid coefficient domains: a polynomial can carry non-commutative matrix coefficients, or another polynomial as its own coefficient type, with no change to the machinery above.
+
+### Structure Hierarchy
+The algebraic level of the scalar $K$ determines the structure class and the available mathematical operations:
+
 | Coefficient Structure ($K$) | Generated Polynomial Structure | Unlocked Capabilities |
 | :--- | :--- | :--- |
 | `Semiring` | `PolynomialSemiring<K>` | Addition (`add`), multiplication (`multiply`), scalar multiplication. |
@@ -159,29 +166,80 @@ A `Polynomial<K>` is an immutable container encapsulating an ordered list of coe
 ```java
 RealField R = RealField.INSTANCE;
 
-// P(x) = 3x^2 - 5x - 2
+// P(x) = 3x^2 - 5x - 2 (coefficients ordered from degree 0 to highest)
 Polynomial<Real> p = PolynomialElementFactory.of(R, R.of(-2), R.of(-5), R.of(3));
+Polynomial<Real> q = PolynomialElementFactory.of(R, R.of(1), R.of(2));
+p.degree();            // 2
+p.getCoefficient(1);   // -5.0
 
-// Dynamic structure resolution based on coefficient domain
+// Automatic resolution of the appropriate structure
 ScalarStructure<Polynomial<Real>> polyStructure = PolynomialStructureFactory.getStructureFor(R);
-// Yields EuclideanPolynomialRing<Real, RealField>
+// Field    → EuclideanPolynomialRing (includes quotient, remainder, gcd)
+// Ring     → CommutativePolynomialRing or PolynomialRing (depending on commutativity)
+// Semiring → PolynomialSemiring
 ```
 
-### Evaluation, Symbolic Calculus & Solvers
+\**Note on Degree & Canonical Representation: Polynomials are automatically canonicalized upon instantiation by stripping trailing zero coefficients (checked via the coefficient structure's own `isZero()`).*
+
+### Operations, Calculus & Solvers
+
+#### Algebraic Operations & Division
+Polynomial arithmetic matches the algebraic capabilities of the underlying scalar field. Basic ring operations like addition and multiplication are available across all domains, while Euclidean division and advanced non-commutative matrix-polynomial division require specific structure extensions.
+
 ```java
-// Evaluation using Horner Scheme
+// Standard Ring Operations
+PolynomialRing<Real, RealField> ring = new PolynomialRing<>(R);
+Polynomial<Real> sum = ring.add(p, q);
+Polynomial<Real> product = ring.multiply(p, q);
+
+// Euclidean Division (requires K to be a Field)
+EuclideanPolynomialRing<Real, RealField> euclid = new EuclideanPolynomialRing<>(R);
+PolynomialDivisionResult<Real> res = euclid.divide(p, q);
+
+// Division with Non-Commutative Coefficients (e.g., Square Matrices)
+ComplexField C = ComplexField.INSTANCE;
+SquareMatrixAlgebra<Complex, ComplexField> matrixAlgebra = new SquareMatrixAlgebra<>(C, 2);
+
+SquareMatrix<Complex> identity   = SquareMatrixElementFactory.of(C, C.of(1), C.of(0), C.of(0), C.of(1));
+SquareMatrix<Complex> rotation90 = SquareMatrixElementFactory.of(C, C.of(0), C.of(-1), C.of(1), C.of(0));
+
+// P(x) = I + R90*x, Q(x) = R90 + I*x
+Polynomial<SquareMatrix<Complex>> pmz = PolynomialElementFactory.of(matrixAlgebra, identity, rotation90);
+Polynomial<SquareMatrix<Complex>> qmz = PolynomialElementFactory.of(matrixAlgebra, rotation90, identity);
+
+PolynomialDivisionProvider<SquareMatrix<Complex>, SquareMatrixAlgebra<Complex, ComplexField>> divProvider = 
+    new PolynomialDivisionProvider<>(matrixAlgebra);
+PolynomialDivisionResult<SquareMatrix<Complex>> result = divProvider.divide(pmz, qmz); // quotient = R90, remainder = 2I
+```
+
+#### Function Evaluation
+Polynomials can be wrapped inside a `PolynomialFunction` to execute functional evaluations over specified target values. Evaluation strategies, such as `HornerEvaluator`, provide optimal computational complexity.
+
+```java
+// Function Evaluation via Horner Scheme: f(x) = P(x)
 HornerEvaluator<Real, RealField, PolynomialFunction<Real, RealField>> horner = new HornerEvaluator<>(R);
 PolynomialFunction<Real, RealField> f = new PolynomialFunction<>(p, R, horner);
-Real y = f.apply(R.of(2.0)); // P(2.0)
+Real y = f.apply(R.of(2.0)); // Evaluates P(2.0)
+```
 
-// Symbolic Differentiation and Integration
+#### Symbolic Calculus
+Symbolic calculus providers perform exact formal differentiation and integration over polynomial coefficients. Integration requires an explicit identity element from the target field as the integration constant.
+
+```java
+// Formal Symbolic Differentiation
 PolynomialDifferentiationProvider<Real, RealField> diff = new PolynomialDifferentiationProvider<>(R);
-Polynomial<Real> derivative = diff.derivative(p);
+Polynomial<Real> pPrime = diff.derivative(p);
 
+// Formal Symbolic Integration (with explicit constant of integration C)
 PolynomialIntegrationProvider<Real, RealField> integ = new PolynomialIntegrationProvider<>(R);
 Polynomial<Real> integral = integ.integrate(p, R.zero());
+```
 
-// Root Extraction over Complex Field
+#### Root Solvers
+Exact root finding is supported over algebraically closed fields like `ComplexField`. The solver employs iterative numerical algorithms (such as Newton-Raphson with polynomial deflation) parameterized by a metric space and convergence constraints.
+
+```java
+// Root Extraction over Complex Field (Newton-Raphson with Deflation)
 ComplexField C = ComplexField.INSTANCE;
 MetricSpace<Complex> space = (a, b) -> new Real(C.subtract(a, b).modulus());
 PolynomialRootSolver<Complex, ComplexField> rootSolver = new PolynomialRootSolver<>(
@@ -192,15 +250,44 @@ PolynomialRootSolver<Complex, ComplexField> rootSolver = new PolynomialRootSolve
 List<Complex> roots = rootSolver.findAllRoots(complexPolynomial);
 ```
 
+#### Composition
+Polynomial composition $P(Q(x))$ leverages the library's algebraic closure: since polynomials form a valid ring, a polynomial structure can accept another polynomial structure (just like a square matrix) as its coefficient domain.
+
+```java
+RealField R = RealField.INSTANCE;
+EuclideanPolynomialRing<Real, RealField> polyRing = new EuclideanPolynomialRing<>(R);
+
+// P(x) = x^2 + 1
+Polynomial<Real> P = PolynomialElementFactory.of(R, R.of(1), R.of(0), R.of(1));
+// Q(x) = x + 1
+Polynomial<Real> Q = PolynomialElementFactory.of(R, R.of(1), R.of(1));
+
+// Lift P's coefficients into constant polynomials
+List<Polynomial<Real>> lifted = new ArrayList<>();
+for (int i = 0; i <= P.degree(); i++) {
+    lifted.add(PolynomialElementFactory.of(R, P.getCoefficient(i)));
+}
+Polynomial<Polynomial<Real>> Plifted = PolynomialElementFactory.of(polyRing, lifted);
+
+HornerEvaluator<Polynomial<Real>, EuclideanPolynomialRing<Real, RealField>, PolynomialFunction<Polynomial<Real>, EuclideanPolynomialRing<Real, RealField>>> horner =
+    new HornerEvaluator<>(polyRing);
+PolynomialFunction<Polynomial<Real>, EuclideanPolynomialRing<Real, RealField>> Pfunction =
+    new PolynomialFunction<>(Plifted, polyRing, horner);
+
+Polynomial<Real> composition = Pfunction.apply(Q);   // (x+1)^2 + 1 = x^2 + 2x + 2
+```
+
+
 ## Functional Mappings & Linear Operators
 SMFN models transformations through an explicit functional interface hierarchy ($f: I \to O$).
 
 ### Hierarchy Overview
 * **`Mapping<I, O>`**: Base interface for functional transformations. Exposes `O apply(I input)` and composition via `compose(Mapping)`.
 * **`Operator<T>`**: Specializes `Mapping<T, T>` to endomorphisms. Enables repeated application and powers (`power(int n)`).
-* **`LinearOperator<T>`**: Refines endomorphisms over vector spaces. Implemented directly by matrix structures like `SquareMatrix<K>`.
+* **`LinearOperator<T>`**: Specializes endomorphisms to linear transformations over modules/vector spaces, preserving addition and scalar multiplication. Implemented directly by matrix structures like `SquareMatrix<K>`.
 
 ```java
+// SquareMatrix<Real> implements LinearOperator<Vector<Real>>
 SquareMatrix<Real> rotation = ...; // Linear Operator
 Vector<Real> v = ...;
 

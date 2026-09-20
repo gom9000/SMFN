@@ -64,23 +64,10 @@ z.conjugate();               // Conjugable
 z.norm();                    // Normable (|z|)
 ```
 
-### Modeling Mathematical Axioms
-The package structure directly reflects the formal hierarchy of abstract algebra:
+### Modeling Mathematical Axioms & Structural Scaling
+The package structure directly reflects the formal hierarchy of abstract algebra. Rather than treating numbers and composite objects as monolithic types, SMFN models algebraic contexts by incrementally building upon operational axioms (eg. Semiring -> Ring -> CommutativeRing -> Field).
 
-```
-Semiring
-  └── Ring
-        └──  CommutativeRing
-               └── Field
-               └── EuclideanDomain
-```
-
-1. **Semiring**: Addition and multiplication with associative/distributive laws and identity elements ($0, 1$). No requirement for additive inverses (e.g., Natural numbers $\mathbb{N}$).
-2. **Ring**: Adds additive inverses, forming an Abelian group under addition (e.g., Integers $\mathbb{Z}$, Polynomial rings).
-3. **Field**: Adds multiplicative inverses for all non-zero elements, forming a commutative division algebra (e.g., Rationals $\mathbb{Q}$, Reals $\mathbb{R}$, Complex numbers $\mathbb{C}$).
-
-### Linear Algebra over Rings vs. Fields
-The operational capabilities of matrices and vectors adjust dynamically according to the underlying scalar structure:
+This axiomatic progression determines how higher-level objects scale their capabilities. For instance, the operational boundaries of matrices and vectors adjust dynamically according to the algebraic strength of their underlying scalar structure:
 
 * **Matrices over a Semiring** (`SquareMatrixSemiring`, e.g. `Natural`): addition, multiplication, transpose.
 * **Matrices over a Ring** (`SquareMatrixRing`, e.g. `SignedInt`, `Polynomial<K>`): adds negation, subtraction, and a determinant via Laplace cofactor expansion.
