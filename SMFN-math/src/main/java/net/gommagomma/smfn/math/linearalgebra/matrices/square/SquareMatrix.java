@@ -46,7 +46,7 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
     public int getRows() { return internalMatrix.getRows(); }
     public int getCols() { return internalMatrix.getCols(); }
     public int getN() { return internalMatrix.getRows(); }
-    public K[] getData() { return internalMatrix.getData(); }
+    public ScalarElement<?>[] getData() { return internalMatrix.getData(); }
 
     @Override
     public SquareMatrix<K> copy() {

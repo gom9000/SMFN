@@ -30,13 +30,17 @@ implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S>
     @Override
     public SquareMatrix<K> negate(SquareMatrix<K> m) {
         Matrix<K> negated = moduleDelegate.negate(m.asMatrix());
-        return of(negated.getData());
+        @SuppressWarnings("unchecked")
+        K[] data = (K[]) negated.getData();
+        return of(data);
     }
 
     @Override
     public SquareMatrix<K> subtract(SquareMatrix<K> a, SquareMatrix<K> b) {
         Matrix<K> result = moduleDelegate.subtract(a.asMatrix(), b.asMatrix());
-        return of(result.getData());
+        @SuppressWarnings("unchecked")
+        K[] data = (K[]) result.getData();
+        return of(data);
     }
 
 

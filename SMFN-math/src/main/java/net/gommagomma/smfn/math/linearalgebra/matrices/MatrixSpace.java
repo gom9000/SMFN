@@ -39,7 +39,11 @@ implements LinearSpace<Matrix<K>, K, S>
 
     public Matrix<K> toRowEchelonForm(Matrix<K> original) {
         validateDimensions(original);
-        K[] workingData = original.getData(); 
+        // Cast non controllato, ma esplicito: l'algoritmo di Gauss lavora su un array
+        // K[] mutabile per indice -- lo stesso presupposto che il codice faceva gia'
+        // implicitamente prima, ora reso visibile invece che nascosto.
+        @SuppressWarnings("unchecked")
+        K[] workingData = (K[]) original.getData();
         performGauss(workingData, rows, cols);
         return of(workingData);
     }

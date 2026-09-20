@@ -128,7 +128,7 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, VectorFunct
         return matrixStructure;
     }
 
-    public K[] getData() {
+    public ScalarElement<?>[] getData() {
         return data.clone();
     }
 }

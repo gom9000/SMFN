@@ -130,7 +130,8 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
 
 
     private K calculateDeterminantViaGauss(SquareMatrix<K> m) {
-        K[] data = m.getData();
+        @SuppressWarnings("unchecked")
+        K[] data = (K[]) m.getData();
         K det = scalarStructure.one();
         int swaps = 0;
 

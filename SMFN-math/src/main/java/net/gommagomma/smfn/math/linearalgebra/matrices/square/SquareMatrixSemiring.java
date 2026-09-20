@@ -35,7 +35,9 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
 
     @Override
     public SquareMatrix<K> zero() {
-        return of(matrixDelegate.zero().getData());
+        @SuppressWarnings("unchecked")
+        K[] data = (K[]) matrixDelegate.zero().getData();
+        return of(data);
     }
 
     @Override
@@ -74,7 +76,9 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
     @Override
     public SquareMatrix<K> add(SquareMatrix<K> a, SquareMatrix<K> b) {
     	Matrix<K> result = matrixDelegate.add(a.asMatrix(), b.asMatrix());
-        return of(result.getData());
+        @SuppressWarnings("unchecked")
+        K[] data = (K[]) result.getData();
+        return of(data);
     }
 
     @Override
