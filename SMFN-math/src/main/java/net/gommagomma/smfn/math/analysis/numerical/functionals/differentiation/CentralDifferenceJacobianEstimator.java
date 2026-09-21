@@ -28,7 +28,7 @@ public class CentralDifferenceJacobianEstimator<K extends ScalarElement<K>, S ex
 
 	public CentralDifferenceJacobianEstimator(S field, K h) {
 		if (h == null || field.isZero(h)) {
-			throw new IllegalArgumentException("Il passo h non puo' essere nullo o zero.");
+			throw new IllegalArgumentException("The step h must not be null or zero.");
 		}
 		this.field = field;
 		this.h = h;

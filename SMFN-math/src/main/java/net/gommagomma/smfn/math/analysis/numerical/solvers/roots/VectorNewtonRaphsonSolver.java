@@ -65,6 +65,6 @@ public class VectorNewtonRaphsonSolver<K extends ScalarElement<K>, S extends Fie
 			}
 		}
 
-		throw new IllegalStateException("Convergenza fallita dopo " + params.maxIterations + " iterazioni.");
+		throw new IllegalStateException("Convergence failed after " + params.maxIterations + " iterations.");
 	}
 }
