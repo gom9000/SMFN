@@ -14,7 +14,10 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
  * L'Hamiltoniana: l'Observable specifico che rappresenta l'energia totale
- * del sistema e genera l'evoluzione temporale (equazione di Schrodinger).
+ * del sistema. Genera l'evoluzione temporale (equazione di Schrodinger):
+ * direttamente se K=Complex, tramite Observable.toComplex() se K e' reale,
+ * dato che l'evoluzione vive sempre in uno spazio di Hilbert complesso.
+ *
  *
  * E' un Observable a tutti gli effetti (misurare l'energia e' una misura
  * legittima come qualunque altra) -- eredita, non compone, cosi' un

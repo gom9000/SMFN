@@ -86,4 +86,38 @@ class SchrodingerEquationSystemTest
 		assertTrue(Math.abs(v.get(1).getRe()) < tolerance);
 		assertTrue(Math.abs(v.get(1).getIm() - (-1.0)) < tolerance);
 	}
+
+	@Test
+	@DisplayName("Hamiltoniana dipendente dal tempo (campo Z modulato): coincide con la soluzione analitica esatta")
+	void timeDependentHamiltonianMatchesAnalyticSolution() {
+		// H(t) = f(t)*sigma_z, f(t) = (omega0/2)*(1+0.5*sin(nu*t)) -- il campo resta
+		// sempre lungo Z, quindi H(t1) e H(t2) commutano sempre e la soluzione ha
+		// ancora forma chiusa: <sigma_x>(t) = cos(2*Phi(t)), Phi(t) = integrale di f.
+		// Derivazione verificata indipendentemente con scipy prima di scrivere questo test.
+		double omega0 = 1.0;
+		double nu = 2.0;
+
+		net.gommagomma.smfn.math.algebra.core.Mapping<Real, Observable<Complex>> hamiltonianOfT = t -> {
+			double magnitude = (omega0 / 2.0) * (1 + 0.5 * Math.sin(nu * t.getValue()));
+			SquareMatrix<Complex> H_t = M2.of(new Complex[] {
+				new Complex(magnitude, 0), new Complex(0, 0),
+				new Complex(0, 0), new Complex(-magnitude, 0)
+			});
+			return new Observable<>(H_t);
+		};
+
+		SchrodingerEquationSystem system = new SchrodingerEquationSystem(hamiltonianOfT);
+		QuantumState psi0 = QuantumState.of(new Complex(1 / Math.sqrt(2), 0), new Complex(1 / Math.sqrt(2), 0));
+		Observable<Complex> sigmaX = new Observable<>(pauliX);
+		QuantumSystemSimulator simulator = new QuantumSystemSimulator();
+
+		double tVal = 3.7; // un istante qualunque, non uno dei punti "facili" come 0 o pi
+		QuantumState psiAtT = system.evolve(psi0, new Real(tVal), new Real(0.001));
+		Real expX = simulator.measure(sigmaX, psiAtT);
+
+		double phi = (omega0 / 2.0) * tVal + (omega0 / (4 * nu)) * (1 - Math.cos(nu * tVal));
+		double analytic = Math.cos(2 * phi);
+
+		assertTrue(Math.abs(expX.getValue() - analytic) < 1e-4);
+	}
 }

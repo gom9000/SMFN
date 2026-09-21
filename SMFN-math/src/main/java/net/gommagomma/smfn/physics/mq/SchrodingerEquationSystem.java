@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.physics.mq;
 
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
@@ -11,8 +12,13 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
 /**
- * Equazione di Schrodinger dipendente dal tempo: d|psi>/dt = (-i/hbar) H|psi>
+ * Equazione di Schrodinger dipendente dal tempo: d|psi>/dt = (-i/hbar) H(t)|psi>
  * (assumendo hbar = 1 in unita' naturali).
+ *
+ * L'Hamiltoniana e' rappresentata come Mapping<Real, Observable<Complex>>: una
+ * funzione dal tempo all'operatore valido in quell'istante -- un'Hamiltoniana
+ * indipendente dal tempo e' solo il caso speciale "t -> H sempre uguale",
+ * offerto come costruttore di comodo separato, non come classe a parte.
  *
  * Implementa l'interfaccia DifferentialEquationProblem per stati vettoriali a valori complessi.
  */
@@ -21,17 +27,28 @@ implements DifferentialEquationProblem<Complex, Vector<Complex>>
 {
 	private static final Complex MINUS_I = new Complex(0.0, -1.0);
 
-	private final Observable<Complex> hamiltonian;
+	private final Mapping<Real, Observable<Complex>> hamiltonian;
 	private final VectorSpace<Complex, ComplexField> space;
 
+	/** Hamiltoniana indipendente dal tempo -- H(t) = hamiltonian per ogni t. */
 	public SchrodingerEquationSystem(Observable<Complex> hamiltonian) {
-		this.hamiltonian = hamiltonian;
+		this.hamiltonian = time -> hamiltonian;
 		this.space = new VectorSpace<>(ComplexField.INSTANCE, hamiltonian.asOperator().getN());
+	}
+
+	/**
+	 * Hamiltoniana dipendente dal tempo. La dimensione dello stato si deduce
+	 * valutando hamiltonian in t=0 -- si assume che la dimensione non cambi
+	 * nel tempo, vero per ogni caso fisico ragionevole.
+	 */
+	public SchrodingerEquationSystem(Mapping<Real, Observable<Complex>> hamiltonian) {
+		this.hamiltonian = hamiltonian;
+		this.space = new VectorSpace<>(ComplexField.INSTANCE, hamiltonian.apply(new Real(0.0)).asOperator().getN());
 	}
 
 	@Override
 	public Vector<Complex> derivative(Vector<Complex> state, Real time) {
-		Vector<Complex> H_psi = hamiltonian.asOperator().apply(state);
+		Vector<Complex> H_psi = hamiltonian.apply(time).asOperator().apply(state);
 		return space.scale(MINUS_I, H_psi);
 	}
 
