@@ -46,6 +46,27 @@ public final class EigenDecomposition
 	public List<Complex> getEigenvalues() { return eigenvalues; }
 	public List<Vector<Complex>> getEigenvectors() { return eigenvectors; }
 
+	/**
+	 * Estrae la sola parte reale di ciascun autovalore -- utile per i rami
+	 * che garantiscono autovalori reali ma NON autovettori reali
+	 * (hermitiano). A differenza di toRealDecomposition(), non richiede
+	 * nulla sugli autovettori: non c'e' nessuna coppia da tenere coerente,
+	 * quindi il rischio di due tolleranze diverse su un risultato accoppiato
+	 * (il motivo per cui avevamo tolto questo metodo insieme al suo gemello
+	 * sugli autovettori) qui non si presenta.
+	 */
+	public List<Real> getRealEigenvalues(Real tolerance) {
+		double tol = tolerance.getValue();
+		List<Real> result = new ArrayList<>(eigenvalues.size());
+		for (Complex c : eigenvalues) {
+			if (Math.abs(c.getIm()) > tol) {
+				throw new IllegalStateException("Decomposition contains a complex eigenvalue exceeding tolerance: " + c);
+			}
+			result.add(new Real(c.getRe()));
+		}
+		return result;
+	}
+
 	public RealEigenDecomposition toRealDecomposition(Real tolerance) {
 		double tol = tolerance.getValue();
 

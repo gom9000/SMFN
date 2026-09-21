@@ -48,56 +48,6 @@ extends Solver<P, R> {
 
 ## Solvers
 
-# Part 4: Numerical Analysis
-
-## The Problem-Solver Model
-A `Problem` describes what "solved" means (a residual to zero out, a system's dynamics, or a sequence of iterates) without specifying how to reach that solution. A `Solver` contains no problem-specific data; it consumes a `Problem` along with initial states and execution parameters to iteratively compute a solution.
-
-### Problem Abstractions (`core.problems`)
-All numerical problems inherit from `AnalysisProblem<P>`, which acts as a marker interface for the domain:
-
-```text
-AnalysisProblem<P>
- ├── IterationProblem<P>
- │    ├── RootFindingProblem<P>
- │    │    ├── ScalarRootFindingProblem<T>
- │    │    └── VectorRootFindingProblem<K>
- │    └── FixedPointProblem<T>
- └── DifferentialEquationProblem<K, V>
-      ├── InitialValueProblem<K, V>
-      └── BoundaryValueProblem<K, V>
-```
-
-* **`IterationProblem<P>`**: It serves as a structural base for any sequence where an element is mapped to another of the same type.
-* **`RootFindingProblem<P>`**: Interprets `apply(P)` as a residual $F(P)$ that must be driven to zero. Specialized into `ScalarRootFindingProblem<T>` ($T \to T$) and `VectorRootFindingProblem<K>` ($\text{Vector}<K> \to \text{Vector}<K>$).
-* **`FixedPointProblem<T>`**: Interprets `apply(T)` as the next step $T_{k+1} = G(T_k)$. It provides a default method `nextIteration(T current)` as a semantic alias for `apply`.
-* **`DifferentialEquationProblem<K, V>`**: Models dynamics $V' = F(t, V)$ via its binary method `derivative(V currentState, Real currentTime)`. The state type $V$ is bound to `LinearElement<V, K>`, allowing vector or matrix differential equations.
-* **`InitialValueProblem<K, V>` & `BoundaryValueProblem<K, V>`**:supplying initial conditions ($V(t_0) = V_0$) or boundary conditions ($V(t_0), V(t_f)$) respectively.
-
-#### Optional Capability Interfaces
-Solvers do not rely on default methods that throw exceptions; instead, they query capabilities at runtime via `instanceof`:
-* **`DifferentiableScalarProblem<T>`**: Extends `ScalarRootFindingProblem<T>` by supplying `getDerivative(): Mapping<T, T>`.
-* **`DifferentiableVectorProblem<K>`**: Extends `VectorRootFindingProblem<K>` by supplying `getJacobian(): Mapping<Vector<K>, SquareMatrix<K>>`.
-
-#### Problem Adaptors: `MultivariateFunctionSystemProblem`
-To bridge scalar multivariate functions with vector solvers, `MultivariateFunctionSystemProblem<K, S>` bundles a list of $n$ `MultivariateFunction<K>` instances into a square system $F(v) = 0$. It implements `DifferentiableVectorProblem<K>` by constructing the Jacobian row-by-row: using exact gradients where `DifferentiableMultivariateFunction` is present, and falling back to finite difference estimations otherwise.
-
-### Solver Contracts (`core.solvers`)
-The root solver contract is `Solver<P, R>`, parameterized over the problem type `P` and the result type `R`.
-
-```java
-public interface IterativeSolver<P, S extends AlgebraicElement<S>, R extends AlgebraicElement<R>>
-extends Solver<P, R> {
-    R solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<S> space);
-}
-```
-
-* **`IterativeSolver`**: Used for root-finding and fixed-point algorithms. Distance measurements (`MetricSpace<S>`) and stopping rules (`ConvergenceCriteria`, `ConvergenceParameters`) are supplied explicitly by the caller.
-* **`IntervalSolver` & `IntervalODEStepSolver`**: Designed for differential equations over time intervals. `IntervalSolver` integrates an `InitialValueProblem` over $[t_0, t_f]$, using a `Module<V, K, S>` provided by the caller. `IntervalODEStepSolver` extends this contract to provide discrete time-stepping via `step(...)`.
-
-
-## Solvers
-
 ### Direct Linear System Solvers (`numerical.solvers.linear`)
 Direct solvers compute exact solutions for linear algebraic systems $Ax = b$ in a single deterministic pass without residual convergence loops or metric space evaluations.
 
@@ -165,6 +115,43 @@ Integrators compute time evolution for systems satisfying `InitialValueProblem<K
 | :--- | :--- | :--- | :--- |
 | `RungeKutta4Solver` | Fixed Step | `Ring & ScalarStructure & NumericFactory` | Classical 4th-order evaluation stages ($k_1, k_2, k_3, k_4$). Step direction is derived from start/end times. |
 | `EmbeddedRK23Solver` | Adaptive Step | `Field & ScalarStructure & NumericFactory` | Uses embedded RK2(3) pairs to estimate local truncation error and dynamically resize steps within defined limits. |
+
+### Eigenvalue Solvers (`numerical.solvers.eigen`)
+Spectral decomposition algorithms compute the eigenvalues and eigenvectors of square matrices $A \in \mathbb{K}^{n \times n}$. 
+
+* **`EigenvalueSolver<K>`**: Defines the base contract `EigenDecomposition solve(SquareMatrix<K> matrix, ConvergenceParameters params)`. Every concrete solver implements this contract and carries the `EigenvalueSolver` suffix.
+* **`EigenDecomposition`**: Represents the spectral result. Eigenvalues and eigenvectors are modeled over `Complex` regardless of the source field $K$, as `Complex` is algebraically closed and handles complex conjugate pairs arising from real non-symmetric matrices. Provides `toRealDecomposition(Real tolerance)` to validate and extract a `RealEigenDecomposition` when imaginary parts fall within tolerance, throwing an exception if non-negligible imaginary components are present.
+* **`JacobiEigenvalueSolver`**: Solves real symmetric matrices ($A = A^T$) via classical Jacobi rotations. Uses a numerically stable trigonometric-free formulation (relying solely on square roots and basic arithmetic) to iteratively zero out off-diagonal elements, yielding real eigenvalues and orthogonal eigenvectors simultaneously.
+* **`HermitianEigenvalueSolver`**: Extends Jacobi's approach to complex Hermitian matrices ($A = A^\dagger$). Each rotation applies a diagonal unitary phase-absorption step to make the target off-diagonal entry real, followed by a standard Jacobi real rotation. Guarantees real eigenvalues and complex eigenvectors.
+* **`GeneralEigenvalueSolver<K>`**: Acts as a smart dispatching wrapper (Facade) implementing `EigenvalueSolver<K>`. It inspects matrix properties at runtime (`isSymmetric()`, `isHermitian()`) to delegate execution to the optimal underlying solver. Throws an `UnsupportedOperationException` for general non-Hermitian matrices until `QREigenvalueSolver` is integrated.
+
+  ```java
+  // Spectral decomposition of a real symmetric matrix
+  RealField R = RealField.INSTANCE;
+  SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
+  ConvergenceParameters params = new ConvergenceParameters(R.of(1e-12), 100);
+
+  GeneralEigenvalueSolver<Real> solver = new GeneralEigenvalueSolver<>();
+  EigenDecomposition result = solver.solve(A, params);
+
+  RealEigenDecomposition realSpectral = result.toRealDecomposition(R.of(1e-9));
+  List<Real> eigenvalues = realSpectral.getEigenvalues();
+  List<Vector<Real>> eigenvectors = realSpectral.getEigenvectors();
+  ```
+  ```java
+  // Spectral decomposition of a hermitian matrix
+  RealField R = RealField.INSTANCE;
+  ComplexField C = ComplexField.INSTANCE;
+  SquareMatrix<Complex> H = SquareMatrixElementFactory.of(C, C.of(2, 0), C.of(1, 1), C.of(1, -1), C.of(3, 0));
+  ConvergenceParameters params = new ConvergenceParameters(R.of(1e-12), 100);
+
+  GeneralEigenvalueSolver<Complex> solver = new GeneralEigenvalueSolver<>();
+  EigenDecomposition result = solver.solve(H, params);
+
+  // eigenvalues are real by construction, eigenvectors are in general genuinely complex
+  List<Real> eigenvalues = result.getRealEigenvalues();
+  List<Vector<Complex>> eigenvectors = result.getEigenvectors();
+  ```
 
 
 ### Differentiation & Gradient Adapters (`numerical.functionals.differentiation`)
