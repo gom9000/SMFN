@@ -40,7 +40,7 @@ public final class VectorElementFactory
 	public static <K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
 	Vector<K> of(VectorSemimodule<K, S> space, double... values) {
 		if (!(space.getScalarStructure() instanceof NumericFactory)) {
-			throw new UnsupportedOperationException("La struttura scalare non e' una NumericFactory");
+			throw new UnsupportedOperationException("The scalar structure is not a NumericFactory");
 		}
 		@SuppressWarnings("unchecked")
 		NumericFactory<K> factory = (NumericFactory<K>) space.getScalarStructure();

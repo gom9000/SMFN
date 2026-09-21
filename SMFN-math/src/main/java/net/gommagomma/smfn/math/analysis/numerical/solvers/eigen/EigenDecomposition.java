@@ -26,10 +26,14 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
  * compito di questa classe scegliere tra "versione reale" e "versione
  * complessa" della propria costruzione.
  *
- * toRealDecomposition(tolerance) e' l'unico modo per ottenere la vista
- * reale: verifica autovalori E autovettori insieme, con la stessa
- * tolleranza, e li restituisce gia' accoppiati in un RealEigenDecomposition
- * -- non tronca mai silenziosamente una componente genuinamente complessa.
+ * toRealDecomposition(tolerance) e' il modo per ottenere una vista reale
+ * ACCOPPIATA (autovalori e autovettori insieme, con la stessa tolleranza):
+ * verifica entrambi e restituisce gia' un RealEigenDecomposition coerente,
+ * senza mai troncare silenziosamente una componente genuinamente complessa.
+ * getRealEigenvalues(tolerance) e' una comodita' separata per i rami che
+ * garantiscono autovalori reali ma NON autovettori reali (hermitiano): non
+ * tocca gli autovettori, quindi non ha il rischio di coppia disallineata
+ * che aveva motivato la rimozione del suo gemello getRealEigenvectors().
  */
 public final class EigenDecomposition
 {
