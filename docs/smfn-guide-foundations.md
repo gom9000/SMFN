@@ -44,7 +44,7 @@ Capabilities are implemented as **independent interface traits** applied to elem
 
 * `Orderable<T>`: Declares ordering relations ($\le, \ge$) and sign checks.
 * `Absolutable<T>`: Declares absolute value or magnitude extraction.
-* `Normable<T, R>`: Declares norm computation $\Vert{}x\Vert{}$.
+* `Normable<T>`: Declares norm computation $\Vert{}x\Vert{}$.
 * `Sqrtable<T>`: Declares square root operation.
 * `Conjugable<T>`: Declares complex conjugation.
 
@@ -71,7 +71,7 @@ This axiomatic progression determines how higher-level objects scale their capab
 
 * **Matrices over a Semiring** (`SquareMatrixSemiring`, e.g. `Natural`): addition, multiplication, transpose.
 * **Matrices over a Ring** (`SquareMatrixRing`, e.g. `SignedInt`, `Polynomial<K>`): adds negation, subtraction, and a determinant via Laplace cofactor expansion.
-* **Matrices over a Field** (`SquareMatrixAlgebra`, e.g. `Real`, `Complex`): adds `InvertibleElements` and a faster Gaussian-elimination determinant.
+* **Matrices over a Field** (`SquareMatrixAlgebra`, e.g. `Real`, `Complex`): adds `InvertibleElements` and a faster Gaussian-elimination when n>3.
 
 
 ### Mapping/Operator Philosophy & Chaining
@@ -116,6 +116,11 @@ In approximate domains ($\mathbb{R}$, $\mathbb{C}$), exact floating-point equali
 
 * **Contextual Tolerance**: All equality checks and singularity detections accept a tolerance parameter $\varepsilon$.
 * **`MathConstants`**: Provides system-wide default thresholds ($\varepsilon \approx 10^{-12}$ for double-precision calculations), which can be overridden locally per solver or algorithm instance.
+
+### Equal semantics (`equals` vs. `areEqual`)
+SMFN preserves the standard Java **`equals()`** contract for structural identity, bit-exact matching, and hash table consistency. Mathematical equality under floating-point noise is handled explicitly via context-aware methods like **`areEqual`**, which evaluate within a tolerance threshold $\varepsilon$. 
+
+Furthermore, exact algebraic domains ($\mathbb{Q}$, $\mathbb{Z}_n$) remain exact within the bounds of the concrete primitive representation.
 
 ### Domain Invariants & Fail-Fast Policy
 SMFN enforces strict **Fail-Fast** behavior for mathematical boundaries:
