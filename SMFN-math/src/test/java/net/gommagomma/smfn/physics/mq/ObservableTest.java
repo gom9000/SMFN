@@ -25,7 +25,7 @@ class ObservableTest
 			new Complex(1, 0), new Complex(0, 0)
 		});
 
-		Observable observable = new Observable(pauliX);
+		Observable<Complex> observable = new Observable<>(pauliX);
 		assertTrue(observable.asOperator().equals(pauliX));
 	}
 
@@ -37,6 +37,6 @@ class ObservableTest
 			new Complex(0, 0), new Complex(1, 0)
 		});
 
-		assertThrows(IllegalArgumentException.class, () -> new Observable(notHermitian));
+		assertThrows(IllegalArgumentException.class, () -> new Observable<>(notHermitian));
 	}
 }

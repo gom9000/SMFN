@@ -33,7 +33,7 @@ public final class QuantumSystemSimulator
      * @param state il vettore di stato quantistico normalizzato o non normalizzato (|psi>)
      * @return il valore di aspettazione sotto forma di Real (garantito reale per operatori hermitiani)
      */
-	public Real measure(Observable observable, QuantumState state) {
+	public Real measure(Observable<Complex> observable, QuantumState state) {
 		Vector<Complex> H_psi = observable.asOperator().apply(state.asVector());
 		Complex expectation = state.innerProduct(QuantumState.from(H_psi));
 		// <psi|H|psi> e' garantito reale per un Observable hermitiano.
@@ -57,7 +57,7 @@ public final class QuantumSystemSimulator
 	 * @param random sorgente di casualita' per il campionamento secondo Born
 	 * @return l'esito della misura: autovalore ottenuto e stato collassato
 	 */
-	public MeasurementOutcome performMeasurement(Observable observable, QuantumState state,
+	public MeasurementOutcome performMeasurement(Observable<Complex> observable, QuantumState state,
 	                                              ConvergenceParameters eigenParams, Random random) {
 		BornDistribution distribution = computeBornDistribution(observable, state, eigenParams);
 
@@ -87,7 +87,7 @@ public final class QuantumSystemSimulator
 	 * @param eigenParams parametri di convergenza per la diagonalizzazione
 	 * @return una coppia (autovalore, probabilita') per ciascun autovalore, probabilita' normalizzate a somma 1
 	 */
-	public List<MeasurementProbability> measurementProbabilities(Observable observable, QuantumState state,
+	public List<MeasurementProbability> measurementProbabilities(Observable<Complex> observable, QuantumState state,
 	                                                               ConvergenceParameters eigenParams) {
 		BornDistribution distribution = computeBornDistribution(observable, state, eigenParams);
 
@@ -100,7 +100,7 @@ public final class QuantumSystemSimulator
 		return result;
 	}
 
-	private BornDistribution computeBornDistribution(Observable observable, QuantumState state, ConvergenceParameters eigenParams) {
+	private BornDistribution computeBornDistribution(Observable<Complex> observable, QuantumState state, ConvergenceParameters eigenParams) {
 		EigenDecomposition decomposition = new HermitianEigenvalueSolver().solve(observable.asOperator(), eigenParams);
 		List<Complex> eigenvalues = decomposition.getEigenvalues();
 		List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();

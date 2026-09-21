@@ -33,7 +33,7 @@ class QuantumSystemSimulatorTest
 	@Test
 	@DisplayName("<0|Pauli-X|0> = 0: |0> non e' autostato di Pauli-X")
 	void expectationOfNonEigenstateIsZero() {
-		Observable H = new Observable(pauliX);
+		Observable<Complex> H = new Observable<>(pauliX);
 		QuantumState psi0 = QuantumState.of(new Complex(1, 0), new Complex(0, 0));
 
 		Real expectation = simulator.measure(H, psi0);
@@ -43,7 +43,7 @@ class QuantumSystemSimulatorTest
 	@Test
 	@DisplayName("<+|Pauli-X|+> = 1: |+> = (|0>+|1>)/sqrt(2) e' autostato con autovalore +1")
 	void expectationOfEigenstateIsEigenvalue() {
-		Observable H = new Observable(pauliX);
+		Observable<Complex> H = new Observable<>(pauliX);
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
 
@@ -54,7 +54,7 @@ class QuantumSystemSimulatorTest
 	@Test
 	@DisplayName("<-|Pauli-X|-> = -1: |-> = (|0>-|1>)/sqrt(2) e' autostato con autovalore -1")
 	void expectationOfOtherEigenstateIsNegativeEigenvalue() {
-		Observable H = new Observable(pauliX);
+		Observable<Complex> H = new Observable<>(pauliX);
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState minus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(-invSqrt2, 0));
 
@@ -65,7 +65,7 @@ class QuantumSystemSimulatorTest
 	@Test
 	@DisplayName("performMeasurement() su un autostato: esito sempre lo stesso autovalore, stato invariato")
 	void measurementOnEigenstateIsDeterministic() {
-		Observable H = new Observable(pauliX);
+		Observable<Complex> H = new Observable<>(pauliX);
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
 		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
@@ -93,7 +93,7 @@ class QuantumSystemSimulatorTest
 			new Complex(1, 0), new Complex(0, 0),
 			new Complex(0, 0), new Complex(-1, 0)
 		});
-		Observable Z = new Observable(pauliZ);
+		Observable<Complex> Z = new Observable<>(pauliZ);
 
 		int plusCount = 0, trials = 5000;
 		for (int i = 0; i < trials; i++) {
@@ -111,7 +111,7 @@ class QuantumSystemSimulatorTest
 			new Complex(1, 0), new Complex(0, 0),
 			new Complex(0, 0), new Complex(-1, 0)
 		});
-		Observable Z = new Observable(pauliZ);
+		Observable<Complex> Z = new Observable<>(pauliZ);
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
 		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
@@ -130,7 +130,7 @@ class QuantumSystemSimulatorTest
 	@Test
 	@DisplayName("measurementProbabilities(): su un autostato, probabilita' 1 per il proprio autovalore, 0 per l'altro")
 	void measurementProbabilitiesOnEigenstateAreDeterministic() {
-		Observable H = new Observable(pauliX);
+		Observable<Complex> H = new Observable<>(pauliX);
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
 		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);

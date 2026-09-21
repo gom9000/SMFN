@@ -21,10 +21,10 @@ implements DifferentialEquationProblem<Complex, Vector<Complex>>
 {
 	private static final Complex MINUS_I = new Complex(0.0, -1.0);
 
-	private final Observable hamiltonian;
+	private final Observable<Complex> hamiltonian;
 	private final VectorSpace<Complex, ComplexField> space;
 
-	public SchrodingerEquationSystem(Observable hamiltonian) {
+	public SchrodingerEquationSystem(Observable<Complex> hamiltonian) {
 		this.hamiltonian = hamiltonian;
 		this.space = new VectorSpace<>(ComplexField.INSTANCE, hamiltonian.asOperator().getN());
 	}

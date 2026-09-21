@@ -29,7 +29,7 @@ class HamiltonianTest
 			new Complex(2, 0), new Complex(1, 1),
 			new Complex(1, -1), new Complex(3, 0)
 		});
-		Hamiltonian hamiltonian = new Hamiltonian(H);
+		Hamiltonian<Complex> hamiltonian = new Hamiltonian<>(H);
 
 		StationaryStates result = hamiltonian.findStationaryStates(params);
 		List<Real> energyLevels = result.getEnergyLevels();
@@ -48,7 +48,7 @@ class HamiltonianTest
 			new Complex(2, 0), new Complex(1, 1),
 			new Complex(1, -1), new Complex(3, 0)
 		});
-		Hamiltonian hamiltonian = new Hamiltonian(H);
+		Hamiltonian<Complex> hamiltonian = new Hamiltonian<>(H);
 
 		StationaryStates result = hamiltonian.findStationaryStates(params);
 		List<Real> energyLevels = result.getEnergyLevels();
@@ -74,9 +74,9 @@ class HamiltonianTest
 			new Complex(1, 0), new Complex(0, 0),
 			new Complex(0, 0), new Complex(-1, 0)
 		});
-		Hamiltonian hamiltonian = new Hamiltonian(H);
+		Hamiltonian<Complex> hamiltonian = new Hamiltonian<>(H);
 
-		Observable asObservable = hamiltonian; // upcast implicito, nessun cast esplicito necessario
+		Observable<Complex> asObservable = hamiltonian; // upcast implicito, nessun cast esplicito necessario
 		assertTrue(asObservable.asOperator().isHermitian());
 		assertEquals(H, asObservable.asOperator());
 	}
@@ -88,10 +88,54 @@ class HamiltonianTest
 			new Complex(0, 0), new Complex(1, 0),
 			new Complex(1, 0), new Complex(0, 0)
 		});
-		Hamiltonian hamiltonian = new Hamiltonian(H);
+		Hamiltonian<Complex> hamiltonian = new Hamiltonian<>(H);
 
 		// Non deve lanciare: il costruttore accetta Observable, Hamiltonian lo e'.
 		SchrodingerEquationSystem system = new SchrodingerEquationSystem(hamiltonian);
+		assertTrue(system != null);
+	}
+
+	@Test
+	@DisplayName("Hamiltonian<Real>: findStationaryStates() su H=[[2,1],[1,3]], autovalori calcolati a mano")
+	void findsStationaryStatesForRealHamiltonian() {
+		net.gommagomma.smfn.math.algebra.structures.RealField R = net.gommagomma.smfn.math.algebra.structures.RealField.INSTANCE;
+		net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix<Real> H_real =
+			net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 3.0);
+		Hamiltonian<Real> hamiltonianReal = new Hamiltonian<>(H_real);
+
+		StationaryStates result = hamiltonianReal.findStationaryStates(params);
+		List<Real> energyLevels = result.getEnergyLevels();
+
+		// tr=5, det=5 -> lambda = (5 +- sqrt(5)) / 2, calcolato a mano
+		double expected1 = (5 - Math.sqrt(5)) / 2;
+		double expected2 = (5 + Math.sqrt(5)) / 2;
+		assertEquals(2, energyLevels.size());
+		double v0 = energyLevels.get(0).getValue();
+		double v1 = energyLevels.get(1).getValue();
+		assertTrue((Math.abs(v0 - expected1) < 1e-9 && Math.abs(v1 - expected2) < 1e-9)
+			|| (Math.abs(v0 - expected2) < 1e-9 && Math.abs(v1 - expected1) < 1e-9));
+	}
+
+	@Test
+	@DisplayName("Observable.toComplex(): ponte da Observable<Real> a Observable<Complex>, parte immaginaria zero")
+	void toComplexBridgesRealToComplex() {
+		net.gommagomma.smfn.math.algebra.structures.RealField R = net.gommagomma.smfn.math.algebra.structures.RealField.INSTANCE;
+		net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix<Real> H_real =
+			net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 3.0);
+		Observable<Real> observableReal = new Observable<>(H_real);
+
+		Observable<Complex> observableComplex = Observable.toComplex(observableReal);
+
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				Complex c = observableComplex.asOperator().get(i, j);
+				assertEquals(H_real.get(i, j).getValue(), c.getRe(), 1e-12);
+				assertEquals(0.0, c.getIm(), 1e-12);
+			}
+		}
+
+		// Il risultato deve funzionare come Observable<Complex> vero, es. costruire un sistema di Schrodinger
+		SchrodingerEquationSystem system = new SchrodingerEquationSystem(observableComplex);
 		assertTrue(system != null);
 	}
 }

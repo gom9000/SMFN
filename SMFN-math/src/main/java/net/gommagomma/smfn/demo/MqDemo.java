@@ -40,7 +40,7 @@ public class MqDemo
 			new Complex(1, 0), new Complex(0, 0),
 			new Complex(0, 0), new Complex(-1, 0)
 		);
-		Observable pauliZ = new Observable(Z);
+		Observable<Complex> pauliZ = new Observable<>(Z);
 
 		System.out.println("=== 1. Valore di aspettazione (measure) ===");
 		QuantumState zero = QuantumState.of(new Complex(1, 0), new Complex(0, 0));
@@ -72,7 +72,7 @@ public class MqDemo
 			new Complex(0, 0), new Complex(1, 0),
 			new Complex(1, 0), new Complex(0, 0)
 		);
-		Hamiltonian hamiltonian = new Hamiltonian(X);
+		Hamiltonian<Complex> hamiltonian = new Hamiltonian<>(X);
 		StationaryStates stationary = hamiltonian.findStationaryStates(eigenParams);
 		System.out.println("livelli energetici = " + stationary.getEnergyLevels() + " (atteso: -1 e 1)");
 
