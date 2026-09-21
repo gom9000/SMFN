@@ -16,8 +16,8 @@ SMFN is a pure Java mathematical and scientific library for mathematical modelli
 ### Applications & Domains
 * **Implicit Geometry:** Representation of geometric entities (lines, circles, ellipses, planes) as implicit functions with analytically defined gradients and numerical intersection solvers.
 * **Fractals & Complex Maps:** Mandelbrot and Julia set exploration and visualization through generic complex-domain operations.
-* **Quantum Mechanics Simulations:** Quantum state evolution, Schrodinger equation system integration, and measurement of physical observables.
 * **Graphics Subsystem:** Decoupled 1D/2D plotting framework with separate rendering and plotting layers.
+* **Physical Simulations:** Mapping of physical states, dynamical differential equations, and observable operators directly onto the core algebraic structures and numerical solvers.
 
 
 ## Technical Specifications & Requirements
@@ -46,6 +46,7 @@ SquareMatrix<Polynomial<Complex>> M = SquareMatrixElementFactory.of(p,
 
 Polynomial<Complex> det = M2.determinant(M);  // x^3 + ix^2 - (2 + i)x + 1
 ```
+
 #### Operators, not just values:
 ```java
 // A SquareMatrix is also a linear operator: apply(), compose() and power()
@@ -67,36 +68,54 @@ Real originalNorm = space.norm(point);      // 1.0
 Real rotatedNorm  = space.norm(rotatedOnce); // 1.0, exactly
 ```
 
+#### ... And Solvers, not only symbols:
+```java
+// Numerical ODE integration: solving differential equation systems over time
+RealField R = RealField.INSTANCE;
+VectorSpace<Real, RealField> space = new VectorSpace<>(R, 2);
+
+// Harmonic Oscillator: d²/dt² x = -x  ==>  d/dt [x, v] = [v, -x]
+DifferentialEquationProblem<Real, Vector<Real>> oscillator = (state, time) -> 
+    space.of(new Real[]{ state.get(1), state.get(0).negate() });
+
+RungeKutta4Solver<Real, Vector<Real>, RealField> solver = new RungeKutta4Solver<>();
+Vector<Real> initialState = space.of(new Real[]{ R.of(1.0), R.of(0.0) }); // x(0) = 1, v(0) = 0
+
+// Step-by-step numerical evolution (t = 0 to PI/2, expecting x -> 0, v -> -1)
+Vector<Real> stateAtHalfPi = solver.integrate(oscillator, initialState, R.of(0.0), R.of(Math.PI / 2), R.of(0.01));
+
+Real position = stateAtHalfPi.get(0); // ~ 0.0 (cos(pi/2))
+Real velocity = stateAtHalfPi.get(1); // ~ -1.0 (-sin(pi/2))
+```
+
 
 ## Documentation & User Guide
 
-### [Part 1: Foundations](docs/smfn-guide-1-foundations.md)
+### [Foundations](docs/smfn-guide-foundations.md)
 - Scope and Philosophy
 - Core Modeling Concepts
 
-### [Part 2: Algebra & Numeric Systems](docs/smfn-guide-2-algebra.md)
+### [Algebra & Numeric Systems](docs/smfn-guide-algebra.md)
 - Element Architecture
 - Axiomatic Structure Hierarchy & Factories
 - Polynomials
 - Functional Mappings & Linear Operators
 
-### [Part 3: Linear Algebra](docs/smfn-guide-3-linear-algebra.md)
+### [Linear Algebra](docs/smfn-guide-linear-algebra.md)
 - Spaces
 - Vectors
 - Matrices
 - Square Matrices
 
-### [Part 4: Numerical Analysis](docs/smfn-guide-4-numerical-analysis.md)
+### [Numerical Analysis](docs/smfn-guide-numerical-analysis.md)
 - The Problem-Solver Model
 - Solvers
 
-### [Part 5: Physical Modelling](docs/smfn-guide-5-physical-modelling.md)
-- General Method of Physical Modelling
-- Classical Mechanics
-- Electromagnetism
-- Quantum Mechanics
-
-### [Part 6: Graphics Subsystem](docs/smfn-guide-6-graphics.md)
+### [Graphics Subsystem](docs/smfn-guide-graphics.md)
 - Architecture & Decoupling Philosophy
 - Core Infrastructure
 - Plotting Layer
+
+### [Physical Modelling](docs/smfn-guide-physical-modelling.md)
+- General Method of Physical Modelling
+- Quantum Mechanics

@@ -1,4 +1,4 @@
-# Part 3: Linear Algebra
+# Linear Algebra
 
 ## Spaces
 The structures governing vectors and matrices directly mirror the axiomatic hierarchy of algebraic modules and metric spaces:

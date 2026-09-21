@@ -1,4 +1,4 @@
-# Part 5: Physical Modelling
+# PPhysical Modelling
 
 
 ## General Method of Physical Modelling
@@ -14,11 +14,6 @@ Evolution Engine            IntervalODEStepSolver<K, V, S>
 Physical Measurement        Inner Product / Functional Evaluation    
 ```
 
-## Classical Mechanics
-todo.
-
-## Electromagnetism
-todo.
 
 ## Quantum Mechanics
 This section presents the formulation of non-relativistic finite-dimensional quantum mechanics, mapping its foundational principles (state spaces, operators, time evolution, and physical measurements) directly onto the core mathematical structures of the library:
@@ -27,6 +22,7 @@ This section presents the formulation of non-relativistic finite-dimensional qua
 - A **dynamical law** is a `DifferentialEquationProblem<Complex, Vector<Complex>>` representing the time-dependent Schrödinger equation.
 - A **measurement** is an inner product operation evaluated on an `InnerProductVectorSpace<Complex, ?>`.
 
+The Pauli matrices ($\sigma_x, \sigma_y, \sigma_z$) and the identity are available as ready-to-use constants in `Pauli`, for building simple two-level Hamiltonians and observables without constructing the matrices by hand.
 
 ### `Observable`
 Physical observables must yield real eigenvalues. Rather than checking for real spectra at measurement time, `Observable` enforces the Hermitian symmetry constraint ($A = A^\dagger$) at construction time using the matrix properties.
@@ -47,6 +43,18 @@ public final class Observable {
 By asserting `isHermitian()` upfront, any `Observable` instance structurally guarantees real expectation values across all future calculations.
 
 
+### `QuantumState`
+A quantum state carries its own inner-product space fixed once, from the amplitudes' dimension.
+
+```java
+QuantumState psi = QuantumState.of(new Complex(1/Math.sqrt(2), 0), new Complex(1/Math.sqrt(2), 0));
+
+Real n = psi.norm();
+Complex overlap = psi.innerProduct(other);
+QuantumState combined = zero.plus(one).normalize();  // (|0>+|1>)/sqrt(2)
+Vector<Complex> raw = psi.asVector();  // escape hatch to raw linear algebra, never mandatory
+```
+
 ### `Hamiltonian`
 The Hamiltonian is the specific `Observable` representing total energy and generating time evolution.
 
@@ -63,11 +71,10 @@ public final class Hamiltonian extends Observable {
 ```
 
 ```java
-RealField R = RealField.INSTANCE;
 Hamiltonian H = new Hamiltonian(hamiltonianMatrix);
-EigenDecomposition stationaryStates = H.findStationaryStates(params);
-List<Real> energyLevels = stationaryStates.getRealEigenvalues(R.of(1e-9));   // real by construction
-List<Vector<Complex>> states = stationaryStates.getEigenvectors();    // the stationary states |E_n>
+StationaryStates stationaryStates = H.findStationaryStates(params);
+List<Real> energyLevels = stationaryStates.getEnergyLevels();
+List<QuantumState> states = stationaryStates.getStates();
 ```
 
 ### Time-Dependent Schrödinger Dynamics
@@ -97,25 +104,16 @@ implements DifferentialEquationProblem<Complex, Vector<Complex>> {
 }
 ```
 
-### Execution via Generic ODE Solvers
-Because `SchrodingerEquationSystem` implements `DifferentialEquationProblem`, it integrates seamlessly with the numerical solvers:
+### Time Evolution
+bla bla
 
 ```java
 // Define Hamiltonian and system
 Hamiltonian H = new Hamiltonian(hamiltonianMatrix);
 SchrodingerEquationSystem system = new SchrodingerEquationSystem(H);
 
-// Wrap in Initial Value Problem
-VectorSpace<Complex, ComplexField> space = new VectorSpace<>(ComplexField.INSTANCE, H.asOperator().getN());
-InitialValueProblem<Complex, Vector<Complex>> ivp = new InitialValueProblem<Complex, Vector<Complex>>() {
-    public Vector<Complex> derivative(Vector<Complex> state, Real time) { return system.derivative(state, time); }
-    public Vector<Complex> getInitialState() { return space.of(new Complex[]{ new Complex(1,0), new Complex(0,0) }); }
-    public Real getStartTime() { return new Real(0.0); }
-};
-
-// Integrate using standard RK4 solver
-RungeKutta4Solver<Complex, Vector<Complex>, ComplexField> solver = new RungeKutta4Solver<>();
-Vector<Complex> psiAtT = solver.integrate(ivp, endTime, new IntegrationParameters(dt), space);
+QuantumState psi0 = QuantumState.of(new Complex(1, 0), new Complex(0, 0));
+QuantumState psiAtT = system.evolve(psi0, endTime, dt);
 ```
 
 ### Quantum Measurements and Expectation Values
@@ -149,4 +147,15 @@ MeasurementOutcome outcome = simulator.performMeasurement(space, observable, sta
 
 Real value = outcome.getValue();                // Sampled eigenvalue
 Vector<Complex> collapsed = outcome.getState(); // Post-measurement state |lambda_i>
+```
+
+
+### Measurement Probabilities
+`performMeasurement()` samples one outcome. `measurementProbabilities()` returns the full Born-rule distribution instead, with no sampling noise:
+
+```java
+List<MeasurementProbability> probabilities = simulator.measurementProbabilities(space, observable, state, eigenParams);
+for (MeasurementProbability p : probabilities) {
+    System.out.println("P(" + p.getValue() + ") = " + p.getProbability());
+}
 ```

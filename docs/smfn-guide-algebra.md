@@ -1,4 +1,4 @@
-# Part 2: Algebra & Numeric Systems
+# Algebra & Numeric Systems
 This section details the algebraic foundations of the **SMFN** framework, covering the taxonomy of elements, capability interfaces, the axiomatic hierarchy of algebraic structures, dynamic polynomial mechanics, and functional mappings.
 
 

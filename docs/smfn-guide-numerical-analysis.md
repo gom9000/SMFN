@@ -1,4 +1,4 @@
-# Part 4: Numerical Analysis
+# Numerical Analysis
 
 ## The Problem-Solver Model
 A `Problem` describes what "solved" means (a residual to zero out, a system's dynamics, or a sequence of iterates) without specifying how to reach that solution. A `Solver` contains no problem-specific data; it consumes a `Problem` along with initial states and execution parameters to iteratively compute a solution.

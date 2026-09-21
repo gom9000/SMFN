@@ -1,4 +1,4 @@
-# Part 1: Foundations
+# Foundations
 
 ## Scope and Philosophy
 **SMFN** (`net.gommagomma.smfn`) is a Java library created to model algebraic structures, vector spaces, polynomials, and numerical algorithms, and to apply these abstractions to solve simple physics problems.
