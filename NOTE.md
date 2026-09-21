@@ -32,12 +32,7 @@ net.gommagomma.smfn/
 |   |-- mechanics/                          (Dinamica, gravità, cinematica)
 |   |-- em                                  # Classi per campi E e B
 |   |-- mq                                  # Classi per funzioni d'onda, operatori (HamiltonianOperator, Observable, ...)
-|   |   |-- core								            # Observable
-|   |   |-- operators/                      # Implementazioni di Posizione, Momento, Momento Angolare
-|   |   |-- states/                         # StateVector (normalizzato), QuantumSystem
-|   |   |-- dynamics/                       # TimeEvolutionOperator, SchrodingerSolver
-|   |   |-- problems/                       # Esempi: ParticleInABox, HarmonicOscillator
-|   |   \-- utils/                          # PhysicalConstants, Units
+|   |   |-- models
 |   |-- relativity                          # Classi per metriche tensoriali
 </pre>
 
@@ -58,5 +53,15 @@ Avrai bisogno di:
     SimulationPanel: Un pannello che esegue un loop di aggiornamento a tempo fisso (es. 60 FPS).
     PhysicsRenderer: Logica per disegnare gli corpi e frecce per le forze o i campi elettrici.
     Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
-
-	
+- mq.models:
+  HarmonicOscillator
+  ParticleInBox             1
+  FiniteSquareWell          1
+  QuantumTunneling          2
+  HydrogenRadialEquation    1
+  HydrogenAtom              2
+  TwoLevelSystem            2
+  PeriodicPotential         1
+	MorsePotential            1
+  QuantumRotor              2
+  DoubleWell                1
