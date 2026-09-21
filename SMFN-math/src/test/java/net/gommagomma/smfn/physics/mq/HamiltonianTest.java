@@ -12,7 +12,6 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenDecomposition;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
@@ -32,14 +31,40 @@ class HamiltonianTest
 		});
 		Hamiltonian hamiltonian = new Hamiltonian(H);
 
-		EigenDecomposition result = hamiltonian.findStationaryStates(params);
-		List<Complex> eigenvalues = result.getEigenvalues();
+		StationaryStates result = hamiltonian.findStationaryStates(params);
+		List<Real> energyLevels = result.getEnergyLevels();
 
-		assertEquals(2, eigenvalues.size());
-		double v0 = eigenvalues.get(0).getRe();
-		double v1 = eigenvalues.get(1).getRe();
+		assertEquals(2, energyLevels.size());
+		double v0 = energyLevels.get(0).getValue();
+		double v1 = energyLevels.get(1).getValue();
 		assertTrue((Math.abs(v0 - 1.0) < 1e-9 && Math.abs(v1 - 4.0) < 1e-9)
 			|| (Math.abs(v0 - 4.0) < 1e-9 && Math.abs(v1 - 1.0) < 1e-9));
+	}
+
+	@Test
+	@DisplayName("findStationaryStates(): gli stati corrispondono in ordine ai livelli energetici, H*v = E*v")
+	void stationaryStatesSatisfyEigenequation() {
+		SquareMatrix<Complex> H = M2.of(new Complex[] {
+			new Complex(2, 0), new Complex(1, 1),
+			new Complex(1, -1), new Complex(3, 0)
+		});
+		Hamiltonian hamiltonian = new Hamiltonian(H);
+
+		StationaryStates result = hamiltonian.findStationaryStates(params);
+		List<Real> energyLevels = result.getEnergyLevels();
+		List<QuantumState> states = result.getStates();
+
+		assertEquals(energyLevels.size(), states.size());
+		for (int i = 0; i < energyLevels.size(); i++) {
+			Complex lambda = new Complex(energyLevels.get(i).getValue(), 0);
+			net.gommagomma.smfn.math.linearalgebra.vectors.Vector<Complex> v = states.get(i).asVector();
+			net.gommagomma.smfn.math.linearalgebra.vectors.Vector<Complex> Hv = H.apply(v);
+			for (int k = 0; k < 2; k++) {
+				Complex expected = C.multiply(lambda, v.get(k));
+				assertEquals(expected.getRe(), Hv.get(k).getRe(), 1e-9);
+				assertEquals(expected.getIm(), Hv.get(k).getIm(), 1e-9);
+			}
+		}
 	}
 
 	@Test

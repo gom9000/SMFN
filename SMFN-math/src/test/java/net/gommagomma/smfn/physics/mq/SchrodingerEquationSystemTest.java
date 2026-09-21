@@ -68,4 +68,22 @@ class SchrodingerEquationSystemTest
 		assertTrue(Math.abs(psiT.get(1).getRe()) < tolerance);
 		assertTrue(Math.abs(psiT.get(1).getIm() - (-1.0)) < tolerance);
 	}
+
+	@Test
+	@DisplayName("evolve() da' lo stesso risultato dell'integrazione manuale via InitialValueProblem")
+	void evolveMatchesManualIntegration() {
+		Observable H = new Observable(pauliX);
+		SchrodingerEquationSystem system = new SchrodingerEquationSystem(H);
+
+		QuantumState psi0 = QuantumState.of(new Complex(1, 0), new Complex(0, 0));
+		QuantumState psiT = system.evolve(psi0, new Real(Math.PI / 2.0), new Real(0.001));
+
+		// Stessa soluzione esatta del test precedente: psi(pi/2) = (0, -i)
+		double tolerance = 1e-6;
+		Vector<Complex> v = psiT.asVector();
+		assertTrue(Math.abs(v.get(0).getRe()) < tolerance);
+		assertTrue(Math.abs(v.get(0).getIm()) < tolerance);
+		assertTrue(Math.abs(v.get(1).getRe()) < tolerance);
+		assertTrue(Math.abs(v.get(1).getIm() - (-1.0)) < tolerance);
+	}
 }

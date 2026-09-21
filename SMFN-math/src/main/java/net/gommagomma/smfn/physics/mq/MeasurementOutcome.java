@@ -1,8 +1,6 @@
 package net.gommagomma.smfn.physics.mq;
 
-import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
  * Esito di una misura quantistica vera: l'autovalore effettivamente
@@ -18,13 +16,13 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 public final class MeasurementOutcome
 {
 	private final Real value;
-	private final Vector<Complex> collapsedState;
+	private final QuantumState collapsedState;
 
-	public MeasurementOutcome(Real value, Vector<Complex> collapsedState) {
+	public MeasurementOutcome(Real value, QuantumState collapsedState) {
 		this.value = value;
 		this.collapsedState = collapsedState;
 	}
 
 	public Real getValue() { return value; }
-	public Vector<Complex> getCollapsedState() { return collapsedState; }
+	public QuantumState getCollapsedState() { return collapsedState; }
 }

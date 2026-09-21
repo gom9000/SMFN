@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.physics.mq;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -8,33 +9,33 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenDecomposition;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.HermitianEigenvalueSolver;
-import net.gommagomma.smfn.math.linearalgebra.vectors.InnerProductVectorSpace;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
- * Simulatore per sistemi quantistici: sia il valore di aspettazione
- * (measure(), deterministico) sia la misura vera (performMeasurement(),
- * probabilistica -- campiona un autovalore secondo la regola di Born e fa
- * collassare lo stato sull'autovettore corrispondente).
+ * Simulatore per sistemi quantistici: il valore di aspettazione (measure(),
+ * deterministico), la misura vera (performMeasurement(), probabilistica --
+ * campiona un autovalore secondo la regola di Born e fa collassare lo
+ * stato sull'autovettore corrispondente), e la distribuzione di probabilita'
+ * completa (measurementProbabilities(), senza campionamento).
  *
- * Nessuno stato interno: sia la sorgente di casualita' sia i parametri di
- * convergenza per la diagonalizzazione si passano espliciti a ogni
- * chiamata, come ogni altro Solver di questa libreria.
+ * Nessun parametro di spazio in nessun metodo: QuantumState porta gia' con
+ * se' il proprio InnerProductVectorSpace, quindi passarlo di nuovo ad ogni
+ * chiamata sarebbe ridondante, non solo scomodo. Restano espliciti solo i
+ * parametri di convergenza per la diagonalizzazione e la sorgente di
+ * casualita', come ogni altro Solver di questa libreria.
  */
 public final class QuantumSystemSimulator
 {
 	/**
-     * Calcola il valore di aspettazione di un osservabile per uno stato quantistico specificato, 
-     * sfruttando il prodotto interno hermitiano dello spazio vettoriale sottostante.
-     * 
-     * @param space lo spazio vettoriale con prodotto interno che ospita lo stato
+     * Calcola il valore di aspettazione di un osservabile per uno stato quantistico specificato.
+     *
      * @param observable l'osservabile hermitiano da misurare (H)
      * @param state il vettore di stato quantistico normalizzato o non normalizzato (|psi>)
      * @return il valore di aspettazione sotto forma di Real (garantito reale per operatori hermitiani)
      */
-	public Real measure(InnerProductVectorSpace<Complex, ?> space, Observable observable, Vector<Complex> state) {
-		Vector<Complex> H_psi = observable.asOperator().apply(state);
-		Complex expectation = space.innerProduct(state, H_psi);
+	public Real measure(Observable observable, QuantumState state) {
+		Vector<Complex> H_psi = observable.asOperator().apply(state.asVector());
+		Complex expectation = state.innerProduct(QuantumState.from(H_psi));
 		// <psi|H|psi> e' garantito reale per un Observable hermitiano.
 		return new Real(expectation.getRe());
 	}
@@ -50,15 +51,56 @@ public final class QuantumSystemSimulator
 	 * le probabilita' vengono normalizzate internamente rispetto alla
 	 * norma di state.
 	 *
-	 * @param space lo spazio vettoriale con prodotto interno che ospita lo stato
 	 * @param observable l'osservabile hermitiano da misurare
 	 * @param state il vettore di stato quantistico (|psi>)
 	 * @param eigenParams parametri di convergenza per la diagonalizzazione
 	 * @param random sorgente di casualita' per il campionamento secondo Born
 	 * @return l'esito della misura: autovalore ottenuto e stato collassato
 	 */
-	public MeasurementOutcome performMeasurement(InnerProductVectorSpace<Complex, ?> space, Observable observable,
-	                                              Vector<Complex> state, ConvergenceParameters eigenParams, Random random) {
+	public MeasurementOutcome performMeasurement(Observable observable, QuantumState state,
+	                                              ConvergenceParameters eigenParams, Random random) {
+		BornDistribution distribution = computeBornDistribution(observable, state, eigenParams);
+
+		double r = random.nextDouble() * distribution.total; // campiona su [0, total) invece di normalizzare prima, un giro in meno
+		double cumulative = 0.0;
+		int chosen = distribution.eigenvalues.size() - 1; // ripiego per arrotondamento in virgola mobile sull'ultimo passo
+		for (int i = 0; i < distribution.eigenvalues.size(); i++) {
+			cumulative += distribution.probabilities[i];
+			if (r < cumulative) {
+				chosen = i;
+				break;
+			}
+		}
+
+		Real measuredValue = new Real(distribution.eigenvalues.get(chosen).getRe());
+		QuantumState collapsedState = QuantumState.from(distribution.eigenvectors.get(chosen));
+		return new MeasurementOutcome(measuredValue, collapsedState);
+	}
+
+	/**
+	 * La distribuzione di probabilita' completa secondo la regola di Born,
+	 * senza campionare -- stesso calcolo di performMeasurement(), ma
+	 * restituito per intero invece di ridotto a un solo esito casuale.
+	 *
+	 * @param observable l'osservabile hermitiano da misurare
+	 * @param state il vettore di stato quantistico (|psi>)
+	 * @param eigenParams parametri di convergenza per la diagonalizzazione
+	 * @return una coppia (autovalore, probabilita') per ciascun autovalore, probabilita' normalizzate a somma 1
+	 */
+	public List<MeasurementProbability> measurementProbabilities(Observable observable, QuantumState state,
+	                                                               ConvergenceParameters eigenParams) {
+		BornDistribution distribution = computeBornDistribution(observable, state, eigenParams);
+
+		List<MeasurementProbability> result = new ArrayList<>(distribution.eigenvalues.size());
+		for (int i = 0; i < distribution.eigenvalues.size(); i++) {
+			Real value = new Real(distribution.eigenvalues.get(i).getRe());
+			Real probability = new Real(distribution.probabilities[i] / distribution.total);
+			result.add(new MeasurementProbability(value, probability));
+		}
+		return result;
+	}
+
+	private BornDistribution computeBornDistribution(Observable observable, QuantumState state, ConvergenceParameters eigenParams) {
 		EigenDecomposition decomposition = new HermitianEigenvalueSolver().solve(observable.asOperator(), eigenParams);
 		List<Complex> eigenvalues = decomposition.getEigenvalues();
 		List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();
@@ -67,7 +109,8 @@ public final class QuantumSystemSimulator
 		double[] probabilities = new double[n];
 		double total = 0.0;
 		for (int i = 0; i < n; i++) {
-			Complex amplitude = space.innerProduct(eigenvectors.get(i), state); // <lambda_i|psi>
+			QuantumState eigenstate = QuantumState.from(eigenvectors.get(i));
+			Complex amplitude = eigenstate.innerProduct(state); // <lambda_i|psi>
 			double p = amplitude.getRe() * amplitude.getRe() + amplitude.getIm() * amplitude.getIm();
 			probabilities[i] = p;
 			total += p;
@@ -76,19 +119,20 @@ public final class QuantumSystemSimulator
 			throw new IllegalArgumentException("The state vector has zero norm; cannot compute measurement probabilities.");
 		}
 
-		double r = random.nextDouble() * total; // campiona su [0, total) invece di normalizzare prima, stesso risultato, un giro in meno
-		double cumulative = 0.0;
-		int chosen = n - 1; // ripiego per arrotondamento in virgola mobile sull'ultimo passo
-		for (int i = 0; i < n; i++) {
-			cumulative += probabilities[i];
-			if (r < cumulative) {
-				chosen = i;
-				break;
-			}
-		}
+		return new BornDistribution(eigenvalues, eigenvectors, probabilities, total);
+	}
 
-		Real measuredValue = new Real(eigenvalues.get(chosen).getRe());
-		Vector<Complex> collapsedState = eigenvectors.get(chosen);
-		return new MeasurementOutcome(measuredValue, collapsedState);
+	private static final class BornDistribution {
+		final List<Complex> eigenvalues;
+		final List<Vector<Complex>> eigenvectors;
+		final double[] probabilities;
+		final double total;
+
+		BornDistribution(List<Complex> eigenvalues, List<Vector<Complex>> eigenvectors, double[] probabilities, double total) {
+			this.eigenvalues = eigenvalues;
+			this.eigenvectors = eigenvectors;
+			this.probabilities = probabilities;
+			this.total = total;
+		}
 	}
 }
