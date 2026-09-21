@@ -167,6 +167,16 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
         return getStructure().areEqual(this, conjugateTranspose());
     }
 
+    /**
+     * Alias di isHermitian(), per leggibilita' quando si lavora solo con
+     * matrici reali (dove conjugateTranspose() degrada a transpose(), e
+     * "simmetrica" e' il nome naturale, non "hermitiana"). Stesso identico
+     * controllo, nessuna logica in piu'.
+     */
+    public boolean isSymmetric() {
+        return isHermitian();
+    }
+
 
     public Matrix<K> getInternalMatrix() {
     	return internalMatrix;
