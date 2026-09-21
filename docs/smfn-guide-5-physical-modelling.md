@@ -47,6 +47,29 @@ public final class Observable {
 By asserting `isHermitian()` upfront, any `Observable` instance structurally guarantees real expectation values across all future calculations.
 
 
+### `Hamiltonian`
+The Hamiltonian is the specific `Observable` representing total energy and generating time evolution.
+
+Finding the stationary states of a system, solving $H\vert\psi\rangle = E\vert\psi\rangle$, is directly an eigenvalue problem: the eigenvalues are the energy levels, the eigenvectors the corresponding stationary states.
+
+```java
+public final class Hamiltonian extends Observable {
+    public Hamiltonian(SquareMatrix<Complex> operator) { super(operator); }
+
+    public EigenDecomposition findStationaryStates(ConvergenceParameters params) {
+        return new HermitianEigenvalueSolver().solve(asOperator(), params);
+    }
+}
+```
+
+```java
+RealField R = RealField.INSTANCE;
+Hamiltonian H = new Hamiltonian(hamiltonianMatrix);
+EigenDecomposition stationaryStates = H.findStationaryStates(params);
+List<Real> energyLevels = stationaryStates.getRealEigenvalues(R.of(1e-9));   // real by construction
+List<Vector<Complex>> states = stationaryStates.getEigenvectors();    // the stationary states |E_n>
+```
+
 ### Time-Dependent Schrödinger Dynamics
 The time-dependent Schrödinger equation:
 
@@ -79,7 +102,7 @@ Because `SchrodingerEquationSystem` implements `DifferentialEquationProblem`, it
 
 ```java
 // Define Hamiltonian and system
-Observable H = new Observable(hamiltonianMatrix);
+Hamiltonian H = new Hamiltonian(hamiltonianMatrix);
 SchrodingerEquationSystem system = new SchrodingerEquationSystem(H);
 
 // Wrap in Initial Value Problem
@@ -103,7 +126,7 @@ $$\langle A \rangle = \langle \psi \vert{} A \vert{} \psi \rangle$$
 The measurement engine uses the `InnerProductVectorSpace` to compute this inner product.
 
 ```java
-public class QuantumSystemSimulator {
+public final class QuantumSystemSimulator {
     public Real measure(InnerProductVectorSpace<Complex, ?> space, Observable observable, Vector<Complex> state) {
         Vector<Complex> A_psi = observable.asOperator().apply(state);
         Complex expectation = space.innerProduct(state, A_psi);
@@ -115,3 +138,15 @@ public class QuantumSystemSimulator {
 ```
 
 Because `Observable` guarantees $A = A^\dagger$, the imaginary component of $\langle \psi | A | \psi \rangle$ is identically zero. Returning a strict `Real` type (rather than a `Complex` with zero imaginary part) enforces this mathematical invariant directly within Java's type system.
+
+
+### True Quantum Measurement
+Unlike `measure()`, which calculates the static expectation value $\langle A \rangle$, `performMeasurement()` simulates projective measurement: it samples a single eigenvalue according to Born's rule $P(\lambda_i) = \vert{}\langle\lambda_i\vert\psi\rangle\vert{}^2$ and collapses the state onto the corresponding eigenvector.
+
+```java
+// Projects state onto a random eigenstate based on Born's probability distribution
+MeasurementOutcome outcome = simulator.performMeasurement(space, observable, state, params, random);
+
+Real value = outcome.getValue();                // Sampled eigenvalue
+Vector<Complex> collapsed = outcome.getState(); // Post-measurement state |lambda_i>
+```

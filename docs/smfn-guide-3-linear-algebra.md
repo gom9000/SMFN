@@ -107,9 +107,11 @@ Vector<Real> back   = rotate90.power(4).apply(point);          // Four full rota
 ```
 ![SMFN-linearalgebra-squarematrices](SMFN-linearalgebra-squarematrices.png)
 
-Complex conjugation and transposed operations are exposed directly on element instances whenever `K` supports conjugation traits:
+In addition to basic matrix algebra, `SquareMatrix<K>` exposes built-in predicates to evaluate fundamental geometric and structural invariants:
 
 ```java
-matrix.conjugateTranspose();   // Returns identity transpose for Real, conjugate transpose for Complex
-matrix.isHermitian();          // Checks if matrix == matrix.conjugateTranspose() within tolerance ε
+matrix.conjugateTranspose();   // Returns identity transpose for Real, conjugate transpose for Complex (A†)
+matrix.isSymmetric();          // Checks if A == A^T (real symmetry)
+matrix.isHermitian();          // Checks if A == A† (self-adjoint / complex symmetry)
+matrix.isUnitary();            // Checks if A * A† == I (preserves norm and inner products)
 ```
