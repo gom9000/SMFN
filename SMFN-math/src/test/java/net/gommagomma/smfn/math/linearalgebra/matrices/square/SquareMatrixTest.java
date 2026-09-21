@@ -122,4 +122,42 @@ class SquareMatrixTest
 		});
 		assertTrue(realSymmetric.isHermitian());
 	}
+
+	@Test
+	@DisplayName("isSymmetric() e' lo stesso identico controllo di isHermitian()")
+	void isSymmetricIsAliasOfIsHermitian() {
+		SquareMatrix<Complex> pauliX = M2.of(new Complex[] {
+			new Complex(0, 0), new Complex(1, 0),
+			new Complex(1, 0), new Complex(0, 0)
+		});
+		assertTrue(pauliX.isSymmetric());
+		assertEquals(pauliX.isHermitian(), pauliX.isSymmetric());
+	}
+
+	@Test
+	@DisplayName("isUnitary(): vero per Pauli-X, falso per una matrice non unitaria")
+	void isUnitaryDistinguishesCorrectly() {
+		SquareMatrix<Complex> pauliX = M2.of(new Complex[] {
+			new Complex(0, 0), new Complex(1, 0),
+			new Complex(1, 0), new Complex(0, 0)
+		});
+		SquareMatrix<Complex> notUnitary = M2.of(new Complex[] {
+			new Complex(1, 0), new Complex(1, 0),
+			new Complex(0, 0), new Complex(1, 0)
+		});
+
+		assertTrue(pauliX.isUnitary());
+		assertTrue(!notUnitary.isUnitary());
+	}
+
+	@Test
+	@DisplayName("isUnitary() e isHermitian() sono proprieta' distinte: 2*Pauli-Z e' hermitiana ma non unitaria")
+	void hermitianDoesNotImplyUnitary() {
+		SquareMatrix<Complex> scaledPauliZ = M2.of(new Complex[] {
+			new Complex(2, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(-2, 0)
+		});
+		assertTrue(scaledPauliZ.isHermitian());
+		assertTrue(!scaledPauliZ.isUnitary());
+	}
 }

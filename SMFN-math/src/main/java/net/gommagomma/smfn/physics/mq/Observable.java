@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
  * Rappresenta un osservabile fisico in meccanica quantistica, modellato matematicamente 
  * come un operatore hermitiano ($M = M^\dagger$) caratterizzato da autovalori reali.
  */
-public final class Observable
+public class Observable
 {
 	private final SquareMatrix<Complex> operator;
 

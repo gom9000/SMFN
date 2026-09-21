@@ -7,6 +7,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Conjugable;
 import net.gommagomma.smfn.math.algebra.core.elements.tensors.TensorElement;
+import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
@@ -175,6 +176,24 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
      */
     public boolean isSymmetric() {
         return isHermitian();
+    }
+
+    /**
+     * Una matrice e' unitaria se U^dagger * U = I -- proprieta' generale
+     * dell'algebra lineare (conserva la norma, invertibile per costruzione),
+     * non un concetto fisico: utile per validare che un operatore di
+     * evoluzione temporale (e in futuro una porta quantistica) sia
+     * genuinamente reversibile. Risolve internamente la struttura
+     * moltiplicativa giusta a partire dallo scalare -- nessun argomento da
+     * passare, come isHermitian().
+     */
+    @SuppressWarnings("unchecked")
+    public boolean isUnitary() {
+        Semiring<SquareMatrix<K>> multiplicative =
+            (Semiring<SquareMatrix<K>>) SquareMatrixStructureFactory.getStructureFor(getScalarStructure(), getN());
+        SquareMatrix<K> product = multiplicative.multiply(conjugateTranspose(), this);
+        SquareMatrix<K> identity = multiplicative.one();
+        return getStructure().areEqual(product, identity);
     }
 
 

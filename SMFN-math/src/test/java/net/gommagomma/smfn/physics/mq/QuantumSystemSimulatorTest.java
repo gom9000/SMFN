@@ -5,9 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 import net.gommagomma.smfn.math.linearalgebra.vectors.InnerProductVectorSpace;
@@ -58,5 +61,48 @@ class QuantumSystemSimulatorTest
 
 		Real expectation = simulator.measure(ip, H, minus);
 		assertTrue(Math.abs(expectation.getValue() - (-1.0)) < EPSILON);
+	}
+
+	@Test
+	@DisplayName("performMeasurement() su un autostato: esito sempre lo stesso autovalore, stato invariato")
+	void measurementOnEigenstateIsDeterministic() {
+		Observable H = new Observable(pauliX);
+		double invSqrt2 = 1.0 / Math.sqrt(2.0);
+		Vector<Complex> plus = ip.of(new Complex[] { new Complex(invSqrt2, 0), new Complex(invSqrt2, 0) });
+		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+		Random random = new Random(1);
+
+		for (int i = 0; i < 10; i++) {
+			MeasurementOutcome outcome = simulator.performMeasurement(ip, H, plus, params, random);
+			assertTrue(Math.abs(outcome.getValue().getValue() - 1.0) < 1e-9);
+		}
+	}
+
+	@Test
+	@DisplayName("performMeasurement() su una sovrapposizione: distribuzione statistica coerente con la regola di Born")
+	void measurementOnSuperpositionFollowsBornRule() {
+		Observable H = new Observable(pauliX);
+		double invSqrt2 = 1.0 / Math.sqrt(2.0);
+		Vector<Complex> plus = ip.of(new Complex[] { new Complex(invSqrt2, 0), new Complex(invSqrt2, 0) });
+		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+		Random random = new Random(99);
+
+		// |+> e' un autostato di Pauli-X, quindi il risultato dovrebbe essere
+		// SEMPRE +1 -- verifica indipendente rispetto al test deterministico sopra,
+		// usato qui come base: costruiamo invece una base diversa (|0>,|1>) per
+		// avere probabilita' genuinamente 50/50 rispetto a un H differente.
+		SquareMatrix<Complex> pauliZ = M2.of(new Complex[] {
+			new Complex(1, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(-1, 0)
+		});
+		Observable Z = new Observable(pauliZ);
+
+		int plusCount = 0, trials = 5000;
+		for (int i = 0; i < trials; i++) {
+			MeasurementOutcome outcome = simulator.performMeasurement(ip, Z, plus, params, random);
+			if (outcome.getValue().getValue() > 0) plusCount++;
+		}
+		double fraction = (double) plusCount / trials;
+		assertTrue(Math.abs(fraction - 0.5) < 0.05); // tolleranza larga, e' statistico
 	}
 }
