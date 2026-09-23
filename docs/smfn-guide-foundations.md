@@ -24,10 +24,11 @@ Real prod = R.multiply(a, b);
 ```
 
 ### Values vs. Operations
-The separation between values and operations serves to define all and only the operations that are mathematically compatible within a specific domain.
+SMFN separates mathematical values from the structures that define how operations are performed on them. This keeps values focused on representing mathematical state, while domain structures provide the operations associated with the corresponding mathematical context.
 
-* **Value Objects**: Represent inert mathematical state (scalars, vectors, matrices) detached from operational rules.
-* **Domain Operations**: Reside exclusively within governing structures (`Field`, `Ring`, `VectorSpace`) or dedicated operators, guaranteeing that operations strictly adhere to the axioms and constraints of that specific mathematical domain.
+* **Value Objects**: Represent mathematical state such as scalars, vectors, and matrices, independently of the operations defined for their domain.
+* **Domain Operations**: Are provided by structures (`Ring`, `Field`, `VectorSpace`) or by dedicated operators. They express the operations, and encode the axioms and constraints associated with the corresponding mathematical domain.
+
 
 ### Exact vs. Approximate Domains
 The library explicitly categorizes mathematical domains by their computational nature:
@@ -36,6 +37,7 @@ The library explicitly categorizes mathematical domains by their computational n
 | :--- | :--- | :--- |
 | **Exact** | Zero truncation error, exact algebraic equality (`==` or `.equals()`), symbolic or exact rational arithmetic. | Natural numbers ($\mathbb{N}$), Integers ($\mathbb{Z}$), Rationals ($\mathbb{Q}$), Modular Arithmetic ($\mathbb{Z}_n$). |
 | **Approximate** | IEEE 754 floating-point arithmetic (`double`), subject to rounding errors, equality governed by tolerance $\varepsilon$. | Reals ($\mathbb{R}$ / `Real`), Complex ($\mathbb{C}$ / `Complex`), Numerical Solvers. |
+
 
 ### Capability Modeling
 Mathematical structures and elements possess independent, orthogonal properties (e.g., being ordered, having a norm, admitting an inverse, being differentiable). Forcing these into a class hierarchy leads to duplication or fragile abstractions.
@@ -65,9 +67,9 @@ z.norm();                    // Normable (|z|)
 ```
 
 ### Modeling Mathematical Axioms & Structural Scaling
-The package structure directly reflects the formal hierarchy of abstract algebra. Rather than treating numbers and composite objects as monolithic types, SMFN models algebraic contexts by incrementally building upon operational axioms (eg. Semiring -> Ring -> CommutativeRing -> Field).
+The package structure reflects the formal hierarchy of abstract algebra. SMFN models algebraic contexts by incrementally building upon operational axioms (eg. Semiring -> Ring -> CommutativeRing -> Field).
 
-This axiomatic progression determines how higher-level objects scale their capabilities. For instance, the operational boundaries of matrices and vectors adjust dynamically according to the algebraic strength of their underlying scalar structure:
+This axiomatic progression determines how higher-level objects scale their capabilities. For instance, the operational boundaries of matrices and vectors adjust according to the algebraic strength of their underlying scalar structure:
 
 * **Matrices over a Semiring** (`SquareMatrixSemiring`, e.g. `Natural`): addition, multiplication, transpose.
 * **Matrices over a Ring** (`SquareMatrixRing`, e.g. `SignedInt`, `Polynomial<K>`): adds negation, subtraction, and a determinant via Laplace cofactor expansion.
@@ -77,7 +79,7 @@ This axiomatic progression determines how higher-level objects scale their capab
 ### Mapping/Operator Philosophy & Chaining
 The library uses a functional approach for element transformations and domain decoupling:
 
-* **Mapping**: Mapping applies arbitrary transformations $f: T \to U$ across components, structures, or data types. Because Mapping is completely domain-agnostic, it acts as the universal bridge between pure mathematical constructs and downstream consumers, such as projecting mathematical states into screen coordinates for the graphics engine, serialization, or signal processing adapters.
+* **Mapping**: Mapping applies arbitrary transformations $f: T \to U$ across components, structures, or data types. Because Mapping is completely domain-agnostic, it acts as the universal bridge between pure mathematical constructs and downstream consumers, such as projecting mathematical states into screen coordinates for the graphics engine or serialization.
 * **Operator Chaining**: Linear operators and algebraic transformations are composable ($O_3 \circ O_2 \circ O_1$), allowing execution pipelines to be assembled before evaluation.
 
 
@@ -88,19 +90,12 @@ The library decouples the mathematical formulation of a task from its numerical 
 * **Solver**: The execution engine (e.g., `RungeKutta4Solver`, `NewtonRaphsonSolver`). A solver accepts a `Problem` and runtime settings (tolerances, max iterations, time step $\Delta t$) to compute the solution.
 
 
-### Execution Flow
-The standard lifecycle in SMFN follows four steps:
-
-1. **Instantiation**: Construct immutable elements or physical initial conditions.
-2. **Contextualization**: Bind elements to their governing algebraic structure or vector space.
-3. **Execution**: Pass the problem definition to a solver or chain algebraic operators.
-4. **Inspection / Visualization**: Extract numerical results, project states, or render outputs.
-
 ### Physics Modules as Consumers
 Domain-specific packages (es. physics.mq) do not re-implement linear algebra or numerical methods. They act as **clients/consumers** of the core architecture:
 * Physical positions and velocities are instances of `Vector<K>` inside a `LinearSpace`.
 * Physical forces and field transformations are modeled as `Operator` instances.
 * Time evolution relies on generic ODE numerical `Solver` engines.
+
 
 ### Integrated Light-Weight Graphics Engine
 The library includes a minimal, zero-dependency visual rendering engine for rapid representation:
@@ -111,19 +106,15 @@ The library includes a minimal, zero-dependency visual rendering engine for rapi
 ### Immutable Value Objects
 Elements types (es. `Complex`, `Polynomial`, `Matrix`) are immutable, ensuring thread safety and mathematical predictability.
 
+
 ### Numerical Tolerance ($\varepsilon$) & `MathConstants`
 In approximate domains ($\mathbb{R}$, $\mathbb{C}$), exact floating-point equality (`a == b`) is unreliable due to machine precision limitations.
 
 * **Contextual Tolerance**: All equality checks and singularity detections accept a tolerance parameter $\varepsilon$.
 * **`MathConstants`**: Provides system-wide default thresholds ($\varepsilon \approx 10^{-12}$ for double-precision calculations), which can be overridden locally per solver or algorithm instance.
 
+
 ### Equal semantics (`equals` vs. `areEqual`)
 SMFN preserves the standard Java **`equals()`** contract for structural identity, bit-exact matching, and hash table consistency. Mathematical equality under floating-point noise is handled explicitly via context-aware methods like **`areEqual`**, which evaluate within a tolerance threshold $\varepsilon$. 
 
 Furthermore, exact algebraic domains ($\mathbb{Q}$, $\mathbb{Z}_n$) remain exact within the bounds of the concrete primitive representation.
-
-### Domain Invariants & Fail-Fast Policy
-SMFN enforces strict **Fail-Fast** behavior for mathematical boundaries:
-
-* **Dimension Mismatch**: Operations between vectors or matrices with incompatible dimensions immediately throw an exception before executing partial computations.
-* **Algebraic Singularities**: Inversion of singular matrices or division by zero in non-field structures throws exceptions, preventing the silent propagation of `NaN` or `Infinity`.

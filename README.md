@@ -2,7 +2,7 @@
 > **Type:** Java Mathematical & Scientific Library  
 > **Status:** Continuous Research & Experimental Modeling
 
-SMFN is a pure Java mathematical and scientific library for mathematical modelling, symbolic computation, and numerical analysis. Rather than optimizing for raw performance, SMFN emphasizes mathematical abstraction, explicit structure, and composability across different numeric domains, ranging from polynomial arithmetic and differential equations to quantum mechanical simulations and geometric visualization.
+SMFN is an experimental library and a personal exploration of mathematical and scientific modelling in pure Java. Rather than optimizing for raw performance, SMFN emphasizes mathematical abstraction, explicit structure, and composability across different numeric domains, from polynomial arithmetic and differential equations to quantum mechanical simulations and geometric visualization.
 
 
 ## Core Features
