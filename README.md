@@ -121,7 +121,7 @@ Real repeat = simulator.expectationValue(sigmaZ, collapsed);
 - Scope and Philosophy
 - Core Modeling Concepts
 
-### [Algebra & Numeric Systems](docs/smfn-guide-algebra.md)
+### [Algebra](docs/smfn-guide-algebra.md)
 - Element Architecture
 - Axiomatic Structure Hierarchy & Factories
 - Polynomials
