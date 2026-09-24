@@ -7,13 +7,15 @@ Rather than optimizing for raw performance, SMFN emphasizes mathematical abstrac
 
 
 ## Overview
-| Domain | Key Capabilities |
-| :--- | :--- |
-| **Algebra & Arithmetic** | $Semiring \rightarrow Ring \rightarrow Field$ hierarchy, symbolic polynomials, Euclidean division |
-| **Linear Algebra** | Generic matrices/vectors over arbitrary rings/fields, structure-based algorithms |
-| **Numerical Analysis** | Root-finding, numerical differentiation, ODE integration (RK4), iterative solvers |
-| **Applications** | Implicit geometry, Mandelbrot/Julia maps, quantum measurement & dynamics |
-| **Graphics** | Decoupled 1D/2D rendering and plotting framework |
+| Domain                   | Key Capabilities                                                                     |
+| :----------------------- | :----------------------------------------------------------------------------------- |
+| **Algebra & Arithmetic** | `Semiring → Ring → Field` hierarchy, symbolic polynomials, Euclidean division        |
+| **Linear Algebra**       | Generic vectors and matrices over supported rings and fields, with structure-based algorithms |
+| **Numerical Analysis**   | Root-finding, numerical differentiation, ODE integration (RK4), iterative solvers    |
+| **Geometry & Fractals**  | Implicit geometry, intersections, Mandelbrot/Julia maps                              |
+| **Physical Modelling**   | Quantum measurement and dynamics                                                     |
+| **Graphics**             | Decoupled 1D/2D rendering and plotting framework                                     |
+
 
 
 ## Technical Specifications & Requirements
