@@ -36,7 +36,7 @@ class QuantumSystemSimulatorTest
 		Observable<Complex> H = new Observable<>(pauliX);
 		QuantumState psi0 = QuantumState.of(new Complex(1, 0), new Complex(0, 0));
 
-		Real expectation = simulator.measure(H, psi0);
+		Real expectation = simulator.expectationValue(H, psi0);
 		assertTrue(Math.abs(expectation.getValue()) < EPSILON);
 	}
 
@@ -47,7 +47,7 @@ class QuantumSystemSimulatorTest
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
 
-		Real expectation = simulator.measure(H, plus);
+		Real expectation = simulator.expectationValue(H, plus);
 		assertTrue(Math.abs(expectation.getValue() - 1.0) < EPSILON);
 	}
 
@@ -58,7 +58,7 @@ class QuantumSystemSimulatorTest
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState minus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(-invSqrt2, 0));
 
-		Real expectation = simulator.measure(H, minus);
+		Real expectation = simulator.expectationValue(H, minus);
 		assertTrue(Math.abs(expectation.getValue() - (-1.0)) < EPSILON);
 	}
 

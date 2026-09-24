@@ -53,7 +53,7 @@ public class SpinPrecessionDemo
 			Real t = new Real(tVal);
 
 			QuantumState psiAtT = system.evolve(psi0, t, dt);
-			Real expX = simulator.measure(sigmaX, psiAtT);
+			Real expX = simulator.expectationValue(sigmaX, psiAtT);
 
 			System.out.printf("%6.2f | %14.4f | %18.4f%n", tVal, expX.getValue(), Math.cos(omega0 * tVal));
 		}

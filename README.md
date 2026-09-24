@@ -1,23 +1,19 @@
 # SMFN-library 
-> **Type:** Java Mathematical & Scientific Library  
-> **Status:** Continuous Research & Experimental Modeling
+> **Type:** Java Mathematical & Scientific Library | **Status:**  Continuous Research (Sawdust alert!)
 
-SMFN is an experimental library and a personal exploration of mathematical and scientific modelling in pure Java. Rather than optimizing for raw performance, SMFN emphasizes mathematical abstraction, explicit structure, and composability across different numeric domains, from polynomial arithmetic and differential equations to quantum mechanical simulations and geometric visualization.
+SMFN is an experimental library and a personal exploration of mathematical and scientific modelling. It explores how algebraic structures, generic algorithms, and composable abstractions can be used to represent mathematical concepts and build scientific models in pure Java.
+
+Rather than optimizing for raw performance, SMFN emphasizes mathematical abstraction, explicit structure, and composability across different numeric domains, from polynomial arithmetic and linear algebra to differential equations, quantum mechanics  and geometric visualization.
 
 
-## Core Features
-
-### Mathematical Foundations & Solvers
-* **Abstract Algebraic Architecture:** A structure-oriented algebraic hierarchy ($Semiring → Ring → Field$) with a clear separation between mathematical elements and the structures that define their operations.
-* **Symbolic Polynomial Arithmetic:** Symbolic operations over arbitrary scalar fields, supporting dynamic structure promotion to Euclidean Rings (GCD, polynomial division, Horner scheme).
-* **Generic Linear Algebra:** Vector spaces and matrices over arbitrary rings and fields, with algorithms selected according to the available algebraic structure (e.g. determinant via Gauss elimination on fields or Laplace expansion on rings).
-* **Numerical Solvers & Analysis:** Root-finding algorithms, numerical differentiation, ODE integration, and iterative solvers based on unified state-history models.
-
-### Applications & Domains
-* **Implicit Geometry:** Representation of geometric entities (lines, circles, ellipses, planes) as implicit functions with analytically defined gradients and numerical intersection solvers.
-* **Fractals & Complex Maps:** Mandelbrot and Julia set exploration and visualization through generic complex-domain operations.
-* **Graphics Subsystem:** Decoupled 1D/2D plotting framework with separate rendering and plotting layers.
-* **Physical Simulations:** Mapping of physical states, dynamical differential equations, and observable operators directly onto the core algebraic structures and numerical solvers.
+## Overview
+| Domain | Key Capabilities |
+| :--- | :--- |
+| **Algebra & Arithmetic** | $Semiring \rightarrow Ring \rightarrow Field$ hierarchy, symbolic polynomials, Euclidean division |
+| **Linear Algebra** | Generic matrices/vectors over arbitrary rings/fields, structure-based algorithms |
+| **Numerical Analysis** | Root-finding, numerical differentiation, ODE integration (RK4), iterative solvers |
+| **Applications** | Implicit geometry, Mandelbrot/Julia maps, quantum measurement & dynamics |
+| **Graphics** | Decoupled 1D/2D rendering and plotting framework |
 
 
 ## Technical Specifications & Requirements
@@ -64,8 +60,8 @@ Vector<Real> rotatedTwice = rotate90.compose(rotate90).apply(point); // (-1, 0) 
 Vector<Real> fullCircle   = rotate90.power(4).apply(point);          // (1, 0) — back to start
 
 // Rotation preserves length: the norm is unchanged
-Real originalNorm = space.norm(point);      // 1.0
-Real rotatedNorm  = space.norm(rotatedOnce); // 1.0, exactly
+Real originalNorm = space.norm(point);       // 1.0
+Real rotatedNorm  = space.norm(rotatedOnce); // 1.0
 ```
 
 #### ... And Solvers, not only symbols:
@@ -75,19 +71,47 @@ RealField R = RealField.INSTANCE;
 VectorSpace<Real, RealField> space = new VectorSpace<>(R, 2);
 
 // Harmonic Oscillator: d²/dt² x = -x  ==>  d/dt [x, v] = [v, -x]
-DifferentialEquationProblem<Real, Vector<Real>> oscillator = (state, time) -> 
-    space.of(new Real[]{ state.get(1), state.get(0).negate() });
+InitialValueProblem<Real, Vector<Real>> oscillator = new InitialValueProblem<>() {
+    @Override public Vector<Real> derivative(Vector<Real> state, Real time) {
+        return space.of(new Real[]{ state.get(1), R.negate(state.get(0)) });
+    }
+    @Override public Vector<Real> getInitialState() { return space.of(new Real[]{ R.of(1.0), R.of(0.0) }); }
+    @Override public Real getStartTime() { return R.of(0.0); }
+};
 
 RungeKutta4Solver<Real, Vector<Real>, RealField> solver = new RungeKutta4Solver<>();
-Vector<Real> initialState = space.of(new Real[]{ R.of(1.0), R.of(0.0) }); // x(0) = 1, v(0) = 0
-
-// Step-by-step numerical evolution (t = 0 to PI/2, expecting x -> 0, v -> -1)
-Vector<Real> stateAtHalfPi = solver.integrate(oscillator, initialState, R.of(0.0), R.of(Math.PI / 2), R.of(0.01));
+Vector<Real> stateAtHalfPi = solver.integrate(oscillator, R.of(Math.PI / 2), new IntegrationParameters(R.of(0.01)), space);
 
 Real position = stateAtHalfPi.get(0); // ~ 0.0 (cos(pi/2))
 Real velocity = stateAtHalfPi.get(1); // ~ -1.0 (-sin(pi/2))
 ```
 
+#### And then:
+```java
+// Physical simulation: define two observables (2x2 Pauli matrices)
+Observable<Complex> sigmaZ = new Observable<>(Pauli.SIGMA_Z);
+Observable<Complex> sigmaX = new Observable<>(Pauli.SIGMA_X);
+
+// Prepare the balanced superposition state |+> = (|0> + |1>) / sqrt(2)
+double invSqrt2 = 1.0 / Math.sqrt(2);
+QuantumState psi = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
+
+QuantumSystemSimulator simulator = new QuantumSystemSimulator();
+
+// Expectation values: deterministic, no collapse
+Real expZ = simulator.expectationValue(sigmaZ, psi);  // 0.0: equal probabilities for +1 and -1 in Z
+Real expX = simulator.expectationValue(sigmaX, psi);  // 1.0: |+> is an eigenstate of sigma_x with eigenvalue +1
+
+// Projective measurement: samples an eigenvalue per Born's rule, collapses the state
+ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+MeasurementOutcome outcome = simulator.performMeasurement(sigmaZ, psi, params, new Random());
+Real value = outcome.getValue();                         // +1 or -1, sampled per Born's rule
+QuantumState collapsed = outcome.getCollapsedState();    // now an eigenstate of sigma_z
+
+// Measuring again on the collapsed state always gives the same value,
+// the state is no longer in a superposition.
+Real repeat = simulator.expectationValue(sigmaZ, collapsed);
+```
 
 ## Documentation & User Guide
 

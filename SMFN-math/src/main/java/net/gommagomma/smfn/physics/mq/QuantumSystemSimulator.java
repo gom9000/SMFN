@@ -33,7 +33,7 @@ public final class QuantumSystemSimulator
      * @param state il vettore di stato quantistico normalizzato o non normalizzato (|psi>)
      * @return il valore di aspettazione sotto forma di Real (garantito reale per operatori hermitiani)
      */
-	public Real measure(Observable<Complex> observable, QuantumState state) {
+	public Real expectationValue(Observable<Complex> observable, QuantumState state) {
 		Vector<Complex> H_psi = observable.asOperator().apply(state.asVector());
 		Complex expectation = state.innerProduct(QuantumState.from(H_psi));
 		// <psi|H|psi> e' garantito reale per un Observable hermitiano.

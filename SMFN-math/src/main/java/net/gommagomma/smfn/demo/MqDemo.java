@@ -46,8 +46,8 @@ public class MqDemo
 		QuantumState zero = QuantumState.of(new Complex(1, 0), new Complex(0, 0));
 		double s = 1.0 / Math.sqrt(2);
 		QuantumState superposition = QuantumState.of(new Complex(s, 0), new Complex(s, 0));
-		System.out.println("<Z> su |0>            = " + sim.measure(pauliZ, zero) + " (atteso: 1)");
-		System.out.println("<Z> su (|0>+|1>)/sqrt2 = " + sim.measure(pauliZ, superposition) + " (atteso: 0)");
+		System.out.println("<Z> su |0>            = " + sim.expectationValue(pauliZ, zero) + " (atteso: 1)");
+		System.out.println("<Z> su (|0>+|1>)/sqrt2 = " + sim.expectationValue(pauliZ, superposition) + " (atteso: 0)");
 
 		System.out.println("\n=== 2. Misura quantistica vera (performMeasurement), con collasso ===");
 		Random random = new Random(7);

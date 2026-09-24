@@ -62,7 +62,7 @@ public class TimeDependentFieldDemo
 			Real t = new Real(tVal);
 
 			QuantumState psiAtT = system.evolve(psi0, t, dt);
-			Real expX = simulator.measure(sigmaX, psiAtT);
+			Real expX = simulator.expectationValue(sigmaX, psiAtT);
 
 			double phi = (omega0 / 2.0) * tVal + (omega0 / (4 * nu)) * (1 - Math.cos(nu * tVal));
 			double analytic = Math.cos(2 * phi);
