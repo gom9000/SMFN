@@ -61,7 +61,7 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Natural>
         	return divergenceMeasure.getValue() > DIVERGENCE_RADIUS_SQ;
         };
 
-        ConvergenceParameters params = new ConvergenceParameters(R.zero(), maxIterations);
+        ConvergenceParameters params = new ConvergenceParameters(R.one(), maxIterations);
         return solve(problem, z0, divergenceTest, params, null);
     }
 }

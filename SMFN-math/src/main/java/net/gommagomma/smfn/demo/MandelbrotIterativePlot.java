@@ -6,13 +6,13 @@ import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
 import java.util.function.BiFunction;
 
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.core.ViewportController;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
@@ -40,7 +40,7 @@ implements ViewportController.ViewportUpdateHandler
 
     public MandelbrotIterativePlot() {
         // --- 1. Funzione e Adattatori (rimangono costanti) ---
-        // Inizializziamo con un valore base, verrà aggiornato subito dal rendering iniziale
+        // Inizializziamo con un valore base, verrï¿½ aggiornato subito dal rendering iniziale
         this.mandelbrotFunction = new MandelbrotFunction(BASE_ITERATIONS);
         this.domainAdapter = Complex::new;
         
@@ -51,12 +51,7 @@ implements ViewportController.ViewportUpdateHandler
         int width = 1600;
         int height = 1200;
         this.renderer = new SwingRenderer2D(width, height);
-        JFrame frame = new JFrame("SMFN Mandelbrot Set Interactive Plot");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(renderer);
-        frame.pack();
-        frame.setVisible(true);
-        renderer.initBufferStrategy();
+        SwingWindow.show(renderer, "SMFN Mandelbrot Set Interactive Plot");
 
         // --- 3. Inizializzazione Viewport e Controller ---
         // Area iniziale: [-2.0, 1.0] x [-1.5, 1.5]
@@ -91,7 +86,7 @@ implements ViewportController.ViewportUpdateHandler
             @Override
             public Color map(Natural r) {
                 double value = r.getValue();
-                // Usa currentMaxIterations che è aggiornato dal renderScene
+                // Usa currentMaxIterations che ï¿½ aggiornato dal renderScene
                 if (value == 0) return Color.BLACK; 
                 if (value >= currentMaxIterations) return Color.BLACK; 
                 
@@ -128,9 +123,9 @@ implements ViewportController.ViewportUpdateHandler
         double rangeX = viewport.maxX - viewport.minX;
         
         // Calcola log_2(1/S)
-        double logFactor = (rangeX > 0) ? Math.log(3.0 / rangeX) / Math.log(2.0) : 0; // 3.0 è l'ampiezza iniziale (1.0 - (-2.0))
+        double logFactor = (rangeX > 0) ? Math.log(3.0 / rangeX) / Math.log(2.0) : 0; // 3.0 ï¿½ l'ampiezza iniziale (1.0 - (-2.0))
         
-        // Applica la formula: I_base + log_2(1/S) * C. Max è per evitare valori negativi o troppo bassi.
+        // Applica la formula: I_base + log_2(1/S) * C. Max ï¿½ per evitare valori negativi o troppo bassi.
         this.currentMaxIterations = (int) Math.max(
             BASE_ITERATIONS,
             BASE_ITERATIONS + logFactor * SCALE_FACTOR

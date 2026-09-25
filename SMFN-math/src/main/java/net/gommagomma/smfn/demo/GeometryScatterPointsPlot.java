@@ -4,10 +4,9 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JFrame;
-
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.ScatterPlotter;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
@@ -21,14 +20,8 @@ public class GeometryScatterPointsPlot
         int height = 600;
         
         SwingRenderer1D renderer = new SwingRenderer1D(width, height);
-        JFrame frame = new JFrame("SMFN Scatter Points Plot");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(renderer);
-        frame.pack();
-        frame.setVisible(true);
-        try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
-        renderer.initBufferStrategy();
-        
+        SwingWindow.show(renderer, "SMFN Scatter Points Plot");
+
         // Definisci l'area matematica (Viewport): [-2.0, 1.0] x [-1.5, 1.5] 
         // L'area classica che contiene l'intero set
         Viewport viewport = new Viewport(-5, 5, -5, 5, width, height);

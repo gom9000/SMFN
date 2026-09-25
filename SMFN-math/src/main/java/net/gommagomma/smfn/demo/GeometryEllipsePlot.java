@@ -3,11 +3,10 @@ package net.gommagomma.smfn.demo;
 import java.awt.Color;
 import java.util.function.BiFunction;
 
-import javax.swing.JFrame;
-
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
@@ -25,12 +24,7 @@ public class GeometryEllipsePlot {
         int height = 600;
 
         SwingRenderer2D renderer = new SwingRenderer2D(width, height);
-        JFrame frame = new JFrame("SMFN Ellipse Plot");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(renderer);
-        frame.pack();
-        frame.setVisible(true);
-        renderer.initBufferStrategy();
+        SwingWindow.show(renderer, "SMFN Ellipse Plot");
 
         Viewport viewport = new Viewport(-4.0, 4.0, -3.0, 3.0, width, height);
 

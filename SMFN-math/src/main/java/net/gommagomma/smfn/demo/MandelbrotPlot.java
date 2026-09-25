@@ -3,11 +3,10 @@ package net.gommagomma.smfn.demo;
 import java.awt.Color;
 import java.util.function.BiFunction;
 
-import javax.swing.JFrame;
-
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
@@ -25,12 +24,7 @@ public class MandelbrotPlot {
         int height = 600;
         
         SwingRenderer2D renderer = new SwingRenderer2D(width, height);
-        JFrame frame = new JFrame("SMFN Mandelbrot Set Plot");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(renderer);
-        frame.pack();
-        frame.setVisible(true);
-        renderer.initBufferStrategy();
+        SwingWindow.show(renderer, "SMFN Mandelbrot Set Plot");
 
         // Definisci l'area matematica (Viewport): [-2.0, 1.0] x [-1.5, 1.5] 
         // L'area classica che contiene l'intero set
@@ -57,7 +51,7 @@ public class MandelbrotPlot {
         // --- 4. Processo di rendering ---
         renderer.startDrawing();
 
-        // Pulisci lo sfondo prima di disegnare (anche se il plotter coprirà tutto)
+        // Pulisci lo sfondo prima di disegnare (anche se il plotter coprirï¿½ tutto)
         renderer.clear(Color.WHITE);
         
         // Usa il FunctionPlotter2D per disegnare il frattale

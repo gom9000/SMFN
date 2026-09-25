@@ -4,10 +4,9 @@ import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.function.Function;
 
-import javax.swing.JFrame;
-
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
@@ -30,14 +29,7 @@ public class RealLinearPlot
         int height = 600;
 
         SwingRenderer1D renderer = new SwingRenderer1D(width, height);
-
-        JFrame frame = new JFrame("SMFN Linear Example");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(renderer);
-        frame.pack();
-        frame.setVisible(true);
-        renderer.initBufferStrategy();
-
+        SwingWindow.show(renderer, "SMFN Linear Example");
         Viewport viewport = new Viewport(-10.0, 10.0, -10.0, 20.0, width, height);
 
         // --- 3. Adattatori double <-> Real ---

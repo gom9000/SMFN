@@ -3,11 +3,10 @@ package net.gommagomma.smfn.demo;
 import java.awt.Color;
 import java.util.function.BiFunction;
 
-import javax.swing.JFrame;
-
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
@@ -26,13 +25,8 @@ public class GeometryCirclePlot {
         int width = 800;
         int height = 600;
 
-        SwingRenderer2D renderer = new SwingRenderer2D(width, height);
-        JFrame frame = new JFrame("SMFN Circle Plot");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(renderer);
-        frame.pack();
-        frame.setVisible(true);
-        renderer.initBufferStrategy();
+        SwingRenderer2D renderer = new SwingRenderer2D(800, 600);
+        SwingWindow.show(renderer, "SMFN Circle Plot");
 
         Viewport viewport = new Viewport(-5, 5, -5, 5, width, height);
 
