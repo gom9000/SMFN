@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.math.analysis.core.problems;
+package net.gommagomma.smfn.math.analysis.numerical.problems;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
