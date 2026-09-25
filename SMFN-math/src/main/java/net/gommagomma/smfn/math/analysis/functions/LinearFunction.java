@@ -5,24 +5,15 @@ import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 
 /**
- * f(x) = m*x + q, funzione affine (lineare + traslazione) su un anello K.
- *
- * Richiede solo Ring<K> (add, multiply), non Field<K>: apply()/compose()/add()
- * non usano mai divisione o inverso. Un campo sarebbe una richiesta piu'
- * forte di quella che l'aritmetica usata richiede davvero.
- *
- * Non e' un elemento di anello sotto (addizione, composizione): la
- * composizione di funzioni affini non distribuisce a sinistra sull'addizione
- * quando q != 0 (h.(f+g) != h.f + h.g in generale), e in generale f.g != g.f.
- * Dichiararla CommutativeRingElement, come faceva la versione precedente,
- * era matematicamente scorretto -- non solo un problema di API. Qui resta
- * un valore puro con una sola capacita' reale: valutarsi in un punto, tramite
- * Mapping<K,K>, esattamente come Polynomial/PolynomialFunction.
+ * Modellizza una funzione affine/lineare ad una variabile scalare della forma: f(x) = m * x + q
+ * definita su un anello algebrico K, dove m e' il coefficiente angolare (pendenza) e q e' l'intercetta (termine noto).
+ * @param <K> Il tipo dello scalare appartenente al campo sottostante
+ * @param <S> La struttura algebrica di campo e struttura scalare associata a K
  */
 public final class LinearFunction<K extends ScalarElement<K>>
 implements ScalarFunction<K>
 {
-	private final Ring<K> field;
+	private final Ring<K> ring;
     private final K m; // coefficiente angolare
     private final K q; // intercetta
 
@@ -31,14 +22,14 @@ implements ScalarFunction<K>
         if (m == null || q == null) {
             throw new IllegalArgumentException("I coefficienti m e q non possono essere nulli.");
         }
-        this.field = field;
+        this.ring = field;
         this.m = m;
         this.q = q;
     }
 
     @Override
     public K apply(K x) {
-        return field.add(field.multiply(m, x), q);
+        return ring.add(ring.multiply(m, x), q);
     }
 
     /**
@@ -47,18 +38,18 @@ implements ScalarFunction<K>
      * di una struttura di anello, che qui non esiste.
      */
     public LinearFunction<K> compose(LinearFunction<K> other) {
-        K newM = field.multiply(this.m, other.m);
-        K newQ = field.add(field.multiply(this.m, other.q), this.q);
-        return new LinearFunction<>(field, newM, newQ);
+        K newM = ring.multiply(this.m, other.m);
+        K newQ = ring.add(ring.multiply(this.m, other.q), this.q);
+        return new LinearFunction<>(ring, newM, newQ);
     }
 
     public LinearFunction<K> add(LinearFunction<K> other) {
-        return new LinearFunction<>(field, field.add(this.m, other.m), field.add(this.q, other.q));
+        return new LinearFunction<>(ring, ring.add(this.m, other.m), ring.add(this.q, other.q));
     }
 
     public K getSlope() { return m; }
     public K getIntercept() { return q; }
-    public Ring<K> getField() { return field; }
+    public Ring<K> getField() { return ring; }
 
     @Override
     public boolean equals(Object o) {

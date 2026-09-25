@@ -17,12 +17,6 @@ import net.gommagomma.smfn.math.analysis.core.solvers.IntervalODEStepSolver;
 /**
  * Integratore ODE Embedded Runge-Kutta di ordine 2(3) (Bogacki-Shampine),
  * con controllo adattivo del passo tramite stima dell'errore.
- *
- * A differenza di RungeKutta4Solver, qui serve una norma per confrontare
- * l'errore stimato con la tolleranza -- quindi lo spazio passato deve essere
- * un NormedSpace<T,K,S>, non solo un Module<T,K,S>: la firma dei metodi resta
- * quella dell'interfaccia (Module), ma il tipo viene verificato con instanceof,
- * stesso pattern gia' usato per le capacita' opzionali altrove nella libreria.
  */
 public class EmbeddedRK23Solver<K extends ScalarElement<K>, T extends LinearElement<T, K>, S extends Field<K> & ScalarStructure<K> & NumericFactory<K>>
 implements IntervalODEStepSolver<K, T, S>
@@ -58,7 +52,6 @@ implements IntervalODEStepSolver<K, T, S>
 		if (!(space instanceof NormedSpace)) {
 			throw new IllegalArgumentException("EmbeddedRK23Solver richiede una struttura NormedSpace, per poter stimare l'errore.");
 		}
-		@SuppressWarnings("unchecked")
 		NormedSpace<T, K, S> normed = (NormedSpace<T, K, S>) space;
 		return normed;
 	}

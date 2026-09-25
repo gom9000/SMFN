@@ -12,16 +12,16 @@ import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolver;
 
 /**
- * Risolutore specializzato per il Set di Mandelbrot.
- * Implementa IterativeSolver<Problema, Risultato>.
- * P = FixedPointProblem<Complex> (z_{n+1} = z_n^2 + c)
- * T = Complex (il tipo su cui iteriamo)
- * R = Natural (il numero di iterazioni restituito)
+ * Solutore iterativo specializzato per il calcolo dell'insieme di Mandelbrot.
+ * 
+ * A differenza dei solutori iterativi standard orientati alla convergenza,
+ * questo solutore applica una semantica inversa: il criterio di arresto valuta il superamento del raggio di fuga per rilevare la divergenza.
+ * Il risultato restituito dal metodo {@link #solve} e' un numero naturale N (istanza di {@link Natural}) che rappresenta:
+ * Il numero di iterazioni impiegate per la divergenza) o il valore limite di iterazioni massime specificato nei parametri.
  */
 public class MandelbrotSolver
 implements IterativeSolver<FixedPointProblem<Complex>, Complex, Natural>
 {
-	private static final double DIVERGENCE_RADIUS_SQ = 4.0;
 	private RealField R = RealField.INSTANCE;
 	private NaturalSemiring N = NaturalSemiring.INSTANCE;
 
@@ -34,8 +34,8 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Natural>
         for (int iterations = 0; iterations < params.maxIterations; iterations++)
         {
         	// 1. Calcola la "distanza" che ha significato per Mandelbrot.
-            // La distanza qui è usata per misurare la divergenza, non la convergenza.
-            // Usiamo il raggio quadrato dal centro (il valore di test) come Real.
+            // La distanza qui Ã¨ usata per misurare la divergenza, non la convergenza.
+            // Usa il raggio quadrato dal centro (il valore di test) come Real.
             Real divergenceMeasure = R.of(currentZ.modulusSquared());
 
         	// Il Solver chiama il Criterio con la misura (Real)

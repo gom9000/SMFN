@@ -6,10 +6,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
- * Vista puramente reale di una EigenDecomposition, ottenuta con
- * EigenDecomposition.toRealDecomposition(tolerance) -- autovalori e
- * autovettori gia' accoppiati e verificati insieme, con la stessa
- * tolleranza, non due chiamate separate che potrebbero usarne due diverse.
+ * Vista puramente reale di una EigenDecomposition.
  */
 public final class RealEigenDecomposition
 {

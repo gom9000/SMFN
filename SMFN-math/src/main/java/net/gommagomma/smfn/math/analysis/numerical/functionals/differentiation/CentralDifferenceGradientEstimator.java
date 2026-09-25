@@ -11,10 +11,7 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
  * Stima il gradiente di una MultivariateFunction<K> per differenze centrali,
  * componente per componente: grad_i(v) ~ (f(v+h*e_i) - f(v-h*e_i)) / (2h).
  *
- * Fallback generico per chi non implementa DifferentiableMultivariateFunction
- * -- richiede 2n valutazioni di f per ogni punto, dove n e' la dimensione.
- * Stesso ruolo di CentralDifferenceDifferentiator, un livello piu' su
- * (gradiente invece di derivata scalare).
+ * Fallback generico per chi non implementa DifferentiableMultivariateFunction.
  */
 public class CentralDifferenceGradientEstimator<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
 {

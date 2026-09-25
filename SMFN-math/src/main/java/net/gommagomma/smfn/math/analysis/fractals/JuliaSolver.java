@@ -28,7 +28,7 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Natural>
     }
 
 
-    // Il metodo solve() è esattamente lo stesso del MandelbrotSolver
+    // Il metodo solve() Ã¨ esattamente lo stesso del MandelbrotSolver
     @Override
     public Natural solve(FixedPointProblem<Complex> problem, Complex initialGuess, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<Complex> space)
     {

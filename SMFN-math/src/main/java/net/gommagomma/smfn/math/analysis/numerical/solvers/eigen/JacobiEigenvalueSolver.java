@@ -6,32 +6,18 @@ import java.util.List;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
 /**
  * Autovalori e autovettori di una matrice reale simmetrica, via rotazioni
- * di Jacobi. Converge sempre per matrici simmetriche (a differenza di QR
- * senza shift), e da' autovalori E autovettori insieme, non solo i primi.
- *
- * Algebra lineare pura, generale -- non specifico di nessun dominio fisico:
- * qualunque matrice reale simmetrica va bene, dalla meccanica all'analisi
- * delle componenti principali. Specializzato su Real, non generico su K:
- * non c'e' oggi un secondo consumatore che richieda un K diverso, e la
- * formula di rotazione lavora comunque su double grezzi internamente.
- *
- * La formula di rotazione e' quella numericamente stabile (Numerical
- * Recipes / Golub & Van Loan): mai seno/coseno/arcotangente calcolati
- * direttamente -- solo divisione, confronto di segno e radice quadrata,
- * evitando un'instabilita' nota della formula "ingenua" via atan quando
- * l'angolo e' vicino a zero.
+ * di Jacobi. Converge sempre per matrici simmetriche.
  */
-public final class JacobiEigenvalueSolver implements EigenvalueSolver<Real>
+public final class JacobiEigenvalueSolver
+implements EigenvalueSolver<Real>
 {
 	private static final ComplexField C = ComplexField.INSTANCE;
 

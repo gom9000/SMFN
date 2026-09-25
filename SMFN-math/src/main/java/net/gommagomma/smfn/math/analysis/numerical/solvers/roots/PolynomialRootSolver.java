@@ -25,11 +25,9 @@ import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.C
  * esatta, ripete sul quoziente.
  *
  * La completezza (trovare esattamente n radici per un polinomio di grado n)
- * e' garantita solo se K e' algebricamente chiuso (es. Complex) -- e' il
- * teorema fondamentale dell'algebra, e non vale su un campo come Real. Su
- * un campo non chiuso l'algoritmo si ferma comunque correttamente non
- * appena il quoziente non ha piu' radici in K, restituendo solo quelle
- * trovate fino a quel punto.
+ * e' garantita solo se K e' algebricamente chiuso (es. Complex). Su
+ * un campo non chiuso l'algoritmo si ferma non appena il quoziente non ha piu'
+ * radici in K, restituendo quelle trovate fino a quel punto.
  */
 public class PolynomialRootSolver<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K> & NumericFactory<K>>
 {

@@ -11,15 +11,6 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
 /**
  * Risolve Ax = b per eliminazione di Gauss con sostituzione all'indietro.
- *
- * Non e' un IterativeSolver: e' un calcolo diretto ed esatto su un campo,
- * in un solo passaggio, senza tolleranza ne' iterazione -- non ha bisogno
- * di un Problem, ne' di ConvergenceCriteria/ConvergenceParameters. Stessa
- * famiglia di PolynomialDivisionProvider, non di NewtonRaphsonSolver.
- *
- * Riusa MatrixSpace.toRowEchelonForm() (gia' verificato) sulla matrice
- * aumentata [A|b]: l'eliminazione con pivoting non viene riscritta qui,
- * solo la sostituzione all'indietro e' nuova.
  */
 public final class GaussianEliminationSolver<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
 {

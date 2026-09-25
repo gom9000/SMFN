@@ -15,6 +15,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.functions.DifferentiableMultivariateFunction;
 import net.gommagomma.smfn.math.analysis.core.functions.MultivariateFunction;
+import net.gommagomma.smfn.math.analysis.numerical.problems.MultivariateFunctionSystemProblem;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;

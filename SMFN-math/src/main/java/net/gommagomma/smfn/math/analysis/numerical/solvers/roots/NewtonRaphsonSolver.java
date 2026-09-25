@@ -15,9 +15,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolver;
  * Solutore Newton-Raphson: x_{k+1} = x_k - f(x_k)/f'(x_k).
  *
  * Se il problema implementa DifferentiableScalarProblem, usa la derivata
- * analitica fornita; altrimenti ricade su un differenziatore numerico
- * (SymbolicOperator<R,R,Mapping<R,R>>, es. CentralDifferenceDifferentiator)
- * -- verificato con instanceof, non con un default che lancia eccezione.
+ * analitica fornita; altrimenti ricade su un differenziatore numerico.
  */
 public class NewtonRaphsonSolver<R extends ScalarElement<R>>
 implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>

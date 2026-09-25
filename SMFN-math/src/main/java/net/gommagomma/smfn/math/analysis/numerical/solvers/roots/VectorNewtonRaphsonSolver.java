@@ -18,16 +18,10 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 /**
  * Newton-Raphson multidimensionale: x_{n+1} = x_n - J^-1(x_n) * F(x_n).
  *
- * La Jacobiana e' una capacita' opzionale, verificata con instanceof --
- * stesso schema di NewtonRaphsonSolver: se il problema implementa
- * DifferentiableVectorProblem, si usa getJacobian() (esatta); altrimenti si
- * ricade su CentralDifferenceJacobianEstimator (numerica, n valutazioni
- * extra di F per passo, non n^2 -- una colonna alla volta da la' intera
- * colonna per tutte le righe in una sola valutazione).
- *
- * Il passo si ottiene risolvendo J*step = F(x) con GaussianEliminationSolver,
- * non calcolando J^-1 per poi applicarla una volta sola: piu' veloce e
- * numericamente piu' stabile, dato che l'inversa non serve mai per se stessa.
+ * La Jacobiana e' una capacita' opzionale, verificata con instanceof:
+ * se il problema implementa DifferentiableVectorProblem, si usa getJacobian();
+ * altrimenti si ricade su CentralDifferenceJacobianEstimator.
+ * Il passo si ottiene risolvendo J*step = F(x) con GaussianEliminationSolver.
  */
 public class VectorNewtonRaphsonSolver<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
 {

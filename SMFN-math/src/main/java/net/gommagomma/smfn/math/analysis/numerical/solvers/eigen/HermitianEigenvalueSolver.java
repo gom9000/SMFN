@@ -13,8 +13,7 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
 /**
  * Autovalori e autovettori di una matrice complessa hermitiana, via
- * rotazioni di Jacobi -- stessa idea di JacobiEigenvalueSolver (converge
- * sempre, da' autovalori E autovettori insieme), con un passo in piu':
+ * rotazioni di Jacobi, con un passo in piu':
  * l'elemento fuori diagonale da azzerare e' complesso, non reale, quindi
  * ogni rotazione si scompone in due passi:
  *
@@ -25,13 +24,11 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
  *   2. La STESSA rotazione reale del caso simmetrico (formula stabile,
  *      solo divisione/segno/radice), applicata all'elemento ora reale.
  *
- * Gli autovalori di una matrice hermitiana sono sempre reali per
- * costruzione matematica (stesso principio di Observable) -- qui restano
- * comunque rappresentati come Complex con parte immaginaria nulla, come
- * richiesto da EigenDecomposition. Gli autovettori invece possono avere
- * (e in generale hanno) componenti genuinamente complesse.
+ * Gli autovalori di una matrice hermitiana sono sempre reali per costruzione
+ * matematica ma restano rappresentati come Complex con parte immaginaria nulla.
  */
-public final class HermitianEigenvalueSolver implements EigenvalueSolver<Complex>
+public final class HermitianEigenvalueSolver
+implements EigenvalueSolver<Complex>
 {
 	private static final ComplexField C = ComplexField.INSTANCE;
 

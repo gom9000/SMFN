@@ -17,11 +17,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.IntervalODEStepSolver;
  * Integratore Runge-Kutta di quarto ordine (RK4), a passo fisso.
  *
  * Generico su qualunque stato T che sia un LinearElement<T,K> con una
- * struttura Module<T,K,S> -- vedi DifferentialEquationProblem per il perche'
- * (include gli stati matriciali, non solo Vector<K>). Il tempo resta sempre
- * Real, convenzione standard per le ODE indipendente dal campo K dello stato:
- * i passi temporali vengono convertiti in K solo per scalare lo stato,
- * tramite NumericFactory<K>.
+ * struttura Module<T,K,S>.
  */
 public class RungeKutta4Solver<K extends ScalarElement<K>, T extends LinearElement<T, K>, S extends Ring<K> & ScalarStructure<K> & NumericFactory<K>>
 implements IntervalODEStepSolver<K, T, S>

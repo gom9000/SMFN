@@ -6,10 +6,6 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 
 /**
  * Differenziatore numerico a differenze centrali: f'(x) ~ (f(x+h) - f(x-h)) / (2h).
- *
- * E' un SymbolicOperator<K,K,Mapping<K,K>>: trasforma una funzione in
- * un'altra funzione -- esattamente il concetto gia' pulito in
- * analysis.core.operators, non serviva nessun modello a parte.
  */
 public class CentralDifferenceDifferentiator<K extends ScalarElement<K>>
 implements Mapping<Mapping<K, K>, Mapping<K, K>>

@@ -4,17 +4,18 @@ package net.gommagomma.smfn.math.analysis.core.solvers;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
-* Definisce il test logico per determinare se una sequenza di iterazioni è convergente.
+* Definisce il test logico per determinare se una sequenza di iterazioni Ã¨ convergente.
 * Il test si basa sulla distanza (Real) calcolata dal Solutore.
 */
 public interface ConvergenceCriteria
 {
-   /**
-    * Verifica se la condizione di convergenza è stata raggiunta.
-    * @param distance La distanza (Real) tra l'iterazione attuale e la precedente, calcolata dal Solutore.
-    * @param params I parametri di convergenza (tolleranza).
-    * @param iteration Il numero di iterazione corrente.
-    * @return true se il solutore è convergente.
-    */
+	/**
+     * Valuta se lo stato corrente dell'iterazione soddisfa il criterio di convergenza stabilito.
+     *
+     * @param distance La misura dello scarto o della distanza corrente (es. norma del residuo o distanza tra iterati consecutivi)
+     * @param params I parametri numerici di controllo della convergenza (tolleranza ed iterazioni massime)
+     * @param iteration L'indice dell'iterazione corrente (k >= 0)
+     * @return true se il processo e' da considerarsi converso con successo, false altrimenti
+     */
    boolean isConverged(Real distance, ConvergenceParameters params, int iteration);
 }

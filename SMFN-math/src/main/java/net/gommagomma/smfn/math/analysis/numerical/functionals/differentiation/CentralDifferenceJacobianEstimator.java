@@ -14,12 +14,9 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
 /**
  * Stima l'intera Jacobiana n x n di F: Vector<K> -> Vector<K> per differenze
  * centrali, una colonna alla volta: perturbando la dimensione j si ottiene,
- * in una sola valutazione di F, la colonna j per TUTTE le righe insieme --
- * n valutazioni extra per passo (2n con le differenze centrali), non n^2.
+ * in una sola valutazione di F, la colonna j per tutte le righe insieme.
  *
- * Fallback generico per chi non implementa DifferentiableVectorProblem --
- * stesso ruolo di CentralDifferenceGradientEstimator, ma per l'intero
- * sistema invece che per una singola funzione multivariata.
+ * Fallback generico per chi non implementa DifferentiableVectorProblem.
  */
 public class CentralDifferenceJacobianEstimator<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
 {

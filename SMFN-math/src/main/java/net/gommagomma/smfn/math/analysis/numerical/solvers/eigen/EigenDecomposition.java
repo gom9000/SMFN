@@ -14,26 +14,6 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
  * Risultato di un EigenvalueSolver: autovalori e autovettori, in ordine
  * corrispondente (l'autovalore in posizione i va con l'autovettore in
  * posizione i).
- *
- * Non generica su K, deliberatamente: sia gli autovalori sia gli
- * autovettori vivono sempre in Complex, a prescindere dal tipo scalare
- * della matrice di partenza -- Complex e' chiuso algebricamente, copre
- * senza perdita qualunque caso (una matrice reale non simmetrica puo'
- * avere autovalori E autovettori genuinamente complessi).
- *
- * Un solo costruttore: chi produce risultati genuinamente reali (Jacobi)
- * avvolge lui stesso i valori in Complex(v,0) prima di costruire -- non e'
- * compito di questa classe scegliere tra "versione reale" e "versione
- * complessa" della propria costruzione.
- *
- * toRealDecomposition(tolerance) e' il modo per ottenere una vista reale
- * ACCOPPIATA (autovalori e autovettori insieme, con la stessa tolleranza):
- * verifica entrambi e restituisce gia' un RealEigenDecomposition coerente,
- * senza mai troncare silenziosamente una componente genuinamente complessa.
- * getRealEigenvalues(tolerance) e' una comodita' separata per i rami che
- * garantiscono autovalori reali ma NON autovettori reali (hermitiano): non
- * tocca gli autovettori, quindi non ha il rischio di coppia disallineata
- * che aveva motivato la rimozione del suo gemello getRealEigenvectors().
  */
 public final class EigenDecomposition
 {
@@ -50,15 +30,7 @@ public final class EigenDecomposition
 	public List<Complex> getEigenvalues() { return eigenvalues; }
 	public List<Vector<Complex>> getEigenvectors() { return eigenvectors; }
 
-	/**
-	 * Estrae la sola parte reale di ciascun autovalore -- utile per i rami
-	 * che garantiscono autovalori reali ma NON autovettori reali
-	 * (hermitiano). A differenza di toRealDecomposition(), non richiede
-	 * nulla sugli autovettori: non c'e' nessuna coppia da tenere coerente,
-	 * quindi il rischio di due tolleranze diverse su un risultato accoppiato
-	 * (il motivo per cui avevamo tolto questo metodo insieme al suo gemello
-	 * sugli autovettori) qui non si presenta.
-	 */
+
 	public List<Real> getRealEigenvalues(Real tolerance) {
 		double tol = tolerance.getValue();
 		List<Real> result = new ArrayList<>(eigenvalues.size());
