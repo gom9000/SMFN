@@ -5,10 +5,12 @@ import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
- * Funzione da K^n a K^m: Mapping<Vector<K>,Vector<K>>, non Operator<Vector<K>>
- * -- Vector<K> non porta la dimensione nel tipo, e n puo' differire da m
- * (es. una Matrix rettangolare). Forzare Operator qui promettarebbe una
- * composizione/iterazione che non sempre ha senso dimensionale.
+ * Rappresenta una funzione vettoriale a più variabili.
+ * Definisce una mappa del tipo f: K^n -> K^m, che associa a un vettore d'ingresso
+ * appartenente a uno spazio vettoriale un altro vettore dello stesso spazio.
+ * </p>
+ *
+ * @param <K> Il tipo dello scalare che compone gli elementi dei vettori di dominio e codominio
  */
 public interface VectorFunction<K extends ScalarElement<K>>
 extends Mapping<Vector<K>, Vector<K>>
