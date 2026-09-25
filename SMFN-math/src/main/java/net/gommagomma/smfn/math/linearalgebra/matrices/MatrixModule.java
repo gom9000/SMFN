@@ -22,7 +22,7 @@ implements Module<Matrix<K>, K, S>
     @Override
     public Matrix<K> negate(Matrix<K> m) {
         validateDimensions(m);
-        K[] resultData = (K[]) new ScalarElement[rows * cols];
+        K[] resultData = newDataArray(rows * cols);
         
         for (int i = 0; i < resultData.length; i++) {
             // Negazione scalare elemento per elemento
@@ -37,7 +37,7 @@ implements Module<Matrix<K>, K, S>
         validateDimensions(a);
         validateDimensions(b);
         
-        K[] resultData = (K[]) new ScalarElement[rows * cols];
+        K[] resultData = newDataArray(rows * cols);
         for (int i = 0; i < resultData.length; i++) {
             resultData[i] = scalarStructure.subtract(
                 a.get(i / cols, i % cols), 

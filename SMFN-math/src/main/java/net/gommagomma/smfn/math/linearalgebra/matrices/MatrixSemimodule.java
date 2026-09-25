@@ -21,6 +21,11 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
         this.cols = cols;
     }
 
+    @SuppressWarnings("unchecked")
+    protected K[] newDataArray(int size) {
+        return (K[]) new ScalarElement[size];
+    }
+
     @Override
     public Matrix<K> of(K[] data) {
     	if (data == null || data.length != rows * cols) {
@@ -59,7 +64,7 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
 
     @Override
     public Matrix<K> zero() {
-        K[] data = (K[]) new ScalarElement[rows * cols];
+        K[] data = newDataArray(rows * cols);
         K zeroScalar = scalarStructure.zero();
         for (int i = 0; i < data.length; i++) {
             data[i] = zeroScalar;
@@ -72,7 +77,7 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
         validateDimensions(a);
         validateDimensions(b);
         
-        K[] resultData = (K[]) new ScalarElement[rows * cols];
+        K[] resultData = newDataArray(rows * cols);
         for (int i = 0; i < rows * cols; i++) {
             resultData[i] = scalarStructure.add(a.get(i / cols, i % cols), b.get(i / cols, i % cols));
         }
@@ -82,7 +87,7 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
     @Override
     public Matrix<K> scale(K scalar, Matrix<K> m) {
         validateDimensions(m);
-        K[] resultData = (K[]) new ScalarElement[rows * cols];
+        K[] resultData = newDataArray(rows * cols);
         for (int i = 0; i < rows * cols; i++) {
             resultData[i] = scalarStructure.multiply(scalar, m.get(i / cols, i % cols));
         }
@@ -110,7 +115,7 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
 
 	public Matrix<K> transpose(Matrix<K> m) {
         validateDimensions(m);
-        K[] transposedData = (K[]) new ScalarElement[rows * cols];
+        K[] transposedData = newDataArray(rows * cols);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 transposedData[j * rows + i] = m.get(i, j);

@@ -187,7 +187,6 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
      * moltiplicativa giusta a partire dallo scalare -- nessun argomento da
      * passare, come isHermitian().
      */
-    @SuppressWarnings("unchecked")
     public boolean isUnitary() {
         Semiring<SquareMatrix<K>> multiplicative =
             (Semiring<SquareMatrix<K>>) SquareMatrixStructureFactory.getStructureFor(getScalarStructure(), getN());

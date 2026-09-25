@@ -45,10 +45,9 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
      * @throws ArithmeticException se m e' singolare (non invertibile).
      */
     @Override
-    @SuppressWarnings("unchecked")
     public SquareMatrix<K> inverse(SquareMatrix<K> m) {
         int totalCols = 2 * n;
-        K[] augData = (K[]) new ScalarElement[n * totalCols];
+        K[] augData = newDataArray(n * totalCols);
         K zero = scalarStructure.zero();
         K one = scalarStructure.one();
 
@@ -64,7 +63,7 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
         performGaussJordan(augData, n, totalCols);
 
         // 3. Estrazione Inversa
-        K[] invData = (K[]) new ScalarElement[n * n];
+        K[] invData = newDataArray(n * n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 invData[i * n + j] = augData[i * totalCols + (j + n)];

@@ -77,10 +77,9 @@ implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S>
         return det;
     }
 
-    @SuppressWarnings("unchecked")
     private SquareMatrix<K> getMinor(SquareMatrix<K> m, int r, int c) {
         int minorN = m.getN() - 1;
-        K[] minorData = (K[]) new ScalarElement[minorN * minorN];
+        K[] minorData = newDataArray(minorN * minorN);
         int rowIdx = 0;
         for (int i = 0; i < m.getN(); i++) {
             if (i == r) continue;

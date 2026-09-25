@@ -67,7 +67,6 @@ public final class SquareMatrixElementFactory
         // getStructureFor puo' restituire un SquareMatrixSemiring (se s e' solo un
         // Semiring), che NON e' un SquareMatrixRing -- il cast stretto lanciava
         // ClassCastException in quel caso. one() e' gia' disponibile al livello Semiring.
-        @SuppressWarnings("unchecked")
         Semiring<SquareMatrix<K>> structure = (Semiring<SquareMatrix<K>>) SquareMatrixStructureFactory.getStructureFor(s, size);
         return structure.one();
     }

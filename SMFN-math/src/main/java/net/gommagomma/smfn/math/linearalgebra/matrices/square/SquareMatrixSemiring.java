@@ -27,6 +27,11 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
         this.matrixDelegate = new MatrixSemimodule<>(scalarStructure, n, n);
     }
 
+    @SuppressWarnings("unchecked")
+    protected K[] newDataArray(int size) {
+        return (K[]) new ScalarElement[size];
+    }
+
     @Override
     public SquareMatrix<K> of(K[] data) {
     	Matrix<K> internal = matrixDelegate.of(data);
@@ -42,7 +47,7 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
 
     @Override
     public SquareMatrix<K> one() {
-    	K[] data = (K[]) new ScalarElement[n * n];
+    	K[] data = newDataArray(n * n);
         K zero = scalarStructure.zero();
         K one = scalarStructure.one();
         for (int i = 0; i < n; i++) {
@@ -59,7 +64,7 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
             throw new IllegalArgumentException("Dimensioni incompatibili con questa struttura " + n + "x" + n);
         }
 
-        K[] resultData = (K[]) new ScalarElement[n * n];
+        K[] resultData = newDataArray(n * n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 K sum = scalarStructure.zero();
@@ -121,7 +126,7 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
             throw new IllegalArgumentException("Dimensione matrice errata.");
         }
 
-        K[] transposedData = (K[]) new ScalarElement[n * n];
+        K[] transposedData = newDataArray(n * n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 transposedData[j * n + i] = m.get(i, j);
