@@ -1,5 +1,7 @@
 package net.gommagomma.smfn.math.algebra.core.structures.capabilities;
 
+import java.util.Objects;
+
 import net.gommagomma.smfn.math.algebra.core.elements.ExactElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
@@ -15,10 +17,8 @@ extends ScalarStructure<K>
 	@Override
     default boolean isExact() { return true; }
 
-    @Override
-    default boolean areEqual(K a, K b) {
-    	if (a == b) return true;
-        if (a == null || b == null) return false;
-        return a.equals(b);
-    }	
+	@Override
+	default boolean areEqual(K a, K b) {
+	    return Objects.equals(a, b);
+	}	
 }

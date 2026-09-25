@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.CompositeElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 
 /**
- * Fornisce le capacit‡ di calcolo della derivata simbolica per elementi composti 
+ * Rappresenta le capacit√† di calcolo della derivata simbolica per elementi composti 
  * (come espressioni algebriche o polinomi).
  *
  * @param <K> il tipo degli scalari di supporto

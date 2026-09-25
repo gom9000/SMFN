@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
  * Rappresenta un anello commutativo, ovvero un anello in cui l'operazione di moltiplicazione 
- * gode della propriet‡ commutativa.
+ * gode della propriet√† commutativa.
  *
  * @param <E> il tipo degli elementi appartenenti alla struttura
  */

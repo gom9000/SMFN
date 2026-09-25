@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.algebra.core.structures;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Interfaccia radice per qualsiasi struttura algebrica, definisce le propriet‡ 
+ * Interfaccia radice per qualsiasi struttura algebrica, definisce le propriet√† 
  * e i contratti fondamentali condivisi da insiemi dotati di operazioni (come appartenenza e uguaglianza).
  *
  * @param <E> il tipo degli elementi appartenenti alla struttura

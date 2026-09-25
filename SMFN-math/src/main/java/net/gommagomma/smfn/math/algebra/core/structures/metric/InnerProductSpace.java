@@ -8,8 +8,8 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
 
 /**
  * Rappresenta uno spazio con prodotto interno (o spazio pre-hilbertiano), 
- * ovvero uno spazio normato in cui Ë definito un prodotto scalare hermitiano (o bilineare) 
- * che soddisfa le propriet‡ di sesquilinearit‡, simmetria coniugata e positivit‡ definita.
+ * ovvero uno spazio normato in cui √® definito un prodotto scalare hermitiano (o bilineare) 
+ * che soddisfa le propriet√† di sesquilinearit√†, simmetria coniugata e positivit√† definita.
  *
  * @param <V> il tipo dell'elemento vettoriale
  * @param <K> il tipo dello scalare del campo sottostante
@@ -36,7 +36,7 @@ extends NormedSpace<V, K, S>
 	@SuppressWarnings("unchecked")
 	default K conjugateIfPossible(K value) {
 		if (value instanceof Conjugable) {
-			return (K) ((Conjugable<K>) value).conjugate();
+			return ((Conjugable<K>) value).conjugate();
 		}
 		return value;
 	}

@@ -12,7 +12,7 @@ import net.gommagomma.smfn.math.utils.MathUtils;
 /**
  * Rappresenta un numero razionale esatto sotto forma di frazione irriducibile (n/d), 
  * basato su valori numerici a 64 bit (long) per numeratore e denominatore. 
- * Il denominatore è sempre mantenuto positivo normalizzando il segno sul numeratore.
+ * Il denominatore Ã¨ sempre mantenuto positivo normalizzando il segno sul numeratore.
  */
 public final class Rational
 implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absolutable<Rational>, Exponentiable<Rational>
@@ -22,12 +22,12 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
 
     /**
      * Costruisce un numero razionale semplificato a partire da numeratore e denominatore.
-     * Il segno viene normalizzato affinché il denominatore sia sempre positivo e la frazione 
+     * Il segno viene normalizzato affinchï¿½ il denominatore sia sempre positivo e la frazione 
      * viene ridotta ai minimi termini tramite il massimo comun divisore (MCD).
      * 
      * @param numerator il numeratore
      * @param denominator il denominatore
-     * @throws IllegalArgumentException se il denominatore è zero
+     * @throws IllegalArgumentException se il denominatore ï¿½ zero
      */
     public Rational(long numerator, long denominator)
     {
@@ -38,7 +38,7 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
         // denominator is always positive, the sign is moved to the numerator
         if (denominator < 0) {
         	if (numerator == Long.MIN_VALUE || denominator == Long.MIN_VALUE) {
-                throw new ArithmeticException("Impossibile rappresentare questo razionale: negare Long.MIN_VALUE causa overflow.");
+                throw new ArithmeticException("Overflow: cannot negate Long.MIN_VALUE.");
             }
             numerator = -numerator;
             denominator = -denominator;
@@ -105,7 +105,7 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
     @Override // Absolutable impls
     public Rational abs() {
     	if (numerator == Long.MIN_VALUE) {
-            throw new ArithmeticException("Impossibile calcolare il valore assoluto di Long.MIN_VALUE come long.");
+            throw new ArithmeticException("Cannot compute absolute value: value is Long.MIN_VALUE, which overflows a long.");
         }
         return new Rational(Math.abs(numerator), denominator);
     }

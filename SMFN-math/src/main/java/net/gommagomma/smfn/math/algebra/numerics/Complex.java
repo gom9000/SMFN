@@ -12,7 +12,7 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
 /**
  * Rappresenta un numero complesso in forma algebrica (z = a + bi), 
  * basato su valori in virgola doppia precisione (double) per la parte reale e immaginaria.
- * Implementa le capacit‡ numeriche e algebriche per operare all'interno del campo complesso.
+ * Implementa le capacit√† numeriche e algebriche per operare all'interno del campo complesso.
  */
 public final class Complex
 implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, Sqrtable<Complex>, Conjugable<Complex>

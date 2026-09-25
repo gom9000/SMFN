@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
  * Rappresenta un monoide moltiplicativo commutativo, in cui l'operazione 
- * di moltiplicazione è sia associativa che commutativa.
+ * di moltiplicazione Ã¨ sia associativa che commutativa.
  *
  * @param <E> il tipo degli elementi appartenenti alla struttura
  */

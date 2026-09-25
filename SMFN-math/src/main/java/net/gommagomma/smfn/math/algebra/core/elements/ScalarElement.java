@@ -4,7 +4,8 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
 
 /**
  * Rappresenta un elemento scalare (appartenente a un anello, campo o struttura scalare).
- * Costituisce la base per i numeri o i coefficienti atomici della libreria.
+ * Costituisce il tipo base per i coefficienti della libreria, coprendo sia tipi atomici
+ * sia strutture composte utilizzate come scalari in strutture di livello superiore.
  *
  * @param <K> il tipo concreto dello scalare
  */

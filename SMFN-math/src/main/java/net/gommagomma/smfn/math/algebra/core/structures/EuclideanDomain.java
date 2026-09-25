@@ -71,7 +71,7 @@ extends CommutativeRing<E>
 	}
 
 	/**
-     * Normalizza l'elemento (ad esempio rendendolo positivo se supporta la capacit‡ Absolutable).
+     * Normalizza l'elemento (ad esempio rendendolo positivo se supporta la capacit√† Absolutable).
      * 
      * @param element l'elemento da normalizzare
      * @return l'elemento normalizzato

@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.algebra.structures.ZnRing;
 /**
  * Rappresenta un elemento dell'anello delle classi resto modulo n ($\mathbb{Z}/n\mathbb{Z}$).
  * Ciascun elemento incapsula un valore intero normalizzato rispetto a un dato modulo positivo 
- * e implementa le capacit‡ per l'aritmetica modulare esatta e l'elevamento a potenza.
+ * e implementa le capacit√† per l'aritmetica modulare esatta e l'elevamento a potenza.
  */
 public final class ZnElement 
 implements ExactElement<ZnElement>, Exponentiable<ZnElement>
@@ -22,7 +22,7 @@ implements ExactElement<ZnElement>, Exponentiable<ZnElement>
      * 
      * @param value il valore intero iniziale
      * @param modulus il modulo dell'anello (deve essere strettamente positivo)
-     * @throws IllegalArgumentException se il modulo Ë minore o uguale a zero
+     * @throws IllegalArgumentException se il modulo √® minore o uguale a zero
      */
     public ZnElement(SignedInt value, SignedInt modulus) {
         if (modulus.getValue() <= 0) {

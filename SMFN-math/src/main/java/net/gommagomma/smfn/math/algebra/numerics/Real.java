@@ -11,7 +11,7 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 /**
  * Rappresenta un numero reale approssimato, basato su un valore primitivo 
- * in virgola mobile a doppia precisione (double). Implementa le capacit‡ numeriche, 
+ * in virgola mobile a doppia precisione (double). Implementa le capacit√† numeriche, 
  * di ordinamento e di calcolo algebrico all'interno del campo reale.
  */
 public final class Real

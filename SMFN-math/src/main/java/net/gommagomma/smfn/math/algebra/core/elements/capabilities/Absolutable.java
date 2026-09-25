@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Rappresenta la capacit‡ di un elemento algebrico di calcolare il proprio valore assoluto 
+ * Rappresenta la capacit√† di un elemento algebrico di calcolare il proprio valore assoluto 
  * (o modulo) e di determinare il proprio segno.
  *
  * @param <E> il tipo concreto dell'elemento

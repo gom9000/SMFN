@@ -3,8 +3,8 @@ package net.gommagomma.smfn.math.algebra.core;
 import java.util.Objects;
 
 /**
- * Rappresenta un'applicazione matematica o mappa f: I -> O.
- * E' l'astrazione fondamentale per qualsiasi legge di corrispondenza tra un dominio e un codominio.
+ * Rappresenta un'applicazione matematica o semplice mappatura f: I -> O.
+ * È l'astrazione fondamentale per qualsiasi legge di corrispondenza tra un dominio e un codominio.
  *
  * @param <I> il tipo del dominio (input)
  * @param <O> il tipo del codominio (output)
@@ -20,10 +20,10 @@ public interface Mapping<I, O>
     O apply(I input);
 
     /**
-     * Esegue la composizione di morfismi: (f * g)(x) = f(g(x)).
+     * Esegue la composizione: (f * g)(x) = f(g(x)).
      * 
-     * @param <V> il tipo del dominio della funzione precedente
-     * @param before la funzione da applicare prima di questa
+     * @param <V> il tipo del dominio della mappatura precedente
+     * @param before la mappatura da applicare prima di questa
      * @return un nuovo mapping che rappresenta la composizione
      */
     default <V> Mapping<V, O> compose(Mapping<? super V, ? extends I> before) {
@@ -35,7 +35,7 @@ public interface Mapping<I, O>
      * Restituisce il mapping identità f(x) = x.
      * 
      * @param <T> il tipo degli elementi
-     * @return un mapping identit�
+     * @return un mapping identità
      */
     static <T> Mapping<T, T> identity() {
         return (T t) -> t;

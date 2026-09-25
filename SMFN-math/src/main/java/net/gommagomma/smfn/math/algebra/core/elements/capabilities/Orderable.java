@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Rappresenta la capacità di un elemento di essere ordinato.
+ * Rappresenta la capacitÃ  di un elemento di essere ordinato.
  *
  * @param <E> il tipo concreto dell'elemento
  */
@@ -11,7 +11,7 @@ public interface Orderable<E extends AlgebraicElement<E>>
 extends Comparable<E>
 {
 	/**
-     * Verifica se questo elemento è strettamente minore di un altro.
+     * Verifica se questo elemento ï¿½ strettamente minore di un altro.
      * 
      * @param other l'elemento con cui effettuare il confronto
      * @return true se questo elemento precede l'altro, false altrimenti
@@ -21,7 +21,7 @@ extends Comparable<E>
     }
 
     /**
-     * Verifica se questo elemento è strettamente maggiore di un altro.
+     * Verifica se questo elemento ï¿½ strettamente maggiore di un altro.
      * 
      * @param other l'elemento con cui effettuare il confronto
      * @return true se questo elemento segue l'altro, false altrimenti
@@ -31,7 +31,7 @@ extends Comparable<E>
     }
 
     /**
-     * Verifica se questo elemento è minore o uguale a un altro.
+     * Verifica se questo elemento ï¿½ minore o uguale a un altro.
      * 
      * @param other l'elemento con cui effettuare il confronto
      * @return true se minore o uguale, false altrimenti
@@ -41,7 +41,7 @@ extends Comparable<E>
     }
 
     /**
-     * Verifica se questo elemento è maggiore o uguale a un altro.
+     * Verifica se questo elemento ï¿½ maggiore o uguale a un altro.
      * 
      * @param other l'elemento con cui effettuare il confronto
      * @return true se maggiore o uguale, false altrimenti

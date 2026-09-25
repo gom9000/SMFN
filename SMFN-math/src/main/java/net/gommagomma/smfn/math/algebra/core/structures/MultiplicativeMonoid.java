@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
  * Rappresenta un monoide moltiplicativo, caratterizzato da un'operazione binaria interna 
- * associativa e dall'esistenza di un elemento neutro moltiplicativo (unit‡).
+ * associativa e dall'esistenza di un elemento neutro moltiplicativo (unit√†).
  *
  * @param <E> il tipo degli elementi appartenenti alla struttura
  */
@@ -12,7 +12,7 @@ public interface MultiplicativeMonoid<E extends AlgebraicElement<E>>
 extends AlgebraicStructure<E>
 {
 	/**
-     * Restituisce l'elemento neutro rispetto alla moltiplicazione (l'unit‡).
+     * Restituisce l'elemento neutro rispetto alla moltiplicazione (l'unit√†).
      * 
      * @return l'elemento uno della struttura
      */
@@ -28,10 +28,10 @@ extends AlgebraicStructure<E>
     E multiply(E a, E b);
 
     /**
-     * Verifica se un elemento coincide con l'unit‡ della struttura.
+     * Verifica se un elemento coincide con l'unit√† della struttura.
      * 
      * @param e l'elemento da verificare
-     * @return true se l'elemento Ë l'unit‡, false altrimenti
+     * @return true se l'elemento √® l'unit√†, false altrimenti
      */
     default boolean isOne(E e) {
         return areEqual(e, one());

@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 
 /**
- * Rappresenta la capacit‡ di un elemento di restituire la propria norma
+ * Rappresenta la capacit√† di un elemento di restituire la propria norma
  * sotto forma di valore scalare.
  *
  * @param <K> il tipo scalare della norma risultante

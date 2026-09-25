@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 
 /**
  * Rappresenta un semimodulo, una generalizzazione di uno spazio vettoriale in cui gli scalari 
- * formano un semianello anziché un campo e l'addizione costituisce un monoide.
+ * formano un semianello anzichÃ© un campo e l'addizione costituisce un monoide.
  *
  * @param <V> il tipo dell'elemento lineare
  * @param <K> il tipo dello scalare

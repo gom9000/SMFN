@@ -2,7 +2,8 @@ package net.gommagomma.smfn.math.algebra.core.elements;
 
 /**
  * Interfaccia radice per qualsiasi elemento all'interno di una struttura algebrica.
- * Sfrutta il polimorfismo F-bounded per garantire che le operazioni restituiscano il tipo concreto corretto.
+ * Sfrutta il polimorfismo F-bounded per garantire che le operazioni restituiscano il tipo concreto corretto,
+ * evitando tediosi cast espliciti.
  *
  * @param <E> il tipo concreto dell'elemento algebrico
  */

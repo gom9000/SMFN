@@ -6,7 +6,6 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.utils.MathUtils;
 
 
 /**
@@ -64,18 +63,18 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
         // Bit di segno: 0 se positivo, diverso da 0 se negativo
         boolean negative = (bits & 0x8000000000000000L) != 0;
 
-        // Se l'esponente è 0, è un valore denormalizzato. Altrimenti è normalizzato.
+        // Se l'esponente ï¿½ 0, ï¿½ un valore denormalizzato. Altrimenti ï¿½ normalizzato.
         if (exponent == 0) { 
-            // Denormalizzato: l'esponente è -1022, il bit implicito non è aggiunto
+            // Denormalizzato: l'esponente ï¿½ -1022, il bit implicito non ï¿½ aggiunto
             exponent = -1022; 
         } else {
-            // Normalizzato: aggiunge il bit implicito (il 53° bit della mantissa)
+            // Normalizzato: aggiunge il bit implicito (il 53ï¿½ bit della mantissa)
             mantissa |= 0x0010000000000000L; 
-            // Il bias dell'esponente è 1023
+            // Il bias dell'esponente ï¿½ 1023
             exponent -= 1023;
         }
 
-        // Il valore è: mantissa * 2^exponent
+        // Il valore ï¿½: mantissa * 2^exponent
         
         long num;
         long den;
@@ -101,7 +100,7 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
             }
 
             // Calcoliamo il denominatore usando lo shift bit, evitando MathUtils.power
-            // (1L << N è 2^N)
+            // (1L << N ï¿½ 2^N)
             den = 1L << powerOfTwo; 
             num = mantissa;
         }

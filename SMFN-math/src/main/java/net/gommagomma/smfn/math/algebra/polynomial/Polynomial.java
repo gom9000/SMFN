@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
 /**
- * Rappresenta un polinomio in un'indeterminata a coefficienti in un anello o campo scalare.
+ * Rappresenta un polinomio in una singola indeterminata con coefficienti scalari (da semianello a campo).
  * Implementa sia l'interfaccia di elemento composito sia quella di elemento scalare per permettere 
  * la trattazione ricorsiva e l'incapsulamento all'interno di strutture algebriche.
  * 
@@ -60,7 +60,7 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
     /**
      * Restituisce il grado algebrico del polinomio.
      * 
-     * @return il grado del polinomio, oppure -1 se il polinomio è il polinomio zero
+     * @return il grado del polinomio, oppure -1 se il polinomio ï¿½ il polinomio zero
      */
     public int degree() {
         return coefficients.isEmpty() ? -1 : coefficients.size() - 1;
@@ -101,7 +101,7 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
 
     @Override
     public Polynomial<K> copy() {
-        // Essendo immutabile, possiamo restituire this: non c'è stato da duplicare.
+        // Essendo immutabile, possiamo restituire this: non c'ï¿½ stato da duplicare.
         return this;
     }
 
@@ -110,7 +110,7 @@ implements CompositeElement<K, Polynomial<K>>, ScalarElement<Polynomial<K>>
         if (this == o) return true;
         if (!(o instanceof Polynomial)) return false;
         Polynomial<?> that = (Polynomial<?>) o;
-        // Grazie alla normalizzazione, il confronto tra liste è sufficiente
+        // Grazie alla normalizzazione, il confronto tra liste ï¿½ sufficiente
         return coefficients.equals(that.coefficients);
     }
 

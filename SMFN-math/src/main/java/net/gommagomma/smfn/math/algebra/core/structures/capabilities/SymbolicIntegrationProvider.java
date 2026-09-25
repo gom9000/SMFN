@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.CompositeElement;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 
 /**
- * Fornisce le capacit‡ di calcolo dell'integrale simbolico per elementi composti 
+ * Rappresenta la capacit√† di calcolo dell'integrale simbolico per elementi composti 
  * (come espressioni algebriche o polinomi).
  *
  * @param <K> il tipo degli scalari di supporto

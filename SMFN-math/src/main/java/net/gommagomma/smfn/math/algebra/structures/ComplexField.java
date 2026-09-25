@@ -18,7 +18,7 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
     private static final Complex ZERO = new Complex(0.0, 0.0);
     private static final Complex ONE = new Complex(1.0, 0.0);
 
-    /** Istanza singleton predefinita del campo complesso basata sulla tolleranza standard di {@link MathConstants#EPSILON}. */
+    /** Istanza singleton predefinita del campo complesso basata sulla tolleranza standard di MathConstants.EPSILON */
     public static final ComplexField INSTANCE = new ComplexField(MathConstants.EPSILON);
     
     private final double epsilon;

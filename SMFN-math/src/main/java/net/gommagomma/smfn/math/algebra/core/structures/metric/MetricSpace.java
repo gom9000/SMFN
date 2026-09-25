@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
  * Rappresenta uno spazio metrico, ovvero un insieme dotato di una funzione di distanza 
- * che soddisfa gli assiomi di non negativit‡, simmetria e disuguaglianza triangolare.
+ * che soddisfa gli assiomi di non negativit√†, simmetria e disuguaglianza triangolare.
  *
  * @param <E> il tipo degli elementi appartenenti allo spazio
  */
@@ -15,7 +15,7 @@ public interface MetricSpace<E>
      * 
      * @param a il primo elemento
      * @param b il secondo elemento
-     * @return un'istanza di {@link Real} che rappresenta la distanza tra a e b
+     * @return un'istanza di Real che rappresenta la distanza tra a e b
      */
     Real distance(E a, E b);
 }

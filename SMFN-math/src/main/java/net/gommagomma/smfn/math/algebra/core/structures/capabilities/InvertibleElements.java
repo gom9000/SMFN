@@ -3,8 +3,8 @@ package net.gommagomma.smfn.math.algebra.core.structures.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Rappresenta la capacit‡ di una struttura di gestire elementi che ammettono un inverso 
- * rispetto a un'operazione, fornendo i metodi per calcolarlo e verificarne l'invertibilit‡.
+ * Rappresenta la capacit√† di una struttura di gestire elementi che ammettono un inverso 
+ * rispetto a un'operazione, fornendo i metodi per calcolarlo e verificarne l'invertibilit√†.
  *
  * @param <E> il tipo degli elementi
  */
@@ -19,10 +19,10 @@ public interface InvertibleElements<E extends AlgebraicElement<E>>
 	E inverse(E e);
 
 	/**
-     * Verifica se l'elemento specificato Ë invertibile all'interno della struttura.
+     * Verifica se l'elemento specificato √® invertibile all'interno della struttura.
      * 
      * @param e l'elemento da verificare
-     * @return true se l'elemento Ë invertibile, false altrimenti
+     * @return true se l'elemento ÔøΩ invertibile, false altrimenti
      */
 	boolean isInvertible(E e);
 }

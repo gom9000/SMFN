@@ -4,7 +4,9 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.InvertibleElements;
 
 /**
-
+ * Rappresenta la struttura algebrica di Campo (Field), ossia
+ * Un campo è un anello commutativo unitario in cui ogni elemento non nullo 
+ * ammette un inverso rispetto alla moltiplicazione.
  *
  * @param <E> il tipo degli elementi appartenenti al campo
  */

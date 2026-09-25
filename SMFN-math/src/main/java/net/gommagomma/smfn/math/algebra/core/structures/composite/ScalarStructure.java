@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
  * Rappresenta una struttura algebrica scalare (che estende un semianello), 
- * fornendo operazioni e proprietà specifiche per i singoli valori scalari.
+ * fornendo operazioni e proprietÃ  specifiche per i singoli valori scalari.
  *
  * @param <K> il tipo degli elementi scalari
  */
@@ -22,10 +22,10 @@ extends Semiring<K>
 	Real magnitude(K element);
 
 	/**
-     * Indica se questa struttura scalare è basata su un'aritmetica esatta 
+     * Indica se questa struttura scalare ï¿½ basata su un'aritmetica esatta 
      * oppure approssimata.
      * 
-     * @return true se la struttura è esatta, false altrimenti
+     * @return true se la struttura ï¿½ esatta, false altrimenti
      */
 	boolean isExact(); 
 }

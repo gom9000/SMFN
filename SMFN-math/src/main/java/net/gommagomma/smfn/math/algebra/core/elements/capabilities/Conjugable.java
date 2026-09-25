@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Capacit‡ di un elemento di fornire il proprio coniugato.
+ * Rappresent la Capacit√† di un elemento di fornire il proprio coniugato.
  *
  * @param <E> il tipo concreto dell'elemento
  */

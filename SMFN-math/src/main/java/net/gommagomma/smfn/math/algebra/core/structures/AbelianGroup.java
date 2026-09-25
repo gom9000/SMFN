@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
  * Rappresenta un gruppo abeliano (o gruppo commutativo), ovvero un gruppo 
- * in cui l'operazione di gruppo (addizione) gode della propriet‡ commutativa.
+ * in cui l'operazione di gruppo (addizione) gode della propriet√† commutativa.
  *
  * @param <E> il tipo degli elementi appartenenti alla struttura
  */

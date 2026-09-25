@@ -8,8 +8,8 @@ import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 
 /**
- * Factory per la creazione dinamica e la selezione della struttura algebrica polinomiale 
- * più specifica (dominio euclideo, anello commutativo, anello o semianello) in base alla struttura scalare dei coefficienti fornita.
+ * Factory per la creazione e la selezione della struttura algebrica polinomiale appropriata
+ * (dominio euclideo, anello commutativo, anello o semianello) in base alla struttura scalare dei coefficienti fornita.
  */
 public final class PolynomialStructureFactory
 {
@@ -17,11 +17,11 @@ public final class PolynomialStructureFactory
 
     /**
      * Restituisce la struttura algebrica polinomiale appropriata per i coefficienti dotati della struttura scalare specificata,
-     * seguendo la gerarchia algebrica (Campo $\rightarrow$ Dominio Euclideo, Anello Commutativo, Anello, Semianello).
+     * seguendo la gerarchia algebrica (Campo/Dominio Euclideo, Anello Commutativo, Anello, Semianello).
      * 
      * @param <K> il tipo degli elementi scalari (coefficienti)
      * @param s la struttura scalare associata ai coefficienti
-     * @return la struttura algebrica polinomiale corrispondente più specifica
+     * @return la struttura algebrica polinomiale corrispondente piÃ¹ specifica
      */
     public static <K extends ScalarElement<K>> ScalarStructure<Polynomial<K>> getStructureFor(ScalarStructure<K> s) {
         if (s instanceof Field) {
@@ -39,9 +39,9 @@ public final class PolynomialStructureFactory
     /**
      * Crea un dominio euclideo di polinomi per una struttura di campo sottostante.
      * 
-     * @_param <K> il tipo degli elementi scalari
-     * @_param <S> il tipo della struttura scalare di campo
-     * @_param s la struttura scalare di campo
+     * @param <K> il tipo degli elementi scalari
+     * @param <S> il tipo della struttura scalare di campo
+     * @param s la struttura scalare di campo
      * @return un'istanza di {@link EuclideanPolynomialRing}
      */
     @SuppressWarnings("unchecked")
@@ -52,9 +52,9 @@ public final class PolynomialStructureFactory
     /**
      * Crea un anello commutativo di polinomi per una struttura di anello commutativo sottostante.
      * 
-     * @_param <K> il tipo degli elementi scalari
-     * @_param <S> il tipo della struttura scalare di anello commutativo
-     * @_param s la struttura scalare di anello commutativo
+     * @param <K> il tipo degli elementi scalari
+     * @param <S> il tipo della struttura scalare di anello commutativo
+     * @param s la struttura scalare di anello commutativo
      * @return un'istanza di {@link CommutativePolynomialRing}
      */
     @SuppressWarnings("unchecked")
@@ -65,9 +65,9 @@ public final class PolynomialStructureFactory
     /**
      * Crea un anello di polinomi per una struttura di anello sottostante.
      * 
-     * @_param <K> il tipo degli elementi scalari
-     * @_param <S> il tipo della struttura scalare di anello
-     * @_param s la struttura scalare di anello
+     * @param <K> il tipo degli elementi scalari
+     * @param <S> il tipo della struttura scalare di anello
+     * @param s la struttura scalare di anello
      * @return un'istanza di {@link PolynomialRing}
      */
     @SuppressWarnings("unchecked")
@@ -78,9 +78,9 @@ public final class PolynomialStructureFactory
     /**
      * Crea un semianello di polinomi per una struttura di semianello sottostante.
      * 
-     * @_param <K> il tipo degli elementi scalari
-     * @_param <S> il tipo della struttura scalare di semianello
-     * @_param s la struttura scalare di semianello
+     * @param <K> il tipo degli elementi scalari
+     * @param <S> il tipo della struttura scalare di semianello
+     * @param s la struttura scalare di semianello
      * @return un'istanza di {@link PolynomialSemiring}
      */
     @SuppressWarnings("unchecked")

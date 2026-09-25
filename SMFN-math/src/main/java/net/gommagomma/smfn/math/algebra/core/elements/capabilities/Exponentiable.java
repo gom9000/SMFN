@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Rappresenta la capacit‡ di un elemento di essere elevato a una potenza intera.
+ * Rappresenta la capacit√† di un elemento di essere elevato a una potenza intera.
  *
  * @param <E> il tipo concreto dell'elemento
  */

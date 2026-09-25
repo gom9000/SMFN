@@ -20,7 +20,7 @@ implements ExactElement<Natural>, Orderable<Natural>, Exponentiable<Natural>
      * 
      * @pram value il valore numerico long
      * @param value il valore numerico long
-     * @throws IllegalArgumentException se il valore è negativo
+     * @throws IllegalArgumentException se il valore Ã¨ negativo
      */
     public Natural(long value)
     {

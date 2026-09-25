@@ -17,7 +17,7 @@ implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>
     private static final Real ZERO = new Real(0.0);
     private static final Real ONE = new Real(1.0);
 
-    /** Istanza singleton predefinita del campo reale basata sulla tolleranza standard di {@link MathConstants#EPSILON}. */
+    /** Istanza singleton predefinita del campo reale basata sulla tolleranza standard di MathConstants.EPSILON */
     public static final RealField INSTANCE = new RealField(MathConstants.EPSILON);
     
     private final double epsilon;

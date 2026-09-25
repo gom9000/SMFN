@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 
 /**
  * Rappresenta uno spazio lineare (o spazio vettoriale), in cui gli scalari formano un campo 
- * e la struttura supporta le propriet‡ geometriche e algebriche complete dei vettori.
+ * e la struttura supporta le propriet√† geometriche e algebriche complete dei vettori.
  *
  * @param <V> il tipo dell'elemento vettoriale
  * @param <K> il tipo dello scalare appartenente al campo

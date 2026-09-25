@@ -3,7 +3,7 @@ package net.gommagomma.smfn.math.algebra.core.elements.capabilities;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
 /**
- * Rappresenta la capacit‡ di un elemento di calcolarne la radice quadrata.
+ * Rappresenta la capacit√† di un elemento di calcolarne la radice quadrata.
  *
  * @param <E> il tipo concreto dell'elemento
  */

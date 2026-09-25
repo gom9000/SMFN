@@ -22,7 +22,7 @@ public final class PolynomialElementFactory
      * @param <K> il tipo degli elementi scalari
      * @param scalarStructure la struttura algebrica dei coefficienti
      * @param coefficients la lista dei coefficienti ordinati per grado crescente
-     * @return l'istanza di {@link Polynomial} corrispondente
+     * @return l'istanza di Polynomial corrispondente
      */
     public static <K extends ScalarElement<K>> Polynomial<K> of(ScalarStructure<K> scalarStructure, List<K> coefficients) {
         ScalarStructure<Polynomial<K>> polynomialStructure = PolynomialStructureFactory.getStructureFor(scalarStructure);
@@ -37,7 +37,7 @@ public final class PolynomialElementFactory
      * @param <K> il tipo degli elementi scalari
      * @param scalarStructure la struttura algebrica dei coefficienti
      * @param values i coefficienti scalari passati come argomenti
-     * @return l'istanza di {@link Polynomial} corrispondente
+     * @return l'istanza di Polynomial corrispondente
      */
     @SafeVarargs
     public static <K extends ScalarElement<K>> Polynomial<K> of(ScalarStructure<K> scalarStructure, K... values) {
@@ -51,7 +51,7 @@ public final class PolynomialElementFactory
      * @param <K> il tipo degli elementi scalari
      * @param scalarStructure la struttura algebrica dei coefficienti (deve implementare {@link NumericFactory})
      * @param values i valori numerici primitivi per i coefficienti ordinati per grado crescente
-     * @return l'istanza di {@link Polynomial} corrispondente
+     * @return l'istanza di Polynomial corrispondente
      */
     public static <K extends ScalarElement<K>> Polynomial<K> of(ScalarStructure<K> scalarStructure, double... values) {
         @SuppressWarnings("unchecked")

@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
  * Rappresenta uno spazio normato, ovvero uno spazio vettoriale (spazio lineare) 
- * su un campo in cui è definita una norma che induce una metrica naturale.
+ * su un campo in cui Ã¨ definita una norma che induce una metrica naturale.
  *
  * @param <V> il tipo dell'elemento vettoriale
  * @param <K> il tipo dello scalare appartenente al campo

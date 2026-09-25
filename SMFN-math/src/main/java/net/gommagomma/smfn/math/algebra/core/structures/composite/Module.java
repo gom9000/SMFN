@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Ring;
 
 /**
  * Rappresenta un modulo (modulo su un anello), una generalizzazione di uno
- * spazio vettoriale in cui gli scalari formano un anello anziché un campo 
+ * spazio vettoriale in cui gli scalari formano un anello anzichÃ© un campo 
  * e l'addizione costituisce un gruppo abeliano.
  *
  * @param <V> il tipo dell'elemento lineare (vettore o elemento del modulo)

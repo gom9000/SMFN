@@ -31,7 +31,7 @@ extends AlgebraicStructure<E>
      * Verifica se un elemento coincide con l'elemento zero della struttura.
      * 
      * @param e l'elemento da verificare
-     * @return true se l'elemento è lo zero, false altrimenti
+     * @return true se l'elemento Ã¨ lo zero, false altrimenti
      */
 	default boolean isZero(E e) {
         return areEqual(e, zero());
