@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.physics;
 
 import java.util.List;
 import java.util.Random;

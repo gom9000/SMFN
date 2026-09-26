@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.geometry;
 
 import java.awt.Color;
 import java.util.function.BiFunction;

@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.geometry;
 
 import java.awt.Color;
 import java.util.function.BiFunction;
@@ -11,22 +11,22 @@ import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.geometry.Line;
+import net.gommagomma.smfn.math.geometry.Circle;
 import net.gommagomma.smfn.math.geometry.Point;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
 
-public class GeometryLinePlot {
+public class GeometryCirclePlot {
     public static void main(String[] args) {
         // --- 1. Definizione della funzione matematica ---
-        Line f = new Line(new Point(0.0, -1), new Real(2.5), new Real(5));
+        Circle circleFunction = new Circle(new Point(0.0, 0.0), new Real(2.5));
 
         // --- 2. Setup del contesto grafico ---
         int width = 800;
         int height = 600;
 
-        SwingRenderer2D renderer = new SwingRenderer2D(width, height);
-        SwingWindow.show(renderer, "SMFN Line Plot");
+        SwingRenderer2D renderer = new SwingRenderer2D(800, 600);
+        SwingWindow.show(renderer, "SMFN Circle Plot");
 
         Viewport viewport = new Viewport(-5, 5, -5, 5, width, height);
 
@@ -50,7 +50,7 @@ public class GeometryLinePlot {
 
         renderer.startDrawing();
 
-        FunctionPlotter2D.plotFunction(renderer, viewport, f, domainAdapter, colorMapper);
+        FunctionPlotter2D.plotFunction(renderer, viewport, circleFunction, domainAdapter, colorMapper);
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
 
         renderer.endDrawingAndFlush();

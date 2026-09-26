@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.physics;
 
 import java.util.Random;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;

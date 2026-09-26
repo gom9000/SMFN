@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.physics;
 
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
