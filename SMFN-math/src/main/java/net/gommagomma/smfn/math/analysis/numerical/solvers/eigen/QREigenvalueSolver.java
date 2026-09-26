@@ -16,6 +16,7 @@ import net.gommagomma.smfn.math.linearalgebra.operators.HessenbergReduction;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
+import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * Autovalori e autovettori di una matrice quadrata qualunque (K = Real o Complex),
@@ -81,11 +82,22 @@ implements EigenvalueSolver<K>
 			eigenvalues.add(t[i][i]);
 		}
 
+		// Scala di riferimento della matrice (in modulo di Schur T, non della A originale, ma le due
+		// sono simili quindi condividono la scala): il piu' grande autovalore in modulo. Usata sotto
+		// per decidere cosa conta come "pivot quasi nullo" in modo relativo alla matrice, non con una
+		// soglia assoluta -- un pivot di modulo 1e-6 e' enorme per una matrice con autovalori ~1e-10,
+		// e trascurabile per una con autovalori ~1e10.
+		double matrixScale = 0.0;
+		for (int i = 0; i < n; i++) {
+			matrixScale = Math.max(matrixScale, t[i][i].modulus());
+		}
+		double denomFloor = 1e-6 * Math.max(matrixScale, MathConstants.EPSILON);
+
 		List<Vector<Complex>> eigenvectors = new ArrayList<>(n);
 		VectorSpace<Complex, ComplexField> space = new VectorSpace<>(C, n);
 
 		for (int j = 0; j < n; j++) {
-			Complex[] y = backSubstitute(t, n, j);
+			Complex[] y = backSubstitute(t, n, j, denomFloor);
 			Complex[] eigenvectorData = multiply(q, y, n);
 			normalize(eigenvectorData, n);
 			eigenvectors.add(VectorElementFactory.of(space, List.of(eigenvectorData)));
@@ -98,11 +110,13 @@ implements EigenvalueSolver<K>
 	 * Risolve (T - lambda_j*I) y = 0 per sostituzione all'indietro, con y[j] = 1 come
 	 * riferimento e y[i] per i > j pari a zero (T e' triangolare superiore: l'autovettore
 	 * dell'autovalore in posizione j non ha componenti sotto j nella base di Schur).
-	 * Un pivot quasi nullo (autovalore ripetuto/matrice difettiva) viene sostituito con
-	 * un valore piccolo non nullo: risultato migliore disponibile, non un'eccezione --
-	 * coerente con la scelta di non far fallire il solutore su un caso limite algebrico.
+	 * Un pivot sotto {@code denomFloor} (autovalore ripetuto/matrice difettiva) viene sostituito
+	 * con {@code denomFloor} stesso: risultato migliore disponibile, non un'eccezione -- coerente
+	 * con la scelta di non far fallire il solutore su un caso limite algebrico. Il vettore prodotto
+	 * in questo caso non e' un autovettore esatto (non esiste, per una matrice difettiva): resta
+	 * un'approssimazione, tanto piu' grezza quanto piu' il pivot vero era vicino a zero.
 	 */
-	private Complex[] backSubstitute(Complex[][] t, int n, int j) {
+	private Complex[] backSubstitute(Complex[][] t, int n, int j, double denomFloor) {
 		Complex lambda = t[j][j];
 		Complex[] y = new Complex[n];
 		for (int i = 0; i < n; i++) {
@@ -116,13 +130,15 @@ implements EigenvalueSolver<K>
 				sum = C.add(sum, C.multiply(t[i][k], y[k]));
 			}
 			Complex denom = C.subtract(t[i][i], lambda);
-			if (denom.modulus() < 1e-6) {
-				// Autovalore ripetuto/quasi ripetuto (matrice difettiva): il pivot e' quasi nullo.
-				// Non esiste in questo caso un autovettore esatto da recuperare per sostituzione
-				// all'indietro -- si sostituisce un pivot piccolo ma non nullo (piu' grande della
-				// tolleranza approssimata di ComplexField, altrimenti divide() lo tratterebbe
-				// comunque come zero) per restituire il miglior risultato disponibile.
-				denom = new Complex(1e-6, 0.0);
+			if (denom.modulus() < denomFloor) {
+				// Pivot quasi nullo relativamente alla scala della matrice (vedi denomFloor in
+				// buildResult): niente autovettore esatto da recuperare qui. Si sostituisce il
+				// pivot con denomFloor stesso (non un valore assoluto arbitrario come 1e-6, che
+				// sarebbe stato o troppo grande o troppo piccolo a seconda della scala di T) --
+				// abbastanza grande da restare al di sopra della tolleranza approssimata di
+				// ComplexField (MathConstants.EPSILON), quindi va diviso davvero, non trattato
+				// come zero.
+				denom = new Complex(denomFloor, 0.0);
 			}
 			y[i] = C.negate(divideRaw(sum, denom));
 		}
