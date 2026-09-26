@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.fractals;
 
 import java.awt.Color;
 import java.util.function.BiFunction;
@@ -15,7 +15,7 @@ import net.gommagomma.smfn.math.analysis.fractals.JuliaFunction;
 
 public class JuliaPlot {
     public static void main(String[] args) {
-        // --- 1. Definizione della funzione matematica 
+    	// Definizione della funzione matematica
         final int MAX_ITERATIONS = 100;
         //final Complex constantC = new Complex(-0.11031, -0.67037);
         //final Complex constantC = new Complex(-1.25, 0);
@@ -32,24 +32,16 @@ public class JuliaPlot {
         //final Complex constantC = new Complex(-0.8, 0.156); // Sierpinski Gasket
         //final Complex constantC = new Complex(-0.5, 0.5); // Seahorse/Dendrite
         //final Complex constantC = new Complex(0.285, 0.01); // cross
-        JuliaFunction juliaFunction = new JuliaFunction(constantC, MAX_ITERATIONS);
+        JuliaFunction function = new JuliaFunction(constantC, MAX_ITERATIONS);
 
-        // --- 2. Setup del contesto grafico ---
+     // Setup del contesto grafico
         int width = 800;
         int height = 600;
-        
         SwingRenderer2D renderer = new SwingRenderer2D(width, height);
         SwingWindow.show(renderer, "SMFN Julia Set (c = " + constantC + ") Plot");
-
-        // Definisci l'area matematica (Viewport): [-2.0, 1.0] x [-1.5, 1.5] 
-        // L'area classica che contiene l'intero set
         Viewport viewport = new Viewport(-1.5, 1.5, -1.5, 1.5, width, height);
 
-        // --- 3. Definizione degli adattatori (Adapter Pattern) ---
-        
-        // Adattatore Dominio: Combina X (reale) e Y (immaginario) in un Complex input 'c'
-        BiFunction<Double, Double, Complex> domainAdapter = Complex::new;
-
+        // Definisce la mappa colore del risultato del solver
         ColorMapper<Natural> colorMapper = new ColorMapper<>() {
             @Override
             public Color map(Natural r) {
@@ -63,20 +55,14 @@ public class JuliaPlot {
             }
         };
 
-        // --- 4. Processo di rendering ---
+        // Adattatore Dominio: Combina X (reale) e Y (immaginario) in un Complex input 'c'
+        BiFunction<Double, Double, Complex> domainAdapter = Complex::new;
+
+        // Rendering
         renderer.startDrawing();
-
-        // Pulisci lo sfondo prima di disegnare (anche se il plotter coprir� tutto)
         renderer.clear(Color.WHITE);
-        
-        // Usa il FunctionPlotter2D per disegnare il frattale
-        FunctionPlotter2D.plotFunction(
-            renderer, viewport, juliaFunction, domainAdapter, colorMapper
-        );
-
+        FunctionPlotter2D.plotFunction(renderer, viewport, function, domainAdapter, colorMapper);
         CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
-
-        // Mostra il risultato a schermo
         renderer.endDrawingAndFlush();
     }
 }
