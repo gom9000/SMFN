@@ -13,6 +13,10 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.ResidualAware;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
+import net.gommagomma.smfn.math.analysis.core.solvers.StepDistanceAware;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
@@ -28,7 +32,7 @@ class JacobiEigenvalueSolverTest
 	@DisplayName("Caso 2x2 noto: A=[[2,1],[1,2]], autovalori 1 e 3, calcolati a mano")
 	void solvesKnownTwoByTwoCase() {
 		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
-		EigenDecomposition result = solver.solve(A, params);
+		EigenDecomposition result = solver.solve(A, params).getValue();
 
 		List<Complex> eigenvalues = result.getEigenvalues();
 		assertEquals(2, eigenvalues.size());
@@ -43,7 +47,7 @@ class JacobiEigenvalueSolverTest
 	@DisplayName("A*v == lambda*v per ciascuna coppia autovalore/autovettore -- verifica indipendente")
 	void eigenpairsSatisfyDefiningEquation() {
 		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
-		EigenDecomposition result = solver.solve(A, params);
+		EigenDecomposition result = solver.solve(A, params).getValue();
 		RealEigenDecomposition real = result.toRealDecomposition(new Real(1e-9));
 
 		List<Real> eigenvalues = real.getEigenvalues();
@@ -68,7 +72,7 @@ class JacobiEigenvalueSolverTest
 			0.0, 2.0, 0.0,
 			0.0, 0.0, 9.0
 		);
-		EigenDecomposition result = solver.solve(D, params);
+		EigenDecomposition result = solver.solve(D, params).getValue();
 
 		List<Double> values = new java.util.ArrayList<>();
 		for (Complex c : result.getEigenvalues()) {
@@ -84,5 +88,31 @@ class JacobiEigenvalueSolverTest
 	void rejectsNonSymmetricMatrix() {
 		SquareMatrix<Real> nonSym = SquareMatrixElementFactory.of(R, 1.0, 2.0, 3.0, 4.0);
 		assertThrows(IllegalArgumentException.class, () -> solver.solve(nonSym, params));
+	}
+
+	@Test
+	@DisplayName("Caso convergente: SolverResult riporta CONVERGED e non e' ne' StepDistanceAware ne' ResidualAware")
+	void convergedResultHasNoOptionalCapabilities() {
+		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
+		SolverResult<EigenDecomposition> result = solver.solve(A, params);
+
+		assertEquals(ConvergenceStatus.CONVERGED, result.getStatus());
+		assertTrue(result.getIterationsExecuted() >= 0);
+		assertTrue(result.getIterationsExecuted() < params.maxIterations);
+		assertEquals(false, result instanceof StepDistanceAware);
+		assertEquals(false, result instanceof ResidualAware);
+	}
+
+	@Test
+	@DisplayName("Budget di iterazioni insufficiente: MAX_ITERATIONS_REACHED con la migliore decomposizione disponibile, non un'eccezione")
+	void insufficientIterationBudgetReportsMaxIterationsReached() {
+		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
+		ConvergenceParameters tightBudget = new ConvergenceParameters(new Real(1e-12), 1);
+
+		SolverResult<EigenDecomposition> result = solver.solve(A, tightBudget);
+
+		assertEquals(ConvergenceStatus.MAX_ITERATIONS_REACHED, result.getStatus());
+		assertEquals(1, result.getIterationsExecuted());
+		assertEquals(2, result.getValue().getEigenvalues().size());
 	}
 }

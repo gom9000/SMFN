@@ -144,12 +144,7 @@ JuliaFunction juliaFunction = new JuliaFunction(c, maxIterations);
 // Concrete driver
 int width = 800, height = 600;
 SwingRenderer2D renderer = new SwingRenderer2D(width, height);
-JFrame frame = new JFrame("SMFN Julia Set (c = " + c + ")");
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-frame.add(renderer);
-frame.pack();
-frame.setVisible(true);
-renderer.initBufferStrategy();
+SwingWindow.show(renderer, "SMFN Julia Set (c = " + constantC + ") Plot");
 
 // Coordinate mapping
 Viewport viewport = new Viewport(-1.5, 1.5, -1.5, 1.5, width, height);

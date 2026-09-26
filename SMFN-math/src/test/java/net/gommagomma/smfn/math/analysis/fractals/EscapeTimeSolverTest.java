@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.analysis.fractals;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.ResidualAware;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
+import net.gommagomma.smfn.math.analysis.core.solvers.StepDistanceAware;
 
 @DisplayName("EscapeTimeSolver: R torna a essere lo stato finale, il conteggio si legge da SolverResult")
 class EscapeTimeSolverTest
@@ -40,7 +42,8 @@ class EscapeTimeSolverTest
 		assertEquals(ConvergenceStatus.DIVERGED, result.getStatus());
 		assertEquals(2, result.getIterationsExecuted());
 		assertEquals(new Complex(6, 0), result.getValue());
-		assertEquals(4.0, result.getFinalStepDistance().getValue(), 1e-9); // d(6, 2) = 4
+		assertTrue(result instanceof StepDistanceAware);
+		assertEquals(4.0, ((StepDistanceAware) result).getFinalStepDistance().getValue(), 1e-9); // d(6, 2) = 4
 	}
 
 	@Test
@@ -54,7 +57,8 @@ class EscapeTimeSolverTest
 		assertEquals(ConvergenceStatus.MAX_ITERATIONS_REACHED, result.getStatus());
 		assertEquals(50, result.getIterationsExecuted());
 		assertEquals(C.zero(), result.getValue());
-		assertEquals(0.0, result.getFinalStepDistance().getValue(), 1e-15); // l'orbita non si muove mai
+		assertTrue(result instanceof StepDistanceAware);
+		assertEquals(0.0, ((StepDistanceAware) result).getFinalStepDistance().getValue(), 1e-15); // l'orbita non si muove mai
 	}
 
 	@Test

@@ -26,8 +26,8 @@ class GeneralEigenvalueSolverTest
 	void routesToJacobiForRealSymmetricMatrix() {
 		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
 
-		EigenDecomposition direct = new JacobiEigenvalueSolver().solve(A, params);
-		EigenDecomposition dispatched = new GeneralEigenvalueSolver<Real>().solve(A, params);
+		EigenDecomposition direct = new JacobiEigenvalueSolver().solve(A, params).getValue();
+		EigenDecomposition dispatched = new GeneralEigenvalueSolver<Real>().solve(A, params).getValue();
 
 		assertEquals(direct.getEigenvalues(), dispatched.getEigenvalues());
 	}
@@ -40,8 +40,8 @@ class GeneralEigenvalueSolverTest
 			new Complex(1, -1), new Complex(3, 0)
 		);
 
-		EigenDecomposition direct = new HermitianEigenvalueSolver().solve(H, params);
-		EigenDecomposition dispatched = new GeneralEigenvalueSolver<Complex>().solve(H, params);
+		EigenDecomposition direct = new HermitianEigenvalueSolver().solve(H, params).getValue();
+		EigenDecomposition dispatched = new GeneralEigenvalueSolver<Complex>().solve(H, params).getValue();
 
 		assertEquals(direct.getEigenvalues(), dispatched.getEigenvalues());
 	}

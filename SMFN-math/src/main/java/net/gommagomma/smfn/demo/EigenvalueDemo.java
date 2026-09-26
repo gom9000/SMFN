@@ -5,6 +5,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenDecomposition;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenvalueSolver;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.GeneralEigenvalueSolver;
@@ -31,7 +32,9 @@ public class EigenvalueDemo
 		// A = [[2,1],[1,2]] -- autovalori noti 1 e 3, autovettori (1,1)/sqrt(2), (1,-1)/sqrt(2)
 		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
 
-		EigenDecomposition realResult = new JacobiEigenvalueSolver().solve(A, params);
+		SolverResult<EigenDecomposition> realSolverResult = new JacobiEigenvalueSolver().solve(A, params);
+		System.out.println("stato = " + realSolverResult.getStatus() + ", iterazioni = " + realSolverResult.getIterationsExecuted());
+		EigenDecomposition realResult = realSolverResult.getValue();
 		System.out.println("autovalori = " + realResult.getEigenvalues());
 
 		RealEigenDecomposition realOnly = realResult.toRealDecomposition(new Real(1e-9));
@@ -45,14 +48,16 @@ public class EigenvalueDemo
 			new Complex(1, -1), new Complex(3, 0)
 		);
 
-		EigenDecomposition hermitianResult = new HermitianEigenvalueSolver().solve(H, params);
+		SolverResult<EigenDecomposition> hermitianSolverResult = new HermitianEigenvalueSolver().solve(H, params);
+		System.out.println("stato = " + hermitianSolverResult.getStatus() + ", iterazioni = " + hermitianSolverResult.getIterationsExecuted());
+		EigenDecomposition hermitianResult = hermitianSolverResult.getValue();
 		System.out.println("autovalori = " + hermitianResult.getEigenvalues());
 		System.out.println("autovettori (genuinamente complessi) = " + hermitianResult.getEigenvectors());
 
 		System.out.println("\n=== Stesse due matrici, via GeneralEigenvalueSolver (dispatcher unico) ===");
 		EigenvalueSolver<Real> realDispatcher = new GeneralEigenvalueSolver<>();
 		EigenvalueSolver<Complex> complexDispatcher = new GeneralEigenvalueSolver<>();
-		System.out.println("caso reale, via dispatcher      = " + realDispatcher.solve(A, params).getEigenvalues());
-		System.out.println("caso hermitiano, via dispatcher = " + complexDispatcher.solve(H, params).getEigenvalues());
+		System.out.println("caso reale, via dispatcher      = " + realDispatcher.solve(A, params).getValue().getEigenvalues());
+		System.out.println("caso hermitiano, via dispatcher = " + complexDispatcher.solve(H, params).getValue().getEigenvalues());
 	}
 }

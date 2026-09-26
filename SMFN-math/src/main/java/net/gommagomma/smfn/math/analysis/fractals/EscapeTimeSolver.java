@@ -5,11 +5,11 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.FixedPointProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.BasicSolverResult;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolver;
+import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolverResult;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 
 /**
@@ -54,7 +54,7 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Complex>
 
             if (criteria.isConverged(divergenceMeasure, params, iterations)) {
                 Real finalStepDistance = space.distance(currentZ, previousZ);
-                return new BasicSolverResult<>(currentZ, ConvergenceStatus.DIVERGED, iterations, finalStepDistance);
+                return new IterativeSolverResult<>(currentZ, ConvergenceStatus.DIVERGED, iterations, finalStepDistance);
             }
 
             previousZ = currentZ;
@@ -62,6 +62,6 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Complex>
         }
 
         Real finalStepDistance = space.distance(currentZ, previousZ);
-        return new BasicSolverResult<>(currentZ, ConvergenceStatus.MAX_ITERATIONS_REACHED, params.maxIterations, finalStepDistance);
+        return new IterativeSolverResult<>(currentZ, ConvergenceStatus.MAX_ITERATIONS_REACHED, params.maxIterations, finalStepDistance);
     }
 }

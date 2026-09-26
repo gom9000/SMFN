@@ -5,12 +5,13 @@ import java.util.Objects;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
- * Risultato di un solutore applicato a un problema di ricerca degli zeri: rispetto a {@link BasicSolverResult},
- * espone in aggiunta il residuo finale dell'equazione tramite {@link ResidualAware}.
+ * Risultato di un solutore applicato a un problema di ricerca degli zeri: rispetto a
+ * {@link IterativeSolverResult}, espone in aggiunta il residuo finale dell'equazione tramite
+ * {@link ResidualAware}.
  *
  * @param <R> Il tipo del valore calcolato dal solutore (es. lo scalare radice, o il vettore soluzione)
  */
-public final class RootFindingSolverResult<R> extends BasicSolverResult<R> implements ResidualAware
+public final class RootFindingSolverResult<R> extends IterativeSolverResult<R> implements ResidualAware
 {
 	private final Real finalResidual;
 
@@ -18,7 +19,7 @@ public final class RootFindingSolverResult<R> extends BasicSolverResult<R> imple
      * Costruisce un risultato immutabile per un solutore di ricerca degli zeri.
      *
      * @param value Il valore calcolato dal solutore
-     * @param status L'esito di terminazione del processo iterativo
+     * @param status L'esito di terminazione del processo del solutore
      * @param iterationsExecuted Il numero di iterazioni effettivamente eseguite (k >= 0)
      * @param finalStepDistance La distanza tra gli ultimi due iterati eseguiti
      * @param finalResidual La norma del residuo finale ||F(x_k)|| dell'equazione al valore restituito

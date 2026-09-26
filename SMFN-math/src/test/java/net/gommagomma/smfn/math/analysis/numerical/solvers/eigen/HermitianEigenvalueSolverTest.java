@@ -13,6 +13,10 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.ResidualAware;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
+import net.gommagomma.smfn.math.analysis.core.solvers.StepDistanceAware;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
@@ -37,7 +41,7 @@ class HermitianEigenvalueSolverTest
 	@Test
 	@DisplayName("Caso 2x2 noto: autovalori 1 e 4, verificati indipendentemente con numpy")
 	void solvesKnownTwoByTwoHermitianCase() {
-		EigenDecomposition result = solver.solve(knownMatrix(), params);
+		EigenDecomposition result = solver.solve(knownMatrix(), params).getValue();
 
 		List<Complex> eigenvalues = result.getEigenvalues();
 		assertEquals(2, eigenvalues.size());
@@ -50,7 +54,7 @@ class HermitianEigenvalueSolverTest
 	@Test
 	@DisplayName("Gli autovalori sono reali per costruzione (parte immaginaria nulla)")
 	void eigenvaluesAreReal() {
-		EigenDecomposition result = solver.solve(knownMatrix(), params);
+		EigenDecomposition result = solver.solve(knownMatrix(), params).getValue();
 		for (Complex lambda : result.getEigenvalues()) {
 			assertEquals(0.0, lambda.getIm(), 1e-9);
 		}
@@ -60,7 +64,7 @@ class HermitianEigenvalueSolverTest
 	@DisplayName("H*v == lambda*v per ciascuna coppia -- verifica indipendente, aritmetica complessa")
 	void eigenpairsSatisfyDefiningEquation() {
 		SquareMatrix<Complex> H = knownMatrix();
-		EigenDecomposition result = solver.solve(H, params);
+		EigenDecomposition result = solver.solve(H, params).getValue();
 
 		List<Complex> eigenvalues = result.getEigenvalues();
 		List<Vector<Complex>> eigenvectors = result.getEigenvectors();
@@ -80,7 +84,7 @@ class HermitianEigenvalueSolverTest
 	@Test
 	@DisplayName("toRealDecomposition() rifiuta: gli autovettori sono genuinamente complessi")
 	void eigenvectorsAreNotReal() {
-		EigenDecomposition result = solver.solve(knownMatrix(), params);
+		EigenDecomposition result = solver.solve(knownMatrix(), params).getValue();
 		assertThrows(IllegalStateException.class, () -> result.toRealDecomposition(new Real(1e-9)));
 	}
 
@@ -92,5 +96,28 @@ class HermitianEigenvalueSolverTest
 			new Complex(3, 0), new Complex(4, 0)
 		);
 		assertThrows(IllegalArgumentException.class, () -> solver.solve(nonHermitian, params));
+	}
+
+	@Test
+	@DisplayName("Caso convergente: SolverResult riporta CONVERGED e non e' ne' StepDistanceAware ne' ResidualAware")
+	void convergedResultHasNoOptionalCapabilities() {
+		SolverResult<EigenDecomposition> result = solver.solve(knownMatrix(), params);
+
+		assertEquals(ConvergenceStatus.CONVERGED, result.getStatus());
+		assertTrue(result.getIterationsExecuted() < params.maxIterations);
+		assertEquals(false, result instanceof StepDistanceAware);
+		assertEquals(false, result instanceof ResidualAware);
+	}
+
+	@Test
+	@DisplayName("Budget di iterazioni insufficiente: MAX_ITERATIONS_REACHED con la migliore decomposizione disponibile, non un'eccezione")
+	void insufficientIterationBudgetReportsMaxIterationsReached() {
+		ConvergenceParameters tightBudget = new ConvergenceParameters(new Real(1e-12), 1);
+
+		SolverResult<EigenDecomposition> result = solver.solve(knownMatrix(), tightBudget);
+
+		assertEquals(ConvergenceStatus.MAX_ITERATIONS_REACHED, result.getStatus());
+		assertEquals(1, result.getIterationsExecuted());
+		assertEquals(2, result.getValue().getEigenvalues().size());
 	}
 }

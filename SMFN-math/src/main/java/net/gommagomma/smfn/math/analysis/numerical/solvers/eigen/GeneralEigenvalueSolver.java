@@ -5,6 +5,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Conjugable;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 
 /**
@@ -17,7 +18,7 @@ implements EigenvalueSolver<K>
 {
 	@Override
 	@SuppressWarnings("unchecked")
-	public EigenDecomposition solve(SquareMatrix<K> matrix, ConvergenceParameters params) {
+	public SolverResult<EigenDecomposition> solve(SquareMatrix<K> matrix, ConvergenceParameters params) {
 		if (matrix.isHermitian()) {
 			K sample = matrix.get(0, 0);
 

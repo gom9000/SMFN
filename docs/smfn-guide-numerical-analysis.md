@@ -38,12 +38,30 @@ The root solver contract is `Solver<P, R>`, parameterized over the problem type 
 ```java
 public interface IterativeSolver<P, S extends AlgebraicElement<S>, R extends AlgebraicElement<R>>
 extends Solver<P, R> {
-    R solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<S> space);
+    SolverResult<R> solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<S> space);
 }
 ```
 
 * **`IterativeSolver`**: Used for root-finding and fixed-point algorithms. Distance measurements (`MetricSpace<S>`) and stopping rules (`ConvergenceCriteria`, `ConvergenceParameters`) are supplied explicitly by the caller.
 * **`IntervalSolver` & `IntervalODEStepSolver`**: Designed for differential equations over time intervals. `IntervalSolver` integrates an `InitialValueProblem` over $[t_0, t_f]$, using a `Module<V, K, S>` provided by the caller. `IntervalODEStepSolver` extends this contract to provide discrete time-stepping via `step(...)`.
+
+#### `SolverResult<R>`: The Outcome of a Solver's Process
+A `SolverResult<R>` is the full outcome produced by a numerical process: the computed value together with metadata describing how the process terminated. It carries three fields, common to every solver in the library:
+
+* **`getValue(): R`**: The value produced by the process — the exact solution when convergence was reached, otherwise the best approximation available at the point of termination.
+* **`getStatus(): ConvergenceStatus`**: The termination outcome, as a value of the `ConvergenceStatus` enum: `CONVERGED`, `MAX_ITERATIONS_REACHED`, `DIVERGED`, `NUMERICAL_ERROR`. Each value is a neutral description of what happened during the process; it carries no built-in judgment of success or failure. A root-finding process treats `MAX_ITERATIONS_REACHED` as a failed run, while a fixed-point process tracking the escape of an orbit under iteration treats it as its normal, expected outcome for an orbit that never escapes.
+* **`getIterationsExecuted(): int`**: The number of iterations the process actually performed before terminating.
+
+Diagnostics that are not common to every solver are exposed as optional capability interfaces, queried at runtime via `instanceof`, following the same pattern used for problem capabilities (`DifferentiableScalarProblem`, `DifferentiableVectorProblem`):
+
+* **`StepDistanceAware`**: Adds `getFinalStepDistance(): Real`, the distance between the last two iterates produced by the process. It is implemented by a `SolverResult` when the process received an external `MetricSpace` over its iteration space, as `IterativeSolver.solve` does.
+* **`ResidualAware`**: Adds `getFinalResidual(): Real`, the norm of the equation's residual $\Vert F(x)\Vert$ at the returned value. It is implemented by a `SolverResult` produced for a root-finding process, one whose problem defines an equation to be driven to zero.
+
+Three concrete implementations cover the combinations of these capabilities actually needed by the library's solvers:
+
+* **`BasicSolverResult<R>`**: Implements only the three universal fields. Used by a solver whose process has no external metric space and no equation, such as an eigenvalue solver, whose stopping rule is internal to the algorithm.
+* **`IterativeSolverResult<R>`**: Extends `BasicSolverResult<R>` and implements `StepDistanceAware`. Used by a solver whose process receives an external metric space but drives no equation to zero, such as `EscapeTimeSolver`.
+* **`RootFindingSolverResult<R>`**: Extends `IterativeSolverResult<R>` and implements `ResidualAware`. Used by a solver for a root-finding process, one that has both a metric space and an equation, such as `NewtonRaphsonSolver` and `VectorNewtonRaphsonSolver`.
 
 
 ## Solvers
@@ -67,24 +85,27 @@ Direct solvers compute exact solutions for linear algebraic systems $Ax = b$ in 
 ### Root-Finding Solvers (`numerical.solvers.roots`)
 Root-finding implementations drive residuals to zero over scalar, vector, or polynomial domains:
 
-* **`NewtonRaphsonSolver`**: Solves scalar problems ($T \to T$). It inspects the problem via `instanceof DifferentiableScalarProblem`; if absent, it falls back to a constructor-supplied `CentralDifferenceDifferentiator`.
+* **`NewtonRaphsonSolver`**: Solves scalar problems ($T \to T$). It inspects the problem via `instanceof DifferentiableScalarProblem`; if absent, it falls back to a constructor-supplied `CentralDifferenceDifferentiator`. Its result is a `RootFindingSolverResult<T>`: a zero derivative encountered mid-process is reported as `ConvergenceStatus.NUMERICAL_ERROR`, and an exhausted iteration budget as `ConvergenceStatus.MAX_ITERATIONS_REACHED`, each carrying the last computed approximation as its value.
   ```java
   // One-variable Newton-Raphson
   NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, numericDifferentiator);
-  Real root = solver.solve(problem, initialGuess, criteria, params, metricSpace);
+  SolverResult<Real> result = solver.solve(problem, initialGuess, criteria, params, metricSpace);
+  Real root = result.getValue();
+  Real residual = ((ResidualAware) result).getFinalResidual();
   ```
 
-* **`VectorNewtonRaphsonSolver`**: solves $n \times n$ non-linear systems by solving the local Jacobian system directly at each iteration (via `GaussianEliminationSolver`). Same optional-capability pattern as the scalar case: uses `getJacobian()` if the problem implements `DifferentiableVectorProblem<K>`, otherwise falls back to `CentralDifferenceJacobianEstimator` (numeric, one column per extra evaluation of `F`).
+* **`VectorNewtonRaphsonSolver`**: solves $n \times n$ non-linear systems by solving the local Jacobian system directly at each iteration (via `GaussianEliminationSolver`). Same optional-capability pattern as the scalar case: uses `getJacobian()` if the problem implements `DifferentiableVectorProblem<K>`, otherwise falls back to `CentralDifferenceJacobianEstimator` (numeric, one column per extra evaluation of `F`). Its result is likewise a `RootFindingSolverResult<Vector<K>>`: a singular Jacobian is reported as `ConvergenceStatus.NUMERICAL_ERROR`, carrying the last iterate reached before the singularity as its value.
   ```java
   // Multi-variable Newton-Raphson
   GaussianEliminationSolver<Real, RealField> linearSolver = new GaussianEliminationSolver<>(R, dimensione);
   VectorSpace<Real, RealField> vectorSpace = new VectorSpace<>(R, dimensione);
   CentralDifferenceJacobianEstimator<Real, RealField> jacobianFallback = new CentralDifferenceJacobianEstimator<>(R, R.of(1e-6));
   VectorNewtonRaphsonSolver<Real, RealField> vectorSolver = new VectorNewtonRaphsonSolver<>(linearSolver, vectorSpace, jacobianFallback);
-  Vector<Real> solution = vectorSolver.solve(multivariateProblem, initialGuess, criteria, params, vectorMetricSpace);
+  SolverResult<Vector<Real>> result = vectorSolver.solve(multivariateProblem, initialGuess, criteria, params, vectorMetricSpace);
+  Vector<Real> solution = result.getValue();
   ```
 
-* **`PolynomialRootSolver`**: Computes *all* roots of a polynomial via iterative root finding followed by exact synthetic division (deflation). Full factorizability is guaranteed when operating over algebraically closed fields (e.g., `Complex`).
+* **`PolynomialRootSolver`**: Computes *all* roots of a polynomial via iterative root finding followed by exact synthetic division (deflation). Full factorizability is guaranteed when operating over algebraically closed fields (e.g., `Complex`). `findAllRoots` checks each intermediate `SolverResult`'s `getStatus()` and throws `IllegalStateException` for any root that did not reach `ConvergenceStatus.CONVERGED`, so a returned list of roots is always a complete factorization.
   ```java
   // All roots of a polynomial (Newton-Raphson + deflation)
   ComplexField C = ComplexField.INSTANCE;
@@ -119,10 +140,10 @@ Integrators compute time evolution for systems satisfying `InitialValueProblem<K
 ### Eigenvalue Solvers (`numerical.solvers.eigen`)
 Spectral decomposition algorithms compute the eigenvalues and eigenvectors of square matrices $A \in \mathbb{K}^{n \times n}$. 
 
-* **`EigenvalueSolver<K>`**: Defines the base contract `EigenDecomposition solve(SquareMatrix<K> matrix, ConvergenceParameters params)`. Every concrete solver implements this contract and carries the `EigenvalueSolver` suffix.
+* **`EigenvalueSolver<K>`**: Defines the base contract `SolverResult<EigenDecomposition> solve(SquareMatrix<K> matrix, ConvergenceParameters params)`. Every concrete solver implements this contract and carries the `EigenvalueSolver` suffix. Its stopping rule is internal to the algorithm (for the Jacobi family, the norm of the matrix's off-diagonal part), so the contract takes no `MetricSpace`; correspondingly, the `SolverResult<EigenDecomposition>` it returns is a `BasicSolverResult`, implementing neither `StepDistanceAware` nor `ResidualAware` — a spectral decomposition has no equation to drive to zero, and the process defines no external notion of distance between iterates.
 * **`EigenDecomposition`**: Represents the spectral result. Eigenvalues and eigenvectors are modeled over `Complex` regardless of the source field $K$, as `Complex` is algebraically closed and handles complex conjugate pairs arising from real non-symmetric matrices. Provides `toRealDecomposition(Real tolerance)` to validate and extract a `RealEigenDecomposition` when imaginary parts fall within tolerance, throwing an exception if non-negligible imaginary components are present.
-* **`JacobiEigenvalueSolver`**: Solves real symmetric matrices ($A = A^T$) via classical Jacobi rotations. Uses a numerically stable trigonometric-free formulation (relying solely on square roots and basic arithmetic) to iteratively zero out off-diagonal elements, yielding real eigenvalues and orthogonal eigenvectors simultaneously.
-* **`HermitianEigenvalueSolver`**: Extends Jacobi's approach to complex Hermitian matrices ($A = A^\dagger$). Each rotation applies a diagonal unitary phase-absorption step to make the target off-diagonal entry real, followed by a standard Jacobi real rotation. Guarantees real eigenvalues and complex eigenvectors.
+* **`JacobiEigenvalueSolver`**: Solves real symmetric matrices ($A = A^T$) via classical Jacobi rotations. Uses a numerically stable trigonometric-free formulation (relying solely on square roots and basic arithmetic) to iteratively zero out off-diagonal elements, yielding real eigenvalues and orthogonal eigenvectors simultaneously. An iteration budget exhausted before the off-diagonal norm falls under tolerance is reported as `ConvergenceStatus.MAX_ITERATIONS_REACHED`, carrying the decomposition assembled from the last completed rotation as its value.
+* **`HermitianEigenvalueSolver`**: Extends Jacobi's approach to complex Hermitian matrices ($A = A^\dagger$). Each rotation applies a diagonal unitary phase-absorption step to make the target off-diagonal entry real, followed by a standard Jacobi real rotation. Guarantees real eigenvalues and complex eigenvectors, and reports an exhausted iteration budget the same way `JacobiEigenvalueSolver` does.
 * **`GeneralEigenvalueSolver<K>`**: Acts as a smart dispatching wrapper (Facade) implementing `EigenvalueSolver<K>`. It inspects matrix properties at runtime (`isSymmetric()`, `isHermitian()`) to delegate execution to the optimal underlying solver. Throws an `UnsupportedOperationException` for general non-Hermitian matrices until `QREigenvalueSolver` is integrated.
 
   ```java
@@ -132,9 +153,10 @@ Spectral decomposition algorithms compute the eigenvalues and eigenvectors of sq
   ConvergenceParameters params = new ConvergenceParameters(R.of(1e-12), 100);
 
   GeneralEigenvalueSolver<Real> solver = new GeneralEigenvalueSolver<>();
-  EigenDecomposition result = solver.solve(A, params);
+  SolverResult<EigenDecomposition> result = solver.solve(A, params);
+  EigenDecomposition decomposition = result.getValue();
 
-  RealEigenDecomposition realSpectral = result.toRealDecomposition(R.of(1e-9));
+  RealEigenDecomposition realSpectral = decomposition.toRealDecomposition(R.of(1e-9));
   List<Real> eigenvalues = realSpectral.getEigenvalues();
   List<Vector<Real>> eigenvectors = realSpectral.getEigenvectors();
   ```
@@ -146,11 +168,12 @@ Spectral decomposition algorithms compute the eigenvalues and eigenvectors of sq
   ConvergenceParameters params = new ConvergenceParameters(R.of(1e-12), 100);
 
   GeneralEigenvalueSolver<Complex> solver = new GeneralEigenvalueSolver<>();
-  EigenDecomposition result = solver.solve(H, params);
+  SolverResult<EigenDecomposition> result = solver.solve(H, params);
+  EigenDecomposition decomposition = result.getValue();
 
   // eigenvalues are real by construction, eigenvectors are in general genuinely complex
-  List<Real> eigenvalues = result.getRealEigenvalues();
-  List<Vector<Complex>> eigenvectors = result.getEigenvectors();
+  List<Real> eigenvalues = decomposition.getRealEigenvalues();
+  List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();
   ```
 
 

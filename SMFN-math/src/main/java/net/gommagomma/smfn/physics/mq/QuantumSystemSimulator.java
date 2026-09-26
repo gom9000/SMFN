@@ -7,6 +7,8 @@ import java.util.Random;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenDecomposition;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.HermitianEigenvalueSolver;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
@@ -101,7 +103,11 @@ public final class QuantumSystemSimulator
 	}
 
 	private BornDistribution computeBornDistribution(Observable<Complex> observable, QuantumState state, ConvergenceParameters eigenParams) {
-		EigenDecomposition decomposition = new HermitianEigenvalueSolver().solve(observable.asOperator(), eigenParams);
+		SolverResult<EigenDecomposition> result = new HermitianEigenvalueSolver().solve(observable.asOperator(), eigenParams);
+		if (result.getStatus() != ConvergenceStatus.CONVERGED) {
+			throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
+		}
+		EigenDecomposition decomposition = result.getValue();
 		List<Complex> eigenvalues = decomposition.getEigenvalues();
 		List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();
 		int n = eigenvalues.size();

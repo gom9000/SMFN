@@ -7,6 +7,8 @@ import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenDecomposition;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.GeneralEigenvalueSolver;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
@@ -43,7 +45,11 @@ public final class Hamiltonian<K extends ScalarElement<K>> extends Observable<K>
 	}
 
 	public StationaryStates findStationaryStates(ConvergenceParameters params) {
-		EigenDecomposition decomposition = new GeneralEigenvalueSolver<K>().solve(asOperator(), params);
+		SolverResult<EigenDecomposition> result = new GeneralEigenvalueSolver<K>().solve(asOperator(), params);
+		if (result.getStatus() != ConvergenceStatus.CONVERGED) {
+			throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
+		}
+		EigenDecomposition decomposition = result.getValue();
 		List<Real> energyLevels = decomposition.getRealEigenvalues(params.tolerance);
 
 		List<QuantumState> states = new ArrayList<>(decomposition.getEigenvectors().size());
