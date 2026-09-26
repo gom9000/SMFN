@@ -10,10 +10,6 @@ import net.gommagomma.smfn.math.utils.MathConstants;
 /**
  * Un piano nello spazio 3D, definito da un punto di riferimento e una
  * normale: f(P) = distanza con segno di P dal piano.
- *
- * Stesso stampo di Line, una dimensione piu' su -- Point e GeometryEntity
- * non hanno mai avuto la dimensione cablata dentro, quindi non serve
- * toccare nulla di esistente per arrivare a 3D.
  */
 public final class Plane
 implements GeometryEntity<Real>
