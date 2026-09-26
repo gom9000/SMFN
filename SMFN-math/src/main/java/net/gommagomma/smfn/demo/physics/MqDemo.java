@@ -6,7 +6,7 @@ import java.util.Random;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 import net.gommagomma.smfn.physics.mq.Hamiltonian;
@@ -32,7 +32,7 @@ public class MqDemo
 {
 	public static void main(String[] args) {
 		ComplexField C = ComplexField.INSTANCE;
-		ConvergenceParameters eigenParams = new ConvergenceParameters(new Real(1e-12), 100);
+		StoppingParameters eigenParams = new StoppingParameters(new Real(1e-12), 100);
 		QuantumSystemSimulator sim = new QuantumSystemSimulator();
 
 		// Pauli Z = [[1,0],[0,-1]] -- autovalori +1,-1, autostati |0>=(1,0), |1>=(0,1)

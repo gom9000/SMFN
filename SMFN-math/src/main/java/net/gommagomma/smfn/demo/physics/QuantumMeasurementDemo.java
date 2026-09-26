@@ -1,9 +1,10 @@
 package net.gommagomma.smfn.demo.physics;
 
 import java.util.Random;
+
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.physics.mq.MeasurementOutcome;
 import net.gommagomma.smfn.physics.mq.Observable;
 import net.gommagomma.smfn.physics.mq.Pauli;
@@ -42,7 +43,7 @@ public class QuantumMeasurementDemo {
         // MISURA PROIETTIVA VERA (Stocastica, Regola di Born e Collasso dello Stato)
         // =========================================================================
 
-        ConvergenceParameters solverParams = new ConvergenceParameters(new Real(1e-12), 100);
+        StoppingParameters solverParams = new StoppingParameters(new Real(1e-12), 100);
         Random rng = new Random();
 
         // Esegue la misura stocastica su sigma_z: campiona un autovalore (+1 o -1) e fa collassare lo stato

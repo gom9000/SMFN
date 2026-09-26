@@ -128,11 +128,11 @@ public class PolynomialDemo
         Polynomial<Rational> expectedDet = PolynomialElementFactory.of(Q, 0, -1, 1, 1); // -x + x^2 + x^3
         System.out.println("Verifica Determinante: " + (det.equals(expectedDet) ? "OK" : "ERRORE"));
 
-        System.out.println("\n--- CAYLEY-HAMILTON test ---"); // Obiettivo: Verificare che P(M) = 0 dove P è il polinomio caratteristico di M.
+        System.out.println("\n--- CAYLEY-HAMILTON test ---"); // Obiettivo: Verificare che P(M) = 0 dove P ï¿½ il polinomio caratteristico di M.
         SquareMatrixAlgebra<Rational, RationalField> qMatrixField = new SquareMatrixAlgebra<>(Q, 2);
         Rational[] data_M = { Q.of(1), Q.of(2),	Q.of(3), Q.of(4) };
         SquareMatrix<Rational> M = qMatrixField.of(data_M);
-        Polynomial<Rational> cp = (new CharacteristicPolynomialMapping()).apply(M);
+        Polynomial<Rational> cp = (new CharacteristicPolynomialMapping<Rational, RationalField>()).apply(M);
         System.out.println("Matrice M:\n" + M);
         System.out.println("Polinomio Caratteristico P(x): " + cp);
         SquareMatrixRing<Rational, RationalField> qMatrixRing = new SquareMatrixRing<>(Q, 2);
