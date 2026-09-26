@@ -13,7 +13,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.analysis.fractals.BurningShipFunction;
 
-public class BurningShiptPlot {
+public class BurningShipPlot {
     public static void main(String[] args) {
         // Definizione della funzione matematica
         final int MAX_ITERATIONS = 100;
