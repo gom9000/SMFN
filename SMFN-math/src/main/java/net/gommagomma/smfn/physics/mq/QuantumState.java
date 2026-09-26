@@ -8,18 +8,15 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorElementFactory;
 
 /**
- * Uno stato quantistico puro: un Vector<Complex> che porta con se' il
- * proprio spazio con prodotto interno, cosi' chi lo usa non deve costruirlo
- * e passarlo ad ogni chiamata -- e' sempre lo stesso, fissato una volta
- * sola alla dimensione del sistema.
- *
- * Non generico su K, deliberatamente, come Observable/Hamiltonian: uno
- * stato quantistico vive sempre in uno spazio di Hilbert su Complex, mai
- * su un K qualunque -- non e' una scelta di comodo, e' quello che la
- * fisica richiede sempre.
- *
- * asVector() resta la via di fuga verso la matematica pura, mai
- * obbligatoria -- stesso principio di Observable.asOperator().
+ * Rappresenta uno stato quantistico |psi> nello spazio di Hilbert complesso a dimensione finita C^n.
+ * 
+ * La classe incapsula un vettore di ampiezze di probabilita' complesse e uno spazio vettoriale con prodotto interno
+ * (InnerProductVectorSpace} per la gestione della metrica complessa (prodotto hermitiano).
+ * Operazioni algebriche e fisiche fondamentali incluse:
+ * - Prodotto Interno (Bra-Ket): Calcolo di <phi|psi> tramite innerProduct(QuantumState)
+ * - Norma dello Stato: Calcolo della norma L2 \sqrt{<phi|psi>} tramite norm()
+ * - Normalizzazione: Proiezione dello stato sulla sfera unitaria |psi>/{||psi||} tramite normalize(
+ * - Sovrapposizione e Scalamento: Principi di sovrapposizione lineare |psi_1> + |psi_2> e moltiplicazione per uno scalare c |psi>
  */
 public final class QuantumState
 {

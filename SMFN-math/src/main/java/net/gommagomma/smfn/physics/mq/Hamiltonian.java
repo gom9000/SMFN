@@ -15,35 +15,38 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
- * L'Hamiltoniana: l'Observable specifico che rappresenta l'energia totale
- * del sistema. Genera l'evoluzione temporale (equazione di Schrodinger):
- * direttamente se K=Complex, tramite Observable.toComplex() se K e' reale,
- * dato che l'evoluzione vive sempre in uno spazio di Hilbert complesso.
+ * Rappresenta l'operatore Hamiltoniano H in meccanica quantistica, associato all'osservabile dell'energia totale del sistema.
+ * 
+ * E' rappresentato da una matrice quadrata hermitiana (o simmetrica) definita su un campo algebrico di scalari K.
+ * La risoluzione dell'equazione agli autovalori indipendente dal tempo: H |\psi_n\rangle = E_n |\psi_n\rangle
+ * permette di determinare gli autostati dell'energia (stati stazionari |psi_n> e i corrispondenti livelli di energia (autovalori reali E_n).
+ * </p>
  *
- *
- * E' un Observable a tutti gli effetti (misurare l'energia e' una misura
- * legittima come qualunque altra) -- eredita, non compone, cosi' un
- * Hamiltonian e' sostituibile ovunque un Observable dello stesso K sia atteso.
- *
- * Generico su K come Observable: un'Hamiltoniana reale (oscillatore armonico
- * su griglia) e una complessa (spin in campo magnetico) sono entrambe
- * legittime. findStationaryStates() usa GeneralEigenvalueSolver<K>, non
- * HermitianEigenvalueSolver fisso -- cosi' un'Hamiltoniana reale usa
- * davvero JacobiEigenvalueSolver (il percorso piu' efficiente e onesto
- * sulla propria natura), non il solver complesso per coincidenza.
- *
- * findStationaryStates() risolve H|psi> = E|psi>: gli autovalori sono i
- * livelli energetici, gli autovettori gli stati stazionari corrispondenti.
- * Restituisce StationaryStates (livelli energetici, QuantumState), non
- * EigenDecomposition grezza -- stessa traduzione fisica che
- * MeasurementOutcome fa per la misura.
+ * @param <K> Il tipo dello scalare appartenente al campo algebrico (es. Real o Complex)
  */
-public final class Hamiltonian<K extends ScalarElement<K>> extends Observable<K>
+public final class Hamiltonian<K extends ScalarElement<K>>
+extends Observable<K>
 {
+	/**
+     * Costruisce un operatore Hamiltoniano a partire dalla matrice quadrata dell'operatore.
+     *
+     * @param operator La matrice quadrata rappresentante l'operatore Hamiltoniano H
+     */
 	public Hamiltonian(SquareMatrix<K> operator) {
 		super(operator);
 	}
 
+	/**
+     * Calcola gli stati stazionari del sistema risolvendo il problema agli autovalori per l'Hamiltoniano.
+     * 
+     * Esegue la decomposizione spettrale tramite GeneralEigenvalueSolver. Se il solutore raggiunge
+     * la convergenza entro i parametri specificati, estrae i livelli energetici reali (autovalori)
+     * e converte gli autovettori corrispondenti in istanze di QuantumState.
+     *
+     * @param params I parametri di arresto e tolleranza numerica per il solutore di autovalori
+     * @return L'oggetto StationaryStates contenente la lista dei livelli di energia e dei rispettivi autostati quantistici
+     * @throws IllegalStateException Se la decomposizione spettrale non raggiunge la convergenza
+     */
 	public StationaryStates findStationaryStates(StoppingParameters params) {
 		SolverResult<EigenDecomposition> result = new GeneralEigenvalueSolver<K>().solve(asOperator(), params);
 		if (result.getStatus() != TerminationStatus.CONVERGED) {

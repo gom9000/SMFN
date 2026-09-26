@@ -11,21 +11,7 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElemen
 
 /**
  * Rappresenta un osservabile fisico in meccanica quantistica, modellato matematicamente
- * come un operatore hermitiano ($M = M^\dagger$) caratterizzato da autovalori reali.
- *
- * Generico su K, deliberatamente: un'Hamiltoniana puo' essere genuinamente reale
- * (un oscillatore armonico, discretizzato su una griglia spaziale -- nessun
- * numero complesso in vista) o genuinamente complessa (un sistema di spin, con
- * termini fuori diagonale complessi) -- sono entrambi casi fisici comuni, non
- * l'uno un caso degenere dell'altro. Fissare K=Complex a priori avrebbe
- * costretto anche il caso reale a passare per il solver hermitiano complesso,
- * ignorando il dispatcher generico (GeneralEigenvalueSolver) gia' costruito
- * apposta per scegliere l'algoritmo giusto in base a K.
- *
- * QuantumState/SchrodingerEquationSystem restano invece fissati a Complex:
- * l'evoluzione temporale ha sempre una i esplicita (d|psi>/dt = -iH|psi>),
- * quindi genera dinamica complessa anche per un'Hamiltoniana reale.
- * toComplex() e' il ponte esplicito per quel momento.
+ * come un operatore hermitiano (M = M^\dagger) caratterizzato da autovalori reali.
  */
 public class Observable<K extends ScalarElement<K>>
 {
@@ -56,9 +42,7 @@ public class Observable<K extends ScalarElement<K>>
 
 	/**
 	 * Converte un Observable<Real> nel corrispondente Observable<Complex>
-	 * (parte immaginaria zero su ogni componente) -- il ponte esplicito
-	 * verso QuantumState/SchrodingerEquationSystem, che restano fissati a
-	 * Complex per costruzione fisica.
+	 * (parte immaginaria zero su ogni componente).
 	 */
 	public static Observable<Complex> toComplex(Observable<Real> observable) {
 		ComplexField C = ComplexField.INSTANCE;

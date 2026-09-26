@@ -3,15 +3,12 @@ package net.gommagomma.smfn.physics.mq;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
- * Esito di una misura quantistica vera: l'autovalore effettivamente
- * ottenuto (con probabilita' secondo la regola di Born) e lo stato su cui
- * il sistema e' collassato -- l'autovettore corrispondente, gia'
- * normalizzato dal solver agli autovalori.
- *
- * A differenza di QuantumSystemSimulator.measure() (valore di aspettazione,
- * deterministico, nessun collasso), questo e' l'atto di misura vero e
- * proprio: ripetuto sullo stesso stato, da' in generale esiti diversi,
- * distribuiti secondo |<lambda_i|psi>|^2.
+ * Rappresenta l'esito di una misurazione quantistica effettuata su un sistema in un determinatoQuantumState.
+ * 
+ * In accordo con i postulati della meccanica quantistica (assioma della misurazione di Von Neumann/Dirac)
+ * il valore misurato e' un valore proprio reale (autovalore E_n) associato all'operatore Observable.
+ * A seguito della misurazione, lo stato del sistema subisce un collasso istantaneo proiettandosi
+ * sull'autostato proprio |psi_n> corrispondente all'autovalore ottenuto.
  */
 public final class MeasurementOutcome
 {

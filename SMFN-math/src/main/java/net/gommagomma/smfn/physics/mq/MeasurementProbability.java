@@ -3,9 +3,11 @@ package net.gommagomma.smfn.physics.mq;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
- * Una coppia (autovalore, probabilita' secondo la regola di Born) --
- * restituita da QuantumSystemSimulator.measurementProbabilities(), la
- * distribuzione completa senza il rumore di un campionamento ripetuto.
+ * Rappresenta la probabilita' associata a un singolo esito di misurazione per un'osservabile quantistica.
+ * 
+ * In accordo con la regola di Born, per uno stato quantistico |psi> e un autostato |a_n>  dell'osservabile
+ * corrispondente all'autovalore a_n: P(a_n) = |<a_n | psi>|^2 dove getValue() restituisce il valore misurabile a_n
+ * (autovalore reale) e getProbability() restituisce il valore di probabilita' P(a_n) \in [0, 1].
  */
 public final class MeasurementProbability
 {

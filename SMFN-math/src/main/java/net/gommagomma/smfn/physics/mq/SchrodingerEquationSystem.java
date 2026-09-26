@@ -22,6 +22,16 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
  *
  * Implementa l'interfaccia DifferentialEquationProblem per stati vettoriali a valori complessi.
  */
+/**
+ * Modellizza il sistema dinamico associato all'equazione di Schroedinger dipendente dal tempo
+ * per uno stato quantistico |psi(t)> in uno spazio di Hilbert complesso a dimensione finita C^n.
+ * 
+ * In unita' naturali (\hbar = 1), l'equazione differenziale di Schroedinger: d|psi>/dt = H(t)|psi>
+ * viene riscritta nella forma canonica per un problema ai valori iniziali (IVP).
+ * La classe supporta sia Hamiltoniane indipendenti dal tempo H(t) = H_0 sia Hamiltoniane dipendenti
+ * esplicitamente dal tempo H(t), e fornisce un metodo di convenienza evolve(QuantumState, Real, Real)
+ * per integrare numericamente la traiettoria temporale tramite il solutore RungeKutta4Solver.
+ */
 public final class SchrodingerEquationSystem
 implements DifferentialEquationProblem<Complex, Vector<Complex>>
 {

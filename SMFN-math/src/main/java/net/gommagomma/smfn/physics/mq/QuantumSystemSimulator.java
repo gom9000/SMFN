@@ -14,17 +14,22 @@ import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.HermitianEigenv
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
 /**
- * Simulatore per sistemi quantistici: il valore di aspettazione (measure(),
- * deterministico), la misura vera (performMeasurement(), probabilistica --
- * campiona un autovalore secondo la regola di Born e fa collassare lo
- * stato sull'autovettore corrispondente), e la distribuzione di probabilita'
- * completa (measurementProbabilities(), senza campionamento).
- *
- * Nessun parametro di spazio in nessun metodo: QuantumState porta gia' con
- * se' il proprio InnerProductVectorSpace, quindi passarlo di nuovo ad ogni
- * chiamata sarebbe ridondante, non solo scomodo. Restano espliciti solo i
- * parametri di convergenza per la diagonalizzazione e la sorgente di
- * casualita', come ogni altro Solver di questa libreria.
+ * Simulatore per processi di misurazione su sistemi quantistici in spazi di Hilbert a dimensione finita.
+ * 
+ * La classe fornisce metodi di utilita' per modellare gli aspetti deterministici e stocastici della misurazione:
+ * <ul>
+ *   <li><b>Valore di Aspettazione:</b> Calcolo del valore medio teorico \langle A \rangle = \langle \psi | A | \psi \rangle
+ *       per un'osservabile hermitiana A tramite {@link #expectationValue(Observable, QuantumState)}.</li>
+ *   <li><b>Distribuzione di Probabilita' di Born:</b> Calcolo della distribuzione discreta teorica P(a_i) = |\langle a_i | \psi \rangle|^2
+ *       per ciascun autovalore tramite {@link #measurementProbabilities(Observable, QuantumState, StoppingParameters)}.</li>
+ *   <li><b>Processo di Misurazione Stocastico:</b> Simulazione stocastica del processo di misurazione mediante campionamento
+ *       secondo la regola di Born e conseguente collasso del vettore di stato tramite {@link #performMeasurement(Observable, QuantumState, StoppingParameters, Random)}.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * La diagonalizzazione degli operatori hermitiani viene eseguita appoggiandosi al solutore specializzato
+ * {@link HermitianEigenvalueSolver}.
+ * </p>
  */
 public final class QuantumSystemSimulator
 {
@@ -80,9 +85,7 @@ public final class QuantumSystemSimulator
 	}
 
 	/**
-	 * La distribuzione di probabilita' completa secondo la regola di Born,
-	 * senza campionare -- stesso calcolo di performMeasurement(), ma
-	 * restituito per intero invece di ridotto a un solo esito casuale.
+	 * La distribuzione di probabilita' completa secondo la regola di Born.
 	 *
 	 * @param observable l'osservabile hermitiano da misurare
 	 * @param state il vettore di stato quantistico (|psi>)
