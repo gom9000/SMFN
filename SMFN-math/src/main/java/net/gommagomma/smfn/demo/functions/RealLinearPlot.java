@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.functions;
 
 import java.awt.Color;
 import java.text.DecimalFormat;

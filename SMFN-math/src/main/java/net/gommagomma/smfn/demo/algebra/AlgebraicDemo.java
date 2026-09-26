@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.algebra;
 
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
@@ -8,8 +8,7 @@ import net.gommagomma.smfn.math.algebra.structures.RationalField;
 import net.gommagomma.smfn.math.algebra.structures.ZnRing;
 
 /**
- * Classe client di esempio per dimostrare l'uso delle diverse strutture 
- * algebriche implementate (Z, Q, Zn) e della capacità CreatableFromDouble.
+ * Classe client di esempio per dimostrare l'uso delle diverse strutture algebriche.
  */
 public class AlgebraicDemo
 {
@@ -47,7 +46,7 @@ public class AlgebraicDemo
 
         // Uso di FieldElement (divisione)
         Rational div = Q.divide(r1, r2);     // (1/3) / (1/4) = 4/3
-        Rational inv = Q.inverse(r2);      // inverso di 1/4 è 4/1
+        Rational inv = Q.inverse(r2);      // inverso di 1/4 ï¿½ 4/1
 
         System.out.println("r1: " + r1);
         System.out.println("r2 (valueOf 0.25): " + r2);

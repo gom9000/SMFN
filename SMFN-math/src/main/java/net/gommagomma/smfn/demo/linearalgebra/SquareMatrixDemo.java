@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo;
+package net.gommagomma.smfn.demo.linearalgebra;
 
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
@@ -95,6 +95,6 @@ public class SquareMatrixDemo {
         System.out.println("Inversa B^-1:\n" + Binv);
 
         // Verifica: B * B^-1 = I
-        System.out.println("Verifica Identità:\n" + cField.multiply(B, Binv));
+        System.out.println("Verifica Identitï¿½:\n" + cField.multiply(B, Binv));
     }
 }
