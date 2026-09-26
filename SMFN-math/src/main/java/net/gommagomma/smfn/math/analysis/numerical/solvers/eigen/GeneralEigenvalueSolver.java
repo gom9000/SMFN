@@ -17,23 +17,23 @@ public final class GeneralEigenvalueSolver<K extends ScalarElement<K>>
 implements EigenvalueSolver<K>
 {
 	@Override
-	@SuppressWarnings("unchecked")
 	public SolverResult<EigenDecomposition> solve(SquareMatrix<K> matrix, StoppingParameters params) {
 		if (matrix.isHermitian()) {
-			K sample = matrix.get(0, 0);
-
-			if (sample instanceof Conjugable) {
-				return new HermitianEigenvalueSolver().solve((SquareMatrix<Complex>) matrix, params);
-			}
-			if (sample instanceof Real) {
-				return new JacobiEigenvalueSolver().solve((SquareMatrix<Real>) matrix, params);
-			}
-			throw new UnsupportedOperationException(
-				"No symmetric solver for this scalar type is implemented yet.");
+			return solveSymmetricOrHermitian(matrix, params);
 		}
+		return new QREigenvalueSolver<K>().solve(matrix, params);
+	}
 
-		throw new UnsupportedOperationException(
-			"No solver for general (non symmetric/Hermitian) matrices is implemented yet "
-			+ "(QREigenvalueSolver, a QR-with-shifts algorithm, would be needed).");
+	@SuppressWarnings("unchecked")
+	private SolverResult<EigenDecomposition> solveSymmetricOrHermitian(SquareMatrix<K> matrix, StoppingParameters params) {
+		K sample = matrix.get(0, 0);
+
+		if (sample instanceof Conjugable) {
+			return new HermitianEigenvalueSolver().solve((SquareMatrix<Complex>) matrix, params);
+		}
+		if (sample instanceof Real) {
+			return new JacobiEigenvalueSolver().solve((SquareMatrix<Real>) matrix, params);
+		}
+		throw new UnsupportedOperationException("Nessun solver simmetrico/hermitiano per " + sample.getClass().getSimpleName());
 	}
 }

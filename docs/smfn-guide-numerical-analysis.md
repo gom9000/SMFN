@@ -151,7 +151,8 @@ Spectral decomposition algorithms compute the eigenvalues and eigenvectors of sq
 * **`EigenDecomposition`**: Represents the spectral result. Eigenvalues and eigenvectors are modeled over `Complex` regardless of the source field $K$, as `Complex` is algebraically closed and handles complex conjugate pairs arising from real non-symmetric matrices. Provides `toRealDecomposition(Real tolerance)` to validate and extract a `RealEigenDecomposition` when imaginary parts fall within tolerance, throwing an exception if non-negligible imaginary components are present.
 * **`JacobiEigenvalueSolver`**: Solves real symmetric matrices ($A = A^T$) via classical Jacobi rotations. Uses a numerically stable trigonometric-free formulation (relying solely on square roots and basic arithmetic) to iteratively zero out off-diagonal elements, yielding real eigenvalues and orthogonal eigenvectors simultaneously. An iteration budget exhausted before the off-diagonal norm falls under tolerance is reported as `TerminationStatus.MAX_ITERATIONS_REACHED`, carrying the decomposition assembled from the last completed rotation as its value.
 * **`HermitianEigenvalueSolver`**: Extends Jacobi's approach to complex Hermitian matrices ($A = A^\dagger$). Each rotation applies a diagonal unitary phase-absorption step to make the target off-diagonal entry real, followed by a standard Jacobi real rotation. Guarantees real eigenvalues and complex eigenvectors, and reports an exhausted iteration budget the same way `JacobiEigenvalueSolver` does.
-* **`GeneralEigenvalueSolver<K>`**: Acts as a smart dispatching wrapper (Facade) implementing `EigenvalueSolver<K>`. It inspects matrix properties at runtime (`isSymmetric()`, `isHermitian()`) to delegate execution to the optimal underlying solver. Throws an `UnsupportedOperationException` for general non-Hermitian matrices until `QREigenvalueSolver` is integrated.
+* **`QREigenvalueSolver<K>`**: Handles the general case ($K$ = `Real` or `Complex`, no symmetry/Hermitian-ness required) via the shifted QR algorithm, run entirely in `Complex` arithmetic even when $K$ = `Real`. Working in `Complex` throughout lets the Wilkinson shift itself be complex, so a real matrix's complex-conjugate eigenvalue pairs converge directly to two separate $1 \times 1$ diagonal entries — no real-arithmetic 2x2 block extraction ("Francis double shift") is needed. The matrix is first reduced to upper Hessenberg form (`HessenbergReduction`, $O(n^3)$ once), after which every shifted-QR step costs $O(n^2)$ instead of $O(n^3)$: a Hessenberg column has only one nonzero entry below the diagonal, so a single two-row Householder reflection (equivalent to a Givens rotation) zeroes it, rather than a full reflection over the whole active submatrix. Eigenvectors are recovered by back-substitution on the final (quasi-)triangular Schur form, then mapped back through the accumulated unitary transform; a defective matrix (repeated eigenvalue with no full eigenvector basis, e.g. a Jordan block) cannot yield an exact eigenvector for the deficient direction, so the solver substitutes the best available approximation rather than dividing by an exact zero pivot. Reports `TerminationStatus.MAX_ITERATIONS_REACHED` with the best decomposition assembled so far, exactly like the other eigenvalue solvers.
+* **`GeneralEigenvalueSolver<K>`**: Acts as a smart dispatching wrapper (Facade) implementing `EigenvalueSolver<K>`. It inspects matrix properties at runtime (`isSymmetric()`, `isHermitian()`) to delegate execution to the optimal underlying solver: `JacobiEigenvalueSolver`/`HermitianEigenvalueSolver` for the symmetric/Hermitian case, `QREigenvalueSolver` otherwise.
 
   ```java
   // Spectral decomposition of a real symmetric matrix
@@ -180,6 +181,20 @@ Spectral decomposition algorithms compute the eigenvalues and eigenvectors of sq
 
   // eigenvalues are real by construction, eigenvectors are in general genuinely complex
   List<Real> eigenvalues = decomposition.getRealEigenvalues();
+  List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();
+  ```
+  ```java
+  // Spectral decomposition of a general real, non-symmetric matrix
+  RealField R = RealField.INSTANCE;
+  SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 1.0, 2.0, 3.0, 4.0);
+  StoppingParameters params = new StoppingParameters(R.of(1e-12), 500);
+
+  GeneralEigenvalueSolver<Real> solver = new GeneralEigenvalueSolver<>();
+  SolverResult<EigenDecomposition> result = solver.solve(A, params);
+  EigenDecomposition decomposition = result.getValue();
+
+  // eigenvalues can be genuinely complex even though A is real: always Complex here
+  List<Complex> eigenvalues = decomposition.getEigenvalues();
   List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();
   ```
 
