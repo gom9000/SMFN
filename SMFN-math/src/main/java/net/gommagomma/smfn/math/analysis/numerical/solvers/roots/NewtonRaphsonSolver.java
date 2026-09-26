@@ -9,13 +9,25 @@ import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableScalarProbl
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolver;
+import net.gommagomma.smfn.math.analysis.core.solvers.RootFindingSolverResult;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 
 /**
  * Solutore Newton-Raphson: x_{k+1} = x_k - f(x_k)/f'(x_k).
  *
  * Se il problema implementa DifferentiableScalarProblem, usa la derivata
  * analitica fornita; altrimenti ricade su un differenziatore numerico.
+ * <p>
+ * Il mancato raggiungimento della convergenza entro il numero massimo di iterazioni,
+ * cosi' come l'incontro di una derivata nulla lungo il cammino, non sono trattati come
+ * eccezioni: sono esiti numerici possibili e attesi di un metodo iterativo, riportati
+ * come {@link ConvergenceStatus#MAX_ITERATIONS_REACHED} e {@link ConvergenceStatus#NUMERICAL_ERROR}
+ * nel {@link SolverResult} restituito, insieme all'ultima approssimazione disponibile.
+ * E' compito di chi chiama {@link #solve} decidere se un esito diverso da CONVERGED
+ * e' accettabile per il proprio caso d'uso (es. non lo e' per una ricerca di radici,
+ * lo e' per un algoritmo che usa il conteggio delle iterazioni come dato, es. i frattali di Newton).
  */
 public class NewtonRaphsonSolver<R extends ScalarElement<R>>
 implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
@@ -29,7 +41,7 @@ implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
 	}
 
 	@Override
-	public R solve(ScalarRootFindingProblem<R> problem, R initialGuess,
+	public SolverResult<R> solve(ScalarRootFindingProblem<R> problem, R initialGuess,
 	               ConvergenceCriteria criteria, ConvergenceParameters params,
 	               MetricSpace<R> space) {
 
@@ -38,6 +50,7 @@ implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
 			: fallbackDifferentiator.apply(problem);
 
 		R current = initialGuess;
+		Real stepDistance = space.distance(current, current);
 
 		for (int k = 0; k < params.maxIterations; k++) {
 			R previous = current;
@@ -46,18 +59,21 @@ implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
 			R fPrimeOfX = derivative.apply(current);
 
 			if (field.isZero(fPrimeOfX)) {
-				throw new ArithmeticException("Derivata nulla all'iterazione " + k);
+				Real residual = space.distance(fOfX, field.zero());
+				return new RootFindingSolverResult<>(current, ConvergenceStatus.NUMERICAL_ERROR, k, stepDistance, residual);
 			}
 
 			R step = field.divide(fOfX, fPrimeOfX);
 			current = field.subtract(current, step);
+			stepDistance = space.distance(current, previous);
 
-			Real distance = space.distance(current, previous);
-			if (criteria.isConverged(distance, params, k + 1)) {
-				return current;
+			if (criteria.isConverged(stepDistance, params, k + 1)) {
+				Real residual = space.distance(problem.apply(current), field.zero());
+				return new RootFindingSolverResult<>(current, ConvergenceStatus.CONVERGED, k + 1, stepDistance, residual);
 			}
 		}
 
-		throw new IllegalStateException("Convergenza fallita dopo " + params.maxIterations + " iterazioni.");
+		Real finalResidual = space.distance(problem.apply(current), field.zero());
+		return new RootFindingSolverResult<>(current, ConvergenceStatus.MAX_ITERATIONS_REACHED, params.maxIterations, stepDistance, finalResidual);
 	}
 }

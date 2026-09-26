@@ -59,12 +59,12 @@ public class CircleLineIntersectionDemo
 		// le soluzioni -- ognuna richiede un proprio punto di partenza.
 		Vector<Real> guess1 = V2.of(new Real[] { new Real(3.0), new Real(1.0) });
 		Vector<Real> intersection1 = solver.solve(problem, guess1,
-			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space);
+			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space).getValue();
 		System.out.println("\nPartendo da (3,1): intersezione = " + intersection1);
 
 		Vector<Real> guess2 = V2.of(new Real[] { new Real(1.0), new Real(3.0) });
 		Vector<Real> intersection2 = solver.solve(problem, guess2,
-			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space);
+			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space).getValue();
 		System.out.println("Partendo da (1,3): intersezione = " + intersection2);
 
 		System.out.println("\nVerifica isOnEntity su entrambe le figure:");

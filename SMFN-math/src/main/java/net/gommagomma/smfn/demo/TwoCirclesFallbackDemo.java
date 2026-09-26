@@ -56,12 +56,12 @@ public class TwoCirclesFallbackDemo {
 
         Vector<Real> guess1 = VectorElementFactory.of(V2, 1.0, 1.0);
         Vector<Real> result1 = solver.solve(problem, guess1,
-            (distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space);
+            (distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space).getValue();
         System.out.println("Partendo da (1,1):   " + result1);
 
         Vector<Real> guess2 = VectorElementFactory.of(V2, 1.0, -1.0);
         Vector<Real> result2 = solver.solve(problem, guess2,
-            (distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space);
+            (distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, space).getValue();
         System.out.println("Partendo da (1,-1):  " + result2);
     }
 }

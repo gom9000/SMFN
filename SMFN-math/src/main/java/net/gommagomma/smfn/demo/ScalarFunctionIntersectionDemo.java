@@ -45,9 +45,9 @@ public class ScalarFunctionIntersectionDemo
 		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-10), 100);
 
 		Real root1 = solver.solve(problem, new Real(3.0),
-			(d, p, it) -> d.getValue() < p.getTolerance().getValue(), params, space);
+			(d, p, it) -> d.getValue() < p.getTolerance().getValue(), params, space).getValue();
 		Real root2 = solver.solve(problem, new Real(-3.0),
-			(d, p, it) -> d.getValue() < p.getTolerance().getValue(), params, space);
+			(d, p, it) -> d.getValue() < p.getTolerance().getValue(), params, space).getValue();
 
 		System.out.println("\nIntersezione 1 (guess  3.0) = " + root1);
 		System.out.println("Intersezione 2 (guess -3.0) = " + root2);

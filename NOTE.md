@@ -41,15 +41,6 @@ net.gommagomma.smfn/
 
 
 # NOTE:
-public interface SolverResult<R> {
-    R getSolution();
-    boolean isConverged();
-    int getIterationsExecuted();
-    Real getFinalResidual(); // o distanza finale
-    
-    // Eventuali motivi di arresto (es. CONVERGED, MAX_ITERATIONS_REACHED, DIVERGED, NUMERICAL_ERROR)
-    ConvergenceStatus getStatus(); 
-}
 public interface LinearSystemSolver<K extends ScalarElement<K>>
 extends Solver<LinearSystemProblem<K>, Vector<K>>
 {
@@ -59,24 +50,23 @@ extends Solver<LinearSystemProblem<K>, Vector<K>>
 - Semiring dice correttamente che l'addizione è commutativa, ma non c'è nessuna CommutativeAdditiveMonoid. Quindi il type system non rappresenta completamente l'assioma. Ma aggiungerebbe una interfaccia vuota che non serve...
   Lo stesso per EuclideanDomain che estende CommutativeRing, ma non c'è alcuna rappresentazione dell'assenza di divisori dello zero. Ma sarebbe una interfaccia vuota inutile...
 - Newton usa solo la distanza tra iterazioni e non il residuo. forse un ConvergenceCriteria più ricco per esprimere contemporaneamente e separatamente la distanza ed il residuo...
-- VectorFieldPlotter
-- Demo di algebra/linearalgebra con tutte le possibilità degli elementi ZnRing;
+- VectorFieldPlotter (con le freccette?)
+- Demo di ZnRing su tutte le sue possibilità in algebra/linearalgebra/...;
 - Da valutare un "epsilon relativo" (ulps - units in the last place), che adatta la tolleranza alla grandezza dei numeri confrontati.
 - Nelle implementazioni concrete (es. RealMatrix), considera di usare internamente double[] o double[][] primitivi per lo storage, e crea gli oggetti Real "on the fly" solo quando richiesti tramite get(row, col).
 - Per la Fisica (Simulazione e Animazione)
-Avrai bisogno di:
-    SimulationPanel: Un pannello che esegue un loop di aggiornamento a tempo fisso (es. 60 FPS).
-    PhysicsRenderer: Logica per disegnare gli corpi e frecce per le forze o i campi elettrici.
-    Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
+    - SimulationPanel: Un pannello che esegue un loop di aggiornamento a tempo fisso (es. 60 FPS).
+    - PhysicsRenderer: Logica per disegnare gli corpi e frecce per le forze o i campi elettrici.
+    - Camera: Logica per gestire la vista, permettendo all'utente di muovere la visuale nello spazio simulato.
 - mq.models:
-  HarmonicOscillator
-  ParticleInBox             1
-  FiniteSquareWell          1
-  QuantumTunneling          2
-  HydrogenRadialEquation    1
-  HydrogenAtom              2
-  TwoLevelSystem            2
-  PeriodicPotential         1
-	MorsePotential            1
-  QuantumRotor              2
-  DoubleWell                1
+  - HarmonicOscillator
+  - ParticleInBox             facile
+  - FiniteSquareWell          facile
+  - QuantumTunneling          medio
+  - HydrogenRadialEquation    facile
+  - HydrogenAtom              medio
+  - TwoLevelSystem            medio
+  - PeriodicPotential         facile
+	- MorsePotential            facile
+  - QuantumRotor              medio
+  - DoubleWell                facile

@@ -16,6 +16,8 @@ import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.analysis.core.functionals.HornerEvaluator;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableScalarProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.functions.PolynomialFunction;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceDifferentiator;
 
@@ -64,13 +66,22 @@ public class PolynomialRootSolver<K extends ScalarElement<K>, S extends Field<K>
 		Polynomial<K> current = polynomial;
 
 		while (current.degree() > 0) {
-			K root = solver.solve(
+			SolverResult<K> result = solver.solve(
 				problemFor(current),
 				initialGuess,
 				(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(),
 				params,
 				space
 			);
+
+			// A differenza di un frattale di Newton, qui la non convergenza non e' un dato accettabile:
+			// una radice approssimata male comprometterebbe la deflazione successiva.
+			if (result.getStatus() != ConvergenceStatus.CONVERGED) {
+				throw new IllegalStateException("Newton-Raphson non converso durante la ricerca delle radici: stato "
+					+ result.getStatus() + " dopo " + result.getIterationsExecuted() + " iterazioni.");
+			}
+
+			K root = result.getValue();
 			roots.add(root);
 
 			// Deflazione: divide per (x - root), usando la divisione euclidea esatta.

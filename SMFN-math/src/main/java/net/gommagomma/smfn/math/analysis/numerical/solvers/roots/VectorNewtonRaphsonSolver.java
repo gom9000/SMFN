@@ -10,6 +10,10 @@ import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableVectorProbl
 import net.gommagomma.smfn.math.analysis.core.problems.VectorRootFindingProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolver;
+import net.gommagomma.smfn.math.analysis.core.solvers.RootFindingSolverResult;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceJacobianEstimator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.linear.GaussianEliminationSolver;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
@@ -22,8 +26,20 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
  * se il problema implementa DifferentiableVectorProblem, si usa getJacobian();
  * altrimenti si ricade su CentralDifferenceJacobianEstimator.
  * Il passo si ottiene risolvendo J*step = F(x) con GaussianEliminationSolver.
+ * <p>
+ * Coerentemente con {@link NewtonRaphsonSolver} (la sua controparte scalare), il mancato
+ * raggiungimento della convergenza entro il numero massimo di iterazioni e l'incontro di una
+ * Jacobiana singolare (l'analogo vettoriale di una derivata scalare nulla) non sono trattati
+ * come eccezioni: sono esiti numerici possibili e attesi di un metodo iterativo, riportati come
+ * {@link ConvergenceStatus#MAX_ITERATIONS_REACHED} / {@link ConvergenceStatus#NUMERICAL_ERROR}
+ * nel {@link SolverResult} restituito, insieme all'ultima approssimazione disponibile. Una
+ * Jacobiana singolare che GaussianEliminationSolver segnala per un motivo diverso dalla ricerca
+ * degli zeri in se' (es. una richiesta di dimensioni errate) resta invece un'eccezione: solo il
+ * caso "passo non calcolabile a questo iterato" viene qui reinterpretato come esito numerico.
+ * </p>
  */
 public class VectorNewtonRaphsonSolver<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
+implements IterativeSolver<VectorRootFindingProblem<K>, Vector<K>, Vector<K>>
 {
 	private final GaussianEliminationSolver<K, S> linearSolver;
 	private final Module<Vector<K>, K, S> vectorSpace;
@@ -36,11 +52,13 @@ public class VectorNewtonRaphsonSolver<K extends ScalarElement<K>, S extends Fie
 		this.numericFallback = numericFallback;
 	}
 
-	public Vector<K> solve(VectorRootFindingProblem<K> problem, Vector<K> initialGuess,
+	@Override
+	public SolverResult<Vector<K>> solve(VectorRootFindingProblem<K> problem, Vector<K> initialGuess,
 	                       ConvergenceCriteria criteria, ConvergenceParameters params,
 	                       MetricSpace<Vector<K>> space) {
 
 		Vector<K> current = initialGuess;
+		Real stepDistance = space.distance(current, current);
 
 		for (int k = 0; k < params.maxIterations; k++) {
 			Vector<K> previous = current;
@@ -50,15 +68,25 @@ public class VectorNewtonRaphsonSolver<K extends ScalarElement<K>, S extends Fie
 				? ((DifferentiableVectorProblem<K>) problem).getJacobian().apply(current)
 				: numericFallback.estimateAt(problem, current);
 
-			Vector<K> step = linearSolver.solve(jacobian, fValue);
-			current = vectorSpace.subtract(current, step);
+			Vector<K> step;
+			try {
+				step = linearSolver.solve(jacobian, fValue);
+			} catch (ArithmeticException singularJacobian) {
+				// Jacobiana singolare in questo iterato: nessun passo di Newton calcolabile da qui.
+				Real residual = space.distance(fValue, vectorSpace.zero());
+				return new RootFindingSolverResult<>(current, ConvergenceStatus.NUMERICAL_ERROR, k, stepDistance, residual);
+			}
 
-			Real distance = space.distance(current, previous);
-			if (criteria.isConverged(distance, params, k + 1)) {
-				return current;
+			current = vectorSpace.subtract(current, step);
+			stepDistance = space.distance(current, previous);
+
+			if (criteria.isConverged(stepDistance, params, k + 1)) {
+				Real residual = space.distance(problem.apply(current), vectorSpace.zero());
+				return new RootFindingSolverResult<>(current, ConvergenceStatus.CONVERGED, k + 1, stepDistance, residual);
 			}
 		}
 
-		throw new IllegalStateException("Convergence failed after " + params.maxIterations + " iterations.");
+		Real finalResidual = space.distance(problem.apply(current), vectorSpace.zero());
+		return new RootFindingSolverResult<>(current, ConvergenceStatus.MAX_ITERATIONS_REACHED, params.maxIterations, stepDistance, finalResidual);
 	}
 }

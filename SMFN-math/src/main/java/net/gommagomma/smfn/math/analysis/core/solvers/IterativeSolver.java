@@ -34,8 +34,8 @@ extends Solver<P, R>
      * @param criteria Il criterio di convergenza che determina quando l'algoritmo deve arrestarsi con successo
      * @param params I parametri numerici di controllo (tolleranza ed iterazioni massime)
      * @param space Lo spazio metrico associato agli elementi di stato, utilizzato per la misurazione delle distanze e delle norme
-     * @return Il risultato finale R ottenuto al termine del processo iterativo
+     * @return Il {@link SolverResult} contenente il valore finale R e i metadati del processo iterativo (esito, iterazioni eseguite, distanza dell'ultimo passo)
      */
-    R solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<S> space);
+    SolverResult<R> solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<S> space);
 }
  

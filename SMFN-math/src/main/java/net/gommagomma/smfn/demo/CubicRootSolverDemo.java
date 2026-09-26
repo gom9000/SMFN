@@ -7,6 +7,7 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableScalarProblem;
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
 import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.ForwardDifferenceDifferentiator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.NewtonRaphsonSolver;
 
@@ -60,14 +61,18 @@ public class CubicRootSolverDemo
 		System.out.println("Guess iniziale: " + initialGuess + ", tolleranza: " + tolerance);
 
 		System.out.println("\n[1] Senza derivata analitica (fallback numerico):");
-		Real result1 = solver.solve(new CubicRootProblem(), initialGuess,
+		SolverResult<Real> outcome1 = solver.solve(new CubicRootProblem(), initialGuess,
 			(distance, p, it) -> distance.compareTo(p.getTolerance()) <= 0, params, space);
-		System.out.println("Radice trovata: " + result1);
+		Real result1 = outcome1.getValue();
+		System.out.println("Radice trovata: " + result1 + " (stato: " + outcome1.getStatus()
+			+ ", iterazioni: " + outcome1.getIterationsExecuted() + ")");
 
 		System.out.println("\n[2] Con derivata analitica (DifferentiableScalarProblem):");
-		Real result2 = solver.solve(new CubicRootProblemWithDerivative(), initialGuess,
+		SolverResult<Real> outcome2 = solver.solve(new CubicRootProblemWithDerivative(), initialGuess,
 			(distance, p, it) -> distance.compareTo(p.getTolerance()) <= 0, params, space);
-		System.out.println("Radice trovata: " + result2);
+		Real result2 = outcome2.getValue();
+		System.out.println("Radice trovata: " + result2 + " (stato: " + outcome2.getStatus()
+			+ ", iterazioni: " + outcome2.getIterationsExecuted() + ")");
 
 		System.out.println("\nI due percorsi coincidono: " + result1.equals(result2));
 	}
