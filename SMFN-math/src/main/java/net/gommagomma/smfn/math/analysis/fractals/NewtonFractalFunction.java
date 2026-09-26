@@ -17,18 +17,6 @@ import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.NewtonRaphsonSo
  * Funzione complessa che assegna a ciascun punto iniziale z_0 del piano complesso
  * il numero di iterazioni impiegate dal metodo di Newton-Raphson per convergere
  * (o per esaurire il budget) verso una radice del polinomio fornito.
- * <p>
- * Il polinomio -- e la sua derivata analitica -- e' un parametro del costruttore, non e' fissato
- * internamente: cosi' come {@link JuliaFunction} parametrizza la costante c, questa classe
- * parametrizza il problema differenziabile da risolvere, restando riusabile per qualunque polinomio
- * invece di richiedere una nuova classe per ognuno. {@link #forCubicMinusOne(int)} offre una
- * configurazione pronta per il classico frattale di Newton su p(z) = z^3 - 1.
- * </p>
- * <p>
- * Il conteggio delle iterazioni si legge direttamente da {@link SolverResult#getIterationsExecuted()}:
- * non serve piu' catturare eccezioni per dedurre il mancato raggiungimento della convergenza entro
- * il budget, ne' duplicare la logica del solutore per contarle a mano.
- * </p>
  */
 public class NewtonFractalFunction
 implements Mapping<Complex, Natural>

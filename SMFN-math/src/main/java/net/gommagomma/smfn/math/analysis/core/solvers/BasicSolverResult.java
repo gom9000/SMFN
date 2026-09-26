@@ -3,18 +3,14 @@ package net.gommagomma.smfn.math.analysis.core.solvers;
 import java.util.Objects;
 
 /**
- * Implementazione immutabile minima di {@link SolverResult}: solo i tre campi universali
- * a qualunque solutore della libreria (valore, esito, iterazioni eseguite), senza alcuna
- * capacita' opzionale aggiuntiva.
- * <p>
- * E' la classe giusta per un solutore che non riceve un {@code MetricSpace} esterno e non ha
- * un'equazione da annullare (es. un solutore agli autovalori, che si ferma su un proprio criterio
- * interno). Un solutore che riceve anche un {@code MetricSpace} esterno usa invece
- * {@link IterativeSolverResult}, che aggiunge {@link StepDistanceAware}.
+ * Incapsula i risultati di un processo risolutivo iterativo.
+ * E' adatta a solutori iterativi generici per la generazione di insiemi frattali
+ * o algoritmi a punto fisso.
  *
  * @param <R> Il tipo del valore calcolato dal solutore
  */
-public class BasicSolverResult<R> implements SolverResult<R>
+public class BasicSolverResult<R>
+implements SolverResult<R>
 {
 	private final R value;
 	private final TerminationStatus status;

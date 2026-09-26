@@ -16,13 +16,6 @@ import net.gommagomma.smfn.physics.mq.Hamiltonian;
  * Discretizzazione su N punti di griglia (inclusi gli estremi): x_i = -L + i*dx,
  * dx = 2L/(N-1). T = -(hbar^2/2m) d^2/dx^2 tridiagonale (differenze finite
  * centrate 2 ordine), V(x) aggiunto sulla diagonale.
- *
- * Autovalori analitici: E_n = hbar*omega*(n+1/2), n = 0, 1, 2, ... ma SOLO
- * per i primi n (tipicamente fino a circa N/4) -- l'errore di
- * discretizzazione cresce visibilmente con n (verificato numericamente:
- * a N=100, errore ~0.001 per n=0, oltre 1.0 per n=24). L (l'ampiezza del
- * dominio) deve essere abbastanza grande rispetto alla scala naturale
- * dell'oscillatore da non troncare la funzione d'onda prima che sia decaduta.
  */
 public final class HarmonicOscillator
 {

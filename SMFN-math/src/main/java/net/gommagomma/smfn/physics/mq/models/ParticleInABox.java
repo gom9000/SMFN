@@ -16,9 +16,6 @@ import net.gommagomma.smfn.physics.mq.Hamiltonian;
  * Discretizzazione su N punti interni: x_i = i * dx, dx = L / (N + 1).
  *
  * T = - (hbar^2 / 2m) d^2/dx^2 tridiagonale (differenze finite centrate 2 ordine).
- * Autovalori analitici: E_n = n^2 * pi^2 * hbar^2 / (2 * m * L^2), n = 1, 2, ...
- * ma SOLO per i primi n (tipicamente fino a circa N/4) -- l'errore di
- * discretizzazione cresce visibilmente con n, come per HarmonicOscillator.
  */
 public final class ParticleInABox
 {

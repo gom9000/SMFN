@@ -10,7 +10,6 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
  * algoritmo di risoluzione.
  * Il disaccoppiamento garantito da questa astrazione separa nettamente la modellazione del dominio analitico
  * dall'esecuzione iterativa gestita dai Solver.
- * </p>
  *
  * @param <P> Il tipo dell'elemento algebrico che definisce lo spazio della soluzione del problema
  */

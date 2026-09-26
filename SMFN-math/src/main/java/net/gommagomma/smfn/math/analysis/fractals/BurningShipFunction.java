@@ -15,9 +15,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 /**
  * Funzione complessa che assegna a ciascun punto del piano c il tempo di fuga
  * associato alla mappa non analitica del Burning Ship:
- * <pre>
  * z_{k+1} = (|Re(z_k)| + i * |Im(z_k)|)^2 + c
- * </pre>
  * a partire dall'origine z_0 = 0.
  */
 public class BurningShipFunction

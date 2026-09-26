@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 /**
- * Parametri numerici per il controllo della convergenza nei solutori iterativi.
+ * Parametri numerici per il controllo dello stop nei solutori iterativi.
  * 
  * Definendo una soglia di tolleranza numerica e un limite massimo per le iterazioni eseguibili,
  * garantisce che il processo iterativo termini in modo controllato, prevenendo cicli infiniti o divergenze non gestite.
@@ -12,7 +12,7 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
 public final class StoppingParameters
 {
 	/**
-     * La soglia di tolleranza d'errore per la verifica dei criteri di convergenza.
+     * La soglia di tolleranza d'errore per la verifica dei criteri di stop.
      */
     public final Real tolerance;
 
@@ -22,7 +22,7 @@ public final class StoppingParameters
     public final int maxIterations;
 
     /**
-     * Costruisce un oggetto di configurazione per la convergenza.
+     * Costruisce un oggetto di configurazione per lo stop.
      *
      * @param tolerance La tolleranza d'errore target epsilon; deve essere un valore reale finito e strettamente positivo
      * @param maxIterations Il numero massimo di iterazioni consentite; deve essere strettamente maggiore di zero

@@ -11,7 +11,9 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
  *
  * @param <R> Il tipo del valore calcolato dal solutore (es. lo scalare radice, o il vettore soluzione)
  */
-public final class RootFindingSolverResult<R> extends IterativeSolverResult<R> implements ResidualAware
+public final class RootFindingSolverResult<R>
+extends IterativeSolverResult<R>
+implements ResidualAware
 {
 	private final Real finalResidual;
 

@@ -9,11 +9,6 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 /**
  * Contratto comune ai solutori diretti di sistemi lineari Ax = b, a prescindere
  * dall'algoritmo concreto o dal tipo scalare K su cui operano.
- * <p>
- * {@code solve(LinearSystemProblem<K>)} e' il metodo che soddisfa {@link Solver}, prendendo il
- * problema come singolo argomento. {@code solve(SquareMatrix<K>, Vector<K>)} e' l'overload di
- * comodo per chi ha gia' la matrice e il termine noto separati, senza dover costruire esplicitamente
- * un {@link LinearSystemProblem}.
  *
  * @param <K> Il tipo dello scalare che compone la matrice dei coefficienti e i vettori
  */
