@@ -41,12 +41,6 @@ net.gommagomma.smfn/
 
 
 # NOTE:
-public interface LinearSystemSolver<K extends ScalarElement<K>>
-extends Solver<LinearSystemProblem<K>, Vector<K>>
-{
-    Vector<K> solve(SquareMatrix<K> matrix, Vector<K> rhs);
-}
-
 - Semiring dice correttamente che l'addizione è commutativa, ma non c'è nessuna CommutativeAdditiveMonoid. Quindi il type system non rappresenta completamente l'assioma. Ma aggiungerebbe una interfaccia vuota che non serve...
   Lo stesso per EuclideanDomain che estende CommutativeRing, ma non c'è alcuna rappresentazione dell'assenza di divisori dello zero. Ma sarebbe una interfaccia vuota inutile...
 - Newton usa solo la distanza tra iterazioni e non il residuo.

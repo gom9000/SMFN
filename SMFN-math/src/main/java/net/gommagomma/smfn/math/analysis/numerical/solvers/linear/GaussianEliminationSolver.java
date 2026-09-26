@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.analysis.numerical.solvers.linear;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
+import net.gommagomma.smfn.math.analysis.core.problems.LinearSystemProblem;
 import net.gommagomma.smfn.math.linearalgebra.matrices.Matrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixSpace;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
@@ -13,6 +14,7 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
  * Risolve Ax = b per eliminazione di Gauss con sostituzione all'indietro.
  */
 public final class GaussianEliminationSolver<K extends ScalarElement<K>, S extends Field<K> & ScalarStructure<K>>
+implements LinearSystemSolver<K>
 {
 	private final S scalarStructure;
 	private final int n;
@@ -26,6 +28,12 @@ public final class GaussianEliminationSolver<K extends ScalarElement<K>, S exten
 		this.vectorSpace = new VectorSpace<>(scalarStructure, n);
 	}
 
+	@Override
+	public Vector<K> solve(LinearSystemProblem<K> problem) {
+		return solve(problem.getMatrix(), problem.getRhs());
+	}
+
+	@Override
 	public Vector<K> solve(SquareMatrix<K> A, Vector<K> b) {
 		@SuppressWarnings("unchecked")
 		K[] augmentedData = (K[]) new ScalarElement[n * (n + 1)];

@@ -30,7 +30,7 @@ public class IterativeSolverResult<R> extends BasicSolverResult<R> implements St
      * @throws NullPointerException Se uno qualsiasi degli argomenti obbligatori e' nullo
      * @throws IllegalArgumentException Se iterationsExecuted e' negativo
      */
-	public IterativeSolverResult(R value, ConvergenceStatus status, int iterationsExecuted, Real finalStepDistance) {
+	public IterativeSolverResult(R value, TerminationStatus status, int iterationsExecuted, Real finalStepDistance) {
 		super(value, status, iterationsExecuted);
 		this.finalStepDistance = Objects.requireNonNull(finalStepDistance, "finalStepDistance must not be null.");
 	}

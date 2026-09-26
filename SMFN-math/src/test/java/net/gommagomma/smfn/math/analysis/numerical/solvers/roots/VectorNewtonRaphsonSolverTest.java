@@ -12,8 +12,8 @@ import net.gommagomma.smfn.math.algebra.core.structures.metric.MetricSpace;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.functions.MultivariateFunction;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.ResidualAware;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceJacobianEstimator;
@@ -39,7 +39,7 @@ class VectorNewtonRaphsonSolverTest
 		Real dy = R.subtract(a.get(1), b.get(1));
 		return R.add(R.multiply(dx, dx), R.multiply(dy, dy)).sqrt();
 	};
-	private final ConvergenceParameters params = new ConvergenceParameters(new Real(1e-10), 100);
+	private final StoppingParameters params = new StoppingParameters(new Real(1e-10), 100);
 
 	private Vector<Real> guess(double x, double y) {
 		return V2.of(new Real[] { new Real(x), new Real(y) });
@@ -63,8 +63,8 @@ class VectorNewtonRaphsonSolverTest
 		SolverResult<Vector<Real>> outcome2 = solver.solve(problem, guess(1.0, 3.0),
 			(d, p, it) -> d.getValue() < p.getTolerance().getValue(), params, space);
 
-		assertEquals(ConvergenceStatus.CONVERGED, outcome1.getStatus());
-		assertEquals(ConvergenceStatus.CONVERGED, outcome2.getStatus());
+		assertEquals(TerminationStatus.CONVERGED, outcome1.getStatus());
+		assertEquals(TerminationStatus.CONVERGED, outcome2.getStatus());
 
 		Vector<Real> intersection1 = outcome1.getValue();
 		Vector<Real> intersection2 = outcome2.getValue();
@@ -94,7 +94,7 @@ class VectorNewtonRaphsonSolverTest
 		SolverResult<Vector<Real>> result = solver.solve(problem, guess(0.0, 0.0),
 			(d, p, it) -> d.getValue() < p.getTolerance().getValue(), params, space);
 
-		assertEquals(ConvergenceStatus.NUMERICAL_ERROR, result.getStatus());
+		assertEquals(TerminationStatus.NUMERICAL_ERROR, result.getStatus());
 		assertEquals(0, result.getIterationsExecuted());
 		// Nessun passo e' stato calcolabile: il valore riportato e' ancora il punto di partenza.
 		assertEquals(guess(0.0, 0.0), result.getValue());

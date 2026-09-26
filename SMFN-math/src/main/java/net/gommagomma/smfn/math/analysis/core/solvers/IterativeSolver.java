@@ -12,9 +12,9 @@ import net.gommagomma.smfn.math.algebra.core.structures.metric.MetricSpace;
  * del numero massimo di iterazioni consentito.
  * 
  * Il processo di convergenza viene guidato da tre componenti fondamentali:
- * - ConvergenceCriteria: definisce la politica e le condizioni logiche di arresto
+ * - StoppingCriteria: definisce la politica e le condizioni logiche di arresto
  *       (es. controllo sulla norma del residuo, sulla distanza tra iterati consecutivi o combinazioni).
- * - ConvergenceParameters: contiene i parametri quantitativi di controllo
+ * - StoppingParameters: contiene i parametri quantitativi di controllo
  *       (es. tolleranza target epsilon e limite massimo di iterazioni N_max).
  * - MetricSpace: fornisce la struttura metrica necessaria per calcolare le distanze
  *       d(S_{k+1}, S_k) o le norme dei residui nello spazio degli stati.
@@ -36,6 +36,6 @@ extends Solver<P, R>
      * @param space Lo spazio metrico associato agli elementi di stato, utilizzato per la misurazione delle distanze e delle norme
      * @return Il {@link SolverResult} contenente il valore finale R e i metadati del processo iterativo (esito, iterazioni eseguite, distanza dell'ultimo passo)
      */
-    SolverResult<R> solve(P problem, S initialState, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<S> space);
+    SolverResult<R> solve(P problem, S initialState, StoppingCriteria criteria, StoppingParameters params, MetricSpace<S> space);
 }
  

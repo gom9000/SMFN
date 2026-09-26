@@ -14,7 +14,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 
 @DisplayName("PolynomialRootSolver: tutte le radici via Newton-Raphson + deflazione")
 class PolynomialRootSolverTest
@@ -25,7 +25,7 @@ class PolynomialRootSolverTest
 	private PolynomialRootSolver<Complex, ComplexField> newSolver() {
 		return new PolynomialRootSolver<>(
 			C, new Complex(1e-6, 0), SPACE, new Complex(0.4, 0.9),
-			new ConvergenceParameters(new Real(1e-10), 100));
+			new StoppingParameters(new Real(1e-10), 100));
 	}
 
 	@Test

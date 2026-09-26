@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenDecomposition;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenvalueSolver;
@@ -26,7 +26,7 @@ public class EigenvalueDemo
 	public static void main(String[] args) {
 		RealField R = RealField.INSTANCE;
 		ComplexField C = ComplexField.INSTANCE;
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+		StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 
 		System.out.println("=== Caso 1: matrice reale simmetrica (JacobiEigenvalueSolver) ===");
 		// A = [[2,1],[1,2]] -- autovalori noti 1 e 3, autovettori (1,1)/sqrt(2), (1,-1)/sqrt(2)

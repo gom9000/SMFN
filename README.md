@@ -105,7 +105,7 @@ Real expZ = simulator.expectationValue(sigmaZ, psi);  // 0.0: equal probabilitie
 Real expX = simulator.expectationValue(sigmaX, psi);  // 1.0: |+> is an eigenstate of sigma_x with eigenvalue +1
 
 // Projective measurement: samples an eigenvalue per Born's rule, collapses the state
-ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 MeasurementOutcome outcome = simulator.performMeasurement(sigmaZ, psi, params, new Random());
 Real value = outcome.getValue();                         // +1 or -1, sampled per Born's rule
 QuantumState collapsed = outcome.getCollapsedState();    // now an eigenstate of sigma_z

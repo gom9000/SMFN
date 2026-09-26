@@ -244,7 +244,7 @@ ComplexField C = ComplexField.INSTANCE;
 MetricSpace<Complex> space = (a, b) -> new Real(C.subtract(a, b).modulus());
 PolynomialRootSolver<Complex, ComplexField> rootSolver = new PolynomialRootSolver<>(
     C, new Complex(1e-6, 0), space, new Complex(0.4, 0.9), 
-    new ConvergenceParameters(new Real(1e-10), 100)
+    new StoppingParameters(new Real(1e-10), 100)
 );
 
 List<Complex> roots = rootSolver.findAllRoots(complexPolynomial);

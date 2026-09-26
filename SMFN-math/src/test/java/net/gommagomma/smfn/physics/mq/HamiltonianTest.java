@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 
@@ -20,7 +20,7 @@ class HamiltonianTest
 {
 	private static final ComplexField C = ComplexField.INSTANCE;
 	private final SquareMatrixRing<Complex, ComplexField> M2 = new SquareMatrixRing<>(C, 2);
-	private final ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+	private final StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 
 	@Test
 	@DisplayName("findStationaryStates(): H=[[2,1+i],[1-i,3]], autovalori 1 e 4 (verificati a mano e con numpy)")

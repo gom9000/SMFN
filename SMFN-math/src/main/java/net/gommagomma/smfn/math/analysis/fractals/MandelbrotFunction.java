@@ -8,8 +8,8 @@ import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.FixedPointProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingCriteria;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 
 /**
@@ -30,8 +30,8 @@ implements Mapping<Complex, Natural>
     // la distanza dell'ultimo passo nel SolverResult (non guida il criterio di arresto).
     private final MetricSpace<Complex> complexMetricSpace = (z1, z2) -> R.of(Math.sqrt(C.subtract(z1, z2).modulusSquared()));
 
-    private ConvergenceParameters cachedParams;
-    private final ConvergenceCriteria divergenceTest;
+    private StoppingParameters cachedParams;
+    private final StoppingCriteria divergenceTest;
 
     public MandelbrotFunction(int maxIterations) {
         this.divergenceTest = (measure, params, iteration) -> measure.getValue() > DIVERGENCE_RADIUS_SQ;
@@ -39,7 +39,7 @@ implements Mapping<Complex, Natural>
     }
 
     public void setMaxIterations(int maxIterations) {
-        this.cachedParams = new ConvergenceParameters(R.one(), maxIterations);
+        this.cachedParams = new StoppingParameters(R.one(), maxIterations);
     }
 
     @Override

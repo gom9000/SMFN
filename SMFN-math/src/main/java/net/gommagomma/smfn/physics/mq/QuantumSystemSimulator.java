@@ -6,8 +6,8 @@ import java.util.Random;
 
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenDecomposition;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.HermitianEigenvalueSolver;
@@ -60,7 +60,7 @@ public final class QuantumSystemSimulator
 	 * @return l'esito della misura: autovalore ottenuto e stato collassato
 	 */
 	public MeasurementOutcome performMeasurement(Observable<Complex> observable, QuantumState state,
-	                                              ConvergenceParameters eigenParams, Random random) {
+	                                              StoppingParameters eigenParams, Random random) {
 		BornDistribution distribution = computeBornDistribution(observable, state, eigenParams);
 
 		double r = random.nextDouble() * distribution.total; // campiona su [0, total) invece di normalizzare prima, un giro in meno
@@ -90,7 +90,7 @@ public final class QuantumSystemSimulator
 	 * @return una coppia (autovalore, probabilita') per ciascun autovalore, probabilita' normalizzate a somma 1
 	 */
 	public List<MeasurementProbability> measurementProbabilities(Observable<Complex> observable, QuantumState state,
-	                                                               ConvergenceParameters eigenParams) {
+	                                                               StoppingParameters eigenParams) {
 		BornDistribution distribution = computeBornDistribution(observable, state, eigenParams);
 
 		List<MeasurementProbability> result = new ArrayList<>(distribution.eigenvalues.size());
@@ -102,9 +102,9 @@ public final class QuantumSystemSimulator
 		return result;
 	}
 
-	private BornDistribution computeBornDistribution(Observable<Complex> observable, QuantumState state, ConvergenceParameters eigenParams) {
+	private BornDistribution computeBornDistribution(Observable<Complex> observable, QuantumState state, StoppingParameters eigenParams) {
 		SolverResult<EigenDecomposition> result = new HermitianEigenvalueSolver().solve(observable.asOperator(), eigenParams);
-		if (result.getStatus() != ConvergenceStatus.CONVERGED) {
+		if (result.getStatus() != TerminationStatus.CONVERGED) {
 			throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
 		}
 		EigenDecomposition decomposition = result.getValue();

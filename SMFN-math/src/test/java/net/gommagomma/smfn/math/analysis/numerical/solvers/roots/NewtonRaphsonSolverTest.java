@@ -12,8 +12,8 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableScalarProblem;
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.ResidualAware;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 
@@ -53,12 +53,12 @@ class NewtonRaphsonSolverTest
 	@DisplayName("Convergenza: status CONVERGED, valore vicino alla radice attesa, residuo quasi nullo")
 	void convergesToKnownRoot() {
 		NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, null);
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-10), 50);
+		StoppingParameters params = new StoppingParameters(new Real(1e-10), 50);
 
 		SolverResult<Real> result = solver.solve(CUBIC_MINUS_TWO, new Real(1.0),
 			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, SPACE);
 
-		assertEquals(ConvergenceStatus.CONVERGED, result.getStatus());
+		assertEquals(TerminationStatus.CONVERGED, result.getStatus());
 		assertEquals(Math.cbrt(2.0), result.getValue().getValue(), 1e-8);
 		assertTrue(result.getIterationsExecuted() > 0);
 
@@ -71,13 +71,13 @@ class NewtonRaphsonSolverTest
 	@DisplayName("Derivata nulla: status NUMERICAL_ERROR invece di ArithmeticException, nessuna iterazione completata")
 	void zeroDerivativeYieldsNumericalErrorInsteadOfThrowing() {
 		NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, null);
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-10), 50);
+		StoppingParameters params = new StoppingParameters(new Real(1e-10), 50);
 
 		// x_0 = 0: f'(0) = 0, la derivata e' nulla gia' al primo tentativo.
 		SolverResult<Real> result = solver.solve(SQUARE, new Real(0.0),
 			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, SPACE);
 
-		assertEquals(ConvergenceStatus.NUMERICAL_ERROR, result.getStatus());
+		assertEquals(TerminationStatus.NUMERICAL_ERROR, result.getStatus());
 		assertEquals(0, result.getIterationsExecuted());
 		assertEquals(0.0, result.getValue().getValue(), 1e-15);
 	}
@@ -87,12 +87,12 @@ class NewtonRaphsonSolverTest
 	void insufficientBudgetYieldsMaxIterationsReached() {
 		NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, null);
 		// Tolleranza irraggiungibile in una sola iterazione partendo lontano dalla radice.
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 1);
+		StoppingParameters params = new StoppingParameters(new Real(1e-12), 1);
 
 		SolverResult<Real> result = solver.solve(CUBIC_MINUS_TWO, new Real(100.0),
 			(distance, p, it) -> distance.getValue() < p.getTolerance().getValue(), params, SPACE);
 
-		assertEquals(ConvergenceStatus.MAX_ITERATIONS_REACHED, result.getStatus());
+		assertEquals(TerminationStatus.MAX_ITERATIONS_REACHED, result.getStatus());
 		assertEquals(1, result.getIterationsExecuted());
 	}
 }

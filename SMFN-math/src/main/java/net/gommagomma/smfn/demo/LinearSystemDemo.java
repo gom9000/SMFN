@@ -2,6 +2,7 @@ package net.gommagomma.smfn.demo;
 
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.analysis.core.problems.LinearSystemProblem;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.linear.GaussianEliminationSolver;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
@@ -34,5 +35,10 @@ public class LinearSystemDemo {
         // Verifica indipendente: Ax deve ridare b
         Vector<Real> check = A.apply(x);
         System.out.println("A*x = " + check + " (deve coincidere con b = " + b + ")");
+
+        // Stesso sistema, stesso solutore, passando il problema come singolo oggetto:
+        LinearSystemProblem<Real> problem = new LinearSystemProblem<>(A, b);
+        Vector<Real> xViaProblem = solver.solve(problem);
+        System.out.println("Soluzione via LinearSystemProblem: " + xViaProblem);
     }
 }

@@ -6,7 +6,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableScalarProblem;
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.ForwardDifferenceDifferentiator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.NewtonRaphsonSolver;
@@ -46,7 +46,7 @@ public class CubicRootSolverDemo
 	{
 		Real initialGuess = new Real(1.0);
 		Real tolerance = new Real(1e-10);
-		ConvergenceParameters params = new ConvergenceParameters(tolerance, 50);
+		StoppingParameters params = new StoppingParameters(tolerance, 50);
 
 		// Spazio metrico: distanza euclidea su Real. Nessuna classe a parte serve,
 		// e' un'interfaccia funzionale -- stesso pattern gia' usato altrove.

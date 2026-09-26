@@ -12,8 +12,8 @@ import org.junit.jupiter.api.Test;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.ResidualAware;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.core.solvers.StepDistanceAware;
@@ -26,7 +26,7 @@ class JacobiEigenvalueSolverTest
 {
 	private static final RealField R = RealField.INSTANCE;
 	private final JacobiEigenvalueSolver solver = new JacobiEigenvalueSolver();
-	private final ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+	private final StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 
 	@Test
 	@DisplayName("Caso 2x2 noto: A=[[2,1],[1,2]], autovalori 1 e 3, calcolati a mano")
@@ -96,7 +96,7 @@ class JacobiEigenvalueSolverTest
 		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
 		SolverResult<EigenDecomposition> result = solver.solve(A, params);
 
-		assertEquals(ConvergenceStatus.CONVERGED, result.getStatus());
+		assertEquals(TerminationStatus.CONVERGED, result.getStatus());
 		assertTrue(result.getIterationsExecuted() >= 0);
 		assertTrue(result.getIterationsExecuted() < params.maxIterations);
 		assertEquals(false, result instanceof StepDistanceAware);
@@ -107,11 +107,11 @@ class JacobiEigenvalueSolverTest
 	@DisplayName("Budget di iterazioni insufficiente: MAX_ITERATIONS_REACHED con la migliore decomposizione disponibile, non un'eccezione")
 	void insufficientIterationBudgetReportsMaxIterationsReached() {
 		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 2.0, 1.0, 1.0, 2.0);
-		ConvergenceParameters tightBudget = new ConvergenceParameters(new Real(1e-12), 1);
+		StoppingParameters tightBudget = new StoppingParameters(new Real(1e-12), 1);
 
 		SolverResult<EigenDecomposition> result = solver.solve(A, tightBudget);
 
-		assertEquals(ConvergenceStatus.MAX_ITERATIONS_REACHED, result.getStatus());
+		assertEquals(TerminationStatus.MAX_ITERATIONS_REACHED, result.getStatus());
 		assertEquals(1, result.getIterationsExecuted());
 		assertEquals(2, result.getValue().getEigenvalues().size());
 	}

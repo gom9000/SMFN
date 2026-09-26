@@ -1,7 +1,7 @@
 package net.gommagomma.smfn.math.analysis.numerical.solvers.eigen;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.Solver;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
@@ -19,5 +19,5 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 public interface EigenvalueSolver<K extends ScalarElement<K>>
 extends Solver<SquareMatrix<K>, EigenDecomposition>
 {
-	SolverResult<EigenDecomposition> solve(SquareMatrix<K> matrix, ConvergenceParameters params);
+	SolverResult<EigenDecomposition> solve(SquareMatrix<K> matrix, StoppingParameters params);
 }

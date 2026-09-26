@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.analysis.core.problems.LinearSystemProblem;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
@@ -91,5 +92,34 @@ class GaussianEliminationSolverTest
 
 		assertEquals(2.0, x.get(0).getValue(), 1e-9);
 		assertEquals(1.0, x.get(1).getValue(), 1e-9);
+	}
+
+	@Test
+	@DisplayName("solve(LinearSystemProblem) e solve(matrice, rhs) restituiscono la stessa soluzione")
+	void solvesViaLinearSystemProblem() {
+		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R,
+			3.0,  2.0, -1.0,
+			2.0, -2.0,  4.0,
+		   -1.0,  0.5, -1.0
+		);
+		Vector<Real> b = VectorElementFactory.of(V3, 1.0, -2.0, 0.0);
+
+		GaussianEliminationSolver<Real, RealField> solver = new GaussianEliminationSolver<>(R, 3);
+		LinearSystemProblem<Real> problem = new LinearSystemProblem<>(A, b);
+		Vector<Real> x = solver.solve(problem);
+
+		assertEquals(1.0, x.get(0).getValue(), 1e-9);
+		assertEquals(-2.0, x.get(1).getValue(), 1e-9);
+		assertEquals(-2.0, x.get(2).getValue(), 1e-9);
+	}
+
+	@Test
+	@DisplayName("LinearSystemProblem rifiuta matrice o rhs nulli")
+	void linearSystemProblemRejectsNullFields() {
+		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 1.0, 1.0, 1.0, -1.0);
+		Vector<Real> b = VectorElementFactory.of(new VectorSpace<>(R, 2), 3.0, 1.0);
+
+		assertThrows(NullPointerException.class, () -> new LinearSystemProblem<>(null, b));
+		assertThrows(NullPointerException.class, () -> new LinearSystemProblem<>(A, null));
 	}
 }

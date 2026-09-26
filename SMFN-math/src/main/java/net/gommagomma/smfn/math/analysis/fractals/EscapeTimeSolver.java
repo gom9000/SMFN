@@ -5,9 +5,9 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.FixedPointProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingCriteria;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolver;
 import net.gommagomma.smfn.math.analysis.core.solvers.IterativeSolverResult;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
@@ -15,16 +15,6 @@ import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 /**
  * Solutore iterativo generico basato sull'algoritmo del tempo di fuga (Escape Time)
  * per mappe dinamiche nel piano complesso.
- *
- * A differenza dei solutori iterativi standard orientati alla convergenza, questo solutore
- * applica una semantica inversa: il criterio di arresto valuta il superamento del raggio di fuga
- * per rilevare la divergenza di un'orbita z_{k+1} = G(z_k).
- * <p>
- * Il risultato e' l'ultimo iterato calcolato, corredato dal numero di iterazioni impiegate
- * (leggibile tramite {@link SolverResult#getIterationsExecuted()}) e dall'esito di terminazione:
- * {@link ConvergenceStatus#DIVERGED} se l'orbita ha superato il raggio di fuga entro il limite,
- * {@link ConvergenceStatus#MAX_ITERATIONS_REACHED} altrimenti. Un problema di punto fisso non ha
- * un'equazione F(x)=0 associata, quindi questo solutore non espone {@code ResidualAware}.
  */
 public class EscapeTimeSolver
 implements IterativeSolver<FixedPointProblem<Complex>, Complex, Complex>
@@ -40,10 +30,10 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Complex>
      * @param criteria Il criterio di arresto (utilizzato per valutare se la misura di divergenza supera la soglia di fuga)
      * @param params I parametri numerici che specificano il numero massimo di iterazioni N_max
      * @param space Lo spazio metrico sui numeri complessi, usato per calcolare la distanza tra gli ultimi due iterati
-     * @return Il {@link SolverResult} con l'ultimo iterato calcolato, il numero di iterazioni eseguite e l'esito (DIVERGED o MAX_ITERATIONS_REACHED)
+     * @return Il SolverResult con l'ultimo iterato calcolato, il numero di iterazioni eseguite e l'esito (DIVERGED o MAX_ITERATIONS_REACHED)
      */
     @Override
-    public SolverResult<Complex> solve(FixedPointProblem<Complex> problem, Complex initialGuess, ConvergenceCriteria criteria, ConvergenceParameters params, MetricSpace<Complex> space)
+    public SolverResult<Complex> solve(FixedPointProblem<Complex> problem, Complex initialGuess, StoppingCriteria criteria, StoppingParameters params, MetricSpace<Complex> space)
     {
         Complex currentZ = initialGuess;
         Complex previousZ = initialGuess;
@@ -52,9 +42,9 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Complex>
         {
             Real divergenceMeasure = R.of(currentZ.modulusSquared());
 
-            if (criteria.isConverged(divergenceMeasure, params, iterations)) {
+            if (criteria.shouldStop(divergenceMeasure, params, iterations)) {
                 Real finalStepDistance = space.distance(currentZ, previousZ);
-                return new IterativeSolverResult<>(currentZ, ConvergenceStatus.DIVERGED, iterations, finalStepDistance);
+                return new IterativeSolverResult<>(currentZ, TerminationStatus.DIVERGED, iterations, finalStepDistance);
             }
 
             previousZ = currentZ;
@@ -62,6 +52,6 @@ implements IterativeSolver<FixedPointProblem<Complex>, Complex, Complex>
         }
 
         Real finalStepDistance = space.distance(currentZ, previousZ);
-        return new IterativeSolverResult<>(currentZ, ConvergenceStatus.MAX_ITERATIONS_REACHED, params.maxIterations, finalStepDistance);
+        return new IterativeSolverResult<>(currentZ, TerminationStatus.MAX_ITERATIONS_REACHED, params.maxIterations, finalStepDistance);
     }
 }

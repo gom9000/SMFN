@@ -17,7 +17,7 @@ import java.util.Objects;
 public class BasicSolverResult<R> implements SolverResult<R>
 {
 	private final R value;
-	private final ConvergenceStatus status;
+	private final TerminationStatus status;
 	private final int iterationsExecuted;
 
 	/**
@@ -29,7 +29,7 @@ public class BasicSolverResult<R> implements SolverResult<R>
      * @throws NullPointerException Se value o status sono nulli
      * @throws IllegalArgumentException Se iterationsExecuted e' negativo
      */
-	public BasicSolverResult(R value, ConvergenceStatus status, int iterationsExecuted) {
+	public BasicSolverResult(R value, TerminationStatus status, int iterationsExecuted) {
 		if (iterationsExecuted < 0) {
 			throw new IllegalArgumentException("Iterations executed must not be negative.");
 		}
@@ -44,7 +44,7 @@ public class BasicSolverResult<R> implements SolverResult<R>
 	}
 
 	@Override
-	public ConvergenceStatus getStatus() {
+	public TerminationStatus getStatus() {
 		return status;
 	}
 

@@ -6,8 +6,8 @@ import java.util.List;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.EigenDecomposition;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.eigen.GeneralEigenvalueSolver;
@@ -44,9 +44,9 @@ public final class Hamiltonian<K extends ScalarElement<K>> extends Observable<K>
 		super(operator);
 	}
 
-	public StationaryStates findStationaryStates(ConvergenceParameters params) {
+	public StationaryStates findStationaryStates(StoppingParameters params) {
 		SolverResult<EigenDecomposition> result = new GeneralEigenvalueSolver<K>().solve(asOperator(), params);
-		if (result.getStatus() != ConvergenceStatus.CONVERGED) {
+		if (result.getStatus() != TerminationStatus.CONVERGED) {
 			throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
 		}
 		EigenDecomposition decomposition = result.getValue();

@@ -15,8 +15,8 @@ import net.gommagomma.smfn.math.algebra.polynomial.PolynomialDifferentiationProv
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.analysis.core.functionals.HornerEvaluator;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableScalarProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.functions.PolynomialFunction;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceDifferentiator;
@@ -40,7 +40,7 @@ public class PolynomialRootSolver<K extends ScalarElement<K>, S extends Field<K>
 	private final MetricSpace<K> space;
 	private final NewtonRaphsonSolver<K> solver;
 	private final K initialGuess;
-	private final ConvergenceParameters params;
+	private final StoppingParameters params;
 
 	/**
 	 * @param scalarStructure il campo K su cui si cercano le radici (es. ComplexField.INSTANCE)
@@ -50,7 +50,7 @@ public class PolynomialRootSolver<K extends ScalarElement<K>, S extends Field<K>
 	 * @param initialGuess punto di partenza per Newton-Raphson, riusato ad ogni deflazione
 	 * @param params tolleranza e numero massimo di iterazioni
 	 */
-	public PolynomialRootSolver(S scalarStructure, K fallbackDifferentiationStep, MetricSpace<K> space, K initialGuess, ConvergenceParameters params) {
+	public PolynomialRootSolver(S scalarStructure, K fallbackDifferentiationStep, MetricSpace<K> space, K initialGuess, StoppingParameters params) {
 		this.scalarStructure = scalarStructure;
 		this.ring = new EuclideanPolynomialRing<>(scalarStructure);
 		this.diff = new PolynomialDifferentiationProvider<>(scalarStructure);
@@ -76,7 +76,7 @@ public class PolynomialRootSolver<K extends ScalarElement<K>, S extends Field<K>
 
 			// A differenza di un frattale di Newton, qui la non convergenza non e' un dato accettabile:
 			// una radice approssimata male comprometterebbe la deflazione successiva.
-			if (result.getStatus() != ConvergenceStatus.CONVERGED) {
+			if (result.getStatus() != TerminationStatus.CONVERGED) {
 				throw new IllegalStateException("Newton-Raphson non converso durante la ricerca delle radici: stato "
 					+ result.getStatus() + " dopo " + result.getIterationsExecuted() + " iterazioni.");
 			}

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.physics.mq.Hamiltonian;
 import net.gommagomma.smfn.physics.mq.StationaryStates;
 
@@ -23,7 +23,7 @@ class ParticleInABoxTest
 		int N = 200;
 		double L = 1.0;
 		Hamiltonian<Real> box = ParticleInABox.hamiltonian(N, L);
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-10), 400000);
+		StoppingParameters params = new StoppingParameters(new Real(1e-10), 400000);
 
 		StationaryStates result = box.findStationaryStates(params);
 		List<Double> levels = new ArrayList<>();

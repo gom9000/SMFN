@@ -8,7 +8,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.PolynomialRootSolver;
 
 /**
@@ -28,7 +28,7 @@ public class PolynomialRootSolverDemo
 		Complex initialGuess = new Complex(0.4, 0.9);
 
 		PolynomialRootSolver<Complex, ComplexField> rootSolver = new PolynomialRootSolver<>(
-			C, new Complex(1e-6, 0), space, initialGuess, new ConvergenceParameters(new Real(1e-10), 100));
+			C, new Complex(1e-6, 0), space, initialGuess, new StoppingParameters(new Real(1e-10), 100));
 
 		System.out.println("--- Caso 1: (x-1)(x-2)(x-3) = x^3 - 6x^2 + 11x - 6, tre radici reali note ---");
 		Polynomial<Complex> p1 = PolynomialElementFactory.of(C,

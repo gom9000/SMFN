@@ -26,7 +26,7 @@ public final class RootFindingSolverResult<R> extends IterativeSolverResult<R> i
      * @throws NullPointerException Se uno qualsiasi degli argomenti obbligatori e' nullo
      * @throws IllegalArgumentException Se iterationsExecuted e' negativo
      */
-	public RootFindingSolverResult(R value, ConvergenceStatus status, int iterationsExecuted, Real finalStepDistance, Real finalResidual) {
+	public RootFindingSolverResult(R value, TerminationStatus status, int iterationsExecuted, Real finalStepDistance, Real finalResidual) {
 		super(value, status, iterationsExecuted, finalStepDistance);
 		this.finalResidual = Objects.requireNonNull(finalResidual, "finalResidual must not be null.");
 	}

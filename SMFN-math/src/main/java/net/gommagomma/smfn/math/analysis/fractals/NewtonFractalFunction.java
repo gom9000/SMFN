@@ -8,8 +8,8 @@ import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.DifferentiableScalarProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceCriteria;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingCriteria;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.NewtonRaphsonSolver;
 
@@ -41,8 +41,8 @@ implements Mapping<Complex, Natural>
 	private final DifferentiableScalarProblem<Complex> problem;
 	private final MetricSpace<Complex> complexMetricSpace;
 
-	private ConvergenceParameters cachedParams;
-	private final ConvergenceCriteria convergenceTest;
+	private StoppingParameters cachedParams;
+	private final StoppingCriteria convergenceTest;
 
 	/**
      * Costruisce la funzione per il frattale di Newton associato al polinomio fornito.
@@ -99,7 +99,7 @@ implements Mapping<Complex, Natural>
      */
 	public void setMaxIterations(int maxIterations) {
 		// Tolleranza per la convergenza epsilon = 1e-6
-		this.cachedParams = new ConvergenceParameters(R.of(1e-6), maxIterations);
+		this.cachedParams = new StoppingParameters(R.of(1e-6), maxIterations);
 	}
 
 	/**

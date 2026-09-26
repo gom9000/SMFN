@@ -7,7 +7,7 @@ import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.functionals.HornerEvaluator;
 import net.gommagomma.smfn.math.analysis.core.problems.ScalarRootFindingProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.functions.LinearFunction;
 import net.gommagomma.smfn.math.analysis.functions.PolynomialFunction;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceDifferentiator;
@@ -42,7 +42,7 @@ public class ScalarFunctionIntersectionDemo
 
 		NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, new CentralDifferenceDifferentiator<>(R, new Real(1e-6)));
 		MetricSpace<Real> space = (a, b) -> R.subtract(a, b).abs();
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-10), 100);
+		StoppingParameters params = new StoppingParameters(new Real(1e-10), 100);
 
 		Real root1 = solver.solve(problem, new Real(3.0),
 			(d, p, it) -> d.getValue() < p.getTolerance().getValue(), params, space).getValue();

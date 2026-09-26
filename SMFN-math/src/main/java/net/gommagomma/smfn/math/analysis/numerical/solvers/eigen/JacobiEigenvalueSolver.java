@@ -7,8 +7,8 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.core.solvers.BasicSolverResult;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
@@ -25,7 +25,7 @@ implements EigenvalueSolver<Real>
 	private static final ComplexField C = ComplexField.INSTANCE;
 
 	@Override
-	public SolverResult<EigenDecomposition> solve(SquareMatrix<Real> matrix, ConvergenceParameters params) {
+	public SolverResult<EigenDecomposition> solve(SquareMatrix<Real> matrix, StoppingParameters params) {
 		if (!matrix.isHermitian()) {
 			// For Real, isHermitian() coincides with "symmetric" (no conjugation needed).
 			throw new IllegalArgumentException("JacobiEigenvalueSolver requires a symmetric matrix.");
@@ -50,13 +50,13 @@ implements EigenvalueSolver<Real>
 			}
 
 			if (n < 2 || maxOffDiagonal < tolerance) {
-				return new BasicSolverResult<>(buildResult(a, v, n), ConvergenceStatus.CONVERGED, iteration);
+				return new BasicSolverResult<>(buildResult(a, v, n), TerminationStatus.CONVERGED, iteration);
 			}
 
 			rotate(a, v, n, p, q);
 		}
 
-		return new BasicSolverResult<>(buildResult(a, v, n), ConvergenceStatus.MAX_ITERATIONS_REACHED, params.maxIterations);
+		return new BasicSolverResult<>(buildResult(a, v, n), TerminationStatus.MAX_ITERATIONS_REACHED, params.maxIterations);
 	}
 
 	private void rotate(double[][] a, double[][] v, int n, int p, int q) {

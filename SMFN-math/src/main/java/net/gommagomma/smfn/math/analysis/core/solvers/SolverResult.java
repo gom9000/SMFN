@@ -27,7 +27,7 @@ package net.gommagomma.smfn.math.analysis.core.solvers;
 public interface SolverResult<R>
 {
 	/**
-     * Restituisce il valore calcolato dal solutore: la soluzione esatta se lo stato e' {@link ConvergenceStatus#CONVERGED},
+     * Restituisce il valore calcolato dal solutore: la soluzione esatta se lo stato e' {@link TerminationStatus#CONVERGED},
      * altrimenti la migliore approssimazione disponibile al momento dell'arresto.
      *
      * @return Il valore prodotto dal processo del solutore
@@ -39,7 +39,7 @@ public interface SolverResult<R>
      *
      * @return Lo stato di convergenza raggiunto dal solutore
      */
-	ConvergenceStatus getStatus();
+	TerminationStatus getStatus();
 
 	/**
      * Restituisce il numero di iterazioni effettivamente eseguite prima dell'arresto.

@@ -68,10 +68,8 @@ Finding the stationary states of a system, solving $H\vert\psi\rangle = E\vert\p
 public final class Hamiltonian<K extends ScalarElement<K>> extends Observable<K> {
     public Hamiltonian(SquareMatrix<K> operator) { super(operator); }
 
-    public StationaryStates findStationaryStates(ConvergenceParameters params) {
-        SolverResult<EigenDecomposition> result = new GeneralEigenvalueSolver<K>().solve(asOperator(), params);
-        if (result.getStatus() != ConvergenceStatus.CONVERGED) { throw new IllegalStateException(...); }
-        EigenDecomposition decomposition = result.getValue();
+    public StationaryStates findStationaryStates(StoppingParameters params) {
+        EigenDecomposition decomposition = new GeneralEigenvalueSolver<K>().solve(asOperator(), params);
         List<Real> energyLevels = decomposition.getRealEigenvalues(params.tolerance);
 
         List<QuantumState> states = new ArrayList<>(decomposition.getEigenvectors().size());

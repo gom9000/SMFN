@@ -4,7 +4,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.metric.MetricSpace;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.VectorRootFindingProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceJacobianEstimator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.linear.GaussianEliminationSolver;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.VectorNewtonRaphsonSolver;
@@ -49,7 +49,7 @@ public class TwoCirclesFallbackDemo {
             Real dy = R.subtract(a.get(1), b.get(1));
             return R.add(R.multiply(dx, dx), R.multiply(dy, dy)).sqrt();
         };
-        ConvergenceParameters params = new ConvergenceParameters(new Real(1e-10), 100);
+        StoppingParameters params = new StoppingParameters(new Real(1e-10), 100);
 
         double expectedY = Math.sqrt(3);
         System.out.println("Atteso: (1, " + expectedY + ") e (1, " + (-expectedY) + ")");

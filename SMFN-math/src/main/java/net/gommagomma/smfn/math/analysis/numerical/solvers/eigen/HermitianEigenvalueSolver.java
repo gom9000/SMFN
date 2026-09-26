@@ -6,8 +6,8 @@ import java.util.List;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.core.solvers.BasicSolverResult;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceStatus;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
@@ -36,7 +36,7 @@ implements EigenvalueSolver<Complex>
 	private static final ComplexField C = ComplexField.INSTANCE;
 
 	@Override
-	public SolverResult<EigenDecomposition> solve(SquareMatrix<Complex> matrix, ConvergenceParameters params) {
+	public SolverResult<EigenDecomposition> solve(SquareMatrix<Complex> matrix, StoppingParameters params) {
 		if (!matrix.isHermitian()) {
 			throw new IllegalArgumentException("HermitianEigenvalueSolver requires a Hermitian matrix.");
 		}
@@ -73,13 +73,13 @@ implements EigenvalueSolver<Complex>
 			}
 
 			if (n < 2 || maxOffDiagonal < tolerance) {
-				return new BasicSolverResult<>(buildResult(aRe, vRe, vIm, n), ConvergenceStatus.CONVERGED, iteration);
+				return new BasicSolverResult<>(buildResult(aRe, vRe, vIm, n), TerminationStatus.CONVERGED, iteration);
 			}
 
 			rotate(aRe, aIm, vRe, vIm, n, p, q);
 		}
 
-		return new BasicSolverResult<>(buildResult(aRe, vRe, vIm, n), ConvergenceStatus.MAX_ITERATIONS_REACHED, params.maxIterations);
+		return new BasicSolverResult<>(buildResult(aRe, vRe, vIm, n), TerminationStatus.MAX_ITERATIONS_REACHED, params.maxIterations);
 	}
 
 	private void rotate(double[][] aRe, double[][] aIm, double[][] vRe, double[][] vIm, int n, int p, int q) {

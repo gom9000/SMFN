@@ -10,7 +10,7 @@ import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 
@@ -19,7 +19,7 @@ class GeneralEigenvalueSolverTest
 {
 	private static final RealField R = RealField.INSTANCE;
 	private static final ComplexField C = ComplexField.INSTANCE;
-	private final ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+	private final StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 
 	@Test
 	@DisplayName("Matrice reale simmetrica: stesso risultato di JacobiEigenvalueSolver usato direttamente")

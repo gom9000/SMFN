@@ -12,7 +12,7 @@ import java.util.Random;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
-import net.gommagomma.smfn.math.analysis.core.solvers.ConvergenceParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixRing;
 import net.gommagomma.smfn.math.utils.MathConstants;
@@ -68,7 +68,7 @@ class QuantumSystemSimulatorTest
 		Observable<Complex> H = new Observable<>(pauliX);
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+		StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 		Random random = new Random(1);
 
 		for (int i = 0; i < 10; i++) {
@@ -82,7 +82,7 @@ class QuantumSystemSimulatorTest
 	void measurementOnSuperpositionFollowsBornRule() {
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+		StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 		Random random = new Random(99);
 
 		// |+> e' un autostato di Pauli-X, quindi il risultato dovrebbe essere
@@ -114,7 +114,7 @@ class QuantumSystemSimulatorTest
 		Observable<Complex> Z = new Observable<>(pauliZ);
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+		StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 
 		List<MeasurementProbability> probabilities = simulator.measurementProbabilities(Z, plus, params);
 
@@ -133,7 +133,7 @@ class QuantumSystemSimulatorTest
 		Observable<Complex> H = new Observable<>(pauliX);
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
-		ConvergenceParameters params = new ConvergenceParameters(new Real(1e-12), 100);
+		StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
 
 		List<MeasurementProbability> probabilities = simulator.measurementProbabilities(H, plus, params);
 
