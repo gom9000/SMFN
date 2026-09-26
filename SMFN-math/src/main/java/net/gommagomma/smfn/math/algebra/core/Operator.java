@@ -10,10 +10,10 @@ public interface Operator<T>
 extends Mapping<T, T>
 {
 	/**
-     * Restituisce l'operatore identit‡.
+     * Restituisce l'operatore identit√†
      * 
      * @param <T> il tipo degli elementi
-     * @return l'operatore identit‡
+     * @return l'operatore identit√†
      */
     static <T> Operator<T> identity() {
         return t -> t;
@@ -34,7 +34,7 @@ extends Mapping<T, T>
      * 
      * @param n il numero di volte che l'operatore deve essere applicato
      * @return un operatore che rappresenta l'applicazione iterata
-     * @throws IllegalArgumentException se n Ë negativo
+     * @throws IllegalArgumentException se n √® negativo
      */
     default Operator<T> power(int n) {
         if (n < 0) throw new IllegalArgumentException("Negative power not supported for general operators.");

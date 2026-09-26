@@ -86,7 +86,7 @@ public final class CartesianAxisPlotter
         double normalizedRough = roughSpacing / magnitudePower;
 
         double niceNormalized;
-        // Sceglie il numero "bello" più vicino (1, 2, 5, 10...)
+        // Sceglie il numero "bello" piÃ¹ vicino (1, 2, 5, 10...)
         if (normalizedRough < 1.0) niceNormalized = 1.0;
         else if (normalizedRough < 2.0) niceNormalized = 2.0;
         else if (normalizedRough < 5.0) niceNormalized = 5.0;

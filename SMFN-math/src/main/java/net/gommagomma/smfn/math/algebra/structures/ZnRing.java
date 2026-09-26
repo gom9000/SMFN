@@ -31,7 +31,7 @@ implements CommutativeRing<ZnElement>, ExactStructure<ZnElement>, NumericFactory
      * Costruisce l'anello $\mathbb{Z}/n\mathbb{Z}$ specificando il modulo $n$.
      * 
      * @param modulus il modulo $n$ dell'anello (deve essere un intero positivo strettamente maggiore di zero)
-     * @throws IllegalArgumentException se il modulo è minore o uguale a zero
+     * @throws IllegalArgumentException se il modulo Ã¨ minore o uguale a zero
      */
     private ZnRing(SignedInt modulus) {
         if (modulus.getValue() <= 0) {

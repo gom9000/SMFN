@@ -64,7 +64,7 @@ implements LinearElement<Vector<K>, K>, TensorElement<Vector<K>, K>
         return scalarStructure;
     }
 
-    // Metodi di utilit‡
+    // Metodi di utilit√†
     /**
      * Restituisce una copia difensiva dell'array interno.
      */

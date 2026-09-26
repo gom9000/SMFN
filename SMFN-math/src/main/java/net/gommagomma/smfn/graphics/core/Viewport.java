@@ -37,12 +37,12 @@ public class Viewport
 
         // Calcola il fattore di scala uniforme e l'offset per centrare il contenuto
         if (mathAspectRatio > pixelAspectRatio) {
-            // La larghezza matematica è dominante, scala in base alla larghezza pixel
+            // La larghezza matematica Ã¨ dominante, scala in base alla larghezza pixel
             this.scale = pixelWidth / (maxX - minX);
             this.offsetY = (pixelHeight - (maxY - minY) * this.scale) / 2.0;
             this.offsetX = 0;
         } else {
-            // L'altezza matematica è dominante, scala in base all'altezza pixel
+            // L'altezza matematica Ã¨ dominante, scala in base all'altezza pixel
             this.scale = pixelHeight / (maxY - minY);
             this.offsetX = (pixelWidth - (maxX - minX) * this.scale) / 2.0;
             this.offsetY = 0;

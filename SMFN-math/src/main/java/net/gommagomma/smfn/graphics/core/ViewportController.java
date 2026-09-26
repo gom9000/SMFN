@@ -12,7 +12,7 @@ import java.awt.event.MouseWheelEvent;
  */
 public class ViewportController
 extends MouseAdapter
-implements KeyListener // Manteniamo KeyListener solo per conformit‡, i metodi sono vuoti
+implements KeyListener // Manteniamo KeyListener solo per conformit√† i metodi sono vuoti
 {
     private Viewport currentViewport;
     private final ViewportUpdateHandler updateHandler;
@@ -22,7 +22,7 @@ implements KeyListener // Manteniamo KeyListener solo per conformit‡, i metodi s
 
     /**
      * Interfaccia di callback per notificare l'host (es. un pannello grafico)
-     * che la viewport Ë cambiata o che deve disegnare un rettangolo temporaneo.
+     * che la viewport √® cambiata o che deve disegnare un rettangolo temporaneo.
      */
     public interface ViewportUpdateHandler {
         void onViewportUpdated(Viewport newViewport);
@@ -50,7 +50,7 @@ implements KeyListener // Manteniamo KeyListener solo per conformit‡, i metodi s
     @Override
     public void mouseDragged(MouseEvent e) {
         if (selecting) {
-            // Modalit‡ Zoom Selettivo (con Shift/Ctrl premuto)
+            // Modalit√† Zoom Selettivo (con Shift/Ctrl premuto)
             int endX = e.getX();
             int endY = e.getY();
             int x = Math.min(startX, endX);
@@ -64,7 +64,7 @@ implements KeyListener // Manteniamo KeyListener solo per conformit‡, i metodi s
             // NOBUTTON per specifica AWT -- il bottone premuto si legge solo dai
             // modificatori, non da getButton() (che invece e' corretto in
             // mousePressed/mouseReleased, dove non va toccato).
-            // Modalit‡ Panning (trascinamento libero)
+            // Modalit√† Panning (trascinamento libero)
 
             // Calcola lo spostamento in pixel dall'inizio del drag o dall'ultima chiamata a dragged
             int dx = e.getX() - startX;
@@ -81,7 +81,7 @@ implements KeyListener // Manteniamo KeyListener solo per conformit‡, i metodi s
             // Applica il panning
             double newMinX = currentViewport.minX - mathDx;
             double newMaxX = currentViewport.maxX - mathDx;
-            // L'asse Y nei pixel Ë invertito rispetto al mondo matematico, quindi invertiamo qui l'effetto
+            // L'asse Y nei pixel √® invertito rispetto al mondo matematico, quindi invertiamo qui l'effetto
             double newMinY = currentViewport.minY + mathDy; 
             double newMaxY = currentViewport.maxY + mathDy;
 

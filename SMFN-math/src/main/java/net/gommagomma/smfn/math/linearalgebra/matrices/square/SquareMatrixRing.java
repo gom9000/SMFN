@@ -9,7 +9,7 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.MatrixModule;
 
 /**
  * Rappresenta l'Anello delle matrici quadrate n x n sopra un Anello K.
- * Unisce le capacit‡ di MatrixModule (sottrazione) e MatrixSemiring (moltiplicazione).
+ * Unisce le capacit√† di MatrixModule (sottrazione) e MatrixSemiring (moltiplicazione).
  */
 public class SquareMatrixRing<K extends ScalarElement<K>, S extends Ring<K> & ScalarStructure<K>>
 extends SquareMatrixSemiring<K, S>

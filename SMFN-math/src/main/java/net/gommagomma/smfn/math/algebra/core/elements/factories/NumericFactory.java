@@ -18,7 +18,7 @@ public interface NumericFactory<K extends ScalarElement<K>>
     K zero();
 
     /**
-     * Restituisce l'elemento neutro rispetto alla moltiplicazione (l'unit‡ algebrica).
+     * Restituisce l'elemento neutro rispetto alla moltiplicazione (l'unit√† algebrica).
      * 
      * @return lo scalare rappresentante l'uno
      */

@@ -70,7 +70,7 @@ implements EuclideanDomain<Polynomial<K>, Natural>
      * @param dividend il polinomio dividendo
      * @param divisor il polinomio divisore (non nullo)
      * @return un oggetto {@link PolynomialDivisionResult} contenente quoziente e resto della divisione
-     * @throws ArithmeticException se il divisore è il polinomio zero
+     * @throws ArithmeticException se il divisore Ã¨ il polinomio zero
      */
     public PolynomialDivisionResult<K> divide(Polynomial<K> dividend, Polynomial<K> divisor) {
         if (isZero(divisor)) {

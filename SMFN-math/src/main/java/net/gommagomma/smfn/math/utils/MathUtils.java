@@ -31,7 +31,7 @@ public final class MathUtils
      * @param base Il numero base.
      * @param exponent L'esponente (deve essere non negativo in questo contesto).
      * @return base^exponent.
-     * @throws ArithmeticException se si verifica un overflow o l'esponente è negativo.
+     * @throws ArithmeticException se si verifica un overflow o l'esponente Ã¨ negativo.
      */
     public static long power(long base, int exponent)
     {
@@ -50,7 +50,7 @@ public final class MathUtils
         int exp = exponent;
 
         while (exp > 0) {
-            if ((exp & 1) == 1) { // exp è dispari
+            if ((exp & 1) == 1) { // exp Ã¨ dispari
                 result = Math.multiplyExact(result, b);
             }
             b = Math.multiplyExact(b, b);

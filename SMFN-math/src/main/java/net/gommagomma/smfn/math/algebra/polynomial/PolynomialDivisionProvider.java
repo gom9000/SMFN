@@ -36,7 +36,7 @@ public class PolynomialDivisionProvider<K extends ScalarElement<K>, S extends Ri
      * @param dividend il polinomio dividendo
      * @param divisor il polinomio divisore
      * @return un oggetto {@link PolynomialDivisionResult} contenente il quoziente e il resto
-     * @throws ArithmeticException se il divisore è il polinomio zero o se il coefficiente di testa non è invertibile
+     * @throws ArithmeticException se il divisore Ã¨ il polinomio zero o se il coefficiente di testa non Ã¨ invertibile
      */
     public PolynomialDivisionResult<K> divide(Polynomial<K> dividend, Polynomial<K> divisor) {
         if (polynomialRing.isZero(divisor)) {
