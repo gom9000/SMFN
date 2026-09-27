@@ -224,8 +224,8 @@ class QuantumSystemSimulatorTest
 	}
 
 	@Test
-	@DisplayName("LACUNA NOTA: la soglia di degenerazione coincide con la tolleranza di convergenza del solver")
-	void degeneracyThresholdIsConflatedWithSolverConvergenceTolerance() {
+	@DisplayName("FIX: la soglia di degenerazione e' indipendente dalla tolleranza di convergenza del solver")
+	void degeneracyThresholdIsIndependentFromSolverConvergenceTolerance() {
 		SquareMatrix<Complex> H = M2.of(new Complex[] {
 			new Complex(1.0, 0), new Complex(0, 0),
 			new Complex(0, 0), new Complex(1.0005, 0)
@@ -234,14 +234,28 @@ class QuantumSystemSimulatorTest
 		double invSqrt2 = 1.0 / Math.sqrt(2.0);
 		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
 
-		// Stesso sistema fisico, due autovalori realmente distinti (1.0 e 1.0005).
-		// Una tolleranza larga scelta solo per far convergere piu' in fretta il
-		// solver su un problema piu' grande finisce per fondere i due esiti in uno solo:
+		// Stesso sistema fisico, due autovalori realmente distinti (1.0 e 1.0005). In precedenza,
+		// una tolleranza larga del solver (scelta solo per farlo convergere piu' in fretta su un
+		// problema piu' grande) fondeva erroneamente i due esiti in uno solo, perche' la soglia di
+		// degenerazione era la stessa tolleranza di convergenza del solver. Ora la soglia di
+		// degenerazione di default e' relativa alla scala spettrale (si veda
+		// QuantumSystemSimulator.DEFAULT_DEGENERACY_RELATIVE_TOLERANCE), quindi il numero di esiti
+		// resta 2 indipendentemente da quanto lascamente o strettamente converge il solver:
 		StoppingParameters loose = new StoppingParameters(new Real(1e-2), 100);
-		assertEquals(1, simulator.measurementProbabilities(observable, plus, loose).size());
+		assertEquals(2, simulator.measurementProbabilities(observable, plus, loose).size());
 
-		// mentre una tolleranza stretta, sullo stesso identico sistema, li mantiene distinti.
 		StoppingParameters tight = new StoppingParameters(new Real(1e-10), 100);
 		assertEquals(2, simulator.measurementProbabilities(observable, plus, tight).size());
+
+		// Il criterio fisico di degenerazione resta comunque scegliibile esplicitamente, in modo
+		// del tutto indipendente dalla tolleranza del solver: una soglia di degenerazione piu'
+		// larga del gap reale (0.0005) fonde i due esiti anche con un solver a convergenza stretta.
+		Real wideDegeneracyTolerance = new Real(1e-3);
+		assertEquals(1, simulator.measurementProbabilities(observable, plus, tight, wideDegeneracyTolerance).size());
+
+		// e una soglia di degenerazione piu' stretta del gap reale mantiene i due esiti distinti,
+		// anche con un solver a convergenza larga.
+		Real narrowDegeneracyTolerance = new Real(1e-6);
+		assertEquals(2, simulator.measurementProbabilities(observable, plus, loose, narrowDegeneracyTolerance).size());
 	}
 }
