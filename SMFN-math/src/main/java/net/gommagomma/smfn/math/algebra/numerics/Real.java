@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.algebra.numerics;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ApproximateElement;
+import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Absolutable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
@@ -10,12 +11,14 @@ import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructur
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 /**
- * Rappresenta un numero reale approssimato, basato su un valore primitivo 
- * in virgola mobile a doppia precisione (double). Implementa le capacità numeriche, 
+ * Rappresenta un numero reale approssimato, basato su un valore primitivo
+ * in virgola mobile a doppia precisione (double). Implementa le capacità numeriche,
  * di ordinamento e di calcolo algebrico all'interno del campo reale.
+ * Implementa anche LinearElement: R e' uno spazio vettoriale di dimensione 1 su se stesso.
  */
 public final class Real
-implements ApproximateElement<Real>, Normable<Real>, Orderable<Real>, Absolutable<Real>, Exponentiable<Real>, Sqrtable<Real>
+implements ApproximateElement<Real>, Normable<Real>, Orderable<Real>, Absolutable<Real>, Exponentiable<Real>, Sqrtable<Real>,
+           LinearElement<Real, Real>
 {
     private final double value;
 
@@ -36,6 +39,11 @@ implements ApproximateElement<Real>, Normable<Real>, Orderable<Real>, Absolutabl
     @Override // ScalarElement impls
     public ScalarStructure<Real> getStructure() {
         return RealField.INSTANCE;
+    }
+
+    @Override // CompositeElement impls (via LinearElement)
+    public ScalarStructure<Real> getScalarStructure() {
+        return getStructure();
     }
 
     @Override // AlgebraicElement impls

@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.math.algebra.numerics;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ApproximateElement;
+import net.gommagomma.smfn.math.algebra.core.elements.LinearElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Conjugable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Normable;
@@ -10,12 +11,14 @@ import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 
 /**
- * Rappresenta un numero complesso in forma algebrica (z = a + bi), 
+ * Rappresenta un numero complesso in forma algebrica (z = a + bi),
  * basato su valori in virgola doppia precisione (double) per la parte reale e immaginaria.
  * Implementa le capacità numeriche e algebriche per operare all'interno del campo complesso.
+ * Implementa ancheLinearElement: C e' uno spazio vettoriale di dimensione 1 su se stesso.
  */
 public final class Complex
-implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, Sqrtable<Complex>, Conjugable<Complex>
+implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, Sqrtable<Complex>, Conjugable<Complex>,
+           LinearElement<Complex, Complex>
 {
     private final double real;
     private final double imaginary;
@@ -105,6 +108,11 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
     @Override // ScalarElement impls
     public ScalarStructure<Complex> getStructure() {
         return ComplexField.INSTANCE;
+    }
+
+    @Override // CompositeElement impls (via LinearElement)
+    public ScalarStructure<Complex> getScalarStructure() {
+        return getStructure();
     }
 
     @Override // AlgebraicElement impls

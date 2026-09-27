@@ -21,7 +21,7 @@ public class PolynomialRootSolverDemo
 	private static final ComplexField C = ComplexField.INSTANCE;
 
 	public static void main(String[] args) {
-		MetricSpace<Complex> space = (a, b) -> new Real(C.subtract(a, b).modulus());
+		MetricSpace<Complex> space = C; // C è un MetricSpace (via NormedSpace)
 
 		// Punto di partenza non reale, non nullo: aiuta Newton a trovare
 		// radici complesse anche partendo da coefficienti reali.

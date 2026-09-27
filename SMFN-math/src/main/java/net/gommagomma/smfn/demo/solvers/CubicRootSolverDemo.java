@@ -46,11 +46,8 @@ public class CubicRootSolverDemo
 	{
 		Real initialGuess = new Real(1.0);
 		Real tolerance = new Real(1e-10);
+		MetricSpace<Real> space = R; // R è un MetricSpace (via NormedSpace)
 		StoppingParameters params = new StoppingParameters(tolerance, 50);
-
-		// Spazio metrico: distanza euclidea su Real. Nessuna classe a parte serve,
-		// e' un'interfaccia funzionale -- stesso pattern gia' usato altrove.
-		MetricSpace<Real> space = (a, b) -> R.subtract(a, b).abs();
 
 		ForwardDifferenceDifferentiator<Real> numericFallback = new ForwardDifferenceDifferentiator<>(R, new Real(1e-6));
 		NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, numericFallback);

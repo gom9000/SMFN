@@ -41,7 +41,7 @@ public class ScalarFunctionIntersectionDemo
 		ScalarRootFindingProblem<Real> problem = x -> R.subtract(f.apply(x), g.apply(x));
 
 		NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, new CentralDifferenceDifferentiator<>(R, new Real(1e-6)));
-		MetricSpace<Real> space = (a, b) -> R.subtract(a, b).abs();
+		MetricSpace<Real> space = R; // R è un MetricSpace (via NormedSpace)
 		StoppingParameters params = new StoppingParameters(new Real(1e-10), 100);
 
 		Real root1 = solver.solve(problem, new Real(3.0),

@@ -3,17 +3,19 @@ package net.gommagomma.smfn.math.algebra.structures;
 import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ApproximateStructure;
+import net.gommagomma.smfn.math.algebra.core.structures.metric.NormedSpace;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * Rappresenta il campo algebrico dei numeri complessi (C) in aritmetica a virgola mobile approssimata.
- * Implementa le operazioni di campo (somma, prodotto, inversione), la gestione della tolleranza numerica 
+ * Implementa le operazioni di campo (somma, prodotto, inversione), la gestione della tolleranza numerica
  * tramite epsilon e le funzioni di fabbrica per la creazione di elementi complessi.
+ * Implementa anche NormedSpace: C e' uno spazio di dimensione 1 su se stesso.
  */
 public final class ComplexField
-implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex>
+implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex>, NormedSpace<Complex, Complex, ComplexField>
 {
     private static final Complex ZERO = new Complex(0.0, 0.0);
     private static final Complex ONE = new Complex(1.0, 0.0);
@@ -68,6 +70,25 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
             return RealField.INSTANCE.zero();
         }
         return RealField.INSTANCE.of(z.modulus());
+    }
+
+
+    // LinearStructure/CompositeStructure impls (C come spazio di dimensione 1 su se stesso)
+    @Override
+    public Complex scale(Complex scalar, Complex vector) {
+        return multiply(scalar, vector);
+    }
+
+    @Override
+    public ComplexField getScalarStructure() {
+        return this;
+    }
+
+
+    // NormedSpace impls
+    @Override
+    public Real norm(Complex v) {
+        return v.norm();
     }
 
 
