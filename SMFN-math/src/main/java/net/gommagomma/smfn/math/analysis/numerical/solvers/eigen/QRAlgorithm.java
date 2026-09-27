@@ -3,15 +3,12 @@ package net.gommagomma.smfn.math.analysis.numerical.solvers.eigen;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
-import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.core.solvers.BasicSolverResult;
 import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
-import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.operators.HessenbergReduction;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorElementFactory;
@@ -19,20 +16,18 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
- * Autovalori e autovettori di una matrice quadrata qualunque (K = Real o Complex),
- * senza richiedere simmetria/hermitianita': algoritmo QR con shift di Wilkinson,
- * interamente in aritmetica complessa.
+ * Algoritmo QR con shift di Wilkinson, interamente in aritmetica complessa:
+ * autovalori e autovettori di una matrice quadrata qualunque, senza richiedere
+ * simmetria/hermitianita'. Non pubblica e non implementa EigenvalueSolver: la
+ * conversione dal tipo scalare concreto (Real o Complex) all'array Complex[][]
+ * su cui lavora e' responsabilita' di RealQREigenvalueSolver/ComplexQREigenvalueSolver,
+ * gli unici punti di ingresso pubblici.
  */
-public final class QREigenvalueSolver<K extends ScalarElement<K>>
-implements EigenvalueSolver<K>
+final class QRAlgorithm
 {
 	private static final ComplexField C = ComplexField.INSTANCE;
 
-	@Override
-	public SolverResult<EigenDecomposition> solve(SquareMatrix<K> matrix, StoppingParameters params) {
-		int n = matrix.getN();
-		Complex[][] initial = toComplexArray(matrix, n);
-
+	SolverResult<EigenDecomposition> solve(Complex[][] initial, int n, StoppingParameters params) {
 		HessenbergReduction.Result reduction = HessenbergReduction.reduce(initial, n);
 		Complex[][] a = reduction.h;
 		Complex[][] q = reduction.q;
@@ -317,26 +312,6 @@ implements EigenvalueSolver<K>
 	}
 
 	// --- Utility di algebra lineare su Complex[][] grezzi ---
-
-	private Complex[][] toComplexArray(SquareMatrix<K> matrix, int n) {
-		Complex[][] a = new Complex[n][n];
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				a[i][j] = toComplex(matrix.get(i, j));
-			}
-		}
-		return a;
-	}
-
-	private Complex toComplex(K value) {
-		if (value instanceof Complex) {
-			return (Complex) value;
-		}
-		if (value instanceof Real) {
-			return new Complex(((Real) value).getValue(), 0.0);
-		}
-		throw new UnsupportedOperationException("QREigenvalueSolver supporta solo K = Real o K = Complex.");
-	}
 
 	private Complex[] multiply(Complex[][] a, Complex[] v, int n) {
 		Complex[] result = new Complex[n];

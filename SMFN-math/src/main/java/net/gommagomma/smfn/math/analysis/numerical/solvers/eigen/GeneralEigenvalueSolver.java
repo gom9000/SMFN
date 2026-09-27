@@ -21,7 +21,7 @@ implements EigenvalueSolver<K>
 		if (matrix.isHermitian()) {
 			return solveSymmetricOrHermitian(matrix, params);
 		}
-		return new QREigenvalueSolver<K>().solve(matrix, params);
+		return solveGeneral(matrix, params);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -35,5 +35,18 @@ implements EigenvalueSolver<K>
 			return new JacobiEigenvalueSolver().solve((SquareMatrix<Real>) matrix, params);
 		}
 		throw new UnsupportedOperationException("Nessun solver simmetrico/hermitiano per " + sample.getClass().getSimpleName());
+	}
+
+	@SuppressWarnings("unchecked")
+	private SolverResult<EigenDecomposition> solveGeneral(SquareMatrix<K> matrix, StoppingParameters params) {
+		K sample = matrix.get(0, 0);
+
+		if (sample instanceof Complex) {
+			return new ComplexQREigenvalueSolver().solve((SquareMatrix<Complex>) matrix, params);
+		}
+		if (sample instanceof Real) {
+			return new RealQREigenvalueSolver().solve((SquareMatrix<Real>) matrix, params);
+		}
+		throw new UnsupportedOperationException("Nessun solver QR per " + sample.getClass().getSimpleName());
 	}
 }

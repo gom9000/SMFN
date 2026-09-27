@@ -53,7 +53,7 @@ class GeneralEigenvalueSolverTest
 	void routesToQrForGeneralNonSymmetricCase() {
 		SquareMatrix<Real> nonSym = SquareMatrixElementFactory.of(R, 1.0, 2.0, 3.0, 4.0);
 
-		EigenDecomposition direct = new QREigenvalueSolver<Real>().solve(nonSym, params).getValue();
+		EigenDecomposition direct = new RealQREigenvalueSolver().solve(nonSym, params).getValue();
 		EigenDecomposition dispatched = new GeneralEigenvalueSolver<Real>().solve(nonSym, params).getValue();
 		assertEquals(direct.getEigenvalues(), dispatched.getEigenvalues());
 
@@ -67,5 +67,27 @@ class GeneralEigenvalueSolverTest
 		double v1 = eigenvalues.get(1).getRe();
 		assertTrue((Math.abs(v0 - expectedLow) < 1e-9 && Math.abs(v1 - expectedHigh) < 1e-9)
 			|| (Math.abs(v0 - expectedHigh) < 1e-9 && Math.abs(v1 - expectedLow) < 1e-9));
+	}
+
+	@Test
+	@DisplayName("Matrice complessa non hermitiana: ramo generico, instrada a ComplexQREigenvalueSolver")
+	void routesToComplexQrForGeneralNonHermitianCase() {
+		// Non hermitiana: l'elemento (0,1) e il coniugato di (1,0) non corrispondono.
+		SquareMatrix<Complex> nonHermitian = SquareMatrixElementFactory.of(C,
+			new Complex(1, 0), new Complex(2, 3),
+			new Complex(0, 0), new Complex(4, 0)
+		);
+
+		EigenDecomposition direct = new ComplexQREigenvalueSolver().solve(nonHermitian, params).getValue();
+		EigenDecomposition dispatched = new GeneralEigenvalueSolver<Complex>().solve(nonHermitian, params).getValue();
+		assertEquals(direct.getEigenvalues(), dispatched.getEigenvalues());
+
+		// Triangolare superiore: gli autovalori sono esattamente gli elementi diagonali, 1 e 4.
+		List<Complex> eigenvalues = dispatched.getEigenvalues();
+		assertEquals(2, eigenvalues.size());
+		boolean hasOne = eigenvalues.stream().anyMatch(c -> Math.abs(c.getRe() - 1.0) < 1e-9 && Math.abs(c.getIm()) < 1e-9);
+		boolean hasFour = eigenvalues.stream().anyMatch(c -> Math.abs(c.getRe() - 4.0) < 1e-9 && Math.abs(c.getIm()) < 1e-9);
+		assertTrue(hasOne);
+		assertTrue(hasFour);
 	}
 }

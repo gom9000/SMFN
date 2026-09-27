@@ -24,7 +24,7 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 class QREigenvalueSolverTest
 {
 	private static final RealField R = RealField.INSTANCE;
-	private final QREigenvalueSolver<Real> solver = new QREigenvalueSolver<>();
+	private final RealQREigenvalueSolver solver = new RealQREigenvalueSolver();
 	private final StoppingParameters params = new StoppingParameters(new Real(1e-12), 500);
 
 	/** Verifica indipendente A*v == lambda*v, senza fidarsi del solver stesso. */

@@ -1,4 +1,4 @@
-package net.gommagomma.smfn.demo.solvers;
+package net.gommagomma.smfn.demo;
 
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
@@ -17,7 +17,12 @@ import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrix;
 import net.gommagomma.smfn.math.linearalgebra.matrices.square.SquareMatrixElementFactory;
 
 /**
- * Dimostra i tre rami EigenvalueSolver.
+ * Dimostra i tre rami oggi implementati di EigenvalueSolver: matrice reale
+ * simmetrica (JacobiEigenvalueSolver), matrice complessa hermitiana
+ * (HermitianEigenvalueSolver) e matrice qualunque senza simmetria/hermitianita'
+ * (QREigenvalueSolver, con K = Real o K = Complex) -- tutti usati sia
+ * direttamente sia tramite GeneralEigenvalueSolver, il dispatcher che sceglie
+ * da solo il solver giusto in base a cosa la matrice garantisce.
  */
 public class EigenvalueDemo
 {
