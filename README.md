@@ -12,7 +12,7 @@ Rather than optimizing for raw performance, SMFN emphasizes mathematical abstrac
 | **Algebra & Arithmetic** | `Semiring → Ring → Field` hierarchy, symbolic polynomials, Euclidean division        |
 | **Linear Algebra**       | Generic vectors and matrices over supported rings and fields, with structure-based algorithms |
 | **Numerical Analysis**   | Root-finding, numerical differentiation, ODE integration (RK4), iterative solvers    |
-| **Geometry & Fractals**  | Implicit geometry, intersections, Mandelbrot/Julia maps                              |
+| **Geometry & Fractals**  | Implicit geometry, intersections, Mandelbrot/Julia/Newton maps                       |
 | **Physical Modelling**   | Quantum measurement and dynamics                                                     |
 | **Graphics**             | Decoupled 1D/2D rendering and plotting framework                                     |
 
