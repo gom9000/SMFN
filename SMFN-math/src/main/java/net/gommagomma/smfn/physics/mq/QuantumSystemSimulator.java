@@ -25,11 +25,6 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
  *   <li><b>Processo di Misurazione Stocastico:</b> Simulazione stocastica del processo di misurazione mediante campionamento
  *       secondo la regola di Born e conseguente collasso del vettore di stato tramite {@link #performMeasurement(Observable, QuantumState, StoppingParameters, Random)}.</li>
  * </ul>
- * </p>
- * <p>
- * La diagonalizzazione degli operatori hermitiani viene eseguita appoggiandosi al solutore specializzato
- * {@link HermitianEigenvalueSolver}.
- * </p>
  */
 public final class QuantumSystemSimulator
 {
@@ -69,8 +64,7 @@ public final class QuantumSystemSimulator
 	 * @param random sorgente di casualita' per il campionamento secondo Born
 	 * @return l'esito della misura: autovalore ottenuto e stato collassato
 	 */
-	public MeasurementOutcome performMeasurement(Observable<Complex> observable, QuantumState state,
-	                                              StoppingParameters eigenParams, Random random) {
+	public MeasurementOutcome performMeasurement(Observable<Complex> observable, QuantumState state, StoppingParameters eigenParams, Random random) {
 		BornDistribution distribution = computeBornDistribution(observable, state, eigenParams);
 
 		double r = random.nextDouble() * distribution.total; // campiona su [0, total) invece di normalizzare prima, un giro in meno
@@ -97,8 +91,7 @@ public final class QuantumSystemSimulator
 	 * @param eigenParams parametri di convergenza per la diagonalizzazione
 	 * @return una coppia (autovalore, probabilita') per ciascun autovalore, probabilita' normalizzate a somma 1
 	 */
-	public List<MeasurementProbability> measurementProbabilities(Observable<Complex> observable, QuantumState state,
-	                                                               StoppingParameters eigenParams) {
+	public List<MeasurementProbability> measurementProbabilities(Observable<Complex> observable, QuantumState state, StoppingParameters eigenParams) {
 		BornDistribution distribution = computeBornDistribution(observable, state, eigenParams);
 
 		List<MeasurementProbability> result = new ArrayList<>(distribution.eigenvalues.size());
