@@ -43,8 +43,12 @@ public final class QuantumSystemSimulator
 	public Real expectationValue(Observable<Complex> observable, QuantumState state) {
 		Vector<Complex> H_psi = observable.asOperator().apply(state.asVector());
 		Complex expectation = state.innerProduct(QuantumState.from(H_psi));
+		Complex normSquared = state.innerProduct(state);
+		if (normSquared.getRe() <= 0.0) {
+			throw new IllegalArgumentException("The state vector has zero norm; cannot compute an expectation value.");
+		}
 		// <psi|H|psi> e' garantito reale per un Observable hermitiano.
-		return new Real(expectation.getRe());
+		return new Real(expectation.getRe() / normSquared.getRe());
 	}
 
 	/**
@@ -52,7 +56,8 @@ public final class QuantumSystemSimulator
 	 * HermitianEigenvalueSolver), calcola le probabilita' di Born
 	 * |<lambda_i|psi>|^2 per ciascun autovalore, ne campiona uno secondo
 	 * quella distribuzione, e restituisce sia l'autovalore ottenuto sia lo
-	 * stato collassato (l'autovettore corrispondente).
+	 * stato collassato (la proiezione normalizzata di state sull'autospazio
+	 * dell'autovalore campionato).
 	 *
 	 * Lo stato in ingresso non deve necessariamente essere normalizzato:
 	 * le probabilita' vengono normalizzate internamente rispetto alla
@@ -80,7 +85,7 @@ public final class QuantumSystemSimulator
 		}
 
 		Real measuredValue = new Real(distribution.eigenvalues.get(chosen).getRe());
-		QuantumState collapsedState = QuantumState.from(distribution.eigenvectors.get(chosen));
+		QuantumState collapsedState = QuantumState.from(distribution.eigenspaceProjections.get(chosen)).normalize();
 		return new MeasurementOutcome(measuredValue, collapsedState);
 	}
 
@@ -111,35 +116,55 @@ public final class QuantumSystemSimulator
 			throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
 		}
 		EigenDecomposition decomposition = result.getValue();
-		List<Complex> eigenvalues = decomposition.getEigenvalues();
-		List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();
-		int n = eigenvalues.size();
+		List<Complex> rawEigenvalues = decomposition.getEigenvalues();
+		List<Vector<Complex>> rawEigenvectors = decomposition.getEigenvectors();
+		int n = rawEigenvalues.size();
+		double tolerance = eigenParams.tolerance.getValue();
 
-		double[] probabilities = new double[n];
+		List<Complex> eigenvalues = new ArrayList<>();
+		List<Vector<Complex>> eigenspaceProjections = new ArrayList<>();
+		List<Double> probabilityList = new ArrayList<>();
+		boolean[] grouped = new boolean[n];
 		double total = 0.0;
+
 		for (int i = 0; i < n; i++) {
-			QuantumState eigenstate = QuantumState.from(eigenvectors.get(i));
-			Complex amplitude = eigenstate.innerProduct(state); // <lambda_i|psi>
-			double p = amplitude.getRe() * amplitude.getRe() + amplitude.getIm() * amplitude.getIm();
-			probabilities[i] = p;
+			if (grouped[i]) continue;
+			double lambda = rawEigenvalues.get(i).getRe();
+			QuantumState projection = null;
+			double p = 0.0;
+			for (int j = i; j < n; j++) {
+				if (grouped[j] || Math.abs(rawEigenvalues.get(j).getRe() - lambda) > tolerance) continue;
+				grouped[j] = true;
+				QuantumState basisState = QuantumState.from(rawEigenvectors.get(j));
+				Complex amplitude = basisState.innerProduct(state); // <lambda_j|psi>
+				p += amplitude.getRe() * amplitude.getRe() + amplitude.getIm() * amplitude.getIm();
+				QuantumState term = basisState.scale(amplitude);
+				projection = (projection == null) ? term : projection.plus(term);
+			}
+			eigenvalues.add(rawEigenvalues.get(i));
+			eigenspaceProjections.add(projection.asVector());
+			probabilityList.add(p);
 			total += p;
 		}
 		if (total <= 0.0) {
 			throw new IllegalArgumentException("The state vector has zero norm; cannot compute measurement probabilities.");
 		}
 
-		return new BornDistribution(eigenvalues, eigenvectors, probabilities, total);
+		double[] probabilities = new double[probabilityList.size()];
+		for (int i = 0; i < probabilities.length; i++) probabilities[i] = probabilityList.get(i);
+
+		return new BornDistribution(eigenvalues, eigenspaceProjections, probabilities, total);
 	}
 
 	private static final class BornDistribution {
 		final List<Complex> eigenvalues;
-		final List<Vector<Complex>> eigenvectors;
+		final List<Vector<Complex>> eigenspaceProjections;
 		final double[] probabilities;
 		final double total;
 
-		BornDistribution(List<Complex> eigenvalues, List<Vector<Complex>> eigenvectors, double[] probabilities, double total) {
+		BornDistribution(List<Complex> eigenvalues, List<Vector<Complex>> eigenspaceProjections, double[] probabilities, double total) {
 			this.eigenvalues = eigenvalues;
-			this.eigenvectors = eigenvectors;
+			this.eigenspaceProjections = eigenspaceProjections;
 			this.probabilities = probabilities;
 			this.total = total;
 		}

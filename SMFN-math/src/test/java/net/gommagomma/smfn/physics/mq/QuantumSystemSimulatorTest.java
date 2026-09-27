@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.physics.mq;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
@@ -147,5 +148,100 @@ class QuantumSystemSimulatorTest
 			}
 		}
 		assertTrue(foundCertainOutcome);
+	}
+
+	@Test
+	@DisplayName("expectationValue(): invariante per riscalamento dello stato (2|0> deve dare lo stesso risultato di |0>)")
+	void expectationValueIsInvariantUnderStateRescaling() {
+		SquareMatrix<Complex> pauliZ = M2.of(new Complex[] {
+			new Complex(1, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(-1, 0)
+		});
+		Observable<Complex> Z = new Observable<>(pauliZ);
+
+		QuantumState zero = QuantumState.of(new Complex(1, 0), new Complex(0, 0));
+		QuantumState zeroScaled = QuantumState.of(new Complex(2, 0), new Complex(0, 0));
+
+		assertEquals(simulator.expectationValue(Z, zero).getValue(),
+			simulator.expectationValue(Z, zeroScaled).getValue(), EPSILON);
+	}
+
+	@Test
+	@DisplayName("expectationValue(): su uno stato a norma zero lancia, non restituisce un valore silenzioso")
+	void expectationValueOnZeroNormStateThrows() {
+		Observable<Complex> H = new Observable<>(pauliX);
+		QuantumState nullState = QuantumState.of(new Complex(0, 0), new Complex(0, 0));
+
+		assertThrows(IllegalArgumentException.class, () -> simulator.expectationValue(H, nullState));
+	}
+
+	@Test
+	@DisplayName("measurementProbabilities(): autovalore degenere (molteplicita' 2) e' un unico esito, non due")
+	void degenerateEigenvalueIsGroupedIntoSingleOutcome() {
+		SquareMatrix<Complex> M3 = new SquareMatrixRing<>(C, 3).of(new Complex[] {
+			new Complex(1, 0), new Complex(0, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(1, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(0, 0), new Complex(-1, 0)
+		});
+		Observable<Complex> H = new Observable<>(M3);
+		double invSqrt2 = 1.0 / Math.sqrt(2.0);
+		QuantumState psi = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0), new Complex(0, 0));
+		StoppingParameters params = new StoppingParameters(new Real(1e-10), 100);
+
+		List<MeasurementProbability> probabilities = simulator.measurementProbabilities(H, psi, params);
+
+		assertEquals(2, probabilities.size());
+		for (MeasurementProbability p : probabilities) {
+			if (p.getValue().getValue() > 0) {
+				assertEquals(1.0, p.getProbability().getValue(), 1e-9);
+			} else {
+				assertEquals(0.0, p.getProbability().getValue(), 1e-9);
+			}
+		}
+	}
+
+	@Test
+	@DisplayName("performMeasurement(): stato gia' interno a un autospazio degenere resta invariato dopo il collasso")
+	void performMeasurementOnStateInsideDegenerateEigenspaceLeavesItUnchanged() {
+		SquareMatrix<Complex> M3 = new SquareMatrixRing<>(C, 3).of(new Complex[] {
+			new Complex(1, 0), new Complex(0, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(1, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(0, 0), new Complex(-1, 0)
+		});
+		Observable<Complex> H = new Observable<>(M3);
+		double invSqrt2 = 1.0 / Math.sqrt(2.0);
+		QuantumState psi = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0), new Complex(0, 0));
+		StoppingParameters params = new StoppingParameters(new Real(1e-10), 100);
+		Random random = new Random(7);
+
+		for (int i = 0; i < 10; i++) {
+			MeasurementOutcome outcome = simulator.performMeasurement(H, psi, params, random);
+			assertEquals(1.0, outcome.getValue().getValue(), 1e-9);
+			assertEquals(invSqrt2, outcome.getCollapsedState().asVector().get(0).getRe(), 1e-9);
+			assertEquals(invSqrt2, outcome.getCollapsedState().asVector().get(1).getRe(), 1e-9);
+			assertEquals(0.0, outcome.getCollapsedState().asVector().get(2).getRe(), 1e-9);
+		}
+	}
+
+	@Test
+	@DisplayName("LACUNA NOTA: la soglia di degenerazione coincide con la tolleranza di convergenza del solver")
+	void degeneracyThresholdIsConflatedWithSolverConvergenceTolerance() {
+		SquareMatrix<Complex> H = M2.of(new Complex[] {
+			new Complex(1.0, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(1.0005, 0)
+		});
+		Observable<Complex> observable = new Observable<>(H);
+		double invSqrt2 = 1.0 / Math.sqrt(2.0);
+		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
+
+		// Stesso sistema fisico, due autovalori realmente distinti (1.0 e 1.0005).
+		// Una tolleranza larga scelta solo per far convergere piu' in fretta il
+		// solver su un problema piu' grande finisce per fondere i due esiti in uno solo:
+		StoppingParameters loose = new StoppingParameters(new Real(1e-2), 100);
+		assertEquals(1, simulator.measurementProbabilities(observable, plus, loose).size());
+
+		// mentre una tolleranza stretta, sullo stesso identico sistema, li mantiene distinti.
+		StoppingParameters tight = new StoppingParameters(new Real(1e-10), 100);
+		assertEquals(2, simulator.measurementProbabilities(observable, plus, tight).size());
 	}
 }
