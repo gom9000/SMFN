@@ -30,12 +30,12 @@ Concrete scalar types located in `math.algebra.numerics` implement fine-grained 
 | :--- | :--- | :--- | :--- |
 | `Natural` | Exact | `value: long` ($\ge 0$) | `Orderable`, `Exponentiable` |
 | `SignedInt` | Exact | `value: long` | `Orderable`, `Absolutable`, `Exponentiable` |
-| `ZnElement` | Exact | `value: SignedInt`, `modulus: SignedInt` | — |
+| `ZnElement` | Exact | `value: SignedInt`, `modulus: SignedInt` |  `Exponentiable` |
 | `Rational` | Exact | `numerator: long`, `denominator: long` | `Orderable`, `Absolutable`, `Exponentiable`, `Normable` |
 | `Real` | Approximate | `value: double` | `Orderable`, `Absolutable`, `Exponentiable`, `Sqrtable`, `Normable` |
 | `Complex` | Approximate | `real: double`, `imaginary: double` | `Normable`, `Exponentiable`, `Sqrtable`, `Conjugable` |
 
-\**Note: ZnRing is never statically promoted to a Field, even when the modulus is prime. Algebraic guarantees for every structure in SMFN are enforced at compile time, whereas primality is a runtime property.*
+\**Note: ZnRing is never a Field, even when the modulus is prime. Algebraic guarantees for every structure in SMFN are enforced at compile time, whereas primality is a runtime property.*
 
 ```java
 Real x = new Real(2.5);
@@ -241,7 +241,7 @@ Exact root finding is supported over algebraically closed fields like `ComplexFi
 ```java
 // Root Extraction over Complex Field (Newton-Raphson with Deflation)
 ComplexField C = ComplexField.INSTANCE;
-MetricSpace<Complex> space = (a, b) -> new Real(C.subtract(a, b).modulus());
+MetricSpace<Complex> space = C;
 PolynomialRootSolver<Complex, ComplexField> rootSolver = new PolynomialRootSolver<>(
     C, new Complex(1e-6, 0), space, new Complex(0.4, 0.9), 
     new StoppingParameters(new Real(1e-10), 100)

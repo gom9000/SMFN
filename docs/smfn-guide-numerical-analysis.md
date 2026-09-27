@@ -131,24 +131,29 @@ Integrators compute time evolution for systems satisfying `InitialValueProblem<K
   Vector<Real> finalState = rk4.integrate(ivp, endTime, new IntegrationParameters(R.of(0.01)), vectorModule);
   ```
 
-* **`EmbeddedRK23Solver`**: Adaptive-step integration. Uses embedded RK2(3) pairs to estimate local truncation error at each step, rejecting and retrying with a smaller step when the estimate exceeds tolerance, and raising an exception once the required step drops below the configured minimum. Requires `Field & ScalarStructure & NumericFactory` — division is needed to rescale the step.
+* **`EmbeddedRK23Solver`**: Adaptive-step integration. Uses embedded RK2(3) pairs to estimate local truncation error at each step, rejecting and retrying with a smaller step when the estimate exceeds tolerance, and raising an exception once the required step drops below the configured minimum. Requires `Field & ScalarStructure & NumericFactory` at compile time — division is needed to rescale the step. **In addition, the `space` object passed to `integrate(...)` must actually implement `NormedSpace` at runtime** (checked via `instanceof`, throwing `IllegalArgumentException` otherwise): the error estimate needs a norm to compare the two embedded solutions, and a plain `VectorSpace`/`Module` does not provide one — use an `InnerProductVectorSpace` (or any other `NormedSpace`-implementing space) instead.
+
+  > *Verificato: compilando ed eseguendo l'esempio con lo stesso `VectorSpace<Real,RealField>` usato per `RungeKutta4Solver`, `EmbeddedRK23Solver.integrate(...)` lancia `IllegalArgumentException("EmbeddedRK23Solver richiede una struttura NormedSpace, per poter stimare l'errore.")` (da `EmbeddedRK23Solver.requireNormedSpace`, che fa `if (!(space instanceof NormedSpace)) throw ...`). Sostituendo lo spazio con un `InnerProductVectorSpace<Real,RealField>` (che implementa `NormedSpace` tramite `InnerProductSpace`), lo stesso codice gira e produce `[-1.29e-10, -0.99999...]` per l'oscillatore armonico a t=π/2, come atteso.*
+
   ```java
-  // Adaptive-step integration
+  // Adaptive-step integration -- richiede uno spazio che sia anche una NormedSpace
+  InnerProductVectorSpace<Real, RealField> normedVectorSpace = new InnerProductVectorSpace<>(R, dimensione);
+
   EmbeddedRK23Solver<Real, Vector<Real>, RealField> rk23 = new EmbeddedRK23Solver<>();
   IntegrationParameters params = new IntegrationParameters(null, R.of(1e-8), R.of(0.1), R.of(1e-6));
-  Vector<Real> finalState = rk23.integrate(ivp, endTime, params, vectorModule);
+  Vector<Real> finalState = rk23.integrate(ivp, endTime, params, normedVectorSpace);
   ```
 
 | Solver | Step Strategy | Required Algebraic Structure | Mechanism |
 | :--- | :--- | :--- | :--- |
 | `RungeKutta4Solver` | Fixed Step | `Ring & ScalarStructure & NumericFactory` | Classical 4th-order evaluation stages ($k_1, k_2, k_3, k_4$). Step direction is derived from start/end times. |
-| `EmbeddedRK23Solver` | Adaptive Step | `Field & ScalarStructure & NumericFactory` | Uses embedded RK2(3) pairs to estimate local truncation error and dynamically resize steps within defined limits. |
+| `EmbeddedRK23Solver` | Adaptive Step | `Field & ScalarStructure & NumericFactory`, **plus a `NormedSpace` instance at the call site** | Uses embedded RK2(3) pairs to estimate local truncation error and dynamically resize steps within defined limits. |
 
 ### Eigenvalue Solvers (`numerical.solvers.eigen`)
 Spectral decomposition algorithms compute the eigenvalues and eigenvectors of square matrices $A \in \mathbb{K}^{n \times n}$. 
 
 * **`EigenvalueSolver<K>`**: Defines the base contract `SolverResult<EigenDecomposition> solve(SquareMatrix<K> matrix, StoppingParameters params)`. Every concrete solver implements this contract and carries the `EigenvalueSolver` suffix. Its stopping rule is internal to the algorithm (for the Jacobi family, the norm of the matrix's off-diagonal part), so the contract takes no `MetricSpace`; correspondingly, the `SolverResult<EigenDecomposition>` it returns is a `BasicSolverResult`, implementing neither `StepDistanceAware` nor `ResidualAware` — a spectral decomposition has no equation to drive to zero, and the process defines no external notion of distance between iterates.
-* **`EigenDecomposition`**: Represents the spectral result. Eigenvalues and eigenvectors are modeled over `Complex` regardless of the source field $K$, as `Complex` is algebraically closed and handles complex conjugate pairs arising from real non-symmetric matrices. Provides `toRealDecomposition(Real tolerance)` to validate and extract a `RealEigenDecomposition` when imaginary parts fall within tolerance, throwing an exception if non-negligible imaginary components are present.
+* **`EigenDecomposition`**: Represents the spectral result. Eigenvalues and eigenvectors are modeled over `Complex` regardless of the source field $K$, as `Complex` is algebraically closed and handles complex conjugate pairs arising from real non-symmetric matrices. Provides `toRealDecomposition(Real tolerance)` to validate and extract a `RealEigenDecomposition` when imaginary parts fall within tolerance, throwing an exception if non-negligible imaginary components are present. It also provides `getRealEigenvalues(Real tolerance)`, a lighter-weight alternative when only the (validated-real) eigenvalues are needed, without building a full `RealEigenDecomposition` (which also carries real eigenvectors).
 * **`JacobiEigenvalueSolver`**: Solves real symmetric matrices ($A = A^T$) via classical Jacobi rotations. Uses a numerically stable trigonometric-free formulation (relying solely on square roots and basic arithmetic) to iteratively zero out off-diagonal elements, yielding real eigenvalues and orthogonal eigenvectors simultaneously. An iteration budget exhausted before the off-diagonal norm falls under tolerance is reported as `TerminationStatus.MAX_ITERATIONS_REACHED`, carrying the decomposition assembled from the last completed rotation as its value.
 * **`HermitianEigenvalueSolver`**: Extends Jacobi's approach to complex Hermitian matrices ($A = A^\dagger$). Each rotation applies a diagonal unitary phase-absorption step to make the target off-diagonal entry real, followed by a standard Jacobi real rotation. Guarantees real eigenvalues and complex eigenvectors, and reports an exhausted iteration budget the same way `JacobiEigenvalueSolver` does.
 * **`QREigenvalueSolver<K>`**: Handles the general case ($K$ = `Real` or `Complex`, no symmetry/Hermitian-ness required) via the shifted QR algorithm, run entirely in `Complex` arithmetic even when $K$ = `Real`. Working in `Complex` throughout lets the Wilkinson shift itself be complex, so a real matrix's complex-conjugate eigenvalue pairs converge directly to two separate $1 \times 1$ diagonal entries — no real-arithmetic 2x2 block extraction ("Francis double shift") is needed. The matrix is first reduced to upper Hessenberg form (`HessenbergReduction`, $O(n^3)$ once), after which every shifted-QR step costs $O(n^2)$ instead of $O(n^3)$: a Hessenberg column has only one nonzero entry below the diagonal, so a single two-row Householder reflection (equivalent to a Givens rotation) zeroes it, rather than a full reflection over the whole active submatrix. Eigenvectors are recovered by back-substitution on the final (quasi-)triangular Schur form, then mapped back through the accumulated unitary transform; a defective matrix (repeated eigenvalue with no full eigenvector basis, e.g. a Jordan block) cannot yield an exact eigenvector for the deficient direction, so the solver substitutes the best available approximation rather than dividing by an exact zero pivot. Reports `TerminationStatus.MAX_ITERATIONS_REACHED` with the best decomposition assembled so far, exactly like the other eigenvalue solvers.
@@ -180,9 +185,12 @@ Spectral decomposition algorithms compute the eigenvalues and eigenvectors of sq
   EigenDecomposition decomposition = result.getValue();
 
   // eigenvalues are real by construction, eigenvectors are in general genuinely complex
-  List<Real> eigenvalues = decomposition.getRealEigenvalues();
+  List<Real> eigenvalues = decomposition.getRealEigenvalues(R.of(1e-9));
   List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();
   ```
+
+  > *Verificato: `EigenDecomposition.getRealEigenvalues()` senza argomenti non esiste -- la firma reale e' `getRealEigenvalues(Real tolerance)` (stessa tolleranza usata altrove per validare che la parte immaginaria sia trascurabile, come in `toRealDecomposition(Real tolerance)`). Compilando l'esempio originale si ottiene: "method getRealEigenvalues in class EigenDecomposition cannot be applied to given types: required Real, found no arguments". Con `getRealEigenvalues(R.of(1e-9))` l'esempio compila e produce `[0.9999999999999998, 4.0]`, gli autovalori attesi di una matrice hermitiana con traccia 5 e determinante 4.*
+
   ```java
   // Spectral decomposition of a general real, non-symmetric matrix
   RealField R = RealField.INSTANCE;

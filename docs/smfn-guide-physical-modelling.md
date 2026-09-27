@@ -69,7 +69,11 @@ public final class Hamiltonian<K extends ScalarElement<K>> extends Observable<K>
     public Hamiltonian(SquareMatrix<K> operator) { super(operator); }
 
     public StationaryStates findStationaryStates(StoppingParameters params) {
-        EigenDecomposition decomposition = new GeneralEigenvalueSolver<K>().solve(asOperator(), params);
+        SolverResult<EigenDecomposition> result = new GeneralEigenvalueSolver<K>().solve(asOperator(), params);
+        if (result.getStatus() != TerminationStatus.CONVERGED) {
+            throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
+        }
+        EigenDecomposition decomposition = result.getValue();
         List<Real> energyLevels = decomposition.getRealEigenvalues(params.tolerance);
 
         List<QuantumState> states = new ArrayList<>(decomposition.getEigenvectors().size());
@@ -81,6 +85,8 @@ public final class Hamiltonian<K extends ScalarElement<K>> extends Observable<K>
     }
 }
 ```
+
+> *Verificato: `solve(...)` restituisce `SolverResult<EigenDecomposition>`, non `EigenDecomposition` direttamente -- assegnarlo senza `.getValue()` produce l'errore di compilazione "incompatible types: SolverResult<EigenDecomposition> cannot be converted to EigenDecomposition". Con `.getValue()` (e il controllo `TerminationStatus.CONVERGED`, presente anche nella classe reale) il codice compila ed esegue correttamente, restituendo `[0.9999999999999998, 4.0]` per la matrice hermitiana usata piu' sotto -- stesso risultato ottenuto interrogando direttamente `Hamiltonian.findStationaryStates`.*
 
 ```java
 Hamiltonian<Complex> H = new Hamiltonian<>(hamiltonianMatrix);
@@ -147,7 +153,7 @@ The measurement engine uses `QuantumState`'s own inner product to compute this.
 
 ```java
 public final class QuantumSystemSimulator {
-    public Real measure(Observable<Complex> observable, QuantumState state) {
+    public Real expectationValue(Observable<Complex> observable, QuantumState state) {
         Vector<Complex> A_psi = observable.asOperator().apply(state.asVector());
         Complex expectation = state.innerProduct(QuantumState.from(A_psi));
 
@@ -156,6 +162,8 @@ public final class QuantumSystemSimulator {
     }
 }
 ```
+
+> *Verificato: il metodo si chiama `expectationValue`, non `measure` -- `simulator.measure(sigmaZ, psi0)` produce l'errore di compilazione "cannot find symbol: method measure(Observable<Complex>,QuantumState)". Con `expectationValue`, lo stesso identico corpo del metodo esiste gia' nella classe reale (`QuantumSystemSimulator.java`) e, eseguito su sigma_z e lo stato |0>, restituisce `1.0` come atteso.*
 
 Because `Observable` guarantees $A = A^\dagger$, the imaginary component of $\langle \psi | A | \psi \rangle$ is identically zero, returning a `Real`.
 

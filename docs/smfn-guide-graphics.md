@@ -89,12 +89,7 @@ PolynomialFunction<Real, RealField> f = new PolynomialFunction<>(p, R, horner);
 // Concrete driver
 int width = 600, height = 400;
 SwingRenderer1D renderer = new SwingRenderer1D(width, height);
-JFrame frame = new JFrame("SMFN: P(x) = x^2 - 2");
-frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-frame.add(renderer);
-frame.pack();
-frame.setVisible(true);
-renderer.initBufferStrategy();
+SwingWindow.show(renderer, "SMFN: P(x) = x^2 - 2");
 
 // Coordinate mapping
 Viewport viewport = new Viewport(-3.0, 3.0, -3.0, 6.0, width, height);
@@ -144,7 +139,7 @@ JuliaFunction juliaFunction = new JuliaFunction(c, maxIterations);
 // Concrete driver
 int width = 800, height = 600;
 SwingRenderer2D renderer = new SwingRenderer2D(width, height);
-SwingWindow.show(renderer, "SMFN Julia Set (c = " + constantC + ") Plot");
+SwingWindow.show(renderer, "SMFN Julia Set (c = " + c + ") Plot");
 
 // Coordinate mapping
 Viewport viewport = new Viewport(-1.5, 1.5, -1.5, 1.5, width, height);
