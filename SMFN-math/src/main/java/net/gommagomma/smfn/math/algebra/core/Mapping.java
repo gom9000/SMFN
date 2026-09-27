@@ -40,4 +40,16 @@ public interface Mapping<I, O>
     static <T> Mapping<T, T> identity() {
         return (T t) -> t;
     }
+
+    /**
+     * Restituisce il mapping costante f(x) = c per ogni x.
+     *
+     * @param <I> il tipo del dominio (ignorato)
+     * @param <O> il tipo del codominio
+     * @param c il valore costante da restituire
+     * @return un mapping che ignora l'input e restituisce sempre c
+     */
+   static <I, O> Mapping<I, O> constant(O c) {
+       return (I input) -> c;
+   }
 }

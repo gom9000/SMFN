@@ -85,7 +85,7 @@ implements GeometryEntity<Real>
 		Real gy = R.divide(ny, normalLength);
 		Real gz = R.divide(nz, normalLength);
 		Vector<Real> gradient = V3.of(new Real[] { gx, gy, gz });
-		return v -> gradient;
+		return Mapping.constant(gradient);
 	}
 
 	public Real distanceTo(Point point) {

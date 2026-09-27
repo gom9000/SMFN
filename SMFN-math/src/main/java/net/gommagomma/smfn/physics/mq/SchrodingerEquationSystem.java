@@ -42,7 +42,7 @@ implements DifferentialEquationProblem<Complex, Vector<Complex>>
 
 	/** Hamiltoniana indipendente dal tempo -- H(t) = hamiltonian per ogni t. */
 	public SchrodingerEquationSystem(Observable<Complex> hamiltonian) {
-		this.hamiltonian = time -> hamiltonian;
+		this.hamiltonian = Mapping.constant(hamiltonian);
 		this.space = new VectorSpace<>(ComplexField.INSTANCE, hamiltonian.asOperator().getN());
 	}
 

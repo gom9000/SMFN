@@ -77,7 +77,7 @@ implements GeometryEntity<Real>
 		Real gx = R.divide(R.negate(dy), directionLength);
 		Real gy = R.divide(dx, directionLength);
 		Vector<Real> gradient = V2.of(new Real[] { gx, gy });
-		return v -> gradient;
+		return Mapping.constant(gradient);
 	}
 
 	/** Distanza (sempre non negativa) di un punto dalla retta. */
