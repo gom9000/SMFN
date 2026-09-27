@@ -17,7 +17,8 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
  * Implementa anche LinearElement: R e' uno spazio vettoriale di dimensione 1 su se stesso.
  */
 public final class Real
-implements ApproximateElement<Real>, Normable<Real>, Orderable<Real>, Absolutable<Real>, Exponentiable<Real>, Sqrtable<Real>, LinearElement<Real, Real>
+implements ApproximateElement<Real>, Normable<Real>, Orderable<Real>, Absolutable<Real>, Exponentiable<Real>, Sqrtable<Real>,
+           LinearElement<Real, Real>
 {
     private final double value;
 
@@ -65,7 +66,7 @@ implements ApproximateElement<Real>, Normable<Real>, Orderable<Real>, Absolutabl
 
     @Override
     public boolean isLessThan(Real other) {
-        return this.value < other.value;
+        return compareTo(other) < 0;
     }
 
     @Override // Absolutable impls

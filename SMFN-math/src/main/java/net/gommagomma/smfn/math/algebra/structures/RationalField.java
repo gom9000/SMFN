@@ -155,6 +155,9 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
     // AdditiveGroup impls
     @Override
     public Rational negate(Rational e) {
+        if (e.getNumerator() == Long.MIN_VALUE) {
+            throw new ArithmeticException("Cannot negate: numerator is Long.MIN_VALUE, which overflows a long.");
+        }
         return new Rational(-e.getNumerator(), e.getDenominator());
     }
 
