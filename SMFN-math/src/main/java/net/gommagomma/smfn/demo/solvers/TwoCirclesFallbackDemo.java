@@ -8,9 +8,9 @@ import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.analysis.numerical.functionals.differentiation.CentralDifferenceJacobianEstimator;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.linear.GaussianEliminationSolver;
 import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.VectorNewtonRaphsonSolver;
+import net.gommagomma.smfn.math.linearalgebra.vectors.InnerProductVectorSpace;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorElementFactory;
-import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
 /**
  * Intersezione di due cerchi, scritta come Mapping<Vector<Real>,Vector<Real>>
@@ -26,7 +26,7 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 public class TwoCirclesFallbackDemo {
     public static void main(String[] args) {
         RealField R = RealField.INSTANCE;
-        VectorSpace<Real, RealField> V2 = new VectorSpace<>(R, 2);
+        InnerProductVectorSpace<Real, RealField> V2 = new InnerProductVectorSpace<>(R, 2);
 
         VectorRootFindingProblem<Real> problem = v -> {
             Real x = v.get(0);
@@ -44,11 +44,7 @@ public class TwoCirclesFallbackDemo {
         CentralDifferenceJacobianEstimator<Real, RealField> jacobianFallback = new CentralDifferenceJacobianEstimator<>(R, new Real(1e-6));
         VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(linearSolver, V2, jacobianFallback);
 
-        MetricSpace<Vector<Real>> space = (a, b) -> {
-            Real dx = R.subtract(a.get(0), b.get(0));
-            Real dy = R.subtract(a.get(1), b.get(1));
-            return R.add(R.multiply(dx, dx), R.multiply(dy, dy)).sqrt();
-        };
+        MetricSpace<Vector<Real>> space = V2;
         StoppingParameters params = new StoppingParameters(new Real(1e-10), 100);
 
         double expectedY = Math.sqrt(3);

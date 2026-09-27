@@ -26,10 +26,7 @@ implements Mapping<Complex, Natural>
     private final RealField R = RealField.INSTANCE;
     private final NaturalSemiring N = NaturalSemiring.INSTANCE;
     private final EscapeTimeSolver solver = new EscapeTimeSolver();
-
-    // Distanza euclidea su Complex: d(z1, z2) = |z1 - z2|. Serve al solutore per riportare
-    // la distanza dell'ultimo passo nel SolverResult (non guida il criterio di arresto).
-    private final MetricSpace<Complex> complexMetricSpace = (z1, z2) -> R.of(Math.sqrt(C.subtract(z1, z2).modulusSquared()));
+    private final MetricSpace<Complex> complexMetricSpace = C;
 
     private StoppingParameters cachedParams;
     private final StoppingCriteria divergenceTest;

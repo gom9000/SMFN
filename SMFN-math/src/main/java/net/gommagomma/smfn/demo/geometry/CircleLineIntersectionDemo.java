@@ -14,8 +14,8 @@ import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.VectorNewtonRap
 import net.gommagomma.smfn.math.geometry.Circle;
 import net.gommagomma.smfn.math.geometry.Line;
 import net.gommagomma.smfn.math.geometry.Point;
+import net.gommagomma.smfn.math.linearalgebra.vectors.InnerProductVectorSpace;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
-import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 
 /**
  * Intersezione cerchio-retta come ricerca di radici vettoriale:
@@ -30,7 +30,7 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
 public class CircleLineIntersectionDemo
 {
 	private static final RealField R = RealField.INSTANCE;
-	private static final VectorSpace<Real, RealField> V2 = new VectorSpace<>(R, 2);
+	private static final InnerProductVectorSpace<Real, RealField> V2 = new InnerProductVectorSpace<>(R, 2);
 
 	public static void main(String[] args) {
 		Circle circle = new Circle(new Point(0.0, 0.0), new Real(3.0));
@@ -47,11 +47,7 @@ public class CircleLineIntersectionDemo
 		CentralDifferenceJacobianEstimator<Real, RealField> jacobianFallback = new CentralDifferenceJacobianEstimator<>(R, new Real(1e-6));
 		VectorNewtonRaphsonSolver<Real, RealField> solver = new VectorNewtonRaphsonSolver<>(linearSolver, V2, jacobianFallback);
 
-		MetricSpace<Vector<Real>> space = (a, b) -> {
-			Real dx = R.subtract(a.get(0), b.get(0));
-			Real dy = R.subtract(a.get(1), b.get(1));
-			return R.add(R.multiply(dx, dx), R.multiply(dy, dy)).sqrt();
-		};
+		MetricSpace<Vector<Real>> space = V2;
 		StoppingParameters params = new StoppingParameters(new Real(1e-10), 100);
 
 		// Due punti di partenza distinti: a differenza della deflazione polinomiale,

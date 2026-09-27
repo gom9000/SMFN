@@ -44,8 +44,8 @@ implements Mapping<Complex, Natural>
 		// Solutore ancorato al campo complesso C: nessun fallback numerico necessario, la derivata e' sempre analitica
 		this.solver = new NewtonRaphsonSolver<>(C, null);
 
-		// Spazio metrico complesso basato sulla distanza euclidea d(z1, z2) = |z1 - z2|
-		this.complexMetricSpace = (z1, z2) -> R.of(Math.sqrt(C.subtract(z1, z2).modulusSquared()));
+		// Spazio metrico complesso basato sulla distanza euclidea d(z1, z2) = |z1 - z2|.
+		this.complexMetricSpace = C;
 
 		// Criterio di convergenza: ci fermiamo quando la distanza tra due iterati d(z_{k+1}, z_k) e' inferiore alla tolleranza
 		this.convergenceTest = (distance, params, iteration) -> distance.getValue() < params.getTolerance().getValue();
