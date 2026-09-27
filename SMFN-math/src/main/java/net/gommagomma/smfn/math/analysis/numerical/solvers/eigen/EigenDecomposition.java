@@ -23,8 +23,8 @@ public final class EigenDecomposition
 	private final List<Vector<Complex>> eigenvectors;
 
 	public EigenDecomposition(List<Complex> eigenvalues, List<Vector<Complex>> eigenvectors) {
-		this.eigenvalues = eigenvalues;
-		this.eigenvectors = eigenvectors;
+		this.eigenvalues = List.copyOf(eigenvalues);
+		this.eigenvectors = List.copyOf(eigenvectors);
 	}
 
 	public List<Complex> getEigenvalues() { return eigenvalues; }

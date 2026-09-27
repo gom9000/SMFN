@@ -19,8 +19,8 @@ public final class StationaryStates
 	private final List<QuantumState> states;
 
 	StationaryStates(List<Real> energyLevels, List<QuantumState> states) {
-		this.energyLevels = energyLevels;
-		this.states = states;
+		this.energyLevels = List.copyOf(energyLevels);
+		this.states = List.copyOf(states);
 	}
 
 	public List<Real> getEnergyLevels() { return energyLevels; }

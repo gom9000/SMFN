@@ -76,6 +76,11 @@ implements Semimodule<Vector<K>, K, S>, CompositeElementFactory<Vector<K>, K[]>
         if (v.size() != dimension) {
             throw new IllegalArgumentException("Vector dimension mismatch. Expected " + dimension + ", got " + v.size());
         }
+
+        if (!v.getScalarStructure().equals(scalarStructure)) {
+            throw new IllegalArgumentException("Vector scalar structure mismatch. Expected " + scalarStructure.getName()
+                + ", got " + v.getScalarStructure().getName());
+        }
     }
 
     @Override

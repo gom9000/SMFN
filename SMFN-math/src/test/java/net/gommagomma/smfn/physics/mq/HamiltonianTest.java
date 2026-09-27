@@ -1,6 +1,7 @@
 package net.gommagomma.smfn.physics.mq;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -65,6 +66,20 @@ class HamiltonianTest
 				assertEquals(expected.getIm(), Hv.get(k).getIm(), 1e-9);
 			}
 		}
+	}
+
+	@Test
+	@DisplayName("FIX: le liste restituite da StationaryStates non sono modificabili")
+	void stationaryStatesGettersReturnUnmodifiableLists() {
+		SquareMatrix<Complex> H = M2.of(new Complex[] {
+			new Complex(2, 0), new Complex(1, 1),
+			new Complex(1, -1), new Complex(3, 0)
+		});
+		Hamiltonian<Complex> hamiltonian = new Hamiltonian<>(H);
+		StationaryStates result = hamiltonian.findStationaryStates(params);
+
+		assertThrows(UnsupportedOperationException.class, () -> result.getEnergyLevels().clear());
+		assertThrows(UnsupportedOperationException.class, () -> result.getStates().clear());
 	}
 
 	@Test

@@ -9,7 +9,10 @@ import org.junit.jupiter.api.Test;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.Semimodule;
 import net.gommagomma.smfn.math.algebra.core.structures.contracts.SemimoduleAxiomContract;
 import net.gommagomma.smfn.math.algebra.numerics.Natural;
+import net.gommagomma.smfn.math.algebra.numerics.SignedInt;
+import net.gommagomma.smfn.math.algebra.numerics.ZnElement;
 import net.gommagomma.smfn.math.algebra.structures.NaturalSemiring;
+import net.gommagomma.smfn.math.algebra.structures.ZnRing;
 
 @DisplayName("VectorSemimodule<Natural>: assiomi di Semimodulo (scalari Semiring, no inverso)")
 class VectorSemimoduleTest extends SemimoduleAxiomContract<Vector<Natural>, Natural, NaturalSemiring>
@@ -61,5 +64,20 @@ class VectorSemimoduleTest extends SemimoduleAxiomContract<Vector<Natural>, Natu
 	@DisplayName("of(): array null lancia IllegalArgumentException")
 	void ofRejectsNull() {
 		assertThrows(IllegalArgumentException.class, () -> V3.of(null));
+	}
+
+	@Test
+	@DisplayName("FIX (M-05): struttura scalare diversa (stessa taglia) viene rifiutata da add(), non solo da contains()")
+	void differentScalarStructureRejectedByAdd() {
+		ZnRing z5 = ZnRing.forModulus(new SignedInt(5));
+		ZnRing z7 = ZnRing.forModulus(new SignedInt(7));
+		VectorSemimodule<ZnElement, ZnRing> spaceZ5 = new VectorSemimodule<>(z5, 2);
+		VectorSemimodule<ZnElement, ZnRing> spaceZ7 = new VectorSemimodule<>(z7, 2);
+
+		Vector<ZnElement> vInZ5 = spaceZ5.of(new ZnElement[] { z5.of(1), z5.of(2) });
+		Vector<ZnElement> vInZ7 = spaceZ7.of(new ZnElement[] { z7.of(1), z7.of(2) });
+
+		assertThrows(IllegalArgumentException.class, () -> spaceZ5.add(vInZ5, vInZ7));
+		assertThrows(IllegalArgumentException.class, () -> spaceZ5.scale(z5.of(1), vInZ7));
 	}
 }

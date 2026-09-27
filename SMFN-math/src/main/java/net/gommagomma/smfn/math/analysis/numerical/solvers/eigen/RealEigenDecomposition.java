@@ -14,8 +14,8 @@ public final class RealEigenDecomposition
 	private final List<Vector<Real>> eigenvectors;
 
 	RealEigenDecomposition(List<Real> eigenvalues, List<Vector<Real>> eigenvectors) {
-		this.eigenvalues = eigenvalues;
-		this.eigenvectors = eigenvectors;
+		this.eigenvalues = List.copyOf(eigenvalues);
+		this.eigenvectors = List.copyOf(eigenvectors);
 	}
 
 	public List<Real> getEigenvalues() { return eigenvalues; }

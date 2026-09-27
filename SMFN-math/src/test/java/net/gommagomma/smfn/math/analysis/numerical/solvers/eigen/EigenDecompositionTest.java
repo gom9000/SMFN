@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.analysis.numerical.solvers.eigen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -61,5 +62,39 @@ class EigenDecompositionTest
 		);
 
 		assertThrows(IllegalStateException.class, () -> decomposition.toRealDecomposition(new Real(1e-9)));
+	}
+
+	@Test
+	@DisplayName("FIX: mutare la lista passata al costruttore, dopo la costruzione, non altera piu' la decomposizione")
+	void constructorDoesNotAliasCallerList() {
+		List<Complex> callerEigenvalues = new ArrayList<>(List.of(new Complex(1.0, 0.0), new Complex(2.0, 0.0)));
+		List<Vector<Complex>> callerEigenvectors = new ArrayList<>(List.of(
+			complexVector(new Complex(1, 0), new Complex(0, 0)),
+			complexVector(new Complex(0, 0), new Complex(1, 0))));
+
+		EigenDecomposition decomposition = new EigenDecomposition(callerEigenvalues, callerEigenvectors);
+
+		// Il chiamante muta la propria lista DOPO la costruzione: non deve avere alcun effetto.
+		callerEigenvalues.set(0, new Complex(999.0, 0.0));
+		callerEigenvectors.clear();
+
+		assertEquals(new Complex(1.0, 0.0), decomposition.getEigenvalues().get(0));
+		assertEquals(2, decomposition.getEigenvectors().size());
+	}
+
+	@Test
+	@DisplayName("FIX: le liste restituite dai getter sono non modificabili")
+	void gettersReturnUnmodifiableLists() {
+		EigenDecomposition decomposition = new EigenDecomposition(
+			List.of(new Complex(1.0, 0.0), new Complex(2.0, 0.0)),
+			List.of(complexVector(new Complex(1, 0), new Complex(0, 0)),
+			        complexVector(new Complex(0, 0), new Complex(1, 0))));
+
+		assertThrows(UnsupportedOperationException.class, () -> decomposition.getEigenvalues().clear());
+		assertThrows(UnsupportedOperationException.class, () -> decomposition.getEigenvectors().clear());
+
+		RealEigenDecomposition real = decomposition.toRealDecomposition(new Real(1e-9));
+		assertThrows(UnsupportedOperationException.class, () -> real.getEigenvalues().clear());
+		assertThrows(UnsupportedOperationException.class, () -> real.getEigenvectors().clear());
 	}
 }
