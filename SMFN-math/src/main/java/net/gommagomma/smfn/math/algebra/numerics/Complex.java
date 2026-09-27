@@ -14,7 +14,7 @@ import net.gommagomma.smfn.math.algebra.structures.RealField;
  * Rappresenta un numero complesso in forma algebrica (z = a + bi),
  * basato su valori in virgola doppia precisione (double) per la parte reale e immaginaria.
  * Implementa le capacità numeriche e algebriche per operare all'interno del campo complesso.
- * Implementa ancheLinearElement: C e' uno spazio vettoriale di dimensione 1 su se stesso.
+ * Implementa anche LinearElement: C e' uno spazio vettoriale di dimensione 1 su se stesso.
  */
 public final class Complex
 implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, Sqrtable<Complex>, Conjugable<Complex>,
@@ -70,7 +70,7 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
      */
     public double modulus()
     {
-        return Math.sqrt(real * real + imaginary * imaginary);
+        return Math.hypot(real, imaginary);
     }
 
     /**

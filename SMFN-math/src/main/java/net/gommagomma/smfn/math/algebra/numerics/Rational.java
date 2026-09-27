@@ -1,5 +1,7 @@
 package net.gommagomma.smfn.math.algebra.numerics;
 
+import java.math.BigInteger;
+
 import net.gommagomma.smfn.math.algebra.core.elements.ExactElement;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Absolutable;
 import net.gommagomma.smfn.math.algebra.core.elements.capabilities.Exponentiable;
@@ -33,6 +35,12 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
     {
         if (denominator == 0) {
             throw new IllegalArgumentException("Denominator cannot be zero");
+        }
+
+        if (numerator == denominator) {
+            this.numerator = 1;
+            this.denominator = 1;
+            return;
         }
 
         // denominator is always positive, the sign is moved to the numerator
@@ -92,14 +100,20 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
     @Override // Orderable impls
     public int compareTo(Rational other)
     {
-    	long ad = Math.multiplyExact(this.numerator, other.denominator);
-        long bc = Math.multiplyExact(other.numerator, this.denominator);
-        return Long.compare(ad, bc);
+        try {
+            long ad = Math.multiplyExact(this.numerator, other.denominator);
+            long bc = Math.multiplyExact(other.numerator, this.denominator);
+            return Long.compare(ad, bc);
+        } catch (ArithmeticException overflow) {
+            BigInteger ad = BigInteger.valueOf(this.numerator).multiply(BigInteger.valueOf(other.denominator));
+            BigInteger bc = BigInteger.valueOf(other.numerator).multiply(BigInteger.valueOf(this.denominator));
+            return ad.compareTo(bc);
+        }
     }
 
     @Override
     public boolean isLessThan(Rational other) {
-        return Math.multiplyExact(this.numerator, other.denominator) < Math.multiplyExact(other.numerator, this.denominator);
+        return compareTo(other) < 0;
     }
 
     @Override // Absolutable impls

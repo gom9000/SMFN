@@ -120,9 +120,37 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
     @Override
     public Complex inverse(Complex e) {
         if (isZero(e)) throw new ArithmeticException("Division by zero");
-        double den = e.getRe() * e.getRe() + e.getIm() * e.getIm();
 
-        return new Complex(e.getRe() / den, -e.getIm() / den);
+        double re = e.getRe();
+        double im = e.getIm();
+
+        double scale = Math.max(Math.abs(re), Math.abs(im));
+        boolean rescale = scale > Double.MAX_VALUE / 4.0;
+        if (rescale) {
+            re /= scale;
+            im /= scale;
+        }
+
+        double resultRe;
+        double resultIm;
+        if (Math.abs(re) >= Math.abs(im)) {
+            double ratio = im / re;
+            double denom = re + im * ratio;
+            resultRe = 1.0 / denom;
+            resultIm = -ratio / denom;
+        } else {
+            double ratio = re / im;
+            double denom = re * ratio + im;
+            resultRe = ratio / denom;
+            resultIm = -1.0 / denom;
+        }
+
+        if (rescale) {
+            resultRe /= scale;
+            resultIm /= scale;
+        }
+
+        return new Complex(resultRe, resultIm);
     }
 
 

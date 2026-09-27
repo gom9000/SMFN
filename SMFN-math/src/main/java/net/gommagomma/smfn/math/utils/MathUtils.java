@@ -8,9 +8,9 @@
  * gommagomma.net - SMFN
  */
 
-
 package net.gommagomma.smfn.math.utils;
 
+import java.math.BigInteger;
 
 /**
  * Utility class for common mathematical operations.
@@ -23,7 +23,6 @@ public final class MathUtils
     {
         throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
-
 
     /**
      * Calcola base^exponent per i long.
@@ -50,7 +49,7 @@ public final class MathUtils
         int exp = exponent;
 
         while (exp > 0) {
-            if ((exp & 1) == 1) { // exp è dispari
+            if ((exp & 1) == 1) { // exp � dispari
                 result = Math.multiplyExact(result, b);
             }
             b = Math.multiplyExact(b, b);
@@ -58,7 +57,6 @@ public final class MathUtils
         }
         return result;
     }
-
 
     /**
      * Calculates the Greatest Common Divisor (GCD) of two long integers using the Euclidean algorithm.
@@ -70,21 +68,7 @@ public final class MathUtils
      */
     public static long greatestCommonDivisor(long a, long b)
     {
-    	if (a == Long.MIN_VALUE || b == Long.MIN_VALUE) {
-            throw new ArithmeticException("greatestCommonDivisor non supporta Long.MIN_VALUE (il suo valore assoluto va in overflow).");
-        }
-
-        a = Math.abs(a);
-        b = Math.abs(b);
-
-        while (b != 0L)
-        {
-            long temp = b;
-            b = a % b;
-            a = temp;
-        }
-
-        return a;
+        return BigInteger.valueOf(a).gcd(BigInteger.valueOf(b)).longValueExact();
     }
     
     // leastCommonMultiple(LCM)...

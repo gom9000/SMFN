@@ -52,13 +52,15 @@ class MathUtilsTest
     }
 
     @Test
-    void gcdRejectsLongMinValue()
+    void gcdHandlesLongMinValueWhenResultFitsInALong()
     {
-        // Math.abs(Long.MIN_VALUE) va in overflow e resta negativo: senza guardia
-        // esplicita, il ciclo dell'algoritmo di Euclide lavorerebbe su un valore
-        // ancora negativo, producendo un "gcd" scorretto (potenzialmente negativo,
-        // contro il contratto dichiarato dal metodo stesso).
-        assertThrows(ArithmeticException.class, () -> MathUtils.greatestCommonDivisor(Long.MIN_VALUE, 5));
-        assertThrows(ArithmeticException.class, () -> MathUtils.greatestCommonDivisor(5, Long.MIN_VALUE));
+        assertThat(MathUtils.greatestCommonDivisor(Long.MIN_VALUE, 5)).isEqualTo(1L);
+        assertThat(MathUtils.greatestCommonDivisor(5, Long.MIN_VALUE)).isEqualTo(1L);
+    }
+
+    @Test
+    void gcdOfLongMinValueWithItselfStillRejectsUnrepresentableResult()
+    {
+        assertThrows(ArithmeticException.class, () -> MathUtils.greatestCommonDivisor(Long.MIN_VALUE, Long.MIN_VALUE));
     }
 }

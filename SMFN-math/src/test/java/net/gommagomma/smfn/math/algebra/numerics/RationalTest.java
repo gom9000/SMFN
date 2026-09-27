@@ -115,23 +115,23 @@ public class RationalTest {
     }
 
     @Test
-    void constructorRejectsLongMinValueNumeratorEvenWithPositiveDenominator() {
-        // Scoperta eseguendo il test, non solo leggendo il codice: anche quando
-        // il denominatore e' gia' positivo (nessun cambio di segno necessario),
-        // il costruttore chiama comunque greatestCommonDivisor(numerator, denominator)
-        // per ridurre ai minimi termini -- e quella chiamata rifiuta Long.MIN_VALUE
-        // incondizionatamente, a prescindere dal segno. Rational non puo' quindi
-        // rappresentare Long.MIN_VALUE in NESSUN caso, non solo quando serve
-        // negare per normalizzare il segno.
-        assertThrows(ArithmeticException.class, () -> new Rational(Long.MIN_VALUE, 1));
+    void constructorAcceptsLongMinValueNumeratorWithPositiveDenominator() {
+        // Long.MIN_VALUE / 1 non richiede alcuna negazione (il denominatore e' gia'
+        // positivo) ed e' perfettamente rappresentabile: numerator = Long.MIN_VALUE,
+        // denominator = 1, senza bisogno di ridurre nulla oltre al gcd banale con 1.
+        Rational r = new Rational(Long.MIN_VALUE, 1);
+        assertEquals(Long.MIN_VALUE, r.getNumerator());
+        assertEquals(1, r.getDenominator());
     }
 
-    // NB: la guardia esplicita dentro abs() ("if (numerator == Long.MIN_VALUE) throw")
-    // e' di conseguenza codice morto e irraggiungibile: nessuna istanza di Rational
-    // puo' mai avere numerator == Long.MIN_VALUE, dato il test sopra. Innocua, ma
-    // non testabile (non esiste un modo di costruire il fixture necessario) -- non
-    // e' un problema, e' solo la prova che la protezione a monte (nel costruttore)
-    // rende ridondante quella a valle.
+    @Test
+    void absStillRejectsLongMinValueNumerator() {
+        // abs() non puo' negare Long.MIN_VALUE (overflow genuino, indipendente
+        // dal denominatore): a differenza del costruttore, qui il rifiuto resta
+        // necessario, non un limite evitabile.
+        Rational r = new Rational(Long.MIN_VALUE, 1);
+        assertThrows(ArithmeticException.class, r::abs);
+    }
 
     @Test
     void powerHandlesIntegerMinValueExponent() {
@@ -150,14 +150,30 @@ public class RationalTest {
     }
 
     @Test
-    void compareToDoesNotSilentlyOverflowOnLargeValues() {
+    void compareToHandlesLargeCrossProductsWithoutOverflow() {
         // Prodotti incrociati (4 miliardi * 4 miliardi) superano abbondantemente
-        // Long.MAX_VALUE: compareTo() deve accorgersene (lanciando, come isLessThan()
-        // gia' fa), non restituire un ordinamento sbagliato per overflow silenzioso.
+        // Long.MAX_VALUE, ma i due razionali restano perfettamente confrontabili:
+        // il confronto deve restituire l'ordinamento corretto, non lanciare.
         Rational big = new Rational(4_000_000_000L, 1);
         Rational tiny = new Rational(1, 4_000_000_000L);
 
-        assertThrows(ArithmeticException.class, () -> big.compareTo(tiny));
-        assertThrows(ArithmeticException.class, () -> big.isLessThan(tiny));
+        assertTrue(big.compareTo(tiny) > 0);
+        assertTrue(tiny.compareTo(big) < 0);
+        assertFalse(big.isLessThan(tiny));
+        assertTrue(tiny.isLessThan(big));
+    }
+
+    @Test
+    void compareToHandlesCrossProductOverflowNearLongRange() {
+        // Stesso principio del bug segnalato: N/(N-1) e (N-1)/(N-2), con
+        // N = Long.MAX_VALUE, hanno prodotti incrociati che superano Long.MAX_VALUE
+        // (verificato indipendentemente con BigInteger: N*(N-2) < (N-1)^2), quindi
+        // x < y -- il confronto deve restituirlo, non lanciare ArithmeticException.
+        long n = Long.MAX_VALUE;
+        Rational x = new Rational(n, n - 1);
+        Rational y = new Rational(n - 1, n - 2);
+
+        assertTrue(x.compareTo(y) < 0);
+        assertTrue(x.isLessThan(y));
     }
 }

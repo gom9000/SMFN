@@ -1,5 +1,7 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
+import java.math.BigInteger;
+
 import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.EuclideanDomain;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
@@ -78,7 +80,7 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
     @Override
     public SignedInt quotient(SignedInt a, SignedInt b) {
         if (isZero(b)) throw new ArithmeticException("Division by zero");
-        
+
         long aVal = a.getValue();
         long bVal = b.getValue();
 
@@ -86,22 +88,21 @@ implements EuclideanDomain<SignedInt, Natural>, ExactStructure<SignedInt>, Numer
             throw new ArithmeticException("Integer overflow: Long.MIN_VALUE / -1 is not representable as a long");
         }
 
-        // Per gli interi, a = qb + r. Se r deve essere >= 0:
-        long r = aVal % bVal;
-        long absB = (bVal == Long.MIN_VALUE) ? bVal : Math.abs(bVal);
-        if (r < 0) r += absB;
-        
-        return new SignedInt((aVal - r) / bVal);
+        // Per gli interi, a = qb + r, con 0 <= r < |b|.
+        BigInteger bigA = BigInteger.valueOf(aVal);
+        BigInteger bigB = BigInteger.valueOf(bVal);
+        BigInteger r = bigA.mod(bigB.abs());
+        BigInteger q = bigA.subtract(r).divide(bigB);
+
+        return new SignedInt(q.longValueExact());
     }
 
     @Override
     public SignedInt remainder(SignedInt a, SignedInt b) {
         if (isZero(b)) throw new ArithmeticException("Modulo by zero");
-        long bVal = b.getValue();
-        long rem = a.getValue() % bVal;
-        long absB = (bVal == Long.MIN_VALUE) ? bVal : Math.abs(bVal);
-        if (rem < 0) rem += absB;
-        return new SignedInt(rem);
+
+        BigInteger r = BigInteger.valueOf(a.getValue()).mod(BigInteger.valueOf(b.getValue()).abs());
+        return new SignedInt(r.longValueExact());
     }
 
     @Override

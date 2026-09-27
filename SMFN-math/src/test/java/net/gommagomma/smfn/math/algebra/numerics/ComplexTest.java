@@ -42,6 +42,14 @@ public class ComplexTest {
     }
 
     @Test
+    void modulusOfExtremeMagnitudeDoesNotOverflowToInfinity() {
+        Complex huge = new Complex(1e308, 1e308);
+        double expected = Math.hypot(1e308, 1e308); // ~1.4142e308, rappresentabile
+        assertEquals(expected, huge.modulus(), expected * 1e-12);
+        assertTrue(Double.isFinite(huge.modulus()));
+    }
+
+    @Test
     void conjugate() {
         Complex conjugateA = a.conjugate();
         assertEquals(3.0, conjugateA.getRe());
@@ -70,10 +78,6 @@ public class ComplexTest {
 
     @Test
     void powerHandlesIntegerMinValueExponent() {
-        // Math.abs(Integer.MIN_VALUE) va in overflow e resta negativo: se non
-        // gestito col cast a long, il ciclo di elevamento a potenza non
-        // eseguirebbe mai, restituendo silenziosamente 1 invece del vero valore.
-        // Base vicina a 1: il vero risultato resta rappresentabile come double.
         Complex nearOne = new Complex(1.0000000001, 0.0);
         Complex result = nearOne.power(Integer.MIN_VALUE);
 

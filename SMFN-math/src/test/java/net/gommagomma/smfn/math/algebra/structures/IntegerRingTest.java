@@ -83,6 +83,20 @@ public class IntegerRingTest extends EuclideanDomainAxiomContract<SignedInt, Nat
 	}
 
 	@Test
+	@DisplayName("quotient(Long.MIN_VALUE, 3) non overflow: a = q*b + r, non un wraparound silenzioso")
+	void quotientCorrectWithMinValueDividend() {
+		SignedInt a = new SignedInt(Long.MIN_VALUE);
+		SignedInt b = new SignedInt(3);
+
+		SignedInt q = integerRing.quotient(a, b);
+		SignedInt r = integerRing.remainder(a, b);
+
+		assertEquals(-3074457345618258603L, q.getValue());
+		assertEquals(1L, r.getValue());
+		assertEquals(Long.MIN_VALUE, q.getValue() * 3 + r.getValue());
+	}
+
+	@Test
 	@DisplayName("quotient/remainder con DIVISORE = Long.MIN_VALUE restano corretti (a = q*b + r, 0<=r<|b|)")
 	void quotientAndRemainderCorrectWithMinValueDivisor() {
 		SignedInt a = new SignedInt(-5);

@@ -54,4 +54,28 @@ public class ComplexFieldTest extends FieldAxiomContract<Complex>
 		assertFalse(complexField.contains(new Complex(Double.NaN, 1.0)));
 		assertFalse(complexField.contains(new Complex(1.0, Double.POSITIVE_INFINITY)));
 	}
+
+	@Test
+	@DisplayName("inverse() su un modulo prossimo al massimo rappresentabile non collassa a zero")
+	void inverseHandlesExtremeMagnitudeWithoutUnderflowingToZero() {
+		Complex z = new Complex(1e308, 1e308);
+		Complex inv = complexField.inverse(z);
+
+		assertFalse(inv.getRe() == 0.0 && inv.getIm() == 0.0,
+			"1/z non puo' essere zero per uno z finito e non nullo");
+
+		Complex product = complexField.multiply(z, inv);
+		assertTrue(Math.abs(product.getRe() - 1.0) < 1e-6, "z * inverse(z) deve restituire (circa) 1");
+		assertTrue(Math.abs(product.getIm()) < 1e-6, "z * inverse(z) deve restituire (circa) 1");
+	}
+
+	@Test
+	@DisplayName("inverse() resta accurato per moduli ordinari")
+	void inverseIsAccurateForOrdinaryMagnitudes() {
+		Complex z = new Complex(3.0, 4.0);
+		Complex inv = complexField.inverse(z);
+
+		assertEquals(0.12, inv.getRe(), 1e-12);
+		assertEquals(-0.16, inv.getIm(), 1e-12);
+	}
 }
