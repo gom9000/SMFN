@@ -91,7 +91,7 @@ The library decouples the mathematical formulation of a task from its numerical 
 
 
 ### Physics Modules as Consumers
-Domain-specific packages (es. physics.mq) do not re-implement linear algebra or numerical methods. They act as **clients/consumers** of the core architecture:
+Domain-specific packages (e.g. physics.mq) do not re-implement linear algebra or numerical methods. They act as **clients/consumers** of the core architecture:
 * Physical positions and velocities are instances of `Vector<K>` inside a `LinearSpace`.
 * Physical forces and field transformations are modeled as `Operator` instances.
 * Time evolution relies on generic ODE numerical `Solver` engines.
@@ -104,7 +104,7 @@ The library includes a minimal, zero-dependency visual rendering engine for rapi
 * **Field & Particle Rendering**: Immediate visual feedback for trajectories, vector fields, and implicit geometric functions.
 
 ### Immutable Value Objects
-Elements types (es. `Complex`, `Polynomial`, `Matrix`) are immutable, ensuring thread safety and mathematical predictability.
+Elements types (e.g. `Complex`, `Polynomial`, `Matrix`) are immutable, ensuring thread safety and mathematical predictability.
 
 
 ### Numerical Tolerance ($\varepsilon$) & `MathConstants`

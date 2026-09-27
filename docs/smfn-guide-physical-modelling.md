@@ -86,7 +86,6 @@ public final class Hamiltonian<K extends ScalarElement<K>> extends Observable<K>
 }
 ```
 
-> *Verificato: `solve(...)` restituisce `SolverResult<EigenDecomposition>`, non `EigenDecomposition` direttamente -- assegnarlo senza `.getValue()` produce l'errore di compilazione "incompatible types: SolverResult<EigenDecomposition> cannot be converted to EigenDecomposition". Con `.getValue()` (e il controllo `TerminationStatus.CONVERGED`, presente anche nella classe reale) il codice compila ed esegue correttamente, restituendo `[0.9999999999999998, 4.0]` per la matrice hermitiana usata piu' sotto -- stesso risultato ottenuto interrogando direttamente `Hamiltonian.findStationaryStates`.*
 
 ```java
 Hamiltonian<Complex> H = new Hamiltonian<>(hamiltonianMatrix);
@@ -162,8 +161,6 @@ public final class QuantumSystemSimulator {
     }
 }
 ```
-
-> *Verificato: il metodo si chiama `expectationValue`, non `measure` -- `simulator.measure(sigmaZ, psi0)` produce l'errore di compilazione "cannot find symbol: method measure(Observable<Complex>,QuantumState)". Con `expectationValue`, lo stesso identico corpo del metodo esiste gia' nella classe reale (`QuantumSystemSimulator.java`) e, eseguito su sigma_z e lo stato |0>, restituisce `1.0` come atteso.*
 
 Because `Observable` guarantees $A = A^\dagger$, the imaginary component of $\langle \psi | A | \psi \rangle$ is identically zero, returning a `Real`.
 

@@ -63,7 +63,7 @@ int rank = M23.rank(A);               // Row-echelon reduction (requires K to be
 ![SMFN-linearalgebra-matrices](SMFN-linearalgebra-matrices.png)
 
 
-Like vectors, the operational capabilities of matrices structures scale dynamically with the algebraic strength guaranteed by the underlying scalar type  `K`:
+Like vectors, the operational capabilities of matrix structures scale dynamically with the algebraic strength guaranteed by the underlying scalar type  `K`:
 
 | Structure | Requires `K` to be | Adds |
 |---|---|---|
@@ -110,7 +110,7 @@ Vector<Real> back   = rotate90.power(4).apply(point);          // Four full rota
 In addition to basic matrix algebra, `SquareMatrix<K>` exposes built-in predicates to evaluate fundamental geometric and structural invariants:
 
 ```java
-matrix.conjugateTranspose();   // Returns identity transpose for Real, conjugate transpose for Complex (A†)
+matrix.conjugateTranspose();   // Returns standard transpose for Real, conjugate transpose for Complex (A†)
 matrix.isSymmetric();          // Checks if A == A^T (real symmetry)
 matrix.isHermitian();          // Checks if A == A† (self-adjoint / complex symmetry)
 matrix.isUnitary();            // Checks if A * A† == I (preserves norm and inner products)
