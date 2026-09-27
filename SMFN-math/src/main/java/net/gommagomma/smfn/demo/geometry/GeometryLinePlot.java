@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.geometry;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
@@ -36,14 +36,14 @@ public class GeometryLinePlot {
         // value = dist(P,C) - r: bordo in blu, interno/esterno distinti per sfumatura
         ColorMapper<Real> colorMapper = new ColorMapper<>() {
             @Override
-            public Color map(Real value) {
+            public RgbColor map(Real value) {
                 double v = value.getValue();
                 if (Math.abs(v) < 0.02) {
-                    return Color.CYAN; // bordo
+                    return RgbColor.CYAN; // bordo
                 } else if (v < 0) {
-                    return new Color(20, 20, 60); // interno: blu scuro
+                    return new RgbColor(20, 20, 60); // interno: blu scuro
                 } else {
-                    return Color.BLACK; // esterno
+                    return RgbColor.BLACK; // esterno
                 }
             }
         };
@@ -51,7 +51,7 @@ public class GeometryLinePlot {
         renderer.startDrawing();
 
         FunctionPlotter2D.plotFunction(renderer, viewport, f, domainAdapter, colorMapper);
-        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
         renderer.endDrawingAndFlush();
     }

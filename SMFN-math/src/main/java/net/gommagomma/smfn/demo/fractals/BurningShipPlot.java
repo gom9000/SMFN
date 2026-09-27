@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.fractals;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
@@ -29,14 +29,14 @@ public class BurningShipPlot {
         // Definisce la mappa colore del risultato del solver
         ColorMapper<Natural> colorMapper = new ColorMapper<>() {
             @Override
-            public Color map(Natural r) {
+            public RgbColor map(Natural r) {
             	double value = r.getValue();
-                if (value == 0) return Color.BLACK; 
-                if (value >= MAX_ITERATIONS) return Color.BLACK; 
+                if (value == 0) return RgbColor.BLACK; 
+                if (value >= MAX_ITERATIONS) return RgbColor.BLACK; 
                 float hue = (float) (value / MAX_ITERATIONS);
                 hue = (float) Math.sqrt(hue); 
                 float brightness = hue; 
-                return Color.getHSBColor(0.6f, 1.0f, brightness);
+                return RgbColor.ofHsb(0.6f, 1.0f, brightness);
             }
         };
 
@@ -45,9 +45,9 @@ public class BurningShipPlot {
 
         // Rendering
         renderer.startDrawing();
-        renderer.clear(Color.WHITE);
+        renderer.clear(RgbColor.WHITE);
         FunctionPlotter2D.plotFunction(renderer, viewport, function, domainAdapter, colorMapper);
-        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
         renderer.endDrawingAndFlush();
     }
 }

@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.fractals;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
@@ -29,12 +29,12 @@ public class NewtonFractalPlot {
         // Definisce la mappa colore basata sulle iterazioni necessarie alla convergenza
         ColorMapper<Natural> colorMapper = new ColorMapper<>() {
             @Override
-            public Color map(Natural r) {
+            public RgbColor map(Natural r) {
                 double value = r.getValue();
                 
                 // Punti che non convergono entro MAX_ITERATIONS (punti di confine/singolarita')
                 if (value >= MAX_ITERATIONS) {
-                    return Color.BLACK;
+                    return RgbColor.BLACK;
                 }
                 
                 // Mappatura ciclo-sfumatura HSB basata sul numero di iterazioni
@@ -43,7 +43,7 @@ public class NewtonFractalPlot {
                 float hue = (float) (0.55f + 0.45f * (value / MAX_ITERATIONS));
                 float brightness = (float) (1.0 - (value / MAX_ITERATIONS));
                 
-                return Color.getHSBColor(hue, 0.85f, brightness);
+                return RgbColor.ofHsb(hue, 0.85f, brightness);
             }
         };
 
@@ -52,9 +52,9 @@ public class NewtonFractalPlot {
 
         // Rendering
         renderer.startDrawing();
-        renderer.clear(Color.WHITE);
+        renderer.clear(RgbColor.WHITE);
         FunctionPlotter2D.plotFunction(renderer, viewport, function, domainAdapter, colorMapper);
-        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
         renderer.endDrawingAndFlush();
     }
 }

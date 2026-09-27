@@ -1,19 +1,15 @@
 package net.gommagomma.smfn.graphics.core;
 
-
-import java.awt.Color;
-
-
 /**
- * Interfaccia per mappare un valore generico E in un colore AWT.
+ * Interfaccia per mappare un valore generico E in un colore.
  * @param <E> Il tipo di valore in input (es. Real, Integer, Complex).
  */
 public interface ColorMapper<E>
 {
     /**
      * Mappa il valore di input nel colore corrispondente.
-     * @param value Il valore matematico risultante.
-     * @return Il colore AWT
+     * @param value Il valore da mappare.
+     * @return Il colore, indipendente da qualunque toolkit grafico concreto.
      */
-    Color map(E value);
+    RgbColor map(E value);
 }

@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.geometry;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
@@ -68,17 +68,17 @@ public class GeometricPlanePlot
 		// Colore = altezza z, come una mappa topografica: blu in basso, rosso in alto
 		ColorMapper<Real> heightColorMapper = new ColorMapper<>() {
 			@Override
-			public Color map(Real z) {
+			public RgbColor map(Real z) {
 				double v = z.getValue();
 				double normalized = Math.max(0.0, Math.min(1.0, (v + 5.0) / 10.0)); // z in [-5,5] -> [0,1]
 				float hue = (float) (0.66 * (1.0 - normalized)); // 0.66=blu, 0=rosso
-				return Color.getHSBColor(hue, 0.9f, 0.9f);
+				return RgbColor.ofHsb(hue, 0.9f, 0.9f);
 			}
 		};
 
 		renderer.startDrawing();
 		FunctionPlotter2D.plotFunction(renderer, viewport, heightFunction, domainAdapter, heightColorMapper);
-		CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+		CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 		renderer.endDrawingAndFlush();
 	}
 }

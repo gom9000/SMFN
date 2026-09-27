@@ -1,11 +1,11 @@
 package net.gommagomma.smfn.graphics.plotting;
 
-import java.awt.Color;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import net.gommagomma.smfn.graphics.core.Renderer;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport;
 
 /**
@@ -17,7 +17,7 @@ public final class CartesianAxisPlotter
 	private CartesianAxisPlotter() {}
 
 
-    public static void plotAxes(Renderer renderer, Viewport viewport, Color color, boolean showTicksAndLabels)
+    public static void plotAxes(Renderer renderer, Viewport viewport, RgbColor color, boolean showTicksAndLabels)
     {
     	renderer.setColor(color);
 

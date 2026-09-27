@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.functions;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.Function;
 
 import net.gommagomma.smfn.graphics.core.Viewport;
@@ -46,10 +46,10 @@ public class PolynomialPlot
 
         // --- 4. Rendering ---
         renderer.startDrawing();
-        renderer.clear(Color.BLACK);
-        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        renderer.clear(RgbColor.BLACK);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
-        renderer.setColor(Color.BLUE);
+        renderer.setColor(RgbColor.BLUE);
         FunctionPlotter1D.plotFunction(renderer, viewport, polynomialFunction, domainAdapter, codomainAdapter);
 
         renderer.endDrawingAndFlush();

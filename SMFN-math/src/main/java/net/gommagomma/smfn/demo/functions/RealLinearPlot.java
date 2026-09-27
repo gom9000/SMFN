@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.functions;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.text.DecimalFormat;
 import java.util.function.Function;
 
@@ -38,14 +38,14 @@ public class RealLinearPlot
 
         // --- 4. Rendering ---
         renderer.startDrawing();
-        renderer.clear(Color.BLACK);
-        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        renderer.clear(RgbColor.BLACK);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
-        renderer.setColor(Color.BLUE);
+        renderer.setColor(RgbColor.BLUE);
         FunctionPlotter1D.plotFunction(renderer, viewport, linearFunction, domainAdapter, codomainAdapter);
-        renderer.setColor(Color.GREEN);
+        renderer.setColor(RgbColor.GREEN);
         FunctionPlotter1D.plotFunction(renderer, viewport, linearFunction1, domainAdapter, codomainAdapter);
-        renderer.setColor(Color.RED);
+        renderer.setColor(RgbColor.RED);
         FunctionPlotter1D.plotFunction(renderer, viewport, linearFunction2, domainAdapter, codomainAdapter);
 
         double rangeX = viewport.maxX - viewport.minX;
@@ -56,9 +56,9 @@ public class RealLinearPlot
         String infoText2 = "Range Y: [" + DF.format(viewport.minY) + ", " + DF.format(viewport.maxY) + "] (Ampiezza: " + DF.format(rangeY) + ")";
         String infoText3 = "Zoom: " + DF.format(3.0 / rangeX) + "x";
 
-        renderer.drawOverlayText(infoText1, 10, 20, Color.RED);
-        renderer.drawOverlayText(infoText2, 10, 35, Color.RED);
-        renderer.drawOverlayText(infoText3, 10, 50, Color.RED);
+        renderer.drawOverlayText(infoText1, 10, 20, RgbColor.RED);
+        renderer.drawOverlayText(infoText2, 10, 35, RgbColor.RED);
+        renderer.drawOverlayText(infoText3, 10, 50, RgbColor.RED);
 
         renderer.endDrawingAndFlush();
     }

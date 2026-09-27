@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.fractals;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
@@ -12,6 +12,7 @@ import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.core.ViewportController;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingViewportInputAdapter;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
@@ -29,7 +30,7 @@ implements ViewportController.ViewportUpdateHandler
     private final BiFunction<Double, Double, Complex> domainAdapter;
     private final ColorMapper<Natural> baseColorMapper; // Mapper base (richiede un setter per le iterazioni)
     private ViewportController viewportController;
-    private final Color selectionColor = new Color(0, 0, 255, 100); // Blu semi-trasparente
+    private final RgbColor selectionColor = new RgbColor(0, 0, 255, 100); // Blu semi-trasparente
     private static final DecimalFormat DF = new DecimalFormat("0.000E0"); // Formattazione scientifica
 
     // --- Parametri per l'Iterazione Dinamica ---
@@ -57,12 +58,17 @@ implements ViewportController.ViewportUpdateHandler
         // Area iniziale: [-2.0, 1.0] x [-1.5, 1.5]
         Viewport initialViewport = new Viewport(-2.0, 1.0, -1.5, 1.5, width, height);
         this.viewportController = new ViewportController(initialViewport, this);
-        
+
+        // ViewportController e' neutro rispetto al toolkit (nessuna dipendenza da AWT): il
+        // ponte verso i veri eventi Swing passa da questo adapter, l'unico punto che conosce
+        // MouseEvent/KeyEvent.
+        SwingViewportInputAdapter inputAdapter = new SwingViewportInputAdapter(viewportController);
+
         // Collega i listener: mouse e tastiera
-        renderer.addMouseListener(viewportController);
-        renderer.addMouseMotionListener(viewportController);
-        renderer.addMouseWheelListener(viewportController);
-        renderer.addKeyListener(viewportController); 
+        renderer.addMouseListener(inputAdapter);
+        renderer.addMouseMotionListener(inputAdapter);
+        renderer.addMouseWheelListener(inputAdapter);
+        renderer.addKeyListener(inputAdapter);
 
         // Assicurati che il Canvas possa ricevere il focus per gli eventi tastiera
         renderer.setFocusable(true);
@@ -84,17 +90,17 @@ implements ViewportController.ViewportUpdateHandler
     private ColorMapper<Natural> createDynamicColorMapper() {
         return new ColorMapper<>() {
             @Override
-            public Color map(Natural r) {
+            public RgbColor map(Natural r) {
                 double value = r.getValue();
                 // Usa currentMaxIterations che � aggiornato dal renderScene
-                if (value == 0) return Color.BLACK; 
-                if (value >= currentMaxIterations) return Color.BLACK; 
+                if (value == 0) return RgbColor.BLACK; 
+                if (value >= currentMaxIterations) return RgbColor.BLACK; 
                 
                 // Mappatura del colore standard per i frattali (basata sulla radice quadrata)
                 float hue = (float) (value / currentMaxIterations);
                 hue = (float) Math.sqrt(hue); 
                 
-                return Color.getHSBColor(0.6f, 1.0f, hue);
+                return RgbColor.ofHsb(0.6f, 1.0f, hue);
             }
         };
     }
@@ -119,7 +125,7 @@ implements ViewportController.ViewportUpdateHandler
 
     // Metodo centralizzato per il rendering di tutta la scena
     private void renderScene(Viewport viewport) {
-        // --- Logica delle Iterazioni Dinamiche ---
+        // Logica delle Iterazioni Dinamiche ---
         double rangeX = viewport.maxX - viewport.minX;
         
         // Calcola log_2(1/S)
@@ -138,7 +144,7 @@ implements ViewportController.ViewportUpdateHandler
         
         renderer.startDrawing();
 
-        renderer.clear(Color.WHITE);
+        renderer.clear(RgbColor.WHITE);
         
         // Disegna il frattale
         FunctionPlotter2D.plotFunction(
@@ -146,7 +152,7 @@ implements ViewportController.ViewportUpdateHandler
         );
         
         // Disegna gli assi sopra il frattale
-        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
         // Calcola l'ampiezza del range matematico
         double rangeY = viewport.maxY - viewport.minY;
@@ -157,10 +163,10 @@ implements ViewportController.ViewportUpdateHandler
         String infoText4 = "Max Iterations: " + this.currentMaxIterations;
 
         // Disegna il testo in overlay (coordinate pixel fisse)
-        renderer.drawOverlayText(infoText1, 10, 20, Color.RED);
-        renderer.drawOverlayText(infoText2, 10, 35, Color.RED);
-        renderer.drawOverlayText(infoText3, 10, 50, Color.RED);
-        renderer.drawOverlayText(infoText4, 10, 65, Color.RED);
+        renderer.drawOverlayText(infoText1, 10, 20, RgbColor.RED);
+        renderer.drawOverlayText(infoText2, 10, 35, RgbColor.RED);
+        renderer.drawOverlayText(infoText3, 10, 50, RgbColor.RED);
+        renderer.drawOverlayText(infoText4, 10, 65, RgbColor.RED);
 
         renderer.endDrawingAndFlush();
     }

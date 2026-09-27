@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
 import net.gommagomma.smfn.graphics.core.Renderer;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 
 
 public abstract class SwingRendererBase
@@ -48,18 +49,24 @@ implements Renderer
     }
 
 
+    //Conversione fra il colore neutro di graphics.core e java.awt.Color
+    protected static Color toAwt(RgbColor color) {
+        return new Color(color.r, color.g, color.b, color.a);
+    }
+
+
     // primitive di disegno:
 
     @Override
-    public void clear(Color color) {
+    public void clear(RgbColor color) {
         if (g == null) return;
-        g.setColor(color);
+        g.setColor(toAwt(color));
         g.fillRect(0, 0, super.getWidth(), super.getHeight());
     }
 
     @Override
-    public void setColor(Color color) { 
-        this.currentColor = color; 
+    public void setColor(RgbColor color) {
+        this.currentColor = toAwt(color);
     }
 
     @Override
@@ -73,7 +80,7 @@ implements Renderer
     public void drawPoint(int x, int y) {
         if (g == null) return;
         g.setColor(this.currentColor);
-        g.fillRect(x, y, 1, 1); 
+        g.fillRect(x, y, 1, 1);
     }
 
     @Override
@@ -84,16 +91,16 @@ implements Renderer
     }
 
     @Override
-    public void drawOverlayText(String text, int x, int y, Color color) {
+    public void drawOverlayText(String text, int x, int y, RgbColor color) {
         if (g == null) return;
         Color originalColor = g.getColor();
         Font originalFont = g.getFont();
-        
-        g.setColor(color);
-        g.setFont(new Font("Monospaced", Font.PLAIN, 12)); 
+
+        g.setColor(toAwt(color));
+        g.setFont(new Font("Monospaced", Font.PLAIN, 12));
         g.drawString(text, x, y);
-        
+
         g.setFont(originalFont);
-        g.setColor(originalColor); 
+        g.setColor(originalColor);
     }
 }

@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.geometry;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,13 +36,13 @@ public class GeometryScatterPointsPlot
 
         renderer.startDrawing();
 
-        renderer.clear(Color.BLACK);
+        renderer.clear(RgbColor.BLACK);
 
         // --- Processo di rendering ---
-        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
         // Plotta i punti in rosso
-        ScatterPlotter.plotPoints(renderer, viewport, dataPoints, Color.BLUE);
+        ScatterPlotter.plotPoints(renderer, viewport, dataPoints, RgbColor.BLUE);
         
         renderer.endDrawingAndFlush();
     }

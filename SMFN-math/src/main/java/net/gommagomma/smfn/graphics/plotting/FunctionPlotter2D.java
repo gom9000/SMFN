@@ -1,10 +1,10 @@
 package net.gommagomma.smfn.graphics.plotting;
 
-import java.awt.Color;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Renderer;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
@@ -28,7 +28,7 @@ public class FunctionPlotter2D
      * @param viewport La viewport che definisce la mappatura.
      * @param function La funzione matematica f(D) = C.
      * @param domainAdapter Un adattatore che combina X e Y matematici in un elemento D.
-     * @param colorMapper Un adattatore che mappa il risultato C in un Color AWT.
+     * @param colorMapper Un adattatore che mappa il risultato C in un RgbColor.
      */
     public static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
     void plotFunction(Renderer renderer, Viewport viewport, Mapping<D, C> function,BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper)
@@ -51,7 +51,7 @@ public class FunctionPlotter2D
                 C outputElement = function.apply(inputElement);
 
                 // 4. Mappa il risultato a un colore 
-                Color color = colorMapper.map(outputElement);
+                RgbColor color = colorMapper.map(outputElement);
 
                 // 5. Disegna il punto
                 renderer.setColor(color);

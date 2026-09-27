@@ -1,6 +1,6 @@
 package net.gommagomma.smfn.demo.functions;
 
-import java.awt.Color;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
@@ -37,21 +37,21 @@ public class ComplexLinearPlot
 
         ColorMapper<Complex> colorMapper = new ColorMapper<>() {
             @Override
-            public Color map(Complex c) {
+            public RgbColor map(Complex c) {
                 double hue = (c.argument() + Math.PI) / (2 * Math.PI);
                 hue = (hue < 0) ? hue + 1.0 : hue;
 
                 double brightness = Math.min(1.0, c.modulus() / 10.0);
 
-                return Color.getHSBColor((float) hue, 1.0f, (float) brightness);
+                return RgbColor.ofHsb((float) hue, 1.0f, (float) brightness);
             }
         };
 
         renderer.startDrawing();
-        renderer.clear(Color.WHITE);
+        renderer.clear(RgbColor.WHITE);
 
         FunctionPlotter2D.plotFunction(renderer, viewport, complexFunction, domainAdapter, colorMapper);
-        CartesianAxisPlotter.plotAxes(renderer, viewport, Color.DARK_GRAY, true);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
         renderer.endDrawingAndFlush();
     }

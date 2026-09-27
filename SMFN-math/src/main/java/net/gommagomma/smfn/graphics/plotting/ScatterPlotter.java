@@ -1,9 +1,9 @@
 package net.gommagomma.smfn.graphics.plotting;
 
-import java.awt.Color;
 import java.util.List;
 
 import net.gommagomma.smfn.graphics.core.Renderer;
+import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.math.geometry.Point;
 
@@ -23,7 +23,7 @@ public class ScatterPlotter
      * @param points La lista dei punti matematici da disegnare.
      * @param color Il colore con cui disegnare i punti.
      */
-    public static void plotPoints(Renderer renderer, Viewport viewport, List<Point> points, Color color)
+    public static void plotPoints(Renderer renderer, Viewport viewport, List<Point> points, RgbColor color)
     {
         renderer.setColor(color);
 
