@@ -3,6 +3,7 @@ package net.gommagomma.smfn.math.algebra.numerics;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -74,6 +75,26 @@ public class ComplexTest {
         // De Moivre: (-1+i)^4, |z|=sqrt(2), arg=3pi/4 -> 4*e^(i*3pi) = -4
         Complex c = new Complex(-1.0, 1.0);
         assertTrue(C.areEqual(c.power(4), new Complex(-4.0, 0.0)));
+    }
+
+    @Test
+    void exponentiableOnCatalog_includingZeroOneMinusOne() {
+        // Sul catalogo standard (che include esplicitamente 0, 1+0i, -1+0i): x^0 == 1
+        // sempre, anche per x=0 (convenzione), e x^1 == x sempre.
+        for (Complex x : ComplexTestValues.standardValues()) {
+            assertTrue(C.areEqual(x.power(0), C.one()), x + "^0 deve essere 1 per convenzione, x=0 incluso");
+            assertTrue(C.areEqual(x.power(1), x), x + "^1 deve essere x");
+        }
+    }
+
+    @Test
+    void zeroToNegativePowerThrows() {
+        // La guardia esplicita in Complex.power() ("Cannot raise zero to a negative
+        // power.") non era mai stata esercitata da un test: 0^(-n) equivale a una
+        // divisione per zero e deve fallire, non restituire un risultato silenzioso.
+        assertThrows(ArithmeticException.class, () -> C.zero().power(-1));
+        assertThrows(ArithmeticException.class, () -> C.zero().power(-2));
+        assertThrows(ArithmeticException.class, () -> new Complex(0.0, 0.0).power(-1));
     }
 
     @Test

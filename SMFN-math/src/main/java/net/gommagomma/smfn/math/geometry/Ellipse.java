@@ -5,7 +5,6 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
-import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * Un'ellisse nel piano 2D: f(P) = (x-cx)^2/a^2 + (y-cy)^2/b^2 - 1.
@@ -49,7 +48,7 @@ implements GeometryEntity<Real>
 	}
 
 	public boolean isOnEntity(Point point) {
-		return Math.abs(implicitFunctionAt(point).getValue()) < MathConstants.EPSILON;
+		return R.isZero(implicitFunctionAt(point));
 	}
 
 	public Real implicitFunctionAt(Point point) {

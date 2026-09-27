@@ -5,7 +5,6 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
-import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * Una retta nel piano 2D, definita da un punto di riferimento e una
@@ -27,7 +26,10 @@ implements GeometryEntity<Real>
 			throw new IllegalArgumentException("Il punto di riferimento di una retta deve essere 2D.");
 		}
 		double len = Math.sqrt(dx.getValue() * dx.getValue() + dy.getValue() * dy.getValue());
-		if (len < MathConstants.EPSILON) {
+		// Passa da RealField.isZero() invece di confrontare il double grezzo contro
+		// MathConstants.EPSILON, cosi' eredita la tolleranza ibrida assoluta+relativa
+		// invece di un epsilon assoluto fisso.
+		if (R.isZero(new Real(len))) {
 			throw new IllegalArgumentException("Il vettore direzione non puo' essere nullo.");
 		}
 		this.origin = origin;
@@ -55,7 +57,7 @@ implements GeometryEntity<Real>
 	}
 
 	public boolean isOnEntity(Point point) {
-		return Math.abs(implicitFunctionAt(point).getValue()) < MathConstants.EPSILON;
+		return R.isZero(implicitFunctionAt(point));
 	}
 
 	/** f(P) = ((dx,dy) x (P-origine)) / |(dx,dy)| -- distanza con segno. */

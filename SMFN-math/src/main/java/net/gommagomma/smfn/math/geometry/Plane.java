@@ -5,7 +5,6 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
-import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * Un piano nello spazio 3D, definito da un punto di riferimento e una
@@ -28,7 +27,8 @@ implements GeometryEntity<Real>
 			throw new IllegalArgumentException("Il punto di riferimento di un piano deve essere 3D.");
 		}
 		double len = Math.sqrt(nx.getValue() * nx.getValue() + ny.getValue() * ny.getValue() + nz.getValue() * nz.getValue());
-		if (len < MathConstants.EPSILON) {
+
+		if (R.isZero(new Real(len))) {
 			throw new IllegalArgumentException("Il vettore normale non puo' essere nullo.");
 		}
 		this.origin = origin;
@@ -63,7 +63,7 @@ implements GeometryEntity<Real>
 	}
 
 	public boolean isOnEntity(Point point) {
-		return Math.abs(implicitFunctionAt(point).getValue()) < MathConstants.EPSILON;
+		return R.isZero(implicitFunctionAt(point));
 	}
 
 	/** f(P) = (normale . (P-origine)) / |normale| -- distanza con segno. */

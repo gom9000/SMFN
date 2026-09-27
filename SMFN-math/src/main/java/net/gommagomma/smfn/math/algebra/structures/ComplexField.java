@@ -179,7 +179,12 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
 
         double diffRe = aRe - bRe;
         double diffIm = aIm - bIm;
+        double diffSquared = diffRe * diffRe + diffIm * diffIm;
 
-        return (diffRe * diffRe + diffIm * diffIm) < (epsilon() * epsilon());
+        double aMagnitudeSquared = aRe * aRe + aIm * aIm;
+        double bMagnitudeSquared = bRe * bRe + bIm * bIm;
+        double scaleSquared = Math.max(1.0, Math.max(aMagnitudeSquared, bMagnitudeSquared));
+
+        return diffSquared < (epsilon() * epsilon() * scaleSquared);
     }
 }

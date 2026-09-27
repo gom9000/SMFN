@@ -6,6 +6,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.capabilities.Approximate
 import net.gommagomma.smfn.math.algebra.core.structures.metric.NormedSpace;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.utils.MathConstants;
+import net.gommagomma.smfn.math.utils.MathUtils;
 
 /**
  * Rappresenta il campo algebrico dei numeri reali (R) in aritmetica a virgola mobile approssimata.
@@ -116,11 +117,6 @@ implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>, Normed
         if (a == b) return true;
         if (a == null || b == null) return false;
 
-        double av = a.getValue();
-        double bv = b.getValue();
-
-        if (av == bv) return true;
-
-        return Math.abs(av - bv) < epsilon();
+        return MathUtils.nearlyEqual(a.getValue(), b.getValue(), epsilon());
     }
 }

@@ -70,6 +70,22 @@ public final class MathUtils
     {
         return BigInteger.valueOf(a).gcd(BigInteger.valueOf(b)).longValueExact();
     }
-    
+
     // leastCommonMultiple(LCM)...
+
+    /**
+     * Confronto approssimato fra due double con tolleranza ibrida assoluta+relativa:
+     * {@code |a - b| < epsilon * max(1.0, |a|, |b|)}.
+     *
+     * @param a il primo valore
+     * @param b il secondo valore
+     * @param epsilon la tolleranza di base
+     * @return true se a e b sono approssimativamente uguali secondo il criterio ibrido
+     */
+    public static boolean nearlyEqual(double a, double b, double epsilon)
+    {
+        if (a == b) return true;
+        double scale = Math.max(1.0, Math.max(Math.abs(a), Math.abs(b)));
+        return Math.abs(a - b) < epsilon * scale;
+    }
 }

@@ -5,7 +5,6 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
-import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * Un cerchio nel piano 2D: f(P) = dist(P, C) - r.
@@ -43,7 +42,7 @@ implements GeometryEntity<Real>
 	}
 
 	public boolean isOnEntity(Point point) {
-		return Math.abs(implicitFunctionAt(point).getValue()) < MathConstants.EPSILON;
+		return R.isZero(implicitFunctionAt(point));
 	}
 
 	public Real implicitFunctionAt(Point point) {

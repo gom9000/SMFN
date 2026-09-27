@@ -56,6 +56,30 @@ public class RealTest {
     }
 
     @Test
+    void exponentiableOnCatalog_includingZeroOneMinusOne() {
+        // Sul catalogo standard (che include esplicitamente 0, 1, -1): x^0 == 1 sempre,
+        // anche per x=0 (convenzione), e x^1 == x sempre.
+        for (Real x : RealTestValues.standardValues()) {
+            assertEquals(1.0, x.power(0).getValue(), EPSILON,
+                x + "^0 deve essere 1 per convenzione, x=0 incluso");
+            assertEquals(x.getValue(), x.power(1).getValue(), EPSILON,
+                x + "^1 deve essere x");
+        }
+    }
+
+    @Test
+    void zeroToNegativePowerThrows() {
+        // Precondizione del test: Math.pow(0, negativo) restituisce silenziosamente
+        // +/-Infinity, non lancia -- e' esattamente il comportamento che Real.power()
+        // deve invece impedire, sollevando un'eccezione (0^(-n) equivale a una
+        // divisione per zero).
+        assertTrue(Double.isInfinite(Math.pow(0.0, -1)));
+        assertThrows(ArithmeticException.class, () -> R.zero().power(-1));
+        assertThrows(ArithmeticException.class, () -> R.zero().power(-2));
+        assertThrows(ArithmeticException.class, () -> new Real(-0.0).power(-1));
+    }
+
+    @Test
     void sqrtable() {
         assertEquals(3.0, new Real(9.0).sqrt().getValue(), EPSILON);
         assertEquals(0.0, R.zero().sqrt().getValue(), EPSILON);

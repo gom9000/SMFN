@@ -82,6 +82,10 @@ implements ApproximateElement<Real>, Normable<Real>, Orderable<Real>, Absolutabl
     @Override // Exponentiable impls
     public Real power(int exponent)
     {
+        if (RealField.INSTANCE.isZero(this) && exponent < 0) {
+            throw new ArithmeticException("Cannot raise zero to a negative power.");
+        }
+
         return new Real(Math.pow(this.value, exponent));
     }
 
