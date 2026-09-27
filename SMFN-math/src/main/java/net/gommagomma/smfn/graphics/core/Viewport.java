@@ -31,6 +31,22 @@ public class Viewport
         this.pixelWidth = pixelWidth;
         this.pixelHeight = pixelHeight;
 
+        // Un range matematico degenere (minX==maxX o minY==maxY) manderebbe l'aspect ratio a 0,
+        // Infinity o NaN (0/0 quando entrambi collassano su un solo punto): il ramo scelto sotto
+        // finirebbe per dividere per un range nullo, propagando NaN/Infinity silenziosamente in
+        // scale/offset e quindi in ogni conversione math<->pixel successiva. Si rifiuta subito,
+        // con un messaggio chiaro, invece di produrre un Viewport numericamente rotto.
+        if (rangeX <= 0.0 || rangeY <= 0.0) {
+            throw new IllegalArgumentException(
+                "Range matematico degenere o invertito: rangeX=" + rangeX + ", rangeY=" + rangeY
+                + " (richiesto minX<maxX e minY<maxY).");
+        }
+        if (pixelWidth <= 0 || pixelHeight <= 0) {
+            throw new IllegalArgumentException(
+                "Dimensioni pixel non valide: pixelWidth=" + pixelWidth + ", pixelHeight=" + pixelHeight
+                + " (richiesti entrambi > 0).");
+        }
+
         // Calcola l'aspect ratio matematico e quello in pixel
         double mathAspectRatio = (maxX - minX) / (maxY - minY);
         double pixelAspectRatio = (double) pixelWidth / pixelHeight;

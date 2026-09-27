@@ -139,6 +139,10 @@ implements IntervalODEStepSolver<K, T, S>
 				double stateNorm = normedSpace.norm(currentState).getValue();
 				double errorRatio = errorNorm / (tolerance.getValue() * Math.max(stateNorm, 1.0));
 
+				if (Double.isNaN(errorRatio)) {
+					throw new RuntimeException("Risoluzione ODE fallita: stato numerico non valido (NaN) rilevato durante il passo adattivo.");
+				}
+
 				double scaleFactor = (errorRatio <= 1e-12) ? 5.0 : SAFETY * Math.pow(errorRatio, -P_INV);
 				Real h_new_abs = new Real(h_to_execute_modulus.getValue() * scaleFactor);
 
@@ -151,8 +155,7 @@ implements IntervalODEStepSolver<K, T, S>
 					break;
 				} else {
 					h_abs = new Real(Math.min(h_new_abs.getValue(), maxStepSize.getValue()));
-
-					if (h_abs.isLessThan(minStepSize)) {
+					if (Double.isNaN(h_abs.getValue()) || h_abs.isLessThan(minStepSize)) {
 						throw new RuntimeException("Risoluzione ODE fallita: passo adattivo (" + h_abs + ") troppo piccolo.");
 					}
 

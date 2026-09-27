@@ -30,6 +30,15 @@ class EmbeddedRK23SolverTest
 		};
 	}
 
+	/** Sistema degenerato: la derivata e' sempre NaN, a simulare uno stato numericamente avvelenato. */
+	private InitialValueProblem<Real, Vector<Real>> derivativeAlwaysNaN() {
+		return new InitialValueProblem<Real, Vector<Real>>() {
+			@Override public Vector<Real> derivative(Vector<Real> state, Real time) { return V1.of(new Real[] { new Real(Double.NaN) }); }
+			@Override public Vector<Real> getInitialState() { return V1.of(new Real[] { new Real(1.0) }); }
+			@Override public Real getStartTime() { return new Real(0.0); }
+		};
+	}
+
 	@Test
 	@DisplayName("y' = y, y(0) = 1, tolleranza ragionevole: converge a e con l'accuratezza richiesta")
 	void integratesWithAdaptiveStep() {
@@ -52,6 +61,18 @@ class EmbeddedRK23SolverTest
 
 		assertTimeoutPreemptively(Duration.ofSeconds(5), () ->
 			assertThrows(RuntimeException.class, () -> solver.integrate(exponentialGrowth(), new Real(1.0), params, V1))
+		);
+	}
+
+	@Test
+	@DisplayName("Regressione: stato numerico degenerato a NaN deve lanciare, non bloccarsi in un ciclo infinito "
+		+ "(Double.compare/isLessThan trattano NaN come 'maggiore' di ogni valore, sfuggendo al guard su minStepSize)")
+	void nanStateThrowsInsteadOfHanging() {
+		EmbeddedRK23Solver<Real, Vector<Real>, RealField> solver = new EmbeddedRK23Solver<>();
+		IntegrationParameters params = new IntegrationParameters(null, new Real(1e-8), new Real(0.1), new Real(1e-6));
+
+		assertTimeoutPreemptively(Duration.ofSeconds(5), () ->
+			assertThrows(RuntimeException.class, () -> solver.integrate(derivativeAlwaysNaN(), new Real(1.0), params, V1))
 		);
 	}
 }

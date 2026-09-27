@@ -153,10 +153,22 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
     // MultiplicativeMonoid impls
     @Override
     public Rational multiply(Rational a, Rational b) {
-        return new Rational(
-            Math.multiplyExact(a.getNumerator(), b.getNumerator()),
-            Math.multiplyExact(a.getDenominator(), b.getDenominator())
-        );
+        // Come in add(): riduciamo i fattori comuni PRIMA di moltiplicare, non dopo. a e b sono
+        // gia' ciascuno ai minimi termini per conto proprio, ma un fattore puo' semplificarsi fra
+        // il numeratore di uno e il denominatore dell'altro (es. a=P/L, b=L/S): senza cross-
+        // riduzione, il prodotto grezzo numeratore*numeratore (P*L) puo' andare in overflow anche
+        // quando il risultato vero, gia' ridotto (P/S), e' ampiamente rappresentabile in un long.
+        long gNumADenB = MathUtils.greatestCommonDivisor(a.getNumerator(), b.getDenominator());
+        long gNumBDenA = MathUtils.greatestCommonDivisor(b.getNumerator(), a.getDenominator());
+
+        long reducedNumA = a.getNumerator() / gNumADenB;
+        long reducedDenB = b.getDenominator() / gNumADenB;
+        long reducedNumB = b.getNumerator() / gNumBDenA;
+        long reducedDenA = a.getDenominator() / gNumBDenA;
+
+        long num = Math.multiplyExact(reducedNumA, reducedNumB);
+        long den = Math.multiplyExact(reducedDenA, reducedDenB);
+        return new Rational(num, den);
     }
 
 

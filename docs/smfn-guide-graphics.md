@@ -16,12 +16,12 @@ $$\text{Mathematical Model } f(D) = C \quad\xrightarrow[\text{domainAdapter / co
 ```text
 net.gommagomma.smfn.graphics
   +-- core        # Rendering abstractions, primitive contracts, and viewport transformations
-  +-- drivers.swing # Concrete desktop AWT/Swing driver implementations
+  +-- drivers.swing # Concrete desktop Swing driver implementations
   \-- plotting    # Mathematical plotting orchestrators and coordinate adapters
 ```
 
 * **`graphics.core`**: Hardware-agnostic interfaces and coordinate space transformations.
-* **`graphics.drivers.swing`**: Desktop AWT/Swing driver implementations. Interchangeable with alternative drivers (e.g., SVG, JavaFX) without affecting mathematical logic.
+* **`graphics.drivers.swing`**: Desktop Swing driver implementations. Interchangeable with alternative drivers (e.g. JavaFX) without affecting mathematical logic.
 * **`graphics.plotting`**: Functional orchestrators bridging generic algebraic elements to drawing primitives.
 
 
