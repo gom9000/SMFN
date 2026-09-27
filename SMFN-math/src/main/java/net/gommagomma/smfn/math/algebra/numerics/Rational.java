@@ -147,8 +147,10 @@ implements ExactElement<Rational>, Normable<Real>, Orderable<Rational>, Absoluta
             if (exp % 2 == 1) {
                 result = field.multiply(result, base);
             }
-            base = field.multiply(base, base);
             exp /= 2;
+            if (exp > 0) {
+                base = field.multiply(base, base);
+            }
         }
 
         return exponent < 0 ? field.inverse(result) : result;

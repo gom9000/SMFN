@@ -170,8 +170,15 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
         if (a == b) return true;
         if (a == null || b == null) return false;
 
-        double diffRe = a.getRe() - b.getRe();
-        double diffIm = a.getIm() - b.getIm();
+        double aRe = a.getRe();
+        double aIm = a.getIm();
+        double bRe = b.getRe();
+        double bIm = b.getIm();
+
+        if (aRe == bRe && aIm == bIm) return true;
+
+        double diffRe = aRe - bRe;
+        double diffIm = aIm - bIm;
 
         return (diffRe * diffRe + diffIm * diffIm) < (epsilon() * epsilon());
     }

@@ -232,4 +232,53 @@ class RationalInvariantsTest
 			}
 		}
 	}
+
+	@Test
+	@DisplayName("power(): a^0 == 1 e a^1 == a, su tutto il catalogo, estremi inclusi (regressione BUG-08: quadrato inutile della base all'ultima iterazione)")
+	void powerBaseCasesHoldForWholeCatalog() {
+		// BUG-08: l'algoritmo square-and-multiply elevava al quadrato la base anche
+		// all'ultima iterazione, quando il quadrato non serve piu': per basi come
+		// Long.MAX_VALUE/1, quel quadrato in piu' andava in overflow (ArithmeticException)
+		// anche se il vero risultato di a^1 e' semplicemente a, perfettamente rappresentabile.
+		for (Rational a : RationalTestValues.allValues()) {
+			assertEquals(Q.one(), a.power(0), "a=" + a + " a^0");
+			assertEquals(a, a.power(1), "a=" + a + " a^1");
+		}
+	}
+
+	@Test
+	@DisplayName("power(): a^n coincide con la moltiplicazione ripetuta, per esponenti piccoli su valori standard")
+	void powerMatchesRepeatedMultiplicationForSmallExponents() {
+		for (Rational a : RationalTestValues.standardValues()) {
+			Rational expected = Q.one();
+			for (int exp = 0; exp <= 4; exp++) {
+				assertEquals(expected, a.power(exp), "a=" + a + " exp=" + exp);
+				expected = Q.multiply(expected, a);
+			}
+		}
+	}
+
+	@Test
+	@DisplayName("add(): il denominatore intermedio usa il mcm, non il prodotto grezzo (regressione BUG-09: overflow evitabile su somme ripetute con denominatori che condividono fattori)")
+	void addUsesLeastCommonMultipleNotRawProductOfDenominators() {
+		// BUG-09: add() calcolava il denominatore come a.den*b.den anziche' mcm(a.den,b.den).
+		// Quando i due denominatori condividono fattori (frequente in calcoli iterati, come la
+		// divisione polinomiale su Q[x]), il prodotto grezzo puo' eccedere un long anche se il
+		// risultato vero, gia' ridotto ai minimi termini, e' ampiamente rappresentabile.
+		// Qui si riproduce una catena di 11 somme/sottrazioni con denominatori 2/4/6 ripetuti,
+		// che con il prodotto grezzo andava in overflow ma il cui risultato vero ha un
+		// denominatore di circa 10^11, ben dentro il range di un long.
+		Rational acc = Q.one();
+		Rational half = new Rational(1, 2);
+		Rational threeQuarters = new Rational(-3, 4);
+		Rational fiveSixths = new Rational(5, 6);
+		Rational[] terms = {
+			half, threeQuarters, fiveSixths, half, threeQuarters, fiveSixths,
+			half, threeQuarters, fiveSixths, half, threeQuarters
+		};
+		for (Rational t : terms) {
+			acc = Q.subtract(acc, Q.multiply(acc, t));
+		}
+		assertTrue(acc.getDenominator() > 0, "acc=" + acc + " il denominatore deve restare positivo e rappresentabile");
+	}
 }

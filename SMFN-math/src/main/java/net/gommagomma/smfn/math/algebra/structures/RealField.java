@@ -116,6 +116,11 @@ implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>, Normed
         if (a == b) return true;
         if (a == null || b == null) return false;
 
-        return Math.abs(a.getValue() - b.getValue()) < epsilon();
+        double av = a.getValue();
+        double bv = b.getValue();
+
+        if (av == bv) return true;
+
+        return Math.abs(av - bv) < epsilon();
     }
 }

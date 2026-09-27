@@ -87,8 +87,10 @@ implements ExactElement<SignedInt>, Orderable<SignedInt>, Absolutable<SignedInt>
             if (exp % 2 == 1) {
                 result = Math.multiplyExact(result, base);
             }
-            base = Math.multiplyExact(base, base);
             exp /= 2;
+            if (exp > 0) {
+                base = Math.multiplyExact(base, base);
+            }
         }
 
         return new SignedInt(result);

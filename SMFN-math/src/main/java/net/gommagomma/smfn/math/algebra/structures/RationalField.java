@@ -6,6 +6,7 @@ import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.ExactStructure;
 import net.gommagomma.smfn.math.algebra.numerics.Rational;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.utils.MathUtils;
 
 
 /**
@@ -133,11 +134,18 @@ implements Field<Rational>, ExactStructure<Rational>, NumericFactory<Rational>
     // AdditiveMonoid impls
     @Override
     public Rational add(Rational a, Rational b) {
+        // Denominatore comune = mcm(a.den, b.den), non il prodotto grezzo a.den*b.den: quando i due
+        // denominatori condividono fattori (frequente in calcoli iterati, es. divisione polinomiale),
+        // il prodotto grezzo puo' andare in overflow anche quando il risultato vero, gia' ridotto ai
+        // minimi termini, e' ampiamente rappresentabile in un long.
+        long g = MathUtils.greatestCommonDivisor(a.getDenominator(), b.getDenominator());
+        long aMultiplier = b.getDenominator() / g;
+        long bMultiplier = a.getDenominator() / g;
+        long den = Math.multiplyExact(a.getDenominator(), aMultiplier); // == mcm(a.den, b.den)
         long num = Math.addExact(
-            Math.multiplyExact(a.getNumerator(), b.getDenominator()),
-            Math.multiplyExact(b.getNumerator(), a.getDenominator())
+            Math.multiplyExact(a.getNumerator(), aMultiplier),
+            Math.multiplyExact(b.getNumerator(), bMultiplier)
         );
-        long den = Math.multiplyExact(a.getDenominator(), b.getDenominator());
         return new Rational(num, den);
     }
 

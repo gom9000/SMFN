@@ -35,7 +35,7 @@ public class LargeMatrixEigenvalueDemo
 {
 	public static void main(String[] args) {
 		RealField R = RealField.INSTANCE;
-		int n = 50;
+		int n = 500;
 
 		System.out.println("=== Laplaciano 1D discreto " + n + "x" + n + " (Toeplitz tridiagonale, simmetrica) ===");
 		SquareMatrix<Real> A = buildTridiagonalLaplacian(R, n);

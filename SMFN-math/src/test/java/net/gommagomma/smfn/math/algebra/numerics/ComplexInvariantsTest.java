@@ -165,4 +165,23 @@ class ComplexInvariantsTest
 		assertTrue(Double.isInfinite(product.getRe()) || Double.isInfinite(product.getIm()), "product=" + product);
 		assertTrue(!C.contains(product));
 	}
+
+	@Test
+	@DisplayName("areEqual() considera uguali due Complex con la stessa componente infinita (regressione BUG-10, stesso schema di RealField)")
+	void areEqualHandlesInfiniteComponentsCorrectly() {
+		// Stesso difetto di RealField.areEqual (BUG-10): la differenza tra due infiniti dello
+		// stesso segno vale NaN, che propagato nella somma dei quadrati rendeva falso ogni
+		// confronto, anche fra due Complex identici con una componente infinita.
+		// Nota: huge*huge con huge=(1e308,1e308) produrrebbe (NaN, Infinity) per cancellazione
+		// (ac-bd = Infinity-Infinity) nella formula del prodotto -- un caso diverso, gia' un
+		// limite noto a se stante. Qui si costruisce l'infinito per addizione, senza cancellazione,
+		// cosi' da isolare esattamente il difetto di areEqual().
+		Complex posInf1 = C.add(new Complex(Double.MAX_VALUE, Double.MAX_VALUE), new Complex(Double.MAX_VALUE, Double.MAX_VALUE));
+		Complex posInf2 = C.add(new Complex(Double.MAX_VALUE, Double.MAX_VALUE), new Complex(Double.MAX_VALUE, Double.MAX_VALUE));
+		assertTrue(Double.isInfinite(posInf1.getRe()) && Double.isInfinite(posInf1.getIm()), "posInf1=" + posInf1);
+		assertTrue(C.areEqual(posInf1, posInf2), "due Complex con la stessa componente +Infinity devono risultare uguali");
+
+		Complex negInf = C.negate(posInf1);
+		assertTrue(!C.areEqual(posInf1, negInf), "(+Infinity,+Infinity) e (-Infinity,-Infinity) non devono mai risultare uguali");
+	}
 }

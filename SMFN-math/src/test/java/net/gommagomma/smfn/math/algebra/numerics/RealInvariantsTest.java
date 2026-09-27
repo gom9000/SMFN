@@ -238,4 +238,22 @@ class RealInvariantsTest
 		assertTrue(Double.isInfinite(sum.getValue()));
 		assertTrue(!R.contains(sum), "Infinity non deve essere contenuto nel campo reale approssimato");
 	}
+
+	@Test
+	@DisplayName("areEqual() considera uguali due infiniti dello stesso segno (regressione BUG-10: Infinity - Infinity = NaN, NaN < epsilon e' sempre falso)")
+	void areEqualHandlesInfinitiesCorrectly() {
+		// BUG-10: l'implementazione originale calcolava Math.abs(a-b) < epsilon senza gestire il
+		// caso in cui a e b sono entrambi +Infinity (o entrambi -Infinity): la sottrazione produce
+		// NaN, e ogni confronto con NaN e' falso, quindi due infiniti identici risultavano diversi.
+		Real posInf = R.add(new Real(Double.MAX_VALUE), new Real(Double.MAX_VALUE));
+		Real posInf2 = R.add(new Real(Double.MAX_VALUE), new Real(Double.MAX_VALUE));
+		assertTrue(Double.isInfinite(posInf.getValue()) && posInf.getValue() > 0);
+		assertTrue(R.areEqual(posInf, posInf2), "due +Infinity distinti in memoria devono risultare uguali");
+
+		Real negInf = R.negate(posInf);
+		Real negInf2 = R.negate(posInf2);
+		assertTrue(R.areEqual(negInf, negInf2), "due -Infinity distinti in memoria devono risultare uguali");
+
+		assertTrue(!R.areEqual(posInf, negInf), "+Infinity e -Infinity non devono mai risultare uguali");
+	}
 }
