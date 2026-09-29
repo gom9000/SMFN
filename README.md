@@ -117,31 +117,15 @@ Real repeat = simulator.expectationValue(sigmaZ, collapsed);
 
 ## Documentation & User Guide
 
-### [Foundations](docs/smfn-guide-foundations.md)
-- Scope and Philosophy
-- Core Modeling Concepts
+* **[Foundations](docs/smfn-guide-foundations.md):** Scope and Philosophy • Core Modeling Concepts
+* **[Algebra](docs/smfn-guide-algebra.md):** Element Architecture • Axiomatic Structure Hierarchy & Factories • Polynomials • Functional Mappings & Linear Operators
+* **[Linear Algebra](docs/smfn-guide-linear-algebra.md):** Spaces • Vectors • Matrices • Square Matrices
+* **[Numerical Analysis](docs/smfn-guide-numerical-analysis.md):** The Problem-Solver Model • Solvers
+* **[Graphics Subsystem](docs/smfn-guide-graphics.md):** Architecture & Decoupling Philosophy • Core Infrastructure • Plotting Layer
+* **[Physical Modelling](docs/smfn-guide-physical-modelling.md):** General Method of Physical Modelling • Quantum Mechanics
 
-### [Algebra](docs/smfn-guide-algebra.md)
-- Element Architecture
-- Axiomatic Structure Hierarchy & Factories
-- Polynomials
-- Functional Mappings & Linear Operators
 
-### [Linear Algebra](docs/smfn-guide-linear-algebra.md)
-- Spaces
-- Vectors
-- Matrices
-- Square Matrices
+## About & License
+**Author**: Alessandro Fraschetti (gom9000).  
+**License**: This repository is licensed under the [MIT License](LICENSE).
 
-### [Numerical Analysis](docs/smfn-guide-numerical-analysis.md)
-- The Problem-Solver Model
-- Solvers
-
-### [Graphics Subsystem](docs/smfn-guide-graphics.md)
-- Architecture & Decoupling Philosophy
-- Core Infrastructure
-- Plotting Layer
-
-### [Physical Modelling](docs/smfn-guide-physical-modelling.md)
-- General Method of Physical Modelling
-- Quantum Mechanics
