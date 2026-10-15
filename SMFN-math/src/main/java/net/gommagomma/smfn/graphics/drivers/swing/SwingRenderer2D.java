@@ -23,8 +23,7 @@ implements Renderer2D
     @Override
     public void fillRect(int x, int y, int w, int h)
     {
-        if (g == null) return;
-        g.setColor(this.currentColor);
-        g.fillRect(x, y, w, h);
+        bufferGraphics.setColor(this.currentColor);
+        bufferGraphics.fillRect(x, y, w, h);
     }
 }

@@ -5,7 +5,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 import net.gommagomma.smfn.graphics.core.Renderer;
 import net.gommagomma.smfn.graphics.core.RgbColor;
@@ -19,11 +22,22 @@ implements Renderer
     protected Color currentColor = Color.BLACK;
     protected transient BufferStrategy bufferStrategy;
     protected transient Graphics g;
+    protected transient BufferedImage pixelBuffer;
+    protected transient int[] pixelData;
+    protected transient Graphics2D bufferGraphics;
+    protected int currentRgb = 0xFF000000;
 
 
     protected SwingRendererBase(int width, int height) {
         setPreferredSize(new Dimension(width, height));
         setSize(width, height);
+        initPixelBuffer(width, height);
+    }
+
+    private void initPixelBuffer(int width, int height) {
+        this.pixelBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        this.pixelData = ((DataBufferInt) pixelBuffer.getRaster().getDataBuffer()).getData();
+        this.bufferGraphics = pixelBuffer.createGraphics();
     }
 
     public void initBufferStrategy() {
@@ -40,6 +54,7 @@ implements Renderer
     @Override
     public void endDrawingAndFlush() {
         if (g != null) {
+            g.drawImage(pixelBuffer, 0, 0, null);
             g.dispose();
             g = null;
         }
@@ -49,58 +64,57 @@ implements Renderer
     }
 
 
-    //Conversione fra il colore neutro di graphics.core e java.awt.Color
     protected static Color toAwt(RgbColor color) {
         return new Color(color.r, color.g, color.b, color.a);
     }
 
+    private static int toArgb(RgbColor color) {
+        return (color.a << 24) | (color.r << 16) | (color.g << 8) | color.b;
+    }
 
-    // primitive di disegno:
+
+    // primitive di disegno (tutte sul buffer offscreen):
 
     @Override
     public void clear(RgbColor color) {
-        if (g == null) return;
-        g.setColor(toAwt(color));
-        g.fillRect(0, 0, super.getWidth(), super.getHeight());
+        bufferGraphics.setColor(toAwt(color));
+        bufferGraphics.fillRect(0, 0, pixelBuffer.getWidth(), pixelBuffer.getHeight());
     }
 
     @Override
     public void setColor(RgbColor color) {
         this.currentColor = toAwt(color);
+        this.currentRgb = toArgb(color);
     }
 
     @Override
     public void drawLine(int x1, int y1, int x2, int y2) {
-        if (g == null) return;
-        g.setColor(this.currentColor);
-        g.drawLine(x1, y1, x2, y2);
+        bufferGraphics.setColor(this.currentColor);
+        bufferGraphics.drawLine(x1, y1, x2, y2);
     }
 
     @Override
     public void drawPoint(int x, int y) {
-        if (g == null) return;
-        g.setColor(this.currentColor);
-        g.fillRect(x, y, 1, 1);
+        if (x < 0 || x >= pixelBuffer.getWidth() || y < 0 || y >= pixelBuffer.getHeight()) return;
+        pixelData[y * pixelBuffer.getWidth() + x] = currentRgb;
     }
 
     @Override
     public void drawText(String text, int x, int y) {
-        if (g == null) return;
-        g.setColor(this.currentColor);
-        g.drawString(text, x, y);
+        bufferGraphics.setColor(this.currentColor);
+        bufferGraphics.drawString(text, x, y);
     }
 
     @Override
     public void drawOverlayText(String text, int x, int y, RgbColor color) {
-        if (g == null) return;
-        Color originalColor = g.getColor();
-        Font originalFont = g.getFont();
+        Color originalColor = bufferGraphics.getColor();
+        Font originalFont = bufferGraphics.getFont();
 
-        g.setColor(toAwt(color));
-        g.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        g.drawString(text, x, y);
+        bufferGraphics.setColor(toAwt(color));
+        bufferGraphics.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        bufferGraphics.drawString(text, x, y);
 
-        g.setFont(originalFont);
-        g.setColor(originalColor);
+        bufferGraphics.setFont(originalFont);
+        bufferGraphics.setColor(originalColor);
     }
 }

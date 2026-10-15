@@ -38,22 +38,22 @@ public class FunctionPlotter1D
 
         for (int pixelX = 0; pixelX < width; pixelX++)
         {
-            // 1. Converti coordinata pixel X in coordinata matematica double X
+            // Converte coordinata pixel X in coordinata matematica double X
             double mathX = viewport.convertPixelXToMathX(pixelX);
 
-            // 2. Adatta il double al tipo di dominio D (es. double -> Real)
+            // Adatta il double al tipo di dominio D
             D inputElement = domainAdapter.apply(mathX);
 
-            // 3. Valutazione matematica (usa il modulo math)
+            // Valutazione matematica
             C outputElement = function.apply(inputElement);
 
-            // 4. Estrai il double dal codominio C (es. Real -> double)
+            // Estrae il double dal codominio C
             double mathY = codomainAdapter.apply(outputElement);
 
-            // 5. Converti math Y in pixel Y
+            // Converti math Y in pixel Y
             int pixelY = viewport.convertMathYToPixelY(mathY);
 
-            // 6. Disegna la linea
+            // Disegna
             if (pixelX > 0 && Math.abs(pixelY - lastPixelY) < renderer.getHeight() * 2) {
             	renderer.drawLine(lastPixelX, lastPixelY, pixelX, pixelY);
             }

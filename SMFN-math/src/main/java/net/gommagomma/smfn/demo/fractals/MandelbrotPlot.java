@@ -20,7 +20,7 @@ public class MandelbrotPlot {
         MandelbrotFunction function = new MandelbrotFunction(MAX_ITERATIONS);
 
         // Setup del contesto grafico
-        int width = 800;
+        int width = 100;
         int height = 600;
         SwingRenderer2D renderer = new SwingRenderer2D(width, height);
         SwingWindow.show(renderer, "SMFN Mandelbrot Set Plot");
@@ -46,7 +46,7 @@ public class MandelbrotPlot {
         // Rendering
         renderer.startDrawing();
         renderer.clear(RgbColor.WHITE);
-        FunctionPlotter2D.plotFunction(renderer, viewport, function, domainAdapter, colorMapper);
+        FunctionPlotter2D.plotFunctionParallel(renderer, viewport, function, domainAdapter, colorMapper);
         CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
         renderer.endDrawingAndFlush();
     }

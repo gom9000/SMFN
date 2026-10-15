@@ -147,7 +147,7 @@ implements ViewportController.ViewportUpdateHandler
         renderer.clear(RgbColor.WHITE);
         
         // Disegna il frattale
-        FunctionPlotter2D.plotFunction(
+        FunctionPlotter2D.plotFunctionParallel(
             renderer, viewport, mandelbrotFunction, domainAdapter, baseColorMapper
         );
         

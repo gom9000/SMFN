@@ -155,7 +155,7 @@ public class ViewportController
      * Crea e notifica una nuova Viewport valida.
      */
     private void updateViewport(double minX, double maxX, double minY, double maxY) {
-        if (maxX - minX > 1e-9 && maxY - minY > 1e-9) {
+        if (maxX - minX > 1e-10 && maxY - minY > 1e-10) {
              this.currentViewport = new Viewport(minX, maxX, minY, maxY, currentViewport.pixelWidth, currentViewport.pixelHeight);
             updateHandler.onViewportUpdated(this.currentViewport);
         }
