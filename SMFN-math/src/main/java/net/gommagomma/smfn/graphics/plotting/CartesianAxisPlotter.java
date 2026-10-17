@@ -9,7 +9,7 @@ import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport;
 
 /**
- * Utility per plottare gli assi cartesiani su un Renderer1D.
+ * Utility per plottare gli assi cartesiani su un Renderer.
  */
 public final class CartesianAxisPlotter
 {	

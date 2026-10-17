@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
@@ -25,7 +25,7 @@ public class GeometryCirclePlot {
         int width = 800;
         int height = 600;
 
-        SwingRenderer2D renderer = new SwingRenderer2D(800, 600);
+        SwingRenderer renderer = new SwingRenderer(800, 600);
         SwingWindow.show(renderer, "SMFN Circle Plot");
 
         Viewport viewport = new Viewport(-5, 5, -5, 5, width, height);

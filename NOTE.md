@@ -20,7 +20,7 @@ net.gommagomma.smfn/
 |   |-- utils                               # Utility e Costanti (MathConstants, MathUtils)
 |-- graphics/                               # Logica specifica per la viewport e il rendering
 |   |-- core/                               # Interfacce grafiche (Renderer, Viewport, ColorMapper, VieportController)
-|   |-- swing/                              # impl (SwingRenderer1D, Swingrnderer2D)
+|   |-- swing/                              # impl (SwingRenderer)
 |   \-- plotting/                           # (FunctionPlotter, CartesianAxisPlotter, ScatterPlotter)
 |-- physics                                 # Package per le applicazioni fisiche (Meccanica, Elettromagnetismo, MQ, RG)
 |   |-- core/                               (Interfacce fisiche base)

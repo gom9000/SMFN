@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
@@ -37,7 +37,7 @@ public class JuliaPlot {
      // Setup del contesto grafico
         int width = 800;
         int height = 600;
-        SwingRenderer2D renderer = new SwingRenderer2D(width, height);
+        SwingRenderer renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Julia Set (c = " + constantC + ") Plot");
         Viewport viewport = new Viewport(-1.5, 1.5, -1.5, 1.5, width, height);
 

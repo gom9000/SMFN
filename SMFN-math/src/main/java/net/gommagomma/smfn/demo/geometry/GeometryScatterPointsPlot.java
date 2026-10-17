@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.ScatterPlotter;
@@ -19,7 +19,7 @@ public class GeometryScatterPointsPlot
         int width = 800;
         int height = 600;
         
-        SwingRenderer1D renderer = new SwingRenderer1D(width, height);
+        SwingRenderer renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Scatter Points Plot");
 
         // Definisci l'area matematica (Viewport): [-2.0, 1.0] x [-1.5, 1.5] 

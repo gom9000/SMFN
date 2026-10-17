@@ -4,7 +4,7 @@ import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.Function;
 
 import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer1D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
@@ -35,7 +35,7 @@ public class PolynomialPlot
         int width = 800;
         int height = 600;
 
-        SwingRenderer1D renderer = new SwingRenderer1D(width, height);
+        SwingRenderer renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Polynomial Example: P(x) = 1.5x^3 + 3x^2 - 5x - 2");
 
         Viewport viewport = new Viewport(-3.5, 3.5, -8.5, 8.5, width, height);

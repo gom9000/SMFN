@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
@@ -44,7 +44,7 @@ public class GeometricPlanePlot
 		int width = 700;
 		int height = 700;
 
-		SwingRenderer2D renderer = new SwingRenderer2D(width, height);
+		SwingRenderer renderer = new SwingRenderer(width, height);
 		SwingWindow.show(renderer, "SMFN Plane Plot (mappa altimetrica z = f(x,y))");
 
 		Viewport viewport = new Viewport(-4.0, 4.0, -4.0, 4.0, width, height);

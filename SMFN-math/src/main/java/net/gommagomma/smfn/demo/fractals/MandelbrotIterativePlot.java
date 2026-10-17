@@ -11,7 +11,7 @@ import javax.swing.SwingUtilities;
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.core.ViewportController;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingViewportInputAdapter;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
@@ -25,7 +25,7 @@ import net.gommagomma.smfn.math.analysis.fractals.MandelbrotFunction;
 public class MandelbrotIterativePlot
 implements ViewportController.ViewportUpdateHandler
 {
-    private final SwingRenderer2D renderer;
+    private final SwingRenderer renderer;
     private final MandelbrotFunction mandelbrotFunction;
     private final BiFunction<Double, Double, Complex> domainAdapter;
     private final ColorMapper<Natural> baseColorMapper; // Mapper base (richiede un setter per le iterazioni)
@@ -51,7 +51,7 @@ implements ViewportController.ViewportUpdateHandler
         // --- 2. Setup Grafico Iniziale ---
         int width = 1600;
         int height = 1200;
-        this.renderer = new SwingRenderer2D(width, height);
+        this.renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Mandelbrot Set Interactive Plot");
 
         // --- 3. Inizializzazione Viewport e Controller ---

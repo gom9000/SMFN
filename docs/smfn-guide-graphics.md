@@ -16,12 +16,12 @@ $$\text{Mathematical Model } f(D) = C \quad\xrightarrow[\text{domainAdapter / co
 ```text
 net.gommagomma.smfn.graphics
   +-- core        # Rendering abstractions, primitive contracts, and viewport transformations
-  +-- drivers.swing # Concrete desktop Swing driver implementations
+  +-- drivers.swing # Concrete desktop AWT/Swing driver implementations
   \-- plotting    # Mathematical plotting orchestrators and coordinate adapters
 ```
 
 * **`graphics.core`**: Hardware-agnostic interfaces and coordinate space transformations.
-* **`graphics.drivers.swing`**: Desktop Swing driver implementations. Interchangeable with alternative drivers (e.g. JavaFX) without affecting mathematical logic.
+* **`graphics.drivers.swing`**: Desktop AWT/Swing driver implementations. Interchangeable with alternative drivers (e.g., SVG, JavaFX) without affecting mathematical logic.
 * **`graphics.plotting`**: Functional orchestrators bridging generic algebraic elements to drawing primitives.
 
 
@@ -40,14 +40,16 @@ The `Renderer` interface defines the low-level API contract required by all plot
   * `drawPoint(int x, int y)`: Draws a single pixel.
   * `drawLine(int x1, int y1, int x2, int y2)`: Draws a 1D line segment.
   * `drawText(String text, int x, int y)`: Renders textual labels transformed via viewport coordinates.
+  * `fillPolygon(int[] xs, int[] ys)`: Fills a closed polygon with the current color (fewer than 3 vertices draws nothing; vertex orientation is irrelevant; out-of-surface portions are clipped).
+  * `fillRect(int x, int y, int width, int height)`: Fills a rectangle. A rectangle is a special case of a polygon, so the interface provides a default implementation on top of `fillPolygon`; a driver may override it with a faster native operation.
 
 * **HUD Overlay Primitives (Viewport-independent):**
   * `drawOverlayText(String text, int x, int y, Color color)`: Renders screen-fixed Heads-Up Display (HUD) overlays directly in pixel coordinates $[0, w] \times [0, h]$, bypassing viewport transforms (e.g., displaying viewport bounds, mouse inspection coordinates, or solver runtime metrics).
 
-### Renderer Specializations
-* **`Renderer1D`**: Specialized for continuous 1D curve sampling and line-based drawing.
-* **`Renderer2D`**: Extended interface adding pixel-grid region filling and 2D surface rendering operations.
-* **`drivers.swing` (`SwingRenderer1D`, `SwingRenderer2D`)**: Concrete desktop implementations backed by Java AWT/Swing graphics context.
+### One Renderer, Whatever the Dimension
+A `Renderer` is a drawing surface, and the surface is always a plane of pixels: points, lines, text and fills are traced the same way whether the plotted object is a 1D curve, a 2D scalar field or (in future) a projected 3D surface. For this reason there are no per-dimension renderer variants. Reducing extra coordinates to the plane (projection, camera) is the job of the layer that uses the renderer, alongside `Viewport`, which hands the renderer pixel coordinates only. Every driver implements all primitives.
+
+* **`drivers.swing` (`SwingRenderer`)**: The desktop implementation. All primitives draw on an offscreen pixel buffer that is blitted to the screen once per frame; `drawPoint` writes the pixel array directly, since it is the primitive used millions of times per frame by field and fractal plots.
 
 ### Coordinate Transformation (`Viewport`)
 The `Viewport` encapsulates bidirectional transformations between continuous mathematical space $[x_{\min}, x_{\max}] \times [y_{\min}, y_{\max}]$ and discrete screen pixel space $[0, w] \times [0, h]$:
@@ -88,7 +90,7 @@ PolynomialFunction<Real, RealField> f = new PolynomialFunction<>(p, R, horner);
 
 // Concrete driver
 int width = 600, height = 400;
-SwingRenderer1D renderer = new SwingRenderer1D(width, height);
+SwingRenderer renderer = new SwingRenderer(width, height);
 SwingWindow.show(renderer, "SMFN: P(x) = x^2 - 2");
 
 // Coordinate mapping
@@ -138,7 +140,7 @@ JuliaFunction juliaFunction = new JuliaFunction(c, maxIterations);
 
 // Concrete driver
 int width = 800, height = 600;
-SwingRenderer2D renderer = new SwingRenderer2D(width, height);
+SwingRenderer renderer = new SwingRenderer(width, height);
 SwingWindow.show(renderer, "SMFN Julia Set (c = " + c + ") Plot");
 
 // Coordinate mapping

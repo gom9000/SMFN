@@ -9,7 +9,7 @@ public final class SwingWindow
 {
 	private SwingWindow() {}
 
-	public static <T extends SwingRendererBase> T show(T renderer, String title) {
+	public static <T extends SwingRenderer> T show(T renderer, String title) {
 		JFrame frame = new JFrame(title);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(renderer);

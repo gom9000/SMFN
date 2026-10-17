@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer2D;
+import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
@@ -20,9 +20,9 @@ public class MandelbrotPlot {
         MandelbrotFunction function = new MandelbrotFunction(MAX_ITERATIONS);
 
         // Setup del contesto grafico
-        int width = 100;
+        int width = 800;
         int height = 600;
-        SwingRenderer2D renderer = new SwingRenderer2D(width, height);
+        SwingRenderer renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Mandelbrot Set Plot");
         Viewport viewport = new Viewport(-2, 1, -1.5, 1.5, width, height);
 
@@ -46,7 +46,7 @@ public class MandelbrotPlot {
         // Rendering
         renderer.startDrawing();
         renderer.clear(RgbColor.WHITE);
-        FunctionPlotter2D.plotFunctionParallel(renderer, viewport, function, domainAdapter, colorMapper);
+        FunctionPlotter2D.plotFunction(renderer, viewport, function, domainAdapter, colorMapper);
         CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
         renderer.endDrawingAndFlush();
     }

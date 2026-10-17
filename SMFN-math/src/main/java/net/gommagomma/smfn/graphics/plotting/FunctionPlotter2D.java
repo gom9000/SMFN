@@ -50,8 +50,7 @@ public class FunctionPlotter2D
     }
 
     /**
-     * Variante parallela che calcola il colore di ogni pixel concorrentemente su piu' thread
-     * e disegna in una seconda fase strettamente sequenziale.
+     * Variante parallela.
      */
     public static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
     void plotFunctionParallel(Renderer renderer, Viewport viewport, Mapping<D, C> function, BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper)
@@ -61,6 +60,8 @@ public class FunctionPlotter2D
 
         RgbColor[][] colors = new RgbColor[width][height];
 
+        // Fase 1 (parallela): solo calcolo, nessun accesso al renderer. Ogni colonna e'
+        // indipendente dalle altre e scrive solo nella propria porzione dell'array.
         IntStream.range(0, width).parallel().forEach(pixelX ->
         {
             for (int pixelY = 0; pixelY < height; pixelY++)
@@ -69,6 +70,7 @@ public class FunctionPlotter2D
             }
         });
 
+        // Fase 2 (sequenziale): l'unica parte che tocca il renderer condiviso.
         for (int pixelX = 0; pixelX < width; pixelX++)
         {
             for (int pixelY = 0; pixelY < height; pixelY++)
@@ -80,22 +82,26 @@ public class FunctionPlotter2D
     }
 
     /**
-     * Calcola il colore di un singolo pixel
+     * Calcola il colore di un singolo pixel: converte pixel->matematico, valuta la funzione e
+     * mappa il risultato a un colore. Logica condivisa da {@link #plotFunction} e
+     * {@link #plotFunctionParallel}, cosi' che le due varianti non possano divergere nel "cosa"
+     * viene calcolato, solo nel "come" (sequenziale vs parallelo) e nel "quando" si scrive sul
+     * renderer.
      */
     private static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
     RgbColor computePixelColor(Viewport viewport, Mapping<D, C> function, BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper, int pixelX, int pixelY)
     {
-        // Converte pixel in coordinate matematiche (X e Y)
+        // 1. Converti pixel in coordinate matematiche (X e Y)
         double mathX = viewport.convertPixelXToMathX(pixelX);
         double mathY = viewport.convertPixelYToMathY(pixelY);
 
-        // Crea l'input D a partire da X e Y
+        // 2. Crea l'input D a partire da X e Y (es. crea un Complex(x, y))
         D inputElement = domainAdapter.apply(mathX, mathY);
 
-        // Valuta la funzione
+        // 3. Valuta la funzione (usa il modulo math)
         C outputElement = function.apply(inputElement);
 
-        // Mappa il risultato a un colore
+        // 4. Mappa il risultato a un colore
         return colorMapper.map(outputElement);
     }
 }
