@@ -7,7 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
+import net.gommagomma.smfn.math.algebra.structures.RealField;
+import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
+import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
 
 /**
  * Test puntuali per {@link Plane}: costruzione, funzione implicita (distanza con segno),
@@ -130,5 +134,42 @@ class PlaneTest
 		Plane plane = new Plane(new Point(0.0, 0.0, 0.0), new Real(0.0), new Real(0.0), new Real(1.0));
 		Point p2d = new Point(1.0, 2.0);
 		assertThrows(IllegalArgumentException.class, () -> plane.implicitFunctionAt(p2d));
+	}
+
+	@Test
+	@DisplayName("explicitForm: il piano x+y+z=2 da' z = 2 - x - y")
+	void explicitFormOfSlantedPlane() {
+		Plane plane = Plane.through(new Point(2.0, 0.0, 0.0), new Point(0.0, 2.0, 0.0), new Point(0.0, 0.0, 2.0));
+		Mapping<Vector<Real>, Real> z = plane.explicitForm();
+		VectorSemimodule<Real, RealField> V2 = new VectorSemimodule<>(RealField.INSTANCE, 2);
+		double[][] samples = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { -1, -1 }, { 3.5, -2 }, { 0, 2 } };
+		for (double[] xy : samples) {
+			double h = z.apply(V2.of(new Real[] { new Real(xy[0]), new Real(xy[1]) })).getValue();
+			assertEquals(2.0 - xy[0] - xy[1], h, EPSILON);
+			// coerenza con la forma implicita: il punto (x, y, z) sta sul piano
+			assertTrue(plane.isOnEntity(new Point(xy[0], xy[1], h)));
+		}
+	}
+
+	@Test
+	@DisplayName("explicitForm: il piano orizzontale z=c da' la costante c, per ogni (x, y)")
+	void explicitFormOfHorizontalPlaneIsConstant() {
+		Plane plane = new Plane(new Point(5.0, -3.0, 7.0), new Real(0.0), new Real(0.0), new Real(1.0));
+		VectorSemimodule<Real, RealField> V2 = new VectorSemimodule<>(RealField.INSTANCE, 2);
+		Mapping<Vector<Real>, Real> z = plane.explicitForm();
+		assertEquals(7.0, z.apply(V2.of(new Real[] { new Real(0.0), new Real(0.0) })).getValue(), EPSILON);
+		assertEquals(7.0, z.apply(V2.of(new Real[] { new Real(-100.0), new Real(1e6) })).getValue(), EPSILON);
+	}
+
+	@Test
+	@DisplayName("explicitForm lancia sul piano verticale (nz = 0); l'argomento deve essere 2D")
+	void explicitFormRejectsVerticalPlaneAndWrongDimension() {
+		Plane vertical = new Plane(new Point(0.0, 0.0, 0.0), new Real(1.0), new Real(0.0), new Real(0.0));
+		assertThrows(ArithmeticException.class, vertical::explicitForm);
+
+		Plane plane = new Plane(new Point(0.0, 0.0, 0.0), new Real(0.0), new Real(0.0), new Real(1.0));
+		VectorSemimodule<Real, RealField> V3 = new VectorSemimodule<>(RealField.INSTANCE, 3);
+		Mapping<Vector<Real>, Real> z = plane.explicitForm();
+		assertThrows(IllegalArgumentException.class, () -> z.apply(V3.of(new Real[] { new Real(0.0), new Real(0.0), new Real(0.0) })));
 	}
 }

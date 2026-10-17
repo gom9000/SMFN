@@ -176,3 +176,29 @@ renderer.endDrawingAndFlush();
 
 ### Axis & Grid Overlays (`CartesianAxisPlotter`)
 `CartesianAxisPlotter` renders mathematical coordinate axes, dynamic tick marks, and domain grid lines over an active plot. Unlike screen-space HUD overlays, these visual structures are bound to the `Viewport` transform and dynamically rescale during pan and zoom operations.
+
+### 3D Surface Plotting (`SurfacePlotter`)
+`SurfacePlotter` draws a surface $z = f(x, y)$. It follows the same principle as every other plotter: the renderer stays a flat pixel surface, and the extra coordinate is reduced to the plane by the layer that uses it, here the projection in `Viewport3D`.
+
+* **`Viewport3D`**: the three-dimensional counterpart of `Viewport`. It maps a box $[x_{\min}, x_{\max}] \times [y_{\min}, y_{\max}] \times [z_{\min}, z_{\max}]$ to pixels with an orthographic projection. Each axis is normalized on its own, so a low and wide surface stays readable. `azimuth` (degrees, counter-clockwise seen from above; 0 looks toward $+y$ with $x$ to the right) and `elevation` (degrees in $[-90, 90]$; 0 horizontal, 90 from above) choose the point of view. The box is always scaled to fit the surface, whatever the point of view.
+* **Geometry and color are independent channels.** The output $C = f(D)$ gives the height through `heightAdapter`, while `colorMapper` receives the whole $C$: a `Complex` result can give the height with its real part and the hue with its argument.
+
+```java
+public static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
+void plotSurface(
+        Renderer renderer,                            /* Renderer instance */
+        Viewport3D viewport,                          /* Box and point of view */
+        Mapping<D, C> function,                       /* Mathematical function f(D) = C */
+        BiFunction<Double, Double, D> domainAdapter,  /* Combines math X and Y into element D */
+        Function<C, Double> heightAdapter,            /* Extracts the height z from C */
+        ColorMapper<C> colorMapper,                   /* Color of each face, from the value at its center */
+        int cellsX, int cellsY)                       /* Grid resolution */
+```
+
+`plotWireframe(...)` takes a single `RgbColor` instead of the color mapper and draws the grid as line segments. The wireframe is see-through (no face hides another one), so it is an alternative to `plotSurface`, not an overlay for it: drawn over the faces it would show the hidden lines.
+
+Faces are drawn farthest first (painter's algorithm). For a single-valued surface this is exact and needs no sorting: walking the grid rows and columns from the far side never draws a face before one that hides it. A sample that is not finite (NaN or infinity, e.g. near a pole) has no position on screen, so the faces and segments touching it are skipped. Values outside $[z_{\min}, z_{\max}]$ are still drawn and may leave the surface, where the renderer clips them. Sampling is sequential: a surface grid has a few thousand samples, unlike a per-pixel field.
+
+`SurfaceAxisPlotter.plotAxes(renderer, viewport, color, showLabels)` draws the three edges of the box that meet at the corner nearest to the viewer (at `minZ`), with the axis names and range ends as labels. Call it **after** the surface: it lies on the near boundary of the box, so no part of the surface can hide it, whereas drawn first it would be almost entirely covered. The axes follow the point of view, moving to another edge of the box as it rotates.
+
+See `demo/functions/SurfacePlot` for a complete example ($z = \sin r / r$).

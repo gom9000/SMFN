@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 /**
@@ -128,5 +129,38 @@ class LineTest
 		Line line = new Line(new Point(0.0, 0.0), new Real(1.0), new Real(0.0));
 		Point p3d = new Point(1.0, 2.0, 3.0);
 		assertThrows(IllegalArgumentException.class, () -> line.implicitFunctionAt(p3d));
+	}
+
+	@Test
+	@DisplayName("explicitForm: la retta per (0,-1) con direzione (2.5, 5) da' y = 2x - 1")
+	void explicitFormOfSlantedLine() {
+		Line line = new Line(new Point(0.0, -1.0), new Real(2.5), new Real(5.0));
+		Mapping<Real, Real> y = line.explicitForm();
+		double[] xs = { 0, 1, -1, 2.5, -7.25 };
+		for (double x : xs) {
+			double h = y.apply(new Real(x)).getValue();
+			assertEquals(2.0 * x - 1.0, h, EPSILON);
+			// coerenza con la forma implicita: il punto (x, y) sta sulla retta
+			assertTrue(line.isOnEntity(new Point(x, h)));
+		}
+	}
+
+	@Test
+	@DisplayName("explicitForm: la retta orizzontale da' la costante; il verso della direzione non conta")
+	void explicitFormOfHorizontalLineAndReversedDirection() {
+		Line horizontal = new Line(new Point(3.0, 4.0), new Real(1.0), new Real(0.0));
+		assertEquals(4.0, horizontal.explicitForm().apply(new Real(-9.0)).getValue(), EPSILON);
+
+		Line forward = new Line(new Point(0.0, 0.0), new Real(1.0), new Real(2.0));
+		Line backward = new Line(new Point(0.0, 0.0), new Real(-1.0), new Real(-2.0));
+		assertEquals(forward.explicitForm().apply(new Real(3.0)).getValue(),
+			backward.explicitForm().apply(new Real(3.0)).getValue(), EPSILON);
+	}
+
+	@Test
+	@DisplayName("explicitForm lancia sulla retta verticale (dx = 0)")
+	void explicitFormRejectsVerticalLine() {
+		Line vertical = new Line(new Point(1.0, 2.0), new Real(0.0), new Real(1.0));
+		assertThrows(ArithmeticException.class, vertical::explicitForm);
 	}
 }

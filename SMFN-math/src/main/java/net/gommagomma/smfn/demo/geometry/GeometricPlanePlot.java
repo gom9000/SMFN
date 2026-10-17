@@ -16,15 +16,14 @@ import net.gommagomma.smfn.math.geometry.Plane;
 import net.gommagomma.smfn.math.geometry.Point;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
-import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * "Plot" di un piano 3D come mappa altimetrica: il grafico non ha rendering
  * 3D vero (nessuna mesh, nessuna rotazione) -- FunctionPlotter2D resta un
  * dominio 2D -> colore. Qui il colore rappresenta z, risolto dall'equazione
  * del piano in funzione di (x,y): la stessa tecnica di una mappa topografica.
- * Funziona solo se il piano non e' verticale (nz != 0) -- un piano verticale
- * non si puo' esprimere come z = f(x,y).
+ * La funzione e' {@link Plane#explicitForm()}, che esiste solo se il piano non e' verticale
+ * (nz != 0): un piano verticale non si puo' esprimere come z = f(x,y).
  */
 public class GeometricPlanePlot
 {
@@ -36,11 +35,6 @@ public class GeometricPlanePlot
 		Plane plane = Plane.through(new Point(2.0, 0.0, 0.0), new Point(0.0, 2.0, 0.0), new Point(0.0, 0.0, 2.0));
 		System.out.println("Piano: " + plane);
 
-		Real nz = plane.getNormalZ();
-		if (Math.abs(nz.getValue()) < MathConstants.EPSILON) {
-			throw new IllegalStateException("Piano verticale (nz=0): non rappresentabile come mappa altimetrica z=f(x,y).");
-		}
-
 		int width = 700;
 		int height = 700;
 
@@ -51,19 +45,8 @@ public class GeometricPlanePlot
 
 		BiFunction<Double, Double, Vector<Real>> domainAdapter = (x, y) -> V2.of(new Real[] { new Real(x), new Real(y) });
 
-		Point origin = plane.getOrigin();
-		Real nx = plane.getNormalX();
-		Real ny = plane.getNormalY();
-
-		// z = oz - (nx*(x-ox) + ny*(y-oy)) / nz, dall'equazione del piano
-		Mapping<Vector<Real>, Real> heightFunction = xy -> {
-			Real x = xy.get(0);
-			Real y = xy.get(1);
-			Real dx = R.subtract(x, origin.getX());
-			Real dy = R.subtract(y, origin.getY());
-			Real numerator = R.add(R.multiply(nx, dx), R.multiply(ny, dy));
-			return R.subtract(origin.getZ(), R.divide(numerator, nz));
-		};
+		// Forma esplicita z = f(x,y) del piano: lancia se il piano e' verticale
+		Mapping<Vector<Real>, Real> heightFunction = plane.explicitForm();
 
 		// Colore = altezza z, come una mappa topografica: blu in basso, rosso in alto
 		ColorMapper<Real> heightColorMapper = new ColorMapper<>() {

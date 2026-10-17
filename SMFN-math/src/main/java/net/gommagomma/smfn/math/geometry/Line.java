@@ -87,6 +87,26 @@ implements GeometryEntity<Real>
 		return implicitFunctionAt(point).abs();
 	}
 
+	/**
+	 * Forma esplicita della retta: la funzione x -> y tale che il punto (x, y) sta sulla retta,
+	 * y = oy + (dy/dx) * (x - ox). E' la rappresentazione "grafico di una funzione di una
+	 * variabile"; la funzione implicita ({@link #apply}) serve invece a decidere se un punto 2D
+	 * sta sulla retta.
+	 * <p>
+	 * Esiste solo se la retta non e' verticale (dx != 0): una retta verticale non e' il grafico di
+	 * una funzione di x.
+	 *
+	 * @return la funzione che a x associa la y della retta
+	 * @throws ArithmeticException se la retta e' verticale
+	 */
+	public Mapping<Real, Real> explicitForm() {
+		if (R.isZero(dx)) {
+			throw new ArithmeticException("La retta e' verticale (dx = 0): non ha forma esplicita y = f(x).");
+		}
+		Real slope = R.divide(dy, dx);
+		return x -> R.add(origin.getY(), R.multiply(slope, R.subtract(x, origin.getX())));
+	}
+
 	public Point getOrigin() { return origin; }
 	public Real getDirectionX() { return dx; }
 	public Real getDirectionY() { return dy; }

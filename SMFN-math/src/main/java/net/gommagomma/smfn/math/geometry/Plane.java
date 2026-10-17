@@ -27,7 +27,9 @@ implements GeometryEntity<Real>
 			throw new IllegalArgumentException("Il punto di riferimento di un piano deve essere 3D.");
 		}
 		double len = Math.sqrt(nx.getValue() * nx.getValue() + ny.getValue() * ny.getValue() + nz.getValue() * nz.getValue());
-
+		// Passa da RealField.isZero() invece di confrontare il double grezzo contro
+		// MathConstants.EPSILON, cosi' eredita la tolleranza ibrida assoluta+relativa
+		// invece di un epsilon assoluto fisso.
 		if (R.isZero(new Real(len))) {
 			throw new IllegalArgumentException("Il vettore normale non puo' essere nullo.");
 		}
@@ -90,6 +92,33 @@ implements GeometryEntity<Real>
 
 	public Real distanceTo(Point point) {
 		return implicitFunctionAt(point).abs();
+	}
+
+	/**
+	 * Forma esplicita del piano: la funzione (x, y) -> z tale che il punto (x, y, z) sta sul piano,
+	 * z = oz - (nx*(x-ox) + ny*(y-oy)) / nz. E' la rappresentazione "grafico di una funzione",
+	 * quella che serve a disegnare il piano come superficie; la funzione implicita ({@link #apply})
+	 * serve invece a decidere se un punto 3D sta sul piano.
+	 * <p>
+	 * Esiste solo se il piano non e' verticale (nz != 0): un piano verticale non e' il grafico di
+	 * una funzione di (x, y).
+	 *
+	 * @return la funzione che a un vettore 2D (x, y) associa la quota z del piano
+	 * @throws ArithmeticException se il piano e' verticale
+	 */
+	public Mapping<Vector<Real>, Real> explicitForm() {
+		if (R.isZero(nz)) {
+			throw new ArithmeticException("Il piano e' verticale (nz = 0): non ha forma esplicita z = f(x, y).");
+		}
+		return xy -> {
+			if (xy.size() != 2) {
+				throw new IllegalArgumentException("Il punto deve essere 2D (x, y).");
+			}
+			Real dx = R.subtract(xy.get(0), origin.getX());
+			Real dy = R.subtract(xy.get(1), origin.getY());
+			Real numerator = R.add(R.multiply(nx, dx), R.multiply(ny, dy));
+			return R.subtract(origin.getZ(), R.divide(numerator, nz));
+		};
 	}
 
 	public Point getOrigin() { return origin; }
