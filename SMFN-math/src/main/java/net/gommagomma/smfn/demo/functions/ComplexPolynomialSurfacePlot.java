@@ -3,11 +3,13 @@ package net.gommagomma.smfn.demo.functions;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import javax.swing.SwingUtilities;
+
 import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport3D;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.SurfaceAxisPlotter;
+import net.gommagomma.smfn.graphics.plotting.SurfaceGrid;
 import net.gommagomma.smfn.graphics.plotting.SurfacePlotter;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
@@ -27,6 +29,8 @@ import net.gommagomma.smfn.math.analysis.functions.PolynomialFunction;
  * Il polinomio e' una {@code Mapping<Complex, Complex>}; l'altezza e' il suo modulo, scelto dal
  * {@code heightAdapter}. Il reticolo e' trasparente: si usa questo plotter, non le facce piene,
  * perche' la forma si legge dalle linee e non dal colore.
+ * <p>
+ * Interattivo: si ruota col mouse (vedi {@code SwingWindow.showInteractive}).
  */
 public class ComplexPolynomialSurfacePlot
 {
@@ -41,12 +45,9 @@ public class ComplexPolynomialSurfacePlot
         HornerEvaluator<Complex, ComplexField, PolynomialFunction<Complex, ComplexField>> evaluator = new HornerEvaluator<>(C);
         PolynomialFunction<Complex, ComplexField> function = new PolynomialFunction<>(cubic, C, evaluator);
 
-        // --- 2. Setup del contesto grafico ---
+        // --- 2. Punto di vista iniziale ---
         int width = 800;
         int height = 600;
-
-        SwingRenderer renderer = new SwingRenderer(width, height);
-        SwingWindow.show(renderer, "SMFN Complex Polynomial Surface: |z^3 - 1|");
 
         // Piano complesso [-1.1, 1.1]^2: contiene le tre radici (a distanza 1 dall'origine). Al
         // centro |p(0)| = 1 e' un colle; fuori dalle radici la superficie sale come |z|^3 fino a
@@ -57,12 +58,13 @@ public class ComplexPolynomialSurfacePlot
         BiFunction<Double, Double, Complex> domainAdapter = Complex::new;
         Function<Complex, Double> heightAdapter = value -> Math.hypot(value.getRe(), value.getIm());
 
-        // --- 4. Rendering ---
+        // --- 4. Finestra interattiva: si trascina per ruotare, tasto destro per spostare, rotellina per lo zoom ---
+        // La superficie si campiona una volta sola; ogni ridisegno cambia solo la proiezione.
         int cells = 36;
-        renderer.startDrawing();
-        renderer.clear(RgbColor.BLACK);
-        SurfacePlotter.plotWireframe(renderer, viewport, function, domainAdapter, heightAdapter, RgbColor.CYAN, cells, cells);
-        SurfaceAxisPlotter.plotAxes(renderer, viewport, RgbColor.WHITE, true);
-        renderer.endDrawingAndFlush();
+        SurfaceGrid<Complex> grid = SurfaceGrid.sample(viewport, function, domainAdapter, heightAdapter, cells, cells);
+        SwingUtilities.invokeLater(() -> SwingWindow.showInteractive("SMFN Complex Polynomial Surface: |z^3 - 1|", viewport, (renderer, view) -> {
+            SurfacePlotter.plotWireframe(renderer, view, grid, RgbColor.CYAN);
+            SurfaceAxisPlotter.plotAxes(renderer, view, RgbColor.WHITE, true);
+        }));
     }
 }

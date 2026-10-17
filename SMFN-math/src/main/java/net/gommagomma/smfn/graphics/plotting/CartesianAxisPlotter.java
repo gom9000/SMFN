@@ -6,7 +6,7 @@ import java.util.Locale;
 
 import net.gommagomma.smfn.graphics.core.Renderer;
 import net.gommagomma.smfn.graphics.core.RgbColor;
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 
 /**
  * Utility per plottare gli assi cartesiani su un Renderer.
@@ -17,7 +17,7 @@ public final class CartesianAxisPlotter
 	private CartesianAxisPlotter() {}
 
 
-    public static void plotAxes(Renderer renderer, Viewport viewport, RgbColor color, boolean showTicksAndLabels)
+    public static void plotAxes(Renderer renderer, Viewport2D viewport, RgbColor color, boolean showTicksAndLabels)
     {
     	renderer.setColor(color);
 
@@ -35,7 +35,7 @@ public final class CartesianAxisPlotter
     }
 
 
-    private static void drawTicksAndLabels(Renderer renderer, Viewport viewport, int xZeroPixel, int yZeroPixel) {
+    private static void drawTicksAndLabels(Renderer renderer, Viewport2D viewport, int xZeroPixel, int yZeroPixel) {
         double rangeX = viewport.maxX - viewport.minX;
         double rangeY = viewport.maxY - viewport.minY;
         double tickSpacingX = calculateNiceTickSpacing(rangeX, renderer.getWidth());
@@ -43,26 +43,31 @@ public final class CartesianAxisPlotter
 
         int tickSize = 5;
 
-        // --- Logica Asse X ---
-        double startX = Math.ceil(viewport.minX / tickSpacingX) * tickSpacingX;
+        // Le tacche sono i multipli interi del passo dentro l'intervallo: si contano per indice, non
+        // sommando il passo, che a coordinate grandi rispetto al passo non cambierebbe piu' il
+        // valore (e il ciclo non finirebbe). Il margine 1e-9 tiene dentro i multipli sul bordo,
+        // che l'arrotondamento potrebbe far cadere appena fuori.
 
-        // Usiamo un piccolo epsilon per gestire gli errori di virgola mobile nella condizione <=
-        for (double x = startX; x <= viewport.maxX + (tickSpacingX / 2.0); x += tickSpacingX) {
-        	if (Math.abs(x) < 1e-9) continue; 
+        // --- Logica Asse X ---
+        long firstX = (long) Math.ceil(viewport.minX / tickSpacingX - 1e-9);
+        long lastX = (long) Math.floor(viewport.maxX / tickSpacingX + 1e-9);
+        for (long k = firstX; k <= lastX; k++) {
+            if (k == 0) continue; // lo zero e' l'asse stesso
+            double x = k * tickSpacingX;
             int pixelX = viewport.convertMathXToPixelX(x);
 
-            renderer.drawLine(pixelX, yZeroPixel - tickSize, pixelX, yZeroPixel + tickSize);            
+            renderer.drawLine(pixelX, yZeroPixel - tickSize, pixelX, yZeroPixel + tickSize);
             renderer.drawText(DF.format(x), pixelX - 10, yZeroPixel + tickSize + 15);
         }
 
         // --- Logica Asse Y ---
-        double startY = Math.ceil(viewport.minY / tickSpacingY) * tickSpacingY;
-
-        // Usiamo un piccolo epsilon per gestire gli errori di virgola mobile nella condizione <=
-        for (double y = startY; y <= viewport.maxY + (tickSpacingY / 2.0); y += tickSpacingY) {
-        	if (Math.abs(y) < 1e-9) continue;
+        long firstY = (long) Math.ceil(viewport.minY / tickSpacingY - 1e-9);
+        long lastY = (long) Math.floor(viewport.maxY / tickSpacingY + 1e-9);
+        for (long k = firstY; k <= lastY; k++) {
+            if (k == 0) continue;
+            double y = k * tickSpacingY;
             int pixelY = viewport.convertMathYToPixelY(y);
-            
+
             renderer.drawLine(xZeroPixel - tickSize, pixelY, xZeroPixel + tickSize, pixelY);
             renderer.drawText(DF.format(y), xZeroPixel - tickSize - 30, pixelY + 5);
         }

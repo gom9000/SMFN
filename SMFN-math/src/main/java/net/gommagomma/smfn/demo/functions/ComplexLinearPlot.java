@@ -4,7 +4,7 @@ import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
@@ -30,7 +30,7 @@ public class ComplexLinearPlot
         SwingRenderer renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Complex Linear Function Plot");
 
-        Viewport viewport = new Viewport(-5.0, 5.0, -5.0, 5.0, width, height);
+        Viewport2D viewport = new Viewport2D(-5.0, 5.0, -5.0, 5.0, width, height);
 
         // --- 3. Adattatori ---
         BiFunction<Double, Double, Complex> domainAdapter = Complex::new;

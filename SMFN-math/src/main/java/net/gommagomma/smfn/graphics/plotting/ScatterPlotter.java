@@ -4,12 +4,13 @@ import java.util.List;
 
 import net.gommagomma.smfn.graphics.core.Renderer;
 import net.gommagomma.smfn.graphics.core.RgbColor;
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.math.geometry.Point;
 
 
 /**
- * Utility per plottare un insieme discreto di punti (scatter plot) su un Renderer.
+ * Utility per plottare un insieme discreto di punti (scatter plot) su un Renderer. Un punto con
+ * una coordinata non finita (NaN o infinito) non viene disegnato.
  */
 public class ScatterPlotter
 {
@@ -23,7 +24,7 @@ public class ScatterPlotter
      * @param points La lista dei punti matematici da disegnare.
      * @param color Il colore con cui disegnare i punti.
      */
-    public static void plotPoints(Renderer renderer, Viewport viewport, List<Point> points, RgbColor color)
+    public static void plotPoints(Renderer renderer, Viewport2D viewport, List<Point> points, RgbColor color)
     {
         renderer.setColor(color);
 
@@ -32,6 +33,9 @@ public class ScatterPlotter
             // Estrai le coordinate double dal Point matematico
             double mathX = p.getX().getValue();
             double mathY = p.getY().getValue();
+
+            // Un punto non finito non ha posizione sullo schermo: si salta
+            if (!Double.isFinite(mathX) || !Double.isFinite(mathY)) continue;
 
             // Converti in coordinate pixel
             int pixelX = viewport.convertMathXToPixelX(mathX);

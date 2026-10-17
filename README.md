@@ -14,7 +14,7 @@ Rather than optimizing for raw performance, SMFN emphasizes mathematical abstrac
 | **Numerical Analysis**   | Root-finding, numerical differentiation, ODE integration (RK4), iterative solvers    |
 | **Geometry & Fractals**  | Implicit geometry, intersections, Mandelbrot/Julia/Newton maps                       |
 | **Physical Modelling**   | Quantum measurement and dynamics                                                     |
-| **Graphics**             | Decoupled 1D/2D rendering and plotting framework                                     |
+| **Graphics**             | Decoupled 2D/3D rendering and plotting framework                                     |
 
 
 

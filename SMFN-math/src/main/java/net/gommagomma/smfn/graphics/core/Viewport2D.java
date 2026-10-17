@@ -5,7 +5,7 @@ package net.gommagomma.smfn.graphics.core;
  * Gestisce la trasformazione tra coordinate del mondo matematico e coordinate pixel dello schermo,
  * mantenendo il corretto aspect ratio matematico.
  */
-public class Viewport
+public class Viewport2D
 {
     public final double minX;
     public final double maxX;
@@ -20,7 +20,7 @@ public class Viewport
     private final double offsetY;
 
 
-    public Viewport(double minX, double maxX, double minY, double maxY, int pixelWidth, int pixelHeight)
+    public Viewport2D(double minX, double maxX, double minY, double maxY, int pixelWidth, int pixelHeight)
     {
         this.minX = minX;
         this.maxX = maxX;
@@ -36,10 +36,10 @@ public class Viewport
         // finirebbe per dividere per un range nullo, propagando NaN/Infinity silenziosamente in
         // scale/offset e quindi in ogni conversione math<->pixel successiva. Si rifiuta subito,
         // con un messaggio chiaro, invece di produrre un Viewport numericamente rotto.
-        if (rangeX <= 0.0 || rangeY <= 0.0) {
+        if (!Double.isFinite(rangeX) || !Double.isFinite(rangeY) || rangeX <= 0.0 || rangeY <= 0.0) {
             throw new IllegalArgumentException(
-                "Range matematico degenere o invertito: rangeX=" + rangeX + ", rangeY=" + rangeY
-                + " (richiesto minX<maxX e minY<maxY).");
+                "Range matematico degenere, invertito o non finito: rangeX=" + rangeX + ", rangeY=" + rangeY
+                + " (richiesto minX<maxX e minY<maxY, tutti finiti).");
         }
         if (pixelWidth <= 0 || pixelHeight <= 0) {
             throw new IllegalArgumentException(

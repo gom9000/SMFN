@@ -3,7 +3,7 @@ package net.gommagomma.smfn.graphics.plotting;
 import java.util.function.Function;
 
 import net.gommagomma.smfn.graphics.core.Renderer;
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
@@ -11,7 +11,7 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 /**
  * Utility per plottare funzioni matematiche 1D (y=f(x)) campionando in base ai pixel X.
  * Utilizza adattatori funzionali per convertire i tipi matematici generici (D, C) 
- * in valori double plottabili.
+ * in valori double plottabili. Un valore non finito (NaN o infinito) interrompe la curva.
  */
 public class CurvePlotter
 {
@@ -30,11 +30,12 @@ public class CurvePlotter
      * @param codomainAdapter Adattatore da C a double (es. Real -> Double).
      */
     public static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
-    void plotFunction(Renderer renderer, Viewport viewport, Mapping<D, C> function, Function<Double, D> domainAdapter, Function<C, Double> codomainAdapter) 
+    void plotFunction(Renderer renderer, Viewport2D viewport, Mapping<D, C> function, Function<Double, D> domainAdapter, Function<C, Double> codomainAdapter) 
     {
         int width = renderer.getWidth();
-        int lastPixelX = Integer.MIN_VALUE;
-        int lastPixelY = Integer.MIN_VALUE;
+        boolean hasPrevious = false;
+        int lastPixelX = 0;
+        int lastPixelY = 0;
 
         for (int pixelX = 0; pixelX < width; pixelX++)
         {
@@ -50,16 +51,24 @@ public class CurvePlotter
             // Estrae il double dal codominio C
             double mathY = codomainAdapter.apply(outputElement);
 
+            // Un valore non finito (un polo, il logaritmo di un negativo) non ha posizione: la curva
+            // si interrompe, senza una linea verso un punto inventato.
+            if (!Double.isFinite(mathY)) {
+                hasPrevious = false;
+                continue;
+            }
+
             // Converti math Y in pixel Y
             int pixelY = viewport.convertMathYToPixelY(mathY);
 
             // Disegna
-            if (pixelX > 0 && Math.abs(pixelY - lastPixelY) < renderer.getHeight() * 2) {
+            if (hasPrevious && Math.abs(pixelY - lastPixelY) < renderer.getHeight() * 2) {
             	renderer.drawLine(lastPixelX, lastPixelY, pixelX, pixelY);
             }
 
             lastPixelX = pixelX;
             lastPixelY = pixelY;
+            hasPrevious = true;
         }
     }
 }

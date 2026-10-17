@@ -4,7 +4,7 @@ import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.Arrays;
 import java.util.List;
 
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
@@ -24,7 +24,7 @@ public class GeometryScatterPointsPlot
 
         // Definisci l'area matematica (Viewport): [-2.0, 1.0] x [-1.5, 1.5] 
         // L'area classica che contiene l'intero set
-        Viewport viewport = new Viewport(-5, 5, -5, 5, width, height);
+        Viewport2D viewport = new Viewport2D(-5, 5, -5, 5, width, height);
 
         
         // --- Crea un insieme di punti matematici ---

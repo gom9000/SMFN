@@ -3,7 +3,7 @@ package net.gommagomma.smfn.demo.functions;
 import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.Function;
 
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
@@ -38,7 +38,7 @@ public class PolynomialPlot
         SwingRenderer renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Polynomial Example: P(x) = 1.5x^3 + 3x^2 - 5x - 2");
 
-        Viewport viewport = new Viewport(-3.5, 3.5, -8.5, 8.5, width, height);
+        Viewport2D viewport = new Viewport2D(-3.5, 3.5, -8.5, 8.5, width, height);
 
         // --- 3. Adattatori double <-> Real ---
         Function<Double, Real> domainAdapter = Real::new;

@@ -3,12 +3,14 @@ package net.gommagomma.smfn.demo.geometry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import javax.swing.SwingUtilities;
+
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport3D;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.SurfaceAxisPlotter;
+import net.gommagomma.smfn.graphics.plotting.SurfaceGrid;
 import net.gommagomma.smfn.graphics.plotting.SurfacePlotter;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
@@ -23,6 +25,8 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
  * La funzione del cerchio e' la distanza dal centro meno il raggio: come superficie e' un cono
  * (con il vertice in basso, nel centro). Il cerchio stesso e' il suo insieme di livello z = 0,
  * evidenziato in ciano: nella versione 2D e' il bordo, qui e' la sezione a quota zero.
+ * <p>
+ * Interattivo: si ruota col mouse (vedi {@code SwingWindow.showInteractive}).
  */
 public class GeometricConePlot
 {
@@ -31,12 +35,9 @@ public class GeometricConePlot
         // --- 1. Definizione della funzione matematica ---
         Circle f = new Circle(new Point(0.0, 0.0), new Real(2.5));
 
-        // --- 2. Setup del contesto grafico ---
+        // --- 2. Punto di vista iniziale ---
         int width = 800;
         int height = 600;
-
-        SwingRenderer renderer = new SwingRenderer(width, height);
-        SwingWindow.show(renderer, "SMFN Circle Surface: z = dist(P, C) - r");
 
         // Riquadro (x, y, z) e punto di vista (azimut, elevazione in gradi)
         Viewport3D viewport = new Viewport3D(-4, 4, -4, 4, -2.5, 3.2, width, height, 35.0, 35.0);
@@ -55,13 +56,14 @@ public class GeometricConePlot
             return RgbColor.ofHsb((float) (0.66 * (1.0 - t)), 0.85f, 0.9f);
         };
 
-        // --- 4. Rendering ---
+        // --- 4. Finestra interattiva: trascina per ruotare, tasto destro per spostare, rotellina per lo zoom ---
+        // La superficie si campiona una volta sola; ogni ridisegno cambia solo la proiezione.
         int cells = 60;
-        renderer.startDrawing();
-        renderer.clear(RgbColor.BLACK);
-        SurfacePlotter.plotSurface(renderer, viewport, f, domainAdapter, heightAdapter, colorMapper, cells, cells);
-        SurfacePlotter.plotWireframe(renderer, viewport, f, domainAdapter, heightAdapter, RgbColor.GREEN, cells, cells);
-        SurfaceAxisPlotter.plotAxes(renderer, viewport, RgbColor.WHITE, true);
-        renderer.endDrawingAndFlush();
+        var grid = SurfaceGrid.sample(viewport, f, domainAdapter, heightAdapter, cells, cells);
+        SwingUtilities.invokeLater(() -> SwingWindow.showInteractive("SMFN Circle Surface: z = dist(P, C) - r", viewport, (renderer, view) -> {
+            SurfacePlotter.plotSurface(renderer, view, grid, colorMapper);
+            SurfacePlotter.plotWireframe(renderer, view, grid, RgbColor.GREEN);
+            SurfaceAxisPlotter.plotAxes(renderer, view, RgbColor.WHITE, true);
+        }));
     }
 }

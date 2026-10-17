@@ -3,12 +3,14 @@ package net.gommagomma.smfn.demo.geometry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import javax.swing.SwingUtilities;
+
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport3D;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.SurfaceAxisPlotter;
+import net.gommagomma.smfn.graphics.plotting.SurfaceGrid;
 import net.gommagomma.smfn.graphics.plotting.SurfacePlotter;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
@@ -22,6 +24,8 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
  * <p>
  * La funzione dell'ellisse e' (x/a)^2 + (y/b)^2 - 1: come superficie e' un paraboloide ellittico
  * (circolare se a = b). L'ellisse e' il suo insieme di livello z = 0, evidenziato in ciano.
+ * <p>
+ * Interattivo: si ruota col mouse (vedi {@code SwingWindow.showInteractive}).
  */
 public class GeometricParaboloidPlot
 {
@@ -30,12 +34,9 @@ public class GeometricParaboloidPlot
         // --- 1. Definizione della funzione matematica ---
         Ellipse f = new Ellipse(new Point(0.0, 0.0), new Real(3.0), new Real(1.5));
 
-        // --- 2. Setup del contesto grafico ---
+        // --- 2. Punto di vista iniziale ---
         int width = 800;
         int height = 600;
-
-        SwingRenderer renderer = new SwingRenderer(width, height);
-        SwingWindow.show(renderer, "SMFN Ellipse Surface: z = (x/a)^2 + (y/b)^2 - 1");
 
         // Riquadro (x, y, z) e punto di vista (azimut, elevazione in gradi)
         Viewport3D viewport = new Viewport3D(-4, 4, -3, 3, -1, 5, width, height, 35.0, 35.0);
@@ -54,12 +55,13 @@ public class GeometricParaboloidPlot
             return RgbColor.ofHsb((float) (0.66 * (1.0 - t)), 0.85f, 0.9f);
         };
 
-        // --- 4. Rendering ---
+        // --- 4. Finestra interattiva: trascina per ruotare, tasto destro per spostare, rotellina per lo zoom ---
+        // La superficie si campiona una volta sola; ogni ridisegno cambia solo la proiezione.
         int cells = 60;
-        renderer.startDrawing();
-        renderer.clear(RgbColor.BLACK);
-        SurfacePlotter.plotSurface(renderer, viewport, f, domainAdapter, heightAdapter, colorMapper, cells, cells);
-        SurfaceAxisPlotter.plotAxes(renderer, viewport, RgbColor.WHITE, true);
-        renderer.endDrawingAndFlush();
+        var grid = SurfaceGrid.sample(viewport, f, domainAdapter, heightAdapter, cells, cells);
+        SwingUtilities.invokeLater(() -> SwingWindow.showInteractive("SMFN Ellipse Surface: z = (x/a)^2 + (y/b)^2 - 1", viewport, (renderer, view) -> {
+            SurfacePlotter.plotSurface(renderer, view, grid, colorMapper);
+            SurfaceAxisPlotter.plotAxes(renderer, view, RgbColor.WHITE, true);
+        }));
     }
 }

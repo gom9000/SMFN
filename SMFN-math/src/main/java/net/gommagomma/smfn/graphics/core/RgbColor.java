@@ -51,6 +51,7 @@ public final class RgbColor
 			rr = gg = bb = (int) (brightness * 255.0f + 0.5f);
 		} else {
 			float h = (hue - (float) Math.floor(hue)) * 6.0f;
+			if (h >= 6.0f) h = 0.0f; // un hue negativo e' minuscolo da' hue - floor(hue) == 1.0f per arrotondamento
 			float f = h - (float) Math.floor(h);
 			float p = brightness * (1.0f - saturation);
 			float q = brightness * (1.0f - saturation * f);

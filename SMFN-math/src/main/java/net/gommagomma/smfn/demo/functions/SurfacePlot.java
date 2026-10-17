@@ -3,12 +3,14 @@ package net.gommagomma.smfn.demo.functions;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import javax.swing.SwingUtilities;
+
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport3D;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.SurfaceAxisPlotter;
+import net.gommagomma.smfn.graphics.plotting.SurfaceGrid;
 import net.gommagomma.smfn.graphics.plotting.SurfacePlotter;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
@@ -20,6 +22,8 @@ import net.gommagomma.smfn.math.algebra.numerics.Real;
  * Il dominio e' un punto del piano, qui un {@code Complex} costruito da (x, y); la funzione
  * restituisce un {@code Real} che e' l'altezza. L'adattatore del dominio e quello dell'altezza
  * sono gli unici punti in cui il modello matematico incontra il plotter.
+ * <p>
+ * Interattivo: si ruota col mouse (vedi {@code SwingWindow.showInteractive}).
  */
 public class SurfacePlot
 {
@@ -31,12 +35,9 @@ public class SurfacePlot
             return new Real(r == 0.0 ? 1.0 : Math.sin(r) / r);
         };
 
-        // --- 2. Setup del contesto grafico ---
+        // --- 2. Punto di vista iniziale ---
         int width = 800;
         int height = 600;
-
-        SwingRenderer renderer = new SwingRenderer(width, height);
-        SwingWindow.show(renderer, "SMFN Surface Example: z = sin(r) / r");
 
         double range = 12.0;
         Viewport3D viewport = new Viewport3D(-range, range, -range, range, -0.3, 1.0, width, height, 35.0, 40.0);
@@ -49,13 +50,14 @@ public class SurfacePlot
             return RgbColor.ofHsb((float) (0.66 - 0.66 * t), 0.85f, 0.95f); // blu (basso) -> rosso (alto)
         };
 
-        // --- 4. Rendering ---
+        // --- 4. Finestra interattiva: trascina per ruotare, tasto destro per spostare, rotellina per lo zoom ---
+        // La superficie si campiona una volta sola; ogni ridisegno cambia solo la proiezione.
         int cells = 30;
-        renderer.startDrawing();
-        renderer.clear(RgbColor.BLACK);
-        //SurfacePlotter.plotSurface(renderer, viewport, sinc, domainAdapter, heightAdapter, colorMapper, cells, cells);
-        SurfacePlotter.plotWireframe(renderer, viewport, sinc, domainAdapter, heightAdapter, RgbColor.GREEN, cells, cells);
-        SurfaceAxisPlotter.plotAxes(renderer, viewport, RgbColor.WHITE, true); // dopo: gli assi stanno sul bordo vicino
-        renderer.endDrawingAndFlush();
+        var grid = SurfaceGrid.sample(viewport, sinc, domainAdapter, heightAdapter, cells, cells);
+        SwingUtilities.invokeLater(() -> SwingWindow.showInteractive("SMFN Surface Example: z = sin(r) / r", viewport, (renderer, view) -> {
+            SurfacePlotter.plotSurface(renderer, view, grid, colorMapper);
+            SurfacePlotter.plotWireframe(renderer, view, grid, RgbColor.GREEN);
+            SurfaceAxisPlotter.plotAxes(renderer, view, RgbColor.WHITE, true);
+        }));
     }
 }

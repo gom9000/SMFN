@@ -3,12 +3,14 @@ package net.gommagomma.smfn.demo.geometry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import javax.swing.SwingUtilities;
+
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport3D;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.SurfaceAxisPlotter;
+import net.gommagomma.smfn.graphics.plotting.SurfaceGrid;
 import net.gommagomma.smfn.graphics.plotting.SurfacePlotter;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
@@ -25,6 +27,8 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSemimodule;
  * Qui la funzione non e' {@code Plane.apply} (la forma implicita: distanza con segno, vuole un
  * punto 3D) ma {@link Plane#explicitForm()}, la z risolta in funzione di (x, y). Esiste solo se il
  * piano non e' verticale (nz != 0).
+ * <p>
+ * Interattivo: si ruota col mouse (vedi {@code SwingWindow.showInteractive}).
  */
 public class GeometricPlaneSurfacePlot
 {
@@ -40,12 +44,9 @@ public class GeometricPlaneSurfacePlot
         // Forma esplicita z = f(x, y): lancia se il piano e' verticale
         Mapping<Vector<Real>, Real> f = plane.explicitForm();
 
-        // --- 2. Setup del contesto grafico ---
+        // --- 2. Punto di vista iniziale ---
         int width = 800;
         int height = 600;
-
-        SwingRenderer renderer = new SwingRenderer(width, height);
-        SwingWindow.show(renderer, "SMFN Plane Surface: z = f(x, y)");
 
         // Su [-4,4]^2 il piano ha z = 2 - x - y, cioe' da -6 a 10
         Viewport3D viewport = new Viewport3D(-4, 4, -4, 4, -6, 10, width, height, 215.0, 30.0);
@@ -60,12 +61,13 @@ public class GeometricPlaneSurfacePlot
             return RgbColor.ofHsb((float) (0.66 * (1.0 - t)), 0.9f, 0.9f);
         };
 
-        // --- 4. Rendering ---
+        // --- 4. Finestra interattiva: trascina per ruotare, tasto destro per spostare, rotellina per lo zoom ---
+        // La superficie si campiona una volta sola; ogni ridisegno cambia solo la proiezione.
         int cells = 30;
-        renderer.startDrawing();
-        renderer.clear(RgbColor.BLACK);
-        SurfacePlotter.plotSurface(renderer, viewport, f, domainAdapter, heightAdapter, colorMapper, cells, cells);
-        SurfaceAxisPlotter.plotAxes(renderer, viewport, RgbColor.WHITE, true);
-        renderer.endDrawingAndFlush();
+        var grid = SurfaceGrid.sample(viewport, f, domainAdapter, heightAdapter, cells, cells);
+        SwingUtilities.invokeLater(() -> SwingWindow.showInteractive("SMFN Plane Surface: z = f(x, y)", viewport, (renderer, view) -> {
+            SurfacePlotter.plotSurface(renderer, view, grid, colorMapper);
+            SurfaceAxisPlotter.plotAxes(renderer, view, RgbColor.WHITE, true);
+        }));
     }
 }

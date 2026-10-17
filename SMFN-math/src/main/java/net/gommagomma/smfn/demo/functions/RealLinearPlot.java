@@ -4,7 +4,7 @@ import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.text.DecimalFormat;
 import java.util.function.Function;
 
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
@@ -30,7 +30,7 @@ public class RealLinearPlot
 
         SwingRenderer renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Linear Example");
-        Viewport viewport = new Viewport(-10.0, 10.0, -10.0, 20.0, width, height);
+        Viewport2D viewport = new Viewport2D(-10.0, 10.0, -10.0, 20.0, width, height);
 
         // --- 3. Adattatori double <-> Real ---
         Function<Double, Real> domainAdapter = Real::new;

@@ -6,7 +6,7 @@ import java.util.stream.IntStream;
 import net.gommagomma.smfn.graphics.core.ColorMapper;
 import net.gommagomma.smfn.graphics.core.Renderer;
 import net.gommagomma.smfn.graphics.core.RgbColor;
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
 
@@ -32,7 +32,7 @@ public class ColorFieldPlotter
      * @param colorMapper Un adattatore che mappa il risultato C in un RgbColor.
      */
     public static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
-    void plotFunction(Renderer renderer, Viewport viewport, Mapping<D, C> function, BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper)
+    void plotFunction(Renderer renderer, Viewport2D viewport, Mapping<D, C> function, BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper)
     {
         int width = renderer.getWidth();
         int height = renderer.getHeight();
@@ -53,7 +53,7 @@ public class ColorFieldPlotter
      * Variante parallela.
      */
     public static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
-    void plotFunctionParallel(Renderer renderer, Viewport viewport, Mapping<D, C> function, BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper)
+    void plotFunctionParallel(Renderer renderer, Viewport2D viewport, Mapping<D, C> function, BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper)
     {
         int width = renderer.getWidth();
         int height = renderer.getHeight();
@@ -89,7 +89,7 @@ public class ColorFieldPlotter
      * renderer.
      */
     private static <D extends AlgebraicElement<D>, C extends AlgebraicElement<C>>
-    RgbColor computePixelColor(Viewport viewport, Mapping<D, C> function, BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper, int pixelX, int pixelY)
+    RgbColor computePixelColor(Viewport2D viewport, Mapping<D, C> function, BiFunction<Double, Double, D> domainAdapter, ColorMapper<C> colorMapper, int pixelX, int pixelY)
     {
         // 1. Converti pixel in coordinate matematiche (X e Y)
         double mathX = viewport.convertPixelXToMathX(pixelX);

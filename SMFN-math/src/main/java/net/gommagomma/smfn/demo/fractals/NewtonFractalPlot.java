@@ -4,7 +4,7 @@ import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
@@ -24,7 +24,7 @@ public class NewtonFractalPlot {
         int height = 800;
         SwingRenderer renderer = new SwingRenderer(width, height);
         SwingWindow.show(renderer, "SMFN Newton Fractal Set Plot (z^3 - 1 = 0)");
-        Viewport viewport = new Viewport(-2.0, 2.0, -2.0, 2.0, width, height);
+        Viewport2D viewport = new Viewport2D(-2.0, 2.0, -2.0, 2.0, width, height);
 
         // Definisce la mappa colore basata sulle iterazioni necessarie alla convergenza
         ColorMapper<Natural> colorMapper = new ColorMapper<>() {

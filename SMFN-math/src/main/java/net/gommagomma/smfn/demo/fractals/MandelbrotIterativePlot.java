@@ -1,18 +1,14 @@
 package net.gommagomma.smfn.demo.fractals;
 
 import net.gommagomma.smfn.graphics.core.RgbColor;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.text.DecimalFormat;
 import java.util.function.BiFunction;
 
 import javax.swing.SwingUtilities;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
-import net.gommagomma.smfn.graphics.core.Viewport;
-import net.gommagomma.smfn.graphics.core.ViewportController;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
-import net.gommagomma.smfn.graphics.drivers.swing.SwingViewportInputAdapter;
+import net.gommagomma.smfn.graphics.core.Renderer;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
 import net.gommagomma.smfn.graphics.plotting.ColorFieldPlotter;
@@ -21,158 +17,55 @@ import net.gommagomma.smfn.math.algebra.numerics.Natural;
 import net.gommagomma.smfn.math.analysis.fractals.MandelbrotFunction;
 
 
-// L'app implementa l'interfaccia handler per gestire gli aggiornamenti della viewport
+/**
+ * Mandelbrot interattivo: si sposta trascinando, si zooma con la rotellina o con un rettangolo
+ * (Maiusc/Ctrl + trascinamento). Le iterazioni crescono con lo zoom. La demo descrive soltanto la
+ * scena: finestra, mouse e ridisegno li gestisce {@link SwingWindow#showInteractive}.
+ */
 public class MandelbrotIterativePlot
-implements ViewportController.ViewportUpdateHandler
 {
-    private final SwingRenderer renderer;
-    private final MandelbrotFunction mandelbrotFunction;
-    private final BiFunction<Double, Double, Complex> domainAdapter;
-    private final ColorMapper<Natural> baseColorMapper; // Mapper base (richiede un setter per le iterazioni)
-    private ViewportController viewportController;
-    private final RgbColor selectionColor = new RgbColor(0, 0, 255, 100); // Blu semi-trasparente
     private static final DecimalFormat DF = new DecimalFormat("0.000E0"); // Formattazione scientifica
 
     // --- Parametri per l'Iterazione Dinamica ---
-    private static final int BASE_ITERATIONS = 100; // I_base: Iterazioni minime
-    private static final double SCALE_FACTOR = 300.0; // C: Fattore di tuning per lo zoom
+    private static final int BASE_ITERATIONS = 100;   // Iterazioni minime
+    private static final double SCALE_FACTOR = 300.0; // Fattore di tuning per lo zoom
+    private static final double INITIAL_WIDTH = 3.0;  // Ampiezza iniziale: [-2, 1]
+
+    private final MandelbrotFunction mandelbrotFunction = new MandelbrotFunction(BASE_ITERATIONS);
+    private final BiFunction<Double, Double, Complex> domainAdapter = Complex::new;
     private int currentMaxIterations = BASE_ITERATIONS;
+    private final ColorMapper<Natural> colorMapper = r -> {
+        double value = r.getValue();
+        if (value == 0 || value >= currentMaxIterations) return RgbColor.BLACK;
+        float hue = (float) Math.sqrt(value / currentMaxIterations);   // radice: piu' contrasto vicino al bordo
+        return RgbColor.ofHsb(0.6f, 1.0f, hue);
+    };
 
-
-    public MandelbrotIterativePlot() {
-        // --- 1. Funzione e Adattatori (rimangono costanti) ---
-        // Inizializziamo con un valore base, verr� aggiornato subito dal rendering iniziale
-        this.mandelbrotFunction = new MandelbrotFunction(BASE_ITERATIONS);
-        this.domainAdapter = Complex::new;
-        
-        // Adattatore Colore: L'istanza deve essere mantenuta per essere aggiornata con le nuove MAX_ITERATIONS
-        this.baseColorMapper = createDynamicColorMapper();
-
-        // --- 2. Setup Grafico Iniziale ---
-        int width = 1600;
-        int height = 1200;
-        this.renderer = new SwingRenderer(width, height);
-        SwingWindow.show(renderer, "SMFN Mandelbrot Set Interactive Plot");
-
-        // --- 3. Inizializzazione Viewport e Controller ---
-        // Area iniziale: [-2.0, 1.0] x [-1.5, 1.5]
-        Viewport initialViewport = new Viewport(-2.0, 1.0, -1.5, 1.5, width, height);
-        this.viewportController = new ViewportController(initialViewport, this);
-
-        // ViewportController e' neutro rispetto al toolkit (nessuna dipendenza da AWT): il
-        // ponte verso i veri eventi Swing passa da questo adapter, l'unico punto che conosce
-        // MouseEvent/KeyEvent.
-        SwingViewportInputAdapter inputAdapter = new SwingViewportInputAdapter(viewportController);
-
-        // Collega i listener: mouse e tastiera
-        renderer.addMouseListener(inputAdapter);
-        renderer.addMouseMotionListener(inputAdapter);
-        renderer.addMouseWheelListener(inputAdapter);
-        renderer.addKeyListener(inputAdapter);
-
-        // Assicurati che il Canvas possa ricevere il focus per gli eventi tastiera
-        renderer.setFocusable(true);
-        renderer.requestFocusInWindow();
-        renderer.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                renderer.requestFocusInWindow();
-            }
-        });
-
-        // --- 4. Primo Rendering ---
-        renderScene(initialViewport);
-    }
-    
-    /**
-     * Crea un ColorMapper che utilizza il valore corrente di currentMaxIterations
-     */
-    private ColorMapper<Natural> createDynamicColorMapper() {
-        return new ColorMapper<>() {
-            @Override
-            public RgbColor map(Natural r) {
-                double value = r.getValue();
-                // Usa currentMaxIterations che � aggiornato dal renderScene
-                if (value == 0) return RgbColor.BLACK; 
-                if (value >= currentMaxIterations) return RgbColor.BLACK; 
-                
-                // Mappatura del colore standard per i frattali (basata sulla radice quadrata)
-                float hue = (float) (value / currentMaxIterations);
-                hue = (float) Math.sqrt(hue); 
-                
-                return RgbColor.ofHsb(0.6f, 1.0f, hue);
-            }
-        };
-    }
-
-
-    // Implementazione del metodo handler per aggiornamento Viewport
-    @Override
-    public void onViewportUpdated(Viewport newViewport) {
-        renderScene(newViewport);
-    }
-
-    // Implementazione del metodo handler per disegno temporaneo (rettangolo di selezione)
-    @Override
-    public void onTemporaryDraw(int x, int y, int width, int height) {
-        // Ridisegna la scena base con la viewport corrente (per cancellare il rettangolo precedente)
-        renderScene(viewportController.getCurrentViewport()); 
-
-        // Disegna il nuovo rettangolo di selezione trasparente SOPRA la scena
-        renderer.setColor(selectionColor);
-        renderer.fillRect(x, y, width, height);
-    }
-
-    // Metodo centralizzato per il rendering di tutta la scena
-    private void renderScene(Viewport viewport) {
-        // Logica delle Iterazioni Dinamiche ---
+    private void drawScene(Renderer renderer, Viewport2D viewport)
+    {
         double rangeX = viewport.maxX - viewport.minX;
-        
-        // Calcola log_2(1/S)
-        double logFactor = (rangeX > 0) ? Math.log(3.0 / rangeX) / Math.log(2.0) : 0; // 3.0 � l'ampiezza iniziale (1.0 - (-2.0))
-        
-        // Applica la formula: I_base + log_2(1/S) * C. Max � per evitare valori negativi o troppo bassi.
-        this.currentMaxIterations = (int) Math.max(
-            BASE_ITERATIONS,
-            BASE_ITERATIONS + logFactor * SCALE_FACTOR
-        );
-        
-        // La MandelbrotFunction deve avere un setter per aggiornare MAX_ITERATIONS
-        this.mandelbrotFunction.setMaxIterations(this.currentMaxIterations); 
-        
-        // --- Rendering ---
-        
-        renderer.startDrawing();
-
-        renderer.clear(RgbColor.WHITE);
-        
-        // Disegna il frattale
-        ColorFieldPlotter.plotFunctionParallel(
-            renderer, viewport, mandelbrotFunction, domainAdapter, baseColorMapper
-        );
-        
-        // Disegna gli assi sopra il frattale
-        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
-
-        // Calcola l'ampiezza del range matematico
         double rangeY = viewport.maxY - viewport.minY;
 
-        String infoText1 = "Range X: [" + DF.format(viewport.minX) + ", " + DF.format(viewport.maxX) + "] (Ampiezza: " + DF.format(rangeX) + ")";
-        String infoText2 = "Range Y: [" + DF.format(viewport.minY) + ", " + DF.format(viewport.maxY) + "] (Ampiezza: " + DF.format(rangeY) + ")";
-        String infoText3 = "Zoom: " + DF.format(3.0 / rangeX) + "x"; 
-        String infoText4 = "Max Iterations: " + this.currentMaxIterations;
+        // Iterazioni: I_base + log2(ampiezza iniziale / ampiezza) * C
+        double logFactor = (rangeX > 0) ? Math.log(INITIAL_WIDTH / rangeX) / Math.log(2.0) : 0;
+        currentMaxIterations = (int) Math.max(BASE_ITERATIONS, BASE_ITERATIONS + logFactor * SCALE_FACTOR);
+        mandelbrotFunction.setMaxIterations(currentMaxIterations);
 
-        // Disegna il testo in overlay (coordinate pixel fisse)
-        renderer.drawOverlayText(infoText1, 10, 20, RgbColor.RED);
-        renderer.drawOverlayText(infoText2, 10, 35, RgbColor.RED);
-        renderer.drawOverlayText(infoText3, 10, 50, RgbColor.RED);
-        renderer.drawOverlayText(infoText4, 10, 65, RgbColor.RED);
+        ColorFieldPlotter.plotFunctionParallel(renderer, viewport, mandelbrotFunction, domainAdapter, colorMapper);
+        CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
-        renderer.endDrawingAndFlush();
+        renderer.drawOverlayText("Range X: [" + DF.format(viewport.minX) + ", " + DF.format(viewport.maxX) + "] (Ampiezza: " + DF.format(rangeX) + ")", 10, 20, RgbColor.RED);
+        renderer.drawOverlayText("Range Y: [" + DF.format(viewport.minY) + ", " + DF.format(viewport.maxY) + "] (Ampiezza: " + DF.format(rangeY) + ")", 10, 35, RgbColor.RED);
+        renderer.drawOverlayText("Zoom: " + DF.format(INITIAL_WIDTH / rangeX) + "x", 10, 50, RgbColor.RED);
+        renderer.drawOverlayText("Max Iterations: " + currentMaxIterations, 10, 65, RgbColor.RED);
     }
 
-    public static void main(String[] args) {
-        // Avvia l'applicazione Swing nel thread di eventi dedicato
-        SwingUtilities.invokeLater(MandelbrotIterativePlot::new);
+    public static void main(String[] args)
+    {
+        SwingUtilities.invokeLater(() -> {
+            MandelbrotIterativePlot plot = new MandelbrotIterativePlot();
+            SwingWindow.showInteractive("SMFN Mandelbrot Set Interactive Plot",
+                new Viewport2D(-2.0, 1.0, -1.5, 1.5, 1600, 1200), plot::drawScene);
+        });
     }
 }

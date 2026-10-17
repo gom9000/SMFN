@@ -4,7 +4,7 @@ import net.gommagomma.smfn.graphics.core.RgbColor;
 import java.util.function.BiFunction;
 
 import net.gommagomma.smfn.graphics.core.ColorMapper;
-import net.gommagomma.smfn.graphics.core.Viewport;
+import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
@@ -28,7 +28,7 @@ public class GeometryCirclePlot {
         SwingRenderer renderer = new SwingRenderer(800, 600);
         SwingWindow.show(renderer, "SMFN Circle Plot");
 
-        Viewport viewport = new Viewport(-5, 5, -5, 5, width, height);
+        Viewport2D viewport = new Viewport2D(-5, 5, -5, 5, width, height);
 
         VectorSemimodule<Real, RealField> V2 = new VectorSemimodule<>(RealField.INSTANCE, 2);
         BiFunction<Double, Double, Vector<Real>> domainAdapter = (x, y) -> V2.of(new Real[] { new Real(x), new Real(y) });

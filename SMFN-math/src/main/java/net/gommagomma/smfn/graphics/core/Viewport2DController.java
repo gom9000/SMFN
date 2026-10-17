@@ -8,12 +8,12 @@ package net.gommagomma.smfn.graphics.core;
  * Espone un'API di eventi puramente semantica (coordinate pixel e flag booleani), senza alcuna
  * dipendenza da un toolkit di input concreto (AWT/Swing, JavaFX, ...). Il compito di tradurre gli
  * eventi reali del toolkit (es. {@code java.awt.event.MouseEvent}) in chiamate a questi metodi
- * spetta a un adapter nel driver concreto (es. {@code SwingViewportInputAdapter} in
+ * spetta a un adapter nel driver concreto (es. {@code SwingViewport2DInputAdapter} in
  * {@code graphics.drivers.swing}).
  */
-public class ViewportController
+public class Viewport2DController
 {
-    private Viewport currentViewport;
+    private Viewport2D currentViewport;
     private final ViewportUpdateHandler updateHandler;
 
     private int startX, startY; // Usato per tracciare l'inizio del drag o della selezione
@@ -24,12 +24,20 @@ public class ViewportController
      * che la viewport è cambiata o che deve disegnare un rettangolo temporaneo.
      */
     public interface ViewportUpdateHandler {
-        void onViewportUpdated(Viewport newViewport);
+        void onViewportUpdated(Viewport2D newViewport);
         // Notifica per il disegno temporaneo del rettangolo di selezione
         void onTemporaryDraw(int x, int y, int width, int height);
     }
 
-    public ViewportController(Viewport initialViewport, ViewportUpdateHandler handler) {
+    /**
+     * @param initialViewport il punto di partenza
+     * @param handler riceve le nuove viewport e il rettangolo di selezione temporaneo
+     * @throws IllegalArgumentException se uno dei due e' nullo
+     */
+    public Viewport2DController(Viewport2D initialViewport, ViewportUpdateHandler handler) {
+        if (initialViewport == null || handler == null) {
+            throw new IllegalArgumentException("La viewport iniziale e il gestore non possono essere nulli.");
+        }
         this.currentViewport = initialViewport;
         this.updateHandler = handler;
     }
@@ -75,9 +83,12 @@ public class ViewportController
             int dx = x - startX;
             int dy = y - startY;
 
-            // Calcola quanto "vale" un pixel nel mondo matematico
-            double mathUnitsPerPixelX = currentViewport.rangeX / currentViewport.pixelWidth;
-            double mathUnitsPerPixelY = currentViewport.rangeY / currentViewport.pixelHeight;
+            // Calcola quanto "vale" un pixel nel mondo matematico. La scala e' la stessa sui due assi
+            // (la viewport conserva le proporzioni, lasciando margini se il riquadro non ha quelle
+            // dello schermo): rangeX / pixelWidth e rangeY / pixelHeight differirebbero fra loro, e
+            // il contenuto non seguirebbe il puntatore. Si ricava dalle conversioni della viewport.
+            double mathUnitsPerPixelX = currentViewport.convertPixelXToMathX(1) - currentViewport.convertPixelXToMathX(0);
+            double mathUnitsPerPixelY = currentViewport.convertPixelYToMathY(0) - currentViewport.convertPixelYToMathY(1);
 
             // Calcola lo spostamento matematico effettivo
             double mathDx = dx * mathUnitsPerPixelX;
@@ -152,14 +163,26 @@ public class ViewportController
     }
 
     /**
-     * Crea e notifica una nuova Viewport valida.
+     * Crea e notifica una nuova Viewport valida. Si rifiuta (restando alla viewport corrente) un
+     * riquadro che non e' finito o che e' piu' piccolo della precisione dei numeri: il limite e'
+     * relativo alla posizione (1e-12 volte la coordinata piu' grande), perche' a coordinate grandi i
+     * double non distinguono piu' due valori vicini e la viewport sarebbe fatta di rumore.
      */
     private void updateViewport(double minX, double maxX, double minY, double maxY) {
-        if (maxX - minX > 1e-10 && maxY - minY > 1e-10) {
-             this.currentViewport = new Viewport(minX, maxX, minY, maxY, currentViewport.pixelWidth, currentViewport.pixelHeight);
+        if (isUsableRange(minX, maxX) && isUsableRange(minY, maxY)) {
+            this.currentViewport = new Viewport2D(minX, maxX, minY, maxY, currentViewport.pixelWidth, currentViewport.pixelHeight);
             updateHandler.onViewportUpdated(this.currentViewport);
         }
     }
 
-    public Viewport getCurrentViewport() { return currentViewport; }
+    private static boolean isUsableRange(double min, double max) {
+        double range = max - min;
+        double magnitude = Math.max(Math.abs(min), Math.abs(max));
+        return Double.isFinite(range) && range > 0.0 && range > magnitude * MIN_RELATIVE_RANGE;
+    }
+
+    /** Un intervallo piu' stretto di cosi' (rispetto alle sue coordinate) non e' rappresentabile con i double. */
+    private static final double MIN_RELATIVE_RANGE = 1e-12;
+
+    public Viewport2D getCurrentViewport() { return currentViewport; }
 }
