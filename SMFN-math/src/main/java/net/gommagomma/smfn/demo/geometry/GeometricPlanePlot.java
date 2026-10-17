@@ -8,7 +8,7 @@ import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
-import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
+import net.gommagomma.smfn.graphics.plotting.ColorFieldPlotter;
 import net.gommagomma.smfn.math.algebra.core.Mapping;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
@@ -77,7 +77,7 @@ public class GeometricPlanePlot
 		};
 
 		renderer.startDrawing();
-		FunctionPlotter2D.plotFunction(renderer, viewport, heightFunction, domainAdapter, heightColorMapper);
+		ColorFieldPlotter.plotFunction(renderer, viewport, heightFunction, domainAdapter, heightColorMapper);
 		CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 		renderer.endDrawingAndFlush();
 	}

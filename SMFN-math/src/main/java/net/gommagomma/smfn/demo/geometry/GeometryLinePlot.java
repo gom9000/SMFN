@@ -8,7 +8,7 @@ import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
-import net.gommagomma.smfn.graphics.plotting.FunctionPlotter2D;
+import net.gommagomma.smfn.graphics.plotting.ColorFieldPlotter;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.geometry.Line;
@@ -50,7 +50,7 @@ public class GeometryLinePlot {
 
         renderer.startDrawing();
 
-        FunctionPlotter2D.plotFunction(renderer, viewport, f, domainAdapter, colorMapper);
+        ColorFieldPlotter.plotFunction(renderer, viewport, f, domainAdapter, colorMapper);
         CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
         renderer.endDrawingAndFlush();

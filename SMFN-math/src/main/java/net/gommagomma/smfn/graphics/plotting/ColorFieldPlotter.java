@@ -15,9 +15,9 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
  * Utility per plottare funzioni matematiche 2D (ad es. heatmap, frattali)
  * che mappano un punto (x, y) matematico a un valore, che viene poi colorato.
  */
-public class FunctionPlotter2D
+public class ColorFieldPlotter
 {
-	private FunctionPlotter2D() {}
+	private ColorFieldPlotter() {}
 
 
     /**

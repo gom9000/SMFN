@@ -13,9 +13,9 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
  * Utilizza adattatori funzionali per convertire i tipi matematici generici (D, C) 
  * in valori double plottabili.
  */
-public class FunctionPlotter1D
+public class CurvePlotter
 {
-	private FunctionPlotter1D() {}
+	private CurvePlotter() {}
 
 
     /**

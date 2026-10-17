@@ -7,7 +7,7 @@ import net.gommagomma.smfn.graphics.core.Viewport;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingRenderer;
 import net.gommagomma.smfn.graphics.drivers.swing.SwingWindow;
 import net.gommagomma.smfn.graphics.plotting.CartesianAxisPlotter;
-import net.gommagomma.smfn.graphics.plotting.FunctionPlotter1D;
+import net.gommagomma.smfn.graphics.plotting.CurvePlotter;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.polynomial.Polynomial;
 import net.gommagomma.smfn.math.algebra.polynomial.PolynomialElementFactory;
@@ -50,7 +50,7 @@ public class PolynomialPlot
         CartesianAxisPlotter.plotAxes(renderer, viewport, RgbColor.DARK_GRAY, true);
 
         renderer.setColor(RgbColor.BLUE);
-        FunctionPlotter1D.plotFunction(renderer, viewport, polynomialFunction, domainAdapter, codomainAdapter);
+        CurvePlotter.plotFunction(renderer, viewport, polynomialFunction, domainAdapter, codomainAdapter);
 
         renderer.endDrawingAndFlush();
     }
