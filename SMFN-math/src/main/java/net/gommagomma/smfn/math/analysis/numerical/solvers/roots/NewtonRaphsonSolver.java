@@ -19,6 +19,10 @@ import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
  *
  * Se il problema implementa DifferentiableScalarProblem, usa la derivata
  * analitica fornita; altrimenti ricade su un differenziatore numerico.
+ * <p>
+ * L'esito e' {@code CONVERGED} solo se il criterio sul passo e' soddisfatto e il residuo finale
+ * |f(x)| non supera {@code tolerance} volte il massimo residuo incontrato (valore iniziale incluso);
+ * se il passo e' piccolo ma il residuo no, l'esito e' {@code STAGNATED}.
  */
 public class NewtonRaphsonSolver<R extends ScalarElement<R>>
 implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
@@ -42,12 +46,14 @@ implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
 
 		R current = initialGuess;
 		Real stepDistance = space.distance(current, current);
+		double largestResidual = space.distance(problem.apply(current), field.zero()).getValue();
 
 		for (int k = 0; k < params.maxIterations; k++) {
 			R previous = current;
 
 			R fOfX = problem.apply(current);
 			R fPrimeOfX = derivative.apply(current);
+			largestResidual = Math.max(largestResidual, space.distance(fOfX, field.zero()).getValue());
 
 			if (field.isZero(fPrimeOfX)) {
 				Real residual = space.distance(fOfX, field.zero());
@@ -60,7 +66,9 @@ implements IterativeSolver<ScalarRootFindingProblem<R>, R, R>
 
 			if (criteria.shouldStop(stepDistance, params, k + 1)) {
 				Real residual = space.distance(problem.apply(current), field.zero());
-				return new RootFindingSolverResult<>(current, TerminationStatus.CONVERGED, k + 1, stepDistance, residual);
+				boolean small = residual.getValue() <= params.tolerance.getValue() * largestResidual;
+				return new RootFindingSolverResult<>(current,
+					small ? TerminationStatus.CONVERGED : TerminationStatus.STAGNATED, k + 1, stepDistance, residual);
 			}
 		}
 

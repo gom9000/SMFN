@@ -49,6 +49,20 @@ class NewtonRaphsonSolverTest
 	};
 
 	@Test
+	@DisplayName("Passo piccolo ma residuo non trascurabile: status STAGNATED, non CONVERGED")
+	void reportsStagnationWhenResidualIsNotSmall() {
+		NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, null);
+		StoppingParameters params = new StoppingParameters(new Real(1e-10), 50);
+
+		// Criterio sul passo soddisfatto subito: dopo un solo passo da x=1 su x^2 si e' in 0.5, con f=0.25
+		SolverResult<Real> result = solver.solve(SQUARE, new Real(1.0), (distance, p, it) -> true, params, SPACE);
+
+		assertEquals(TerminationStatus.STAGNATED, result.getStatus());
+		assertEquals(0.5, result.getValue().getValue(), 1e-12);
+		assertEquals(0.25, ((ResidualAware) result).getFinalResidual().getValue(), 1e-12);
+	}
+
+	@Test
 	@DisplayName("Convergenza: status CONVERGED, valore vicino alla radice attesa, residuo quasi nullo")
 	void convergesToKnownRoot() {
 		NewtonRaphsonSolver<Real> solver = new NewtonRaphsonSolver<>(R, null);

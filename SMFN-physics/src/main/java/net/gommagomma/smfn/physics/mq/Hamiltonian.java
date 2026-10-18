@@ -41,7 +41,8 @@ extends Observable<K>
      * 
      * Esegue la decomposizione spettrale tramite GeneralEigenvalueSolver. Se il solutore raggiunge
      * la convergenza entro i parametri specificati, estrae i livelli energetici reali (autovalori)
-     * e converte gli autovettori corrispondenti in istanze di QuantumState.
+     * e converte gli autovettori corrispondenti in istanze di QuantumState. I livelli sono in ordine
+     * crescente di energia e lo stato i-esimo e' quello del livello i-esimo.
      *
      * @param params I parametri di arresto e tolleranza numerica per il solutore di autovalori
      * @return L'oggetto StationaryStates contenente la lista dei livelli di energia e dei rispettivi autostati quantistici
@@ -53,11 +54,19 @@ extends Observable<K>
 			throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
 		}
 		EigenDecomposition decomposition = result.getValue();
-		List<Real> energyLevels = decomposition.getRealEigenvalues(params.tolerance);
+		List<Real> eigenvalues = decomposition.getRealEigenvalues(params.tolerance);
+		List<Vector<Complex>> eigenvectors = decomposition.getEigenvectors();
 
-		List<QuantumState> states = new ArrayList<>(decomposition.getEigenvectors().size());
-		for (Vector<Complex> eigenvector : decomposition.getEigenvectors()) {
-			states.add(QuantumState.from(eigenvector));
+		// Livelli in ordine crescente di energia; a parita' di energia resta l'ordine del solutore.
+		List<Integer> order = new ArrayList<>(eigenvalues.size());
+		for (int i = 0; i < eigenvalues.size(); i++) order.add(i);
+		order.sort((i, j) -> Double.compare(eigenvalues.get(i).getValue(), eigenvalues.get(j).getValue()));
+
+		List<Real> energyLevels = new ArrayList<>(order.size());
+		List<QuantumState> states = new ArrayList<>(order.size());
+		for (int i : order) {
+			energyLevels.add(eigenvalues.get(i));
+			states.add(QuantumState.from(eigenvectors.get(i)));
 		}
 
 		return new StationaryStates(energyLevels, states);

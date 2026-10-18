@@ -38,8 +38,31 @@ class HamiltonianTest
 		assertEquals(2, energyLevels.size());
 		double v0 = energyLevels.get(0).getValue();
 		double v1 = energyLevels.get(1).getValue();
-		assertTrue((Math.abs(v0 - 1.0) < 1e-9 && Math.abs(v1 - 4.0) < 1e-9)
-			|| (Math.abs(v0 - 4.0) < 1e-9 && Math.abs(v1 - 1.0) < 1e-9));
+		assertEquals(1.0, v0, 1e-9);
+		assertEquals(4.0, v1, 1e-9);
+	}
+
+	@Test
+	@DisplayName("findStationaryStates(): i livelli sono in ordine crescente e gli stati li accompagnano")
+	void levelsAreSortedAscending() {
+		SquareMatrixRing<Complex, ComplexField> M3 = new SquareMatrixRing<>(C, 3);
+		Complex z = new Complex(0, 0);
+		SquareMatrix<Complex> H = M3.of(new Complex[] {
+			new Complex(3, 0), z, z,
+			z, new Complex(1, 0), z,
+			z, z, new Complex(2, 0)
+		});
+		StationaryStates result = new Hamiltonian<>(H).findStationaryStates(params);
+		List<Real> levels = result.getEnergyLevels();
+		assertEquals(1.0, levels.get(0).getValue(), 1e-9);
+		assertEquals(2.0, levels.get(1).getValue(), 1e-9);
+		assertEquals(3.0, levels.get(2).getValue(), 1e-9);
+		// L'autovettore del livello i ha il peso massimo sulla componente di H con quel valore diagonale.
+		int[] expectedComponent = { 1, 2, 0 };
+		for (int i = 0; i < 3; i++) {
+			QuantumState s = result.getStates().get(i);
+			assertEquals(1.0, s.asVector().get(expectedComponent[i]).modulus(), 1e-9);
+		}
 	}
 
 	@Test

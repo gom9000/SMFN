@@ -48,11 +48,13 @@ implements IterativeSolver<VectorRootFindingProblem<K>, Vector<K>, Vector<K>>
 
 		Vector<K> current = initialGuess;
 		Real stepDistance = space.distance(current, current);
+		double largestResidual = space.distance(problem.apply(current), vectorSpace.zero()).getValue();
 
 		for (int k = 0; k < params.maxIterations; k++) {
 			Vector<K> previous = current;
 
 			Vector<K> fValue = problem.apply(current);
+			largestResidual = Math.max(largestResidual, space.distance(fValue, vectorSpace.zero()).getValue());
 			SquareMatrix<K> jacobian = (problem instanceof DifferentiableVectorProblem)
 				? ((DifferentiableVectorProblem<K>) problem).getJacobian().apply(current)
 				: numericFallback.estimateAt(problem, current);
@@ -71,7 +73,9 @@ implements IterativeSolver<VectorRootFindingProblem<K>, Vector<K>, Vector<K>>
 
 			if (criteria.shouldStop(stepDistance, params, k + 1)) {
 				Real residual = space.distance(problem.apply(current), vectorSpace.zero());
-				return new RootFindingSolverResult<>(current, TerminationStatus.CONVERGED, k + 1, stepDistance, residual);
+				boolean small = residual.getValue() <= params.tolerance.getValue() * largestResidual;
+				return new RootFindingSolverResult<>(current,
+					small ? TerminationStatus.CONVERGED : TerminationStatus.STAGNATED, k + 1, stepDistance, residual);
 			}
 		}
 

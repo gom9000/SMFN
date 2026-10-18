@@ -14,6 +14,12 @@ public enum TerminationStatus
 	/** Il processo ha rilevato la divergenza della sequenza rispetto a una soglia stabilita (es. tempo di fuga). */
 	DIVERGED,
 
+	/**
+	 * Il criterio sul passo e' soddisfatto ma il residuo finale non e' trascurabile rispetto ai residui
+	 * incontrati lungo il percorso: la sequenza si e' fermata senza raggiungere uno zero della funzione.
+	 */
+	STAGNATED,
+
 	/** Il processo si e' arrestato per una condizione numerica non gestibile (es. derivata nulla, matrice singolare). */
 	NUMERICAL_ERROR
 }
