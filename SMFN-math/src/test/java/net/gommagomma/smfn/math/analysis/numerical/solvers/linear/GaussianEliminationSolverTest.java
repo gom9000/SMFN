@@ -122,4 +122,17 @@ class GaussianEliminationSolverTest
 		assertThrows(NullPointerException.class, () -> new LinearSystemProblem<>(null, b));
 		assertThrows(NullPointerException.class, () -> new LinearSystemProblem<>(A, null));
 	}
+
+	@Test
+	@DisplayName("Sistema di ordine diverso da quello del solutore: eccezione, in entrambi i sensi")
+	void rejectsSystemOfDifferentOrder() {
+		SquareMatrix<Real> A3 = SquareMatrixElementFactory.of(R, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+		Vector<Real> b3 = V3.of(new Real[] { new Real(1.0), new Real(2.0), new Real(3.0) });
+		SquareMatrix<Real> A2 = SquareMatrixElementFactory.of(R, 1.0, 0.0, 0.0, 1.0);
+		Vector<Real> b2 = new VectorSpace<>(R, 2).of(new Real[] { new Real(1.0), new Real(2.0) });
+
+		assertThrows(IllegalArgumentException.class, () -> new GaussianEliminationSolver<>(R, 2).solve(A3, b3));
+		assertThrows(IllegalArgumentException.class, () -> new GaussianEliminationSolver<>(R, 3).solve(A2, b2));
+		assertThrows(IllegalArgumentException.class, () -> new GaussianEliminationSolver<>(R, 3).solve(A3, b2));
+	}
 }

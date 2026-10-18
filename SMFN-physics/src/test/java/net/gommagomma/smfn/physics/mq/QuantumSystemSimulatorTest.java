@@ -279,4 +279,43 @@ class QuantumSystemSimulatorTest
 
 		assertEquals(2, simulator.measurementProbabilities(Z, plus, params, new Real(0.0)).size());
 	}
+
+	@Test
+	@DisplayName("Stati con ampiezze enormi o minuscole: probabilita' e valore di aspettazione restano corretti")
+	void extremeAmplitudesAreHandled() {
+		SquareMatrix<Complex> pauliZ = M2.of(new Complex[] {
+			new Complex(1, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(-1, 0)
+		});
+		Observable<Complex> Z = new Observable<>(pauliZ);
+		StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
+
+		for (double scale : new double[] { 1e200, 1e-200 }) {
+			QuantumState plus = QuantumState.of(new Complex(scale, 0), new Complex(scale, 0));
+
+			List<MeasurementProbability> probabilities = simulator.measurementProbabilities(Z, plus, params);
+			assertEquals(2, probabilities.size());
+			for (MeasurementProbability p : probabilities) {
+				assertEquals(0.5, p.getProbability().getValue(), 1e-9);
+			}
+			assertEquals(0.0, simulator.expectationValue(Z, plus).getValue(), 1e-9);
+		}
+	}
+
+	@Test
+	@DisplayName("La soglia di degenerazione di default scala con lo spettro: lo stesso osservabile in unita' diverse ha gli stessi esiti")
+	void defaultDegeneracyToleranceIsScaleInvariant() {
+		double invSqrt2 = 1.0 / Math.sqrt(2.0);
+		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
+		StoppingParameters params = new StoppingParameters(new Real(1e-14), 200);
+
+		for (double scale : new double[] { 1.0, 1e-3, 1e-6, 1e-9, 1e-12 }) {
+			SquareMatrix<Complex> h = M2.of(new Complex[] {
+				new Complex(scale, 0), new Complex(0, 0),
+				new Complex(0, 0), new Complex(-scale, 0)
+			});
+
+			assertEquals(2, simulator.measurementProbabilities(new Observable<>(h), plus, params).size(), "scala " + scale);
+		}
+	}
 }

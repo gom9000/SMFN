@@ -150,4 +150,12 @@ public class ComplexTest {
         assertEquals("-2.0i", new Complex(0.0, -2.0).toString());
         assertEquals("-3.0 - 2.0i", new Complex(-3.0, -2.0).toString());
     }
+
+    @Test
+    void sqrtOfSmallNumberIsNotZero() {
+        Complex root = new Complex(4e-14, 0.0).sqrt();
+
+        assertTrue(Math.abs(root.getRe() - 2e-7) < 1e-20);
+        assertTrue(Math.abs(root.getIm()) < 1e-20);
+    }
 }

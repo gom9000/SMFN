@@ -28,7 +28,21 @@ implements InnerProductSpace<Vector<K>, K, S>
 
 	@Override
 	public Real norm(Vector<K> v) {
-		K dot = innerProduct(v, v);
-		return scalarStructure.magnitude(dot).sqrt();
+		// Norma scalata per la componente di modulo massimo: sommare direttamente i quadrati
+		// andrebbe in overflow oltre ~1e154 e in underflow sotto ~1e-154.
+		double[] magnitudes = new double[dimension];
+		double max = 0.0;
+		for (int i = 0; i < dimension; i++) {
+			magnitudes[i] = scalarStructure.magnitude(v.get(i)).getValue();
+			if (Double.isNaN(magnitudes[i])) return new Real(Double.NaN);
+			max = Math.max(max, magnitudes[i]);
+		}
+		if (max == 0.0 || Double.isInfinite(max)) return new Real(max);
+		double sum = 0.0;
+		for (double magnitude : magnitudes) {
+			double ratio = magnitude / max;
+			sum += ratio * ratio;
+		}
+		return new Real(max * Math.sqrt(sum));
 	}
 }

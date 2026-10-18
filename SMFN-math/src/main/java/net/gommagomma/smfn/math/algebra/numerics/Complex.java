@@ -154,8 +154,8 @@ implements ApproximateElement<Complex>, Normable<Real>, Exponentiable<Complex>, 
 
     @Override // Sqrtable impls
     public Complex sqrt() {
-        ComplexField field = ComplexField.INSTANCE;
-        if (field.isZero(this)) return field.zero();
+        // Zero esatto, non approssimato: la radice di un numero piccolo ma non nullo e' un numero non nullo.
+        if (real == 0.0 && imaginary == 0.0) return ComplexField.INSTANCE.zero();
 
         double x = Math.abs(real);
         double y = Math.abs(imaginary);

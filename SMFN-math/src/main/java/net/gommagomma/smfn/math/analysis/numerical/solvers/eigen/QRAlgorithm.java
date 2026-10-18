@@ -33,6 +33,7 @@ final class QRAlgorithm
 		Complex[][] q = reduction.q;
 
 		double tolerance = params.tolerance.getValue();
+		double deflationFloor = Math.ulp(1.0) * frobeniusNorm(a, n);
 		int m = n;
 		int iterationsUsed = 0;
 		TerminationStatus status = TerminationStatus.CONVERGED;
@@ -40,7 +41,7 @@ final class QRAlgorithm
 		// Il budget params.maxIterations e' unico per l'intera risoluzione e conta i soli passi QR
 		// eseguiti; la deflazione e' un controllo e non consuma budget.
 		while (m > 1) {
-			if (hasDeflatedTrailingEntry(a, m, tolerance)) {
+			if (hasDeflatedTrailingEntry(a, m, tolerance, deflationFloor)) {
 				m--;
 				continue;
 			}
@@ -168,19 +169,34 @@ final class QRAlgorithm
 	 * contro l'O(n*m) di un intero passo QR) rispetto alla garanzia in piu' che da': non
 	 * fidarsi ciecamente del fatto che l'arrotondamento non abbia introdotto valori residui
 	 * altrove.
+	 * <p>
+	 * La soglia e' relativa alla scala locale (i due elementi diagonali adiacenti), con un solo
+	 * pavimento assoluto, pari alla precisione di macchina per la norma della matrice: sotto di
+	 * esso un elemento e' indistinguibile da zero. Una soglia assoluta piu' larga farebbe
+	 * deflazionare, e quindi azzerare, autovalori piccoli ma ben distinti da zero.
 	 */
-	private boolean hasDeflatedTrailingEntry(Complex[][] a, int m, double tolerance) {
+	private boolean hasDeflatedTrailingEntry(Complex[][] a, int m, double tolerance, double floor) {
 		if (m < 2) {
 			return true;
 		}
 		double diagonalScale = a[m - 1][m - 1].modulus();
 		for (int k = 0; k < m - 1; k++) {
 			double neighbourScale = a[k][k].modulus() + diagonalScale;
-			if (a[m - 1][k].modulus() >= tolerance * neighbourScale + tolerance) {
+			if (a[m - 1][k].modulus() > Math.max(tolerance * neighbourScale, floor)) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	private static double frobeniusNorm(Complex[][] a, int n) {
+		double sum = 0.0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				sum += a[i][j].modulusSquared();
+			}
+		}
+		return Math.sqrt(sum);
 	}
 
 	/** Shift di Wilkinson: l'autovalore del blocco 2x2 finale piu' vicino a a[m-1][m-1]. */

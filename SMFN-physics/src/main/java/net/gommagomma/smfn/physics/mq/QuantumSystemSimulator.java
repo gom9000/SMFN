@@ -50,9 +50,9 @@ public final class QuantumSystemSimulator
 	/**
 	 * Soglia di degenerazione relativa usata di default, quando il chiamante non ne specifica una
 	 * esplicita: due autovalori grezzi sono considerati lo stesso autovalore fisico se differiscono
-	 * per meno di {@code DEFAULT_DEGENERACY_RELATIVE_TOLERANCE * max(1.0, |autovalore piu' grande in modulo|)}.
-	 * Scalare rispetto allo spettro (anziche' un valore assoluto fisso) evita sia falsi positivi su
-	 * scale di energia grandi sia falsi negativi su scale piccole.
+	 * per meno di {@code DEFAULT_DEGENERACY_RELATIVE_TOLERANCE * |autovalore piu' grande in modulo|}
+	 * (zero se lo spettro e' nullo). Essendo proporzionale alla scala dello spettro, lo stesso
+	 * osservabile produce gli stessi esiti qualunque sia l'unita' di misura.
 	 */
 	public static final double DEFAULT_DEGENERACY_RELATIVE_TOLERANCE = 1e-8;
 
@@ -64,14 +64,15 @@ public final class QuantumSystemSimulator
      * @return il valore di aspettazione sotto forma di Real (garantito reale per operatori hermitiani)
      */
 	public Real expectationValue(Observable<Complex> observable, QuantumState state) {
-		Vector<Complex> H_psi = observable.asOperator().apply(state.asVector());
-		Complex expectation = state.innerProduct(QuantumState.from(H_psi));
-		Complex normSquared = state.innerProduct(state);
-		if (normSquared.getRe() <= 0.0) {
-			throw new IllegalArgumentException("The state vector has zero norm; cannot compute an expectation value.");
+		double stateNorm = state.norm().getValue();
+		if (!(stateNorm > 0.0) || Double.isInfinite(stateNorm)) {
+			throw new IllegalArgumentException("The state vector must have a finite, non-zero norm; cannot compute an expectation value.");
 		}
+		QuantumState normalized = state.normalize(); // evita overflow/underflow dei quadrati delle ampiezze
+		Vector<Complex> H_psi = observable.asOperator().apply(normalized.asVector());
+		Complex expectation = normalized.innerProduct(QuantumState.from(H_psi));
 		// <psi|H|psi> e' garantito reale per un Observable hermitiano.
-		return new Real(expectation.getRe() / normSquared.getRe());
+		return new Real(expectation.getRe());
 	}
 
 	/**
@@ -179,6 +180,12 @@ public final class QuantumSystemSimulator
 				throw new IllegalArgumentException("La soglia di degenerazione deve essere finita e non negativa: " + degeneracyTolerance + ".");
 			}
 		}
+		double stateNorm = state.norm().getValue();
+		if (!(stateNorm > 0.0) || Double.isInfinite(stateNorm)) {
+			throw new IllegalArgumentException("The state vector must have a finite, non-zero norm; cannot compute measurement probabilities.");
+		}
+		QuantumState normalizedState = state.normalize(); // probabilita' relative: la normalizzazione evita overflow/underflow dei quadrati
+
 		SolverResult<EigenDecomposition> result = new HermitianEigenvalueSolver().solve(observable.asOperator(), eigenParams);
 		if (result.getStatus() != TerminationStatus.CONVERGED) {
 			throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
@@ -213,7 +220,7 @@ public final class QuantumSystemSimulator
 				if (grouped[j] || Math.abs(rawEigenvalues.get(j).getRe() - lambda) > tolerance) continue;
 				grouped[j] = true;
 				QuantumState basisState = QuantumState.from(rawEigenvectors.get(j));
-				Complex amplitude = basisState.innerProduct(state); // <lambda_j|psi>
+				Complex amplitude = basisState.innerProduct(normalizedState); // <lambda_j|psi>
 				p += amplitude.getRe() * amplitude.getRe() + amplitude.getIm() * amplitude.getIm();
 				QuantumState term = basisState.scale(amplitude);
 				projection = (projection == null) ? term : projection.plus(term);
@@ -243,7 +250,7 @@ public final class QuantumSystemSimulator
 		for (Complex eigenvalue : rawEigenvalues) {
 			maxAbs = Math.max(maxAbs, Math.abs(eigenvalue.getRe()));
 		}
-		return DEFAULT_DEGENERACY_RELATIVE_TOLERANCE * Math.max(maxAbs, 1.0);
+		return DEFAULT_DEGENERACY_RELATIVE_TOLERANCE * maxAbs;
 	}
 
 	private static final class BornDistribution {

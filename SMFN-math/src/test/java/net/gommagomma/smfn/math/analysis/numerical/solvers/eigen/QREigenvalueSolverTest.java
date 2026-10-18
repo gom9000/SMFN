@@ -220,4 +220,19 @@ class QREigenvalueSolverTest
 		assertEquals(TerminationStatus.CONVERGED, exact.getStatus());
 		assertEquals(needed, exact.getIterationsExecuted());
 	}
+
+	@Test
+	@DisplayName("Autovalori piccoli ma ben distinti da zero non vengono azzerati dalla deflazione: [[0, 1], [1e-14, 0]] ha autovalori +-1e-7")
+	void smallEigenvaluesAreNotDeflatedToZero() {
+		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 0.0, 1.0, 1e-14, 0.0);
+
+		SolverResult<EigenDecomposition> result = solver.solve(A, new StoppingParameters(new Real(1e-12), 500));
+
+		assertEquals(TerminationStatus.CONVERGED, result.getStatus());
+		List<Complex> eigenvalues = result.getValue().getEigenvalues();
+		double a = eigenvalues.get(0).getRe();
+		double b = eigenvalues.get(1).getRe();
+		assertEquals(1e-7, Math.max(a, b), 1e-12);
+		assertEquals(-1e-7, Math.min(a, b), 1e-12);
+	}
 }

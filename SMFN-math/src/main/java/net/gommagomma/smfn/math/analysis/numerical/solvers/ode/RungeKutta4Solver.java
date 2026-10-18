@@ -82,10 +82,11 @@ implements IntervalODEStepSolver<K, T, S>
 			Real stepDt = (effectiveDeltaTime.abs().getValue() > remainingTime.abs().getValue())
 				? remainingTime : effectiveDeltaTime;
 
-			currentState = step(problem, currentState, currentTime, stepDt, space);
-			currentTime = R.add(currentTime, stepDt);
-
 			if (R.isZero(stepDt)) break;
+
+			Real nextTime = TimeAdvance.advance(currentTime, stepDt);
+			currentState = step(problem, currentState, currentTime, stepDt, space);
+			currentTime = nextTime;
 		}
 
 		return currentState;

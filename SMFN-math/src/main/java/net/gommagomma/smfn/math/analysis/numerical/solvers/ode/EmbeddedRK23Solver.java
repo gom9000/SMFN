@@ -158,6 +158,7 @@ implements IntervalODEStepSolver<K, T, S>
 			Real h_to_execute = R.multiply(h_to_execute_modulus, timeDirection);
 
 			while (true) {
+				Real nextTime = TimeAdvance.advance(currentTime, h_to_execute);
 				EmbeddedStep<T> stepResult = embeddedStep(problem, currentState, currentTime, h_to_execute, space);
 				T errorEstimate = stepResult.errorEstimate;
 
@@ -174,7 +175,7 @@ implements IntervalODEStepSolver<K, T, S>
 
 				if (errorRatio <= 1.0) {
 					currentState = stepResult.result;
-					currentTime = R.add(currentTime, h_to_execute);
+					currentTime = nextTime;
 
 					h_abs = new Real(Math.min(h_new_abs.getValue(), maxStepSize.getValue()));
 					h_abs = new Real(Math.max(h_abs.getValue(), minStepSize.getValue()));

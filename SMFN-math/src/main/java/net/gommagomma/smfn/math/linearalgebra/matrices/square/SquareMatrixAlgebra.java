@@ -123,6 +123,7 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
      */
     @Override
     public K determinant(SquareMatrix<K> m) {
+        validateDimensions(m);
         // Se n  piccolo, Laplace va bene, altrimenti Gauss
         if (n <= 3) return super.determinant(m);
         

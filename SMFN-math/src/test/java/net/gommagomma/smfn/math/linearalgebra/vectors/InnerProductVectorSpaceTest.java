@@ -54,4 +54,21 @@ class InnerProductVectorSpaceTest
 		assertTrue(Math.abs(selfProduct.getIm()) < EPSILON, "<v,v> deve avere parte immaginaria nulla");
 		assertTrue(selfProduct.getRe() >= 0.0, "<v,v> deve essere non negativo");
 	}
+
+	@Test
+	@DisplayName("norm(): stabile a scale estreme, senza overflow ne' underflow dei quadrati")
+	void normIsStableAtExtremeScales() {
+		InnerProductVectorSpace<Real, RealField> space = new InnerProductVectorSpace<>(R, 2);
+		for (double scale : new double[] { 1e200, 1e-200 }) {
+			Vector<Real> v = space.of(new Real[] { new Real(3.0 * scale), new Real(4.0 * scale) });
+			assertTrue(Math.abs(space.norm(v).getValue() / (5.0 * scale) - 1.0) < 1e-12, "scala " + scale);
+		}
+
+		InnerProductVectorSpace<Complex, ComplexField> complexSpace = new InnerProductVectorSpace<>(C, 2);
+		Vector<Complex> w = complexSpace.of(new Complex[] { new Complex(3e200, 4e200), new Complex(0, 0) });
+		assertTrue(Math.abs(complexSpace.norm(w).getValue() / 5e200 - 1.0) < 1e-12);
+
+		Vector<Real> zero = space.of(new Real[] { new Real(0.0), new Real(0.0) });
+		assertTrue(space.norm(zero).getValue() == 0.0);
+	}
 }

@@ -1,5 +1,7 @@
 package net.gommagomma.smfn.math.analysis.numerical.solvers.linear;
 
+import java.util.Objects;
+
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
@@ -35,6 +37,12 @@ implements LinearSystemSolver<K>
 
 	@Override
 	public Vector<K> solve(SquareMatrix<K> A, Vector<K> b) {
+		Objects.requireNonNull(A, "A must not be null.");
+		Objects.requireNonNull(b, "b must not be null.");
+		if (A.getN() != n || b.size() != n) {
+			throw new IllegalArgumentException("Sistema " + A.getN() + "x" + A.getN() + " con termini noti di dimensione " + b.size()
+				+ " incompatibile con un solutore di ordine " + n + ".");
+		}
 		@SuppressWarnings("unchecked")
 		K[] augmentedData = (K[]) new ScalarElement<?>[n * (n + 1)];
 		for (int i = 0; i < n; i++) {

@@ -103,4 +103,16 @@ class SquareMatrixAlgebraTest extends LinearSpaceAxiomContract<SquareMatrix<Comp
 		assertThrows(IllegalArgumentException.class, () -> M2.inverse(identity3));
 		assertThrows(IllegalArgumentException.class, () -> m3.inverse(m(1, 2, 3, 4)));
 	}
+
+	@Test
+	@DisplayName("determinant(): una matrice di ordine diverso da quello dell'algebra e' rifiutata anche per n > 3")
+	void determinantRejectsMatrixOfDifferentOrder() {
+		SquareMatrixAlgebra<Complex, ComplexField> m4 = new SquareMatrixAlgebra<>(C, 4);
+		SquareMatrix<Complex> identity5 = new SquareMatrixAlgebra<>(C, 5).one();
+		SquareMatrix<Complex> identity3 = new SquareMatrixAlgebra<>(C, 3).one();
+
+		assertThrows(IllegalArgumentException.class, () -> m4.determinant(identity5));
+		assertThrows(IllegalArgumentException.class, () -> m4.determinant(identity3));
+		assertThrows(IllegalArgumentException.class, () -> m4.isInvertible(identity5));
+	}
 }

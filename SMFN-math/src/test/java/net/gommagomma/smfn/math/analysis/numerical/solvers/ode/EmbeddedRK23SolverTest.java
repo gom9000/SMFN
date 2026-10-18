@@ -103,4 +103,20 @@ class EmbeddedRK23SolverTest
 			assertThrows(IllegalArgumentException.class, () -> solver.integrate(exponentialGrowth(), new Real(1.0), params, V1));
 		}
 	}
+
+	@Test
+	@DisplayName("Passo non rappresentabile al tempo corrente (t = 1e16, passo massimo 0.5): eccezione chiara, non ciclo infinito")
+	void unrepresentableTimeAdvanceThrows() {
+		EmbeddedRK23Solver<Real, Vector<Real>, RealField> solver = new EmbeddedRK23Solver<>();
+		InitialValueProblem<Real, Vector<Real>> problem = new InitialValueProblem<Real, Vector<Real>>() {
+			@Override public Vector<Real> derivative(Vector<Real> state, Real time) { return state; }
+			@Override public Vector<Real> getInitialState() { return V1.of(new Real[] { new Real(1.0) }); }
+			@Override public Real getStartTime() { return new Real(1e16); }
+		};
+		IntegrationParameters params = new IntegrationParameters(null, new Real(1e-6), new Real(0.5), new Real(1e-3));
+
+		assertTimeoutPreemptively(Duration.ofSeconds(5), () ->
+			assertThrows(IllegalStateException.class, () -> solver.integrate(problem, new Real(1e16 + 2.0), params, V1))
+		);
+	}
 }

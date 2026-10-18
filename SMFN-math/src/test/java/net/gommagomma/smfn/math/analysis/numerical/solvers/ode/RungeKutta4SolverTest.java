@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.analysis.numerical.solvers.ode;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
@@ -64,5 +65,16 @@ class RungeKutta4SolverTest
 			Vector<Real> result = solver.integrate(exponentialGrowth(1.0, 0.0), new Real(1.0), params, V1);
 			assertEquals(Math.exp(1.0), result.get(0).getValue(), 1e-6);
 		});
+	}
+
+	@Test
+	@DisplayName("Passo non rappresentabile al tempo corrente (t = 1e16, dt = 0.5): eccezione, non ciclo infinito")
+	void unrepresentableTimeAdvanceThrows() {
+		RungeKutta4Solver<Real, Vector<Real>, RealField> solver = new RungeKutta4Solver<>();
+		IntegrationParameters params = new IntegrationParameters(new Real(0.5));
+
+		assertTimeoutPreemptively(Duration.ofSeconds(5), () ->
+			assertThrows(IllegalStateException.class, () -> solver.integrate(exponentialGrowth(1.0, 1e16), new Real(1e16 + 2.0), params, V1))
+		);
 	}
 }

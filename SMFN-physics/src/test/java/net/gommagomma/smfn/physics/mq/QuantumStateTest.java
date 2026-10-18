@@ -74,4 +74,17 @@ class QuantumStateTest
 		QuantumState viaFrom = QuantumState.from(direct.asVector());
 		assertTrue(direct.asVector().equals(viaFrom.asVector()));
 	}
+
+	@Test
+	@DisplayName("norm() e normalize(): ampiezze enormi o minuscole non producono infinito, zero o NaN")
+	void normAndNormalizeAreStableAtExtremeScales() {
+		for (double scale : new double[] { 1e200, 1e-200 }) {
+			QuantumState state = QuantumState.of(new Complex(scale, 0), new Complex(0, 0));
+
+			assertEquals(1.0, state.norm().getValue() / scale, 1e-12);
+			QuantumState normalized = state.normalize();
+			assertEquals(1.0, normalized.norm().getValue(), 1e-12);
+			assertEquals(1.0, normalized.asVector().get(0).getRe(), 1e-12);
+		}
+	}
 }
