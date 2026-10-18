@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.algebra.polynomial;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.factories.CompositeElementFactory;
@@ -41,7 +42,11 @@ public final class PolynomialElementFactory
      */
     @SafeVarargs
     public static <K extends ScalarElement<K>> Polynomial<K> of(ScalarStructure<K> scalarStructure, K... values) {
-        return of(scalarStructure, List.of(values));
+        List<K> list = new ArrayList<>(values.length);
+        for (K value : values) {
+        	list.add(Objects.requireNonNull(value));
+        }
+        return of(scalarStructure, list);
     }
 
     /**

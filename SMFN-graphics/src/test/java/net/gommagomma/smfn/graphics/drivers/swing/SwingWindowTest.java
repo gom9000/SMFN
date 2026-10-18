@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import net.gommagomma.smfn.graphics.core.RgbColor;
 import net.gommagomma.smfn.graphics.core.Viewport2D;
 import net.gommagomma.smfn.graphics.core.Viewport3D;
 

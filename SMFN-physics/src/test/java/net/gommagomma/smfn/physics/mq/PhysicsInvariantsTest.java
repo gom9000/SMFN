@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
-import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 
@@ -28,7 +27,6 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 @DisplayName("physics.mq: invarianti fisico-algebrici (realta', regola di Born, autostati, evoluzione unitaria) sul catalogo")
 class PhysicsInvariantsTest
 {
-	private static final ComplexField C = ComplexField.INSTANCE;
 	private static final double EPSILON = 1e-9;
 	private final QuantumSystemSimulator simulator = new QuantumSystemSimulator();
 

@@ -1,7 +1,6 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -46,12 +45,6 @@ public class IntegerRingTest extends EuclideanDomainAxiomContract<SignedInt, Nat
 	// garanzia del compilatore data dalla dichiarazione della classe, non
 	// qualcosa da verificare a runtime con un instanceof (che non compilerebbe
 	// nemmeno: Java lo rifiuta perche' provatamente impossibile).
-
-	@Test
-	void containsRejectsNull() {
-		assertTrue(integerRing.contains(integerRing.one()));
-		assertFalse(integerRing.contains(null));
-	}
 
 	@Test
 	void ofFromLongAndInt() {

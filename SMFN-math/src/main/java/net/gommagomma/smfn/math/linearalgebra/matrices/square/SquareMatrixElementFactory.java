@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
@@ -30,7 +31,7 @@ public final class SquareMatrixElementFactory
         ScalarStructure<SquareMatrix<K>> matrixStruct = SquareMatrixStructureFactory.getStructureFor(s, size);
 
         @SuppressWarnings("unchecked")
-        K[] data = (K[]) elements.toArray(new ScalarElement[0]);
+        K[] data = (K[]) elements.toArray(new ScalarElement<?>[0]);
 
         if (matrixStruct instanceof SquareMatrixSemiring) {
             return ((SquareMatrixSemiring<K, ?>) matrixStruct).of(data);
@@ -43,7 +44,11 @@ public final class SquareMatrixElementFactory
      */
     @SafeVarargs
     public static <K extends ScalarElement<K>> SquareMatrix<K> of(ScalarStructure<K> s, K... values) {
-        return of(s, List.of(values));
+        List<K> list = new ArrayList<>(values.length);
+        for (K value : values) {
+        	list.add(Objects.requireNonNull(value));
+        }
+        return of(s, list);
     }
 
     /**

@@ -111,8 +111,9 @@ public abstract class SemiringAxiomContract<E extends ScalarElement<E>>
 	}
 
 	@Test
-	@DisplayName("contains() rifiuta null")
+	@DisplayName("contains() accetta i propri elementi e rifiuta null")
 	void containsRejectsNull() {
+		assertTrue(structure().contains(structure().one()));
 		assertTrue(!structure().contains(null));
 	}
 

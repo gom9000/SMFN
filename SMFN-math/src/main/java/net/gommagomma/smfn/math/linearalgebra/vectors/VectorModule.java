@@ -24,7 +24,7 @@ implements Module<Vector<K>, K, S>
     public Vector<K> negate(Vector<K> v) {
         checkDimensions(v);
 
-        ScalarElement<?>[] resultData = new ScalarElement[dimension];
+        ScalarElement<?>[] resultData = new ScalarElement<?>[dimension];
         for (int i = 0; i < dimension; i++) {
             // Delega la negazione allo scalare (es. x -> -x)
             resultData[i] = scalarStructure.negate(v.get(i));
@@ -38,7 +38,7 @@ implements Module<Vector<K>, K, S>
         checkDimensions(a);
         checkDimensions(b);
 
-        ScalarElement<?>[] resultData = new ScalarElement[dimension];
+        ScalarElement<?>[] resultData = new ScalarElement<?>[dimension];
         for (int i = 0; i < dimension; i++) {
             // Delega la sottrazione allo scalare (es. a - b)
             resultData[i] = scalarStructure.subtract(a.get(i), b.get(i));

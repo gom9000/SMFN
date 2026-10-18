@@ -17,7 +17,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
  * Funzione complessa che assegna a ciascun punto del piano complesso c il corrispondente tempo di fuga (numero di iterazioni)
  * associato all'insieme di Mandelbrot z_{k+1} = z_k^2 + c a partire dall'origine z_0 = 0.
  */
-public class MandelbrotFunction
+public final class MandelbrotFunction
 implements Mapping<Complex, Natural>
 {
 	private static final double DIVERGENCE_RADIUS_SQ = 4.0;

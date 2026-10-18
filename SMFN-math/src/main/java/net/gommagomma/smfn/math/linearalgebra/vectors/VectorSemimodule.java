@@ -36,7 +36,7 @@ implements Semimodule<Vector<K>, K, S>, CompositeElementFactory<Vector<K>, K[]>
 
     @Override
     public Vector<K> zero() {
-        ScalarElement<?>[] data = new ScalarElement[dimension];
+        ScalarElement<?>[] data = new ScalarElement<?>[dimension];
         K zeroScalar = scalarStructure.zero();
         Arrays.fill(data, zeroScalar);
         
@@ -48,7 +48,7 @@ implements Semimodule<Vector<K>, K, S>, CompositeElementFactory<Vector<K>, K[]>
         checkDimensions(a);
         checkDimensions(b);
 
-        ScalarElement<?>[] resultData = new ScalarElement[dimension];
+        ScalarElement<?>[] resultData = new ScalarElement<?>[dimension];
         for (int i = 0; i < dimension; i++) {
             resultData[i] = scalarStructure.add(a.get(i), b.get(i));
         }
@@ -62,7 +62,7 @@ implements Semimodule<Vector<K>, K, S>, CompositeElementFactory<Vector<K>, K[]>
     public Vector<K> scale(K scalar, Vector<K> vector) {
         checkDimensions(vector);
 
-        ScalarElement<?>[] resultData = new ScalarElement[dimension];
+        ScalarElement<?>[] resultData = new ScalarElement<?>[dimension];
         for (int i = 0; i < dimension; i++) {
             resultData[i] = scalarStructure.multiply(scalar, vector.get(i));
         }

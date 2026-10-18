@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
-import net.gommagomma.smfn.math.algebra.numerics.Real;
 
 @DisplayName("QuantumState: stato quantistico che porta con se' il proprio spazio")
 class QuantumStateTest

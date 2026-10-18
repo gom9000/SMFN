@@ -37,7 +37,7 @@ public class CentralDifferenceJacobianEstimator<K extends ScalarElement<K>, S ex
 		K twoH = field.add(h, h);
 
 		@SuppressWarnings("unchecked")
-		K[] data = (K[]) new ScalarElement[n * n];
+		K[] data = (K[]) new ScalarElement<?>[n * n];
 
 		for (int j = 0; j < n; j++) {
 			Vector<K> vPlus = perturb(space, v, j, h, n);
@@ -56,7 +56,7 @@ public class CentralDifferenceJacobianEstimator<K extends ScalarElement<K>, S ex
 
 	@SuppressWarnings("unchecked")
 	private Vector<K> perturb(VectorSemimodule<K, S> space, Vector<K> v, int index, K delta, int n) {
-		K[] data = (K[]) new ScalarElement[n];
+		K[] data = (K[]) new ScalarElement<?>[n];
 		for (int i = 0; i < n; i++) {
 			data[i] = (i == index) ? field.add(v.get(i), delta) : v.get(i);
 		}

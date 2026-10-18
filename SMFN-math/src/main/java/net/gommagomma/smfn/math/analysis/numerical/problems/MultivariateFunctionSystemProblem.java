@@ -68,7 +68,7 @@ implements DifferentiableVectorProblem<K>
 	@SuppressWarnings("unchecked")
 	public Vector<K> apply(Vector<K> v) {
 		checkDimension(v);
-		K[] values = (K[]) new ScalarElement[functions.size()];
+		K[] values = (K[]) new ScalarElement<?>[functions.size()];
 		for (int i = 0; i < functions.size(); i++) {
 			values[i] = functions.get(i).apply(v);
 		}
@@ -90,7 +90,7 @@ implements DifferentiableVectorProblem<K>
 			checkDimension(v);
 			int n = functions.size();
 			@SuppressWarnings("unchecked")
-			K[] data = (K[]) new ScalarElement[n * n];
+			K[] data = (K[]) new ScalarElement<?>[n * n];
 
 			for (int i = 0; i < n; i++) {
 				MultivariateFunction<K> f = functions.get(i);

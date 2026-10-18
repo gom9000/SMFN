@@ -125,7 +125,6 @@ class SurfacePlotterTest
 				assertEquals(20, r.polygons.size());
 				boolean farHighX = v.horizontalDepth(1, -1) > v.horizontalDepth(-1, -1);
 				boolean farHighY = v.horizontalDepth(-1, 1) > v.horizontalDepth(-1, -1);
-				int[] prev = null;
 				int k = 0;
 				for (int a = 0; a < 5; a++) {
 					int i = farHighX ? 4 - a : a;

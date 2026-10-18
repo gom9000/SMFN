@@ -36,7 +36,7 @@ implements LinearSystemSolver<K>
 	@Override
 	public Vector<K> solve(SquareMatrix<K> A, Vector<K> b) {
 		@SuppressWarnings("unchecked")
-		K[] augmentedData = (K[]) new ScalarElement[n * (n + 1)];
+		K[] augmentedData = (K[]) new ScalarElement<?>[n * (n + 1)];
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
 				augmentedData[i * (n + 1) + j] = A.get(i, j);
@@ -47,7 +47,7 @@ implements LinearSystemSolver<K>
 		Matrix<K> reduced = augmentedSpace.toRowEchelonForm(augmented);
 
 		@SuppressWarnings("unchecked")
-		K[] x = (K[]) new ScalarElement[n];
+		K[] x = (K[]) new ScalarElement<?>[n];
 		for (int i = n - 1; i >= 0; i--) {
 			K sum = reduced.get(i, n);
 			for (int j = i + 1; j < n; j++) {

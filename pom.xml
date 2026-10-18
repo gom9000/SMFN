@@ -4,7 +4,7 @@
 
 	<groupId>net.gommagomma.smfn</groupId>
     <artifactId>SMFN</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 	<name>SMFN</name>
     <packaging>pom</packaging>
 	<description>SMFN-library</description>
@@ -12,6 +12,9 @@
 
 	<modules>
 		<module>SMFN-math</module>
+		<module>SMFN-graphics</module>
+		<module>SMFN-physics</module>
+		<module>SMFN-demo</module>
     </modules>
 
 	<properties>
@@ -26,6 +29,23 @@
 
 <dependencyManagement>
         <dependencies>
+            <!-- Moduli interni: stessa versione del padre -->
+            <dependency>
+                <groupId>net.gommagomma.smfn</groupId>
+                <artifactId>SMFN-math</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.gommagomma.smfn</groupId>
+                <artifactId>SMFN-graphics</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.gommagomma.smfn</groupId>
+                <artifactId>SMFN-physics</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- Aggrega junit-jupiter-api, engine e params -->
             <dependency>
                 <groupId>org.junit.jupiter</groupId>

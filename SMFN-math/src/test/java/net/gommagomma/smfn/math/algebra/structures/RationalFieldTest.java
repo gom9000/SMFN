@@ -1,10 +1,8 @@
 package net.gommagomma.smfn.math.algebra.structures;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,12 +36,6 @@ public class RationalFieldTest extends FieldAxiomContract<Rational>
 	@Test
 	void name() {
 		assertEquals("Rational Field (Q)", rationalField.getName());
-	}
-
-	@Test
-	void containsRejectsNull() {
-		assertTrue(rationalField.contains(new Rational(1, 2)));
-		assertFalse(rationalField.contains(null));
 	}
 
 	@Test

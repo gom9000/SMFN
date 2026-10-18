@@ -23,7 +23,7 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
 
     @SuppressWarnings("unchecked")
     protected K[] newDataArray(int size) {
-        return (K[]) new ScalarElement[size];
+        return (K[]) new ScalarElement<?>[size];
     }
 
     @Override

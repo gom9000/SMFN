@@ -18,7 +18,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
  * z_{k+1} = (|Re(z_k)| + i * |Im(z_k)|)^2 + c
  * a partire dall'origine z_0 = 0.
  */
-public class BurningShipFunction
+public final class BurningShipFunction
 implements Mapping<Complex, Natural>
 {
     private static final double DIVERGENCE_RADIUS_SQ = 4.0;

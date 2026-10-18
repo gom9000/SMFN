@@ -9,16 +9,15 @@ import org.junit.jupiter.api.Test;
 
 import net.gommagomma.smfn.math.algebra.core.structures.metric.MetricSpace;
 import net.gommagomma.smfn.math.algebra.numerics.Complex;
-import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.structures.ComplexField;
 import net.gommagomma.smfn.math.algebra.structures.RealField;
 import net.gommagomma.smfn.math.analysis.core.problems.FixedPointProblem;
-import net.gommagomma.smfn.math.analysis.core.solvers.StoppingCriteria;
-import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
-import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 import net.gommagomma.smfn.math.analysis.core.solvers.ResidualAware;
 import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 import net.gommagomma.smfn.math.analysis.core.solvers.StepDistanceAware;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingCriteria;
+import net.gommagomma.smfn.math.analysis.core.solvers.StoppingParameters;
+import net.gommagomma.smfn.math.analysis.core.solvers.TerminationStatus;
 
 @DisplayName("EscapeTimeSolver: R torna a essere lo stato finale, il conteggio si legge da SolverResult")
 class EscapeTimeSolverTest

@@ -18,7 +18,7 @@ import net.gommagomma.smfn.math.analysis.numerical.solvers.roots.NewtonRaphsonSo
  * il numero di iterazioni impiegate dal metodo di Newton-Raphson per convergere
  * (o per esaurire il budget) verso una radice del polinomio fornito.
  */
-public class NewtonFractalFunction
+public final class NewtonFractalFunction
 implements Mapping<Complex, Natural>
 {
 	private final ComplexField C = ComplexField.INSTANCE;

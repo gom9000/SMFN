@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.matrices;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.factories.NumericFactory;
@@ -24,14 +25,18 @@ public final class MatrixElementFactory
 	public static <K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
 	Matrix<K> of(MatrixSemimodule<K, S> space, List<K> elements) {
 		@SuppressWarnings("unchecked")
-		K[] data = (K[]) elements.toArray(new ScalarElement[0]);
+		K[] data = (K[]) elements.toArray(new ScalarElement<?>[0]);
 		return space.of(data);
 	}
 
 	@SafeVarargs
 	public static <K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>
 	Matrix<K> of(MatrixSemimodule<K, S> space, K... values) {
-		return of(space, List.of(values));
+		List<K> list = new ArrayList<>(values.length);
+		for (K value : values) {
+			list.add(Objects.requireNonNull(value));
+		}
+		return of(space, list);
 	}
 
 	public static <K extends ScalarElement<K>, S extends Semiring<K> & ScalarStructure<K>>

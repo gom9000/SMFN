@@ -16,7 +16,7 @@ import net.gommagomma.smfn.math.analysis.core.solvers.SolverResult;
 /**
  * Rappresenta la funzione matematica per un set di Julia specifico (definito da una costante C).
  */
-public class JuliaFunction
+public final class JuliaFunction
 implements Mapping<Complex, Natural>
 {
 	private static final double DIVERGENCE_RADIUS_SQ = 4.0;

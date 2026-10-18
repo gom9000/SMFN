@@ -29,7 +29,7 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
 
     @SuppressWarnings("unchecked")
     protected K[] newDataArray(int size) {
-        return (K[]) new ScalarElement[size];
+        return (K[]) new ScalarElement<?>[size];
     }
 
     @Override

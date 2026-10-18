@@ -77,7 +77,7 @@ implements LinearElement<Matrix<K>, K>, TensorElement<Matrix<K>, K>, VectorFunct
             throw new IllegalArgumentException("Dimensione del vettore incompatibile: attesa " + cols + ", ricevuta " + v.size());
         }
 
-        K[] resultData = (K[]) new ScalarElement[rows];
+        K[] resultData = (K[]) new ScalarElement<?>[rows];
         for (int i = 0; i < rows; i++) {
             K sum = scalarStructure.zero();
             for (int j = 0; j < cols; j++) {

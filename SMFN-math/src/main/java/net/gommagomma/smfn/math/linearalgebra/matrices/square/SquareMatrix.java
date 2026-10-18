@@ -73,7 +73,7 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
         }
 
         ScalarStructure<K> scalarStructure = getScalarStructure();
-        K[] resultData = (K[]) new ScalarElement[n];
+        K[] resultData = (K[]) new ScalarElement<?>[n];
         for (int i = 0; i < n; i++) {
             K sum = scalarStructure.zero();
             for (int j = 0; j < n; j++) {
@@ -141,7 +141,7 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
     @SuppressWarnings("unchecked")
     public SquareMatrix<K> conjugateTranspose() {
         int n = getN();
-        K[] data = (K[]) new ScalarElement[n * n];
+        K[] data = (K[]) new ScalarElement<?>[n * n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 data[i * n + j] = conjugateIfPossible(get(j, i));
@@ -153,7 +153,7 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
     @SuppressWarnings("unchecked")
     private K conjugateIfPossible(K value) {
         if (value instanceof Conjugable) {
-            return (K) ((Conjugable<K>) value).conjugate();
+            return ((Conjugable<K>) value).conjugate();
         }
         return value;
     }

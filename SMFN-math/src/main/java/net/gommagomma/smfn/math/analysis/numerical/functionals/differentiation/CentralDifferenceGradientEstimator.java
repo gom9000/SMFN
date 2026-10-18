@@ -32,7 +32,7 @@ public class CentralDifferenceGradientEstimator<K extends ScalarElement<K>, S ex
 		K twoH = field.add(h, h);
 
 		@SuppressWarnings("unchecked")
-		K[] gradient = (K[]) new ScalarElement[n];
+		K[] gradient = (K[]) new ScalarElement<?>[n];
 		for (int i = 0; i < n; i++) {
 			Vector<K> vPlus = perturb(space, v, i, h, n);
 			Vector<K> vMinus = perturb(space, v, i, field.negate(h), n);
@@ -45,7 +45,7 @@ public class CentralDifferenceGradientEstimator<K extends ScalarElement<K>, S ex
 
 	@SuppressWarnings("unchecked")
 	private Vector<K> perturb(VectorSemimodule<K, S> space, Vector<K> v, int index, K delta, int n) {
-		K[] data = (K[]) new ScalarElement[n];
+		K[] data = (K[]) new ScalarElement<?>[n];
 		for (int i = 0; i < n; i++) {
 			data[i] = (i == index) ? field.add(v.get(i), delta) : v.get(i);
 		}

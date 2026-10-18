@@ -29,7 +29,7 @@ implements Mapping<SquareMatrix<K>, Polynomial<K>>
         int n = matrix.getN();
         K one = scalarStructure.one();
 
-        Polynomial<K>[] polyData = (Polynomial<K>[]) new Polynomial[n * n];
+        Polynomial<K>[] polyData = (Polynomial<K>[]) new Polynomial<?>[n * n];
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {

@@ -21,8 +21,6 @@ import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 @DisplayName("RungeKutta4Solver / EmbeddedRK23Solver: invarianti di convergenza sul catalogo di IVP con soluzione analitica nota")
 class OdeInvariantsTest
 {
-	private static final RealField R = RealField.INSTANCE;
-
 	@Test
 	@DisplayName("RK4 a passo fisso converge alla soluzione analitica, su tutto il catalogo")
 	void rk4ConvergesToAnalyticSolution() {
