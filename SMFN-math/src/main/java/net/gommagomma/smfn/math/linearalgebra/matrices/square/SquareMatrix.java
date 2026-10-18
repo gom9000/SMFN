@@ -159,33 +159,36 @@ implements LinearElement<SquareMatrix<K>, K>, ScalarElement<SquareMatrix<K>>, Te
     }
 
     /**
-     * Una matrice e' hermitiana se coincide con la propria trasposta coniugata:
-     * M = M^dagger. E' la proprieta' che rende un operatore fisicamente un
-     * "Observable" (autovalori reali) -- non serve una gerarchia di tipo a
-     * parte, e' un fatto verificabile su una SquareMatrix qualunque.
+     * Una matrice e' hermitiana se coincide con la propria trasposta coniugata.
      */
     public boolean isHermitian() {
         return getStructure().areEqual(this, conjugateTranspose());
     }
 
     /**
-     * Alias di isHermitian(), per leggibilita' quando si lavora solo con
-     * matrici reali (dove conjugateTranspose() degrada a transpose(), e
-     * "simmetrica" e' il nome naturale, non "hermitiana"). Stesso identico
-     * controllo, nessuna logica in piu'.
+     * Trasposta: M^T[i][j] = M[j][i], senza coniugazione.
      */
-    public boolean isSymmetric() {
-        return isHermitian();
+    @SuppressWarnings("unchecked")
+    public SquareMatrix<K> transpose() {
+        int n = getN();
+        K[] data = (K[]) new ScalarElement<?>[n * n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                data[i * n + j] = get(j, i);
+            }
+        }
+        return SquareMatrixElementFactory.of(getScalarStructure(), Arrays.asList(data));
     }
 
     /**
-     * Una matrice e' unitaria se U^dagger * U = I -- proprieta' generale
-     * dell'algebra lineare (conserva la norma, invertibile per costruzione),
-     * non un concetto fisico: utile per validare che un operatore di
-     * evoluzione temporale (e in futuro una porta quantistica) sia
-     * genuinamente reversibile. Risolve internamente la struttura
-     * moltiplicativa giusta a partire dallo scalare -- nessun argomento da
-     * passare, come isHermitian().
+     * Una matrice e' simmetrica se coincide con la propria trasposta.
+     */
+    public boolean isSymmetric() {
+        return getStructure().areEqual(this, transpose());
+    }
+
+    /**
+     * Una matrice e' unitaria se U^dagger * U = I.
      */
     public boolean isUnitary() {
         Semiring<SquareMatrix<K>> multiplicative =

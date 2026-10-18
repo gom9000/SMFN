@@ -2,6 +2,7 @@ package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
@@ -124,14 +125,41 @@ class SquareMatrixTest
 	}
 
 	@Test
-	@DisplayName("isSymmetric() e' lo stesso identico controllo di isHermitian()")
-	void isSymmetricIsAliasOfIsHermitian() {
+	@DisplayName("isSymmetric() (M = M^T) e isHermitian() (M = M^dagger) coincidono sui reali e differiscono sui complessi")
+	void symmetricAndHermitianAreDistinctOverComplex() {
 		SquareMatrix<Complex> pauliX = M2.of(new Complex[] {
 			new Complex(0, 0), new Complex(1, 0),
 			new Complex(1, 0), new Complex(0, 0)
 		});
 		assertTrue(pauliX.isSymmetric());
-		assertEquals(pauliX.isHermitian(), pauliX.isSymmetric());
+		assertTrue(pauliX.isHermitian());
+
+		SquareMatrix<Complex> pauliY = M2.of(new Complex[] {
+			new Complex(0, 0), new Complex(0, -1),
+			new Complex(0, 1), new Complex(0, 0)
+		});
+		assertTrue(pauliY.isHermitian());
+		assertFalse(pauliY.isSymmetric());
+
+		SquareMatrix<Complex> complexSymmetric = M2.of(new Complex[] {
+			new Complex(1, 0), new Complex(0, 1),
+			new Complex(0, 1), new Complex(1, 0)
+		});
+		assertTrue(complexSymmetric.isSymmetric());
+		assertFalse(complexSymmetric.isHermitian());
+	}
+
+	@Test
+	@DisplayName("transpose(): scambia righe e colonne senza coniugare")
+	void transposeDoesNotConjugate() {
+		SquareMatrix<Complex> m = M2.of(new Complex[] {
+			new Complex(1, 2), new Complex(3, 4),
+			new Complex(5, 6), new Complex(7, 8)
+		});
+		SquareMatrix<Complex> t = m.transpose();
+		assertEquals(new Complex(5, 6), t.get(0, 1));
+		assertEquals(new Complex(3, 4), t.get(1, 0));
+		assertEquals(new Complex(1, 2), t.get(0, 0));
 	}
 
 	@Test
