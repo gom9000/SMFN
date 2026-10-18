@@ -8,10 +8,7 @@ import net.gommagomma.smfn.graphics.core.Viewport3DController;
 
 /**
  * Adapter AWT/Swing per {@link Viewport3DController}: traduce gli eventi del mouse nelle chiamate
- * semantiche del controller, che resta cosi' indipendente dal toolkit. Come per
- * {@link SwingViewport2DInputAdapter}, e' il solo punto che conosce {@code MouseEvent}.
- * Pulsante primario: rotazione. Pulsante secondario (o primario con Maiusc): spostamento.
- * Rotellina: zoom sul cursore.
+ * del controller.
  */
 public class SwingViewport3DInputAdapter
 extends MouseAdapter

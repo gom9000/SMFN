@@ -10,7 +10,7 @@ import net.gommagomma.smfn.graphics.core.Viewport2DController;
 
 /**
  * Adapter AWT/Swing per {@link Viewport2DController}: traduce gli eventi del mouse nelle chiamate
- * semantiche del controller (pulsante primario: panning, con Maiusc o Ctrl zoom su rettangolo;
+ * del controller (pulsante primario: panning, con Maiusc o Ctrl zoom su rettangolo;
  * rotellina: zoom sul cursore).
  */
 public class SwingViewport2DInputAdapter

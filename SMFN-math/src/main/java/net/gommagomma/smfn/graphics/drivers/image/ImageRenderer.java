@@ -20,22 +20,6 @@ import net.gommagomma.smfn.graphics.core.RgbColor;
  * Implementazione di {@link Renderer} su un'immagine in memoria ({@link BufferedImage}): non ha
  * finestra e non richiede uno schermo, quindi funziona ovunque (server, test automatici, riga di
  * comando), e il risultato si puo' salvare su file con {@link #save(File)}.
- * <p>
- * Tutte le primitive disegnano sull'immagine. {@code drawPoint} scrive direttamente l'array di
- * pixel sottostante, bypassando {@link Graphics2D}: e' la primitiva usata per milioni di punti da
- * un plot di campo o da un frattale, e qui ogni chiamata evitata per pixel conta. Le altre
- * primitive (linee, testo, riempimenti) sono poche per frame e passano da un {@code Graphics2D}
- * dell'immagine.
- * <p>
- * Trasparenza: ogni primitiva rispetta il canale alfa del colore corrente, componendolo sopra il
- * contenuto gia' presente (alfa 255 sovrascrive, alfa 0 non cambia nulla).
- * <p>
- * Antialiasing: spento di default ({@link #setAntialiasing}). Acceso, linee e testo hanno i bordi
- * sfumati; i riempimenti no, perche' due poligoni adiacenti sfumati lasciano fra loro una
- * sottile fessura da cui traspare lo sfondo (le facce di una superficie sono proprio cosi').
- * <p>
- * Il driver {@code SwingRenderer} si appoggia a questa classe per tutte le primitive e aggiunge
- * solo la presentazione su schermo.
  */
 public class ImageRenderer
 implements Renderer

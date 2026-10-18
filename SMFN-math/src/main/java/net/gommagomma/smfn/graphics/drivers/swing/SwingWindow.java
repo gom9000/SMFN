@@ -15,13 +15,6 @@ import net.gommagomma.smfn.graphics.core.Viewport3DController;
 
 /**
  * Mostra un renderer Swing in una finestra visibile.
- * <p>
- * {@link #show(SwingRenderer, String)} apre solo la finestra. Le due {@code showInteractive}
- * fanno tutto il resto: aprono la finestra, collegano mouse (e tastiera) al controller del punto
- * di vista e ridisegnano la scena a ogni cambiamento. Chi le usa descrive soltanto <em>cosa</em>
- * disegnare, con una funzione {@code (renderer, viewport) -> ...}; la funzione viene chiamata a
- * ogni ridisegno, quindi deve limitarsi a disegnare (i dati costosi si calcolano prima, una volta).
- * Vanno chiamate dal thread degli eventi ({@code SwingUtilities.invokeLater}).
  */
 public final class SwingWindow
 {
@@ -38,7 +31,6 @@ public final class SwingWindow
 		return renderer;
 	}
 
-	// --- 3D ---
 
 	/**
 	 * Finestra interattiva per una scena 3D, con sfondo nero e antialiasing. Si ruota trascinando,
@@ -78,7 +70,6 @@ public final class SwingWindow
 		frame.accept(renderer, initial);
 	}
 
-	// --- 2D ---
 
 	/**
 	 * Finestra interattiva per una scena 2D, con sfondo bianco. Si sposta trascinando, si

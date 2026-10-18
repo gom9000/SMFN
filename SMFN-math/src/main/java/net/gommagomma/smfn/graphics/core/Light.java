@@ -4,18 +4,6 @@ package net.gommagomma.smfn.graphics.core;
  * Sorgente di luce per illuminare le facce di una superficie: una luce direzionale (come il Sole,
  * a distanza infinita) piu' una componente ambiente che schiarisce uniformemente anche le facce
  * non colpite.
- * <p>
- * La luce e' collocata con gli stessi due angoli di un punto di vista di {@link Viewport3D}: sta
- * dove starebbe un osservatore con quell'azimut e quell'elevazione. Una luce con gli stessi angoli
- * della viewport e' quindi "alle spalle di chi guarda", e ruotando la vista la luce resta ferma
- * sulla scena, come in un oggetto vero.
- * <p>
- * L'intensita' di una faccia e' {@code ambiente + (1 - ambiente) * max(0, n . L)}, con n la
- * normale della faccia e L la direzione verso la luce: da 1 (faccia rivolta alla luce) a
- * {@code ambiente} (faccia di taglio o in ombra). Applicarla a un colore ne scala le tre
- * componenti e lascia intatta la trasparenza.
- * <p>
- * Immutabile.
  */
 public final class Light
 {

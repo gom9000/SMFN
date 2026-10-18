@@ -1,15 +1,9 @@
 package net.gommagomma.smfn.graphics.core;
 
 /**
- * Gestore interattivo per Viewport che calcola nuove Viewport in base all'input utente.
+ * Gestore interattivo per Viewport2D che calcola nuove Viewport in base all'input utente.
  * Supporta Panning (trascinamento libero) e Zoom Selettivo (rettangolo con Shift/Ctrl), e Zoom
  * con la rotellina.
- * <p>
- * Espone un'API di eventi puramente semantica (coordinate pixel e flag booleani), senza alcuna
- * dipendenza da un toolkit di input concreto (AWT/Swing, JavaFX, ...). Il compito di tradurre gli
- * eventi reali del toolkit (es. {@code java.awt.event.MouseEvent}) in chiamate a questi metodi
- * spetta a un adapter nel driver concreto (es. {@code SwingViewport2DInputAdapter} in
- * {@code graphics.drivers.swing}).
  */
 public class Viewport2DController
 {
@@ -84,9 +78,6 @@ public class Viewport2DController
             int dy = y - startY;
 
             // Calcola quanto "vale" un pixel nel mondo matematico. La scala e' la stessa sui due assi
-            // (la viewport conserva le proporzioni, lasciando margini se il riquadro non ha quelle
-            // dello schermo): rangeX / pixelWidth e rangeY / pixelHeight differirebbero fra loro, e
-            // il contenuto non seguirebbe il puntatore. Si ricava dalle conversioni della viewport.
             double mathUnitsPerPixelX = currentViewport.convertPixelXToMathX(1) - currentViewport.convertPixelXToMathX(0);
             double mathUnitsPerPixelY = currentViewport.convertPixelYToMathY(0) - currentViewport.convertPixelYToMathY(1);
 
@@ -97,7 +88,7 @@ public class Viewport2DController
             // Applica il panning
             double newMinX = currentViewport.minX - mathDx;
             double newMaxX = currentViewport.maxX - mathDx;
-            // L'asse Y nei pixel è invertito rispetto al mondo matematico, quindi invertiamo qui l'effetto
+            // L'asse Y nei pixel è invertito rispetto al mondo matematico
             double newMinY = currentViewport.minY + mathDy;
             double newMaxY = currentViewport.maxY + mathDy;
 
@@ -166,7 +157,7 @@ public class Viewport2DController
      * Crea e notifica una nuova Viewport valida. Si rifiuta (restando alla viewport corrente) un
      * riquadro che non e' finito o che e' piu' piccolo della precisione dei numeri: il limite e'
      * relativo alla posizione (1e-12 volte la coordinata piu' grande), perche' a coordinate grandi i
-     * double non distinguono piu' due valori vicini e la viewport sarebbe fatta di rumore.
+     * double non distinguono piu' due valori vicini.
      */
     private void updateViewport(double minX, double maxX, double minY, double maxY) {
         if (isUsableRange(minX, maxX) && isUsableRange(minY, maxY)) {

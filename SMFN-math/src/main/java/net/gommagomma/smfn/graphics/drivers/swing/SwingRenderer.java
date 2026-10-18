@@ -13,11 +13,6 @@ import net.gommagomma.smfn.graphics.drivers.image.ImageRenderer;
 /**
  * Implementazione di {@link Renderer} per Java Swing/AWT: una finestra che mostra il contenuto di
  * un {@link ImageRenderer}.
- * <p>
- * Tutte le primitive disegnano sull'immagine in memoria (vedi {@code ImageRenderer}, che le
- * implementa), non direttamente sullo schermo: {@link #endDrawingAndFlush()} la trasferisce sullo
- * schermo con un UNICO {@code drawImage}. Era il vero collo di bottiglia dei plot con molti
- * punti, non il calcolo. Questo driver aggiunge soltanto la presentazione.
  */
 public class SwingRenderer
 extends Canvas
@@ -64,10 +59,6 @@ implements Renderer
     }
 
 
-    // Quando il sistema ridipinge la finestra (prima comparsa, finestra scoperta o ridimensionata)
-    // mostra l'ultimo frame completo, invece di lasciare lo sfondo vuoto del Canvas fino al
-    // prossimo disegno. Senza questo, un frame disegnato prima che la finestra sia visibile (ad
-    // esempio dal costruttore di un'applicazione) andrebbe perso.
     @Override
     public void paint(Graphics graphics) {
         graphics.drawImage(surface.getImage(), 0, 0, null);

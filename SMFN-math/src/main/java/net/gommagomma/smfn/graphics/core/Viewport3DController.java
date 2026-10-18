@@ -3,22 +3,8 @@ package net.gommagomma.smfn.graphics.core;
 import java.util.function.Consumer;
 
 /**
- * Gestore interattivo per {@link Viewport3D}: trascinando il puntatore la scena ruota, come
- * afferrando l'oggetto con la mano; con la rotellina la si ingrandisce e con un altro
- * trascinamento la si sposta.
- * <p>
- * Trascinare verso destra fa ruotare la scena verso destra (aumenta l'azimut) e trascinare verso
- * il basso porta verso l'osservatore la parte alta della scena (aumenta l'elevazione, che si
- * ferma a +-90: oltre, la scena si capovolgerebbe). Ogni pixel di trascinamento vale
- * {@link #DEGREES_PER_PIXEL} gradi. La rotellina ingrandisce o riduce la scena attorno al cursore
- * ({@link #onWheelZoom}) e un secondo tipo di trascinamento la sposta ({@link #onPanStart}). L'azimut resta nell'intervallo [-180, 180).
- * <p>
- * Come {@link Viewport2DController}, espone un'API di eventi puramente semantica (coordinate pixel
- * e flag booleani), senza alcuna dipendenza da un toolkit di input concreto: tradurre gli eventi
- * reali spetta a un adapter nel driver (es. {@code SwingViewport3DInputAdapter}).
- * <p>
- * Il gestore non ridisegna nulla: a ogni rotazione notifica la nuova viewport all'host, che la usa
- * per ridisegnare.
+ * Gestore interattivo per Viewport3D. Supporta Panning (trascinamento libero con tasto destro),
+ * Zoom con la rotellina e rotazione (con tasto sinistro).
  */
 public class Viewport3DController
 {
@@ -57,7 +43,7 @@ public class Viewport3DController
     }
 
 
-    // --- Eventi di input, in forma neutra rispetto al toolkit ---
+    // Eventi di input
 
     /**
      * Da chiamare quando l'utente preme il pulsante primario del puntatore.

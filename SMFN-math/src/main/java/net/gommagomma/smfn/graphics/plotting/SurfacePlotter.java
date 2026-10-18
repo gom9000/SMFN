@@ -17,24 +17,6 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
  * Utility per plottare superfici z = f(x, y): la funzione viene campionata su una griglia
  * regolare del riquadro {@code [minX, maxX] x [minY, maxY]} della {@link Viewport3D}, il suo
  * risultato diventa l'altezza z, e la griglia viene proiettata sullo schermo.
- * <p>
- * Rispetto agli altri plotter di funzioni la geometria e' quella della superficie (l'output e' una
- * posizione, come in un grafico di curva) e il colore e' un canale in piu', che porta una seconda
- * informazione. L'output {@code C} puo' infatti portare piu' di un numero (ad esempio un
- * {@code Complex}): {@code heightAdapter} ne sceglie uno come altezza e {@code colorMapper}
- * riceve l'intero {@code C}, quindi puo' usare anche il resto (ad esempio l'argomento per la tinta).
- * <p>
- * Un campione non finito (NaN o infinito, ad esempio vicino a un polo) non ha una posizione sullo
- * schermo: le facce o i segmenti che lo toccano non vengono disegnati. I valori di z fuori da
- * {@code [minZ, maxZ]} vengono tracciati comunque e possono uscire dalla superficie di disegno.
- * <p>
- * Il campionamento e' sequenziale: la griglia di una superficie e' piccola (poche migliaia di
- * campioni), a differenza di un campo colorato per pixel.
- * <p>
- * Ogni metodo ha due forme. Quella con la funzione (e i suoi adattatori e la risoluzione) campiona
- * e disegna in un colpo solo: e' quella per un disegno singolo. Quella con una {@link SurfaceGrid}
- * disegna campioni gia' presi, e serve quando la stessa superficie si ridisegna spesso (rotazione,
- * zoom): la funzione si valuta una volta sola.
  */
 public class SurfacePlotter
 {

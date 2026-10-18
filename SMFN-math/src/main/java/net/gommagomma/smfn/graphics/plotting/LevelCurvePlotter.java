@@ -15,14 +15,6 @@ import net.gommagomma.smfn.math.algebra.core.elements.AlgebraicElement;
  * dei punti in cui f vale quel livello. E' una rappresentazione alternativa del campo colorato di
  * {@link ColorFieldPlotter}: invece di dare a ogni pixel un colore, disegna sottili linee che
  * seguono i valori scelti, e si legge come una mappa topografica.
- * <p>
- * La funzione viene campionata sui vertici di una griglia regolare del riquadro della viewport, e
- * dentro ogni cella la curva e' il segmento che interpola linearmente i valori ai vertici (marching
- * squares). Una cella con un vertice non finito non ha curva. Le curve sono approssimate al passo
- * della griglia: il dettaglio piu' fine di una cella non si vede.
- * <p>
- * Le curve di livello di una superficie, disegnate sulla superficie stessa, sono in
- * {@link SurfacePlotter#plotLevelCurves}.
  */
 public class LevelCurvePlotter
 {

@@ -3,24 +3,8 @@ package net.gommagomma.smfn.graphics.core;
 
 /**
  * Trasformazione tra coordinate matematiche (x, y, z) e coordinate pixel dello schermo piatto,
- * con proiezione ortografica: il parallelo tridimensionale di {@link Viewport2D}.
- * <p>
- * Convenzioni:
- * <ul>
- *   <li>L'asse z e' quello verticale (l'altezza di una superficie z = f(x, y)), x va verso destra
- *       e y in profondita'.</li>
- *   <li>Il riquadro [minX, maxX] x [minY, maxY] x [minZ, maxZ] viene normalizzato in un cubo,
- *       ogni asse indipendentemente dagli altri (come fanno i normali grafici di superfici): le
- *       proporzioni reali fra gli assi non sono conservate, cosi' una superficie bassa e larga
- *       resta leggibile. Il cubo viene poi ruotato e scalato per stare per intero nello schermo (zoom 1), o ingrandito
- *       attorno al suo centro con {@code zoom} e spostato sullo schermo con {@code offsetX} e
- *       {@code offsetY}.</li>
- *   <li>Azimut (gradi): rotazione della scena attorno all'asse z, antioraria vista dall'alto.
- *       Con azimut 0 si guarda verso +y, con x a destra.</li>
- *   <li>Elevazione (gradi, da -90 a 90): 0 guarda orizzontalmente, 90 dall'alto, -90 dal basso.</li>
- * </ul>
- * Come per {@code Viewport}, l'oggetto e' immutabile e un punto fuori dal riquadro viene proiettato
- * comunque (puo' cadere fuori dalla superficie di disegno, dove il renderer lo ritaglia).
+ * con proiezione ortografica. L'asse z e' quello verticale (l'altezza di una superficie z = f(x, y)),
+ * x va verso destra e y in profondita'.
  */
 public class Viewport3D
 {
