@@ -21,7 +21,14 @@ implements Semiring<SquareMatrix<K>>, Semimodule<SquareMatrix<K>, K, S>, ScalarS
     protected final int n;
     private final MatrixSemimodule<K, S> matrixDelegate;
 
+    /**
+     * @throws IllegalArgumentException se {@code n} e' minore di 1: l'anello delle matrici 0x0 ha
+     *         un solo elemento (zero e uno coincidono) e non e' ammesso
+     */
     public SquareMatrixSemiring(S scalarStructure, int n) {
+    	if (n < 1) {
+            throw new IllegalArgumentException("L'ordine della matrice quadrata deve essere almeno 1: n = " + n + ".");
+        }
     	this.scalarStructure = scalarStructure;
         this.n = n;
         this.matrixDelegate = new MatrixSemimodule<>(scalarStructure, n, n);

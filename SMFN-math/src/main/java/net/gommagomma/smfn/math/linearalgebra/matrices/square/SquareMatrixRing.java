@@ -46,7 +46,8 @@ implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S>
 
     /**
      * Calcola il determinante per via combinatoria (Laplace).
-     * Non richiede la divisione, quindi funziona su Anelli (Polinomi, Interi).
+     * Non richiede la divisione, quindi funziona su Anelli (Polinomi, Interi). L'ordine e' sempre
+     * almeno 1 (il costruttore rifiuta le matrici vuote), quindi la ricorsione parte dai casi 1 e 2.
      */
 	public K determinant(SquareMatrix<K> m) {
         validateDimensions(m);

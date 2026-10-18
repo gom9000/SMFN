@@ -15,8 +15,15 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
     protected final int rows;
     protected final int cols;
 
+    /**
+     * @throws IllegalArgumentException se {@code rows} o {@code cols} e' minore di 1: le matrici
+     *         vuote non sono ammesse
+     */
     public MatrixSemimodule(S scalarStructure, int rows, int cols) {
         this.scalarStructure = Objects.requireNonNull(scalarStructure);
+        if (rows < 1 || cols < 1) {
+            throw new IllegalArgumentException("Dimensioni della matrice non valide: " + rows + "x" + cols + " (richieste righe e colonne >= 1).");
+        }
         this.rows = rows;
         this.cols = cols;
     }
