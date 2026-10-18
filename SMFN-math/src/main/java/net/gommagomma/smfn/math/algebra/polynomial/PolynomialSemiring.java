@@ -6,6 +6,7 @@ import java.util.List;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.elements.factories.CompositeElementFactory;
 import net.gommagomma.smfn.math.algebra.core.structures.Semiring;
+import net.gommagomma.smfn.math.algebra.core.structures.composite.CompositeEquality;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.CompositeStructure;
 import net.gommagomma.smfn.math.algebra.core.structures.composite.ScalarStructure;
 import net.gommagomma.smfn.math.algebra.numerics.Real;
@@ -136,13 +137,8 @@ implements Semiring<Polynomial<K>>, CompositeStructure<K, Polynomial<K>, S>, Sca
     @Override
     public boolean areEqual(Polynomial<K> a, Polynomial<K> b) {
         if (a == b) return true;
-        if (a.degree() != b.degree()) return false;
-        for (int i = 0; i <= a.degree(); i++) {
-            if (!scalarStructure.areEqual(a.getCoefficient(i), b.getCoefficient(i))) {
-                return false;
-            }
-        }
-        return true;
+        return CompositeEquality.areEqual(scalarStructure, Math.max(a.degree(), b.degree()) + 1,
+            a::getCoefficient, b::getCoefficient);
     }
 
 

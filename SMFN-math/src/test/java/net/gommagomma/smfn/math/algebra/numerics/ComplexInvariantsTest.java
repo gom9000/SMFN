@@ -106,7 +106,7 @@ class ComplexInvariantsTest
 		// per questo l'epsilon assoluto va bene anche per z a scala estrema, a differenza delle
 		// leggi di chiusura (associativita'/distributivita'), dove serve una tolleranza relativa.
 		for (Complex z : ComplexTestValues.allValues()) {
-			if (C.isZero(z)) {
+			if (!C.isInvertible(z)) { // zero, o reciproco non rappresentabile (valori denormali)
 				continue;
 			}
 			Complex product = C.multiply(z, C.inverse(z));

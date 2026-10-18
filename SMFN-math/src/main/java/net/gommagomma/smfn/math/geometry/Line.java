@@ -25,10 +25,7 @@ implements GeometryEntity<Real>
 		if (origin.dimension() != 2) {
 			throw new IllegalArgumentException("Il punto di riferimento di una retta deve essere 2D.");
 		}
-		double len = Math.sqrt(dx.getValue() * dx.getValue() + dy.getValue() * dy.getValue());
-		// Passa da RealField.isZero() invece di confrontare il double grezzo contro
-		// MathConstants.EPSILON, cosi' eredita la tolleranza ibrida assoluta+relativa
-		// invece di un epsilon assoluto fisso.
+		double len = Math.hypot(dx.getValue(), dy.getValue());
 		if (R.isZero(new Real(len))) {
 			throw new IllegalArgumentException("Il vettore direzione non puo' essere nullo.");
 		}
@@ -56,8 +53,11 @@ implements GeometryEntity<Real>
 		return isOnEntity(new Point(point));
 	}
 
+	/** Vero se la distanza dalla retta e' trascurabile rispetto alla distanza del punto dal punto di riferimento. */
 	public boolean isOnEntity(Point point) {
-		return R.isZero(implicitFunctionAt(point));
+		Vector<Real> displacement = point.displacementTo(origin);
+		Real scale = new Real(Math.hypot(displacement.get(0).getValue(), displacement.get(1).getValue()));
+		return R.isNegligible(implicitFunctionAt(point), scale);
 	}
 
 	/** f(P) = ((dx,dy) x (P-origine)) / |(dx,dy)| -- distanza con segno. */

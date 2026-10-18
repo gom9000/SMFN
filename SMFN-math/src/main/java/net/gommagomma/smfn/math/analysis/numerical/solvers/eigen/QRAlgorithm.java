@@ -13,7 +13,6 @@ import net.gommagomma.smfn.math.linearalgebra.operators.HessenbergReduction;
 import net.gommagomma.smfn.math.linearalgebra.vectors.Vector;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorElementFactory;
 import net.gommagomma.smfn.math.linearalgebra.vectors.VectorSpace;
-import net.gommagomma.smfn.math.utils.MathConstants;
 
 /**
  * Algoritmo QR con shift di Wilkinson, interamente in aritmetica complessa:
@@ -74,7 +73,7 @@ final class QRAlgorithm
 		for (int i = 0; i < n; i++) {
 			matrixScale = Math.max(matrixScale, t[i][i].modulus());
 		}
-		double denomFloor = 1e-6 * Math.max(matrixScale, MathConstants.EPSILON);
+		double denomFloor = Math.max(1e-6 * matrixScale, Double.MIN_NORMAL);
 
 		List<Vector<Complex>> eigenvectors = new ArrayList<>(n);
 		VectorSpace<Complex, ComplexField> space = new VectorSpace<>(C, n);
@@ -116,33 +115,12 @@ final class QRAlgorithm
 			if (denom.modulus() < denomFloor) {
 				// Pivot quasi nullo relativamente alla scala della matrice (vedi denomFloor in
 				// buildResult): niente autovettore esatto da recuperare qui. Si sostituisce il
-				// pivot con denomFloor stesso (non un valore assoluto arbitrario come 1e-6, che
-				// sarebbe stato o troppo grande o troppo piccolo a seconda della scala di T) --
-				// abbastanza grande da restare al di sopra della tolleranza approssimata di
-				// ComplexField (MathConstants.EPSILON), quindi va diviso davvero, non trattato
-				// come zero.
+				// pivot con denomFloor stesso, proporzionale alla scala di T e mai nullo.
 				denom = new Complex(denomFloor, 0.0);
 			}
-			y[i] = C.negate(divideRaw(sum, denom));
+			y[i] = C.negate(C.divide(sum, denom));
 		}
 		return y;
-	}
-
-	/*
-	 * Divisione complessa "grezza", senza passare da ComplexField.divide()/inverse():
-	 * quei metodi rifiutano un denominatore vicino a zero secondo l'uguaglianza
-	 * approssimata di ComplexField (MathConstants.EPSILON = 1E-12), ma qui il
-	 * denominatore e' deliberatamente un pivot piccolo-ma-non-nullo (vedi
-	 * backSubstitute) scelto apposta per essere piu' grande di quell'epsilon:
-	 * va diviso davvero, non trattato come zero.
-	 */
-	private Complex divideRaw(Complex a, Complex b) {
-		double br = b.getRe();
-		double bi = b.getIm();
-		double denom = br * br + bi * bi;
-		double re = (a.getRe() * br + a.getIm() * bi) / denom;
-		double im = (a.getIm() * br - a.getRe() * bi) / denom;
-		return new Complex(re, im);
 	}
 
 	private void normalize(Complex[] v, int n) {

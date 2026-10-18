@@ -97,7 +97,16 @@ implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>, Normed
     public Real inverse(Real e) {
         if (isZero(e)) throw new ArithmeticException("Division by zero");
 
-        return new Real(1.0 / e.getValue());
+        double reciprocal = 1.0 / e.getValue();
+        if (Double.isInfinite(reciprocal) && !Double.isInfinite(e.getValue())) {
+            throw new ArithmeticException("The reciprocal of " + e + " is not representable.");
+        }
+        return new Real(reciprocal);
+    }
+
+    @Override
+    public boolean isInvertible(Real e) {
+        return !isZero(e) && !Double.isInfinite(1.0 / e.getValue());
     }
 
 
@@ -118,5 +127,14 @@ implements Field<Real>, ApproximateStructure<Real>, NumericFactory<Real>, Normed
         if (a == null || b == null) return false;
 
         return MathUtils.nearlyEqual(a.getValue(), b.getValue(), epsilon());
+    }
+
+    @Override
+    public boolean areEqual(Real a, Real b, Real scale) {
+        if (a == b) return true;
+        if (a == null || b == null) return false;
+
+        return a.getValue() == b.getValue()
+            || Math.abs(a.getValue() - b.getValue()) <= epsilon() * scale.getValue();
     }
 }

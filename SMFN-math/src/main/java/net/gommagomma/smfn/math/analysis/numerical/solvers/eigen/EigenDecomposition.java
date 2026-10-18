@@ -27,12 +27,30 @@ public final class EigenDecomposition
 		this.eigenvectors = List.copyOf(eigenvectors);
 	}
 
+	private double maxEigenvalueModulus() {
+		double max = 0.0;
+		for (Complex c : eigenvalues) max = Math.max(max, c.modulus());
+		return max;
+	}
+
+	private static double maxComponentModulus(Vector<Complex> v) {
+		double max = 0.0;
+		for (int i = 0; i < v.size(); i++) max = Math.max(max, v.get(i).modulus());
+		return max;
+	}
+
 	public List<Complex> getEigenvalues() { return eigenvalues; }
 	public List<Vector<Complex>> getEigenvectors() { return eigenvectors; }
 
 
+	/**
+	 * Gli autovalori come numeri reali.
+	 *
+	 * @param tolerance la parte immaginaria massima ammessa, relativa al massimo modulo degli autovalori
+	 * @throws IllegalStateException se un autovalore ha parte immaginaria oltre la tolleranza
+	 */
 	public List<Real> getRealEigenvalues(Real tolerance) {
-		double tol = tolerance.getValue();
+		double tol = tolerance.getValue() * maxEigenvalueModulus();
 		List<Real> result = new ArrayList<>(eigenvalues.size());
 		for (Complex c : eigenvalues) {
 			if (Math.abs(c.getIm()) > tol) {
@@ -43,8 +61,16 @@ public final class EigenDecomposition
 		return result;
 	}
 
+	/**
+	 * La decomposizione reale.
+	 *
+	 * @param tolerance la parte immaginaria massima ammessa, relativa al massimo modulo degli
+	 *                  autovalori per gli autovalori e al massimo modulo delle componenti del
+	 *                  vettore per ciascun autovettore
+	 * @throws IllegalStateException se un autovalore o un autovettore ha parte immaginaria oltre la tolleranza
+	 */
 	public RealEigenDecomposition toRealDecomposition(Real tolerance) {
-		double tol = tolerance.getValue();
+		double tol = tolerance.getValue() * maxEigenvalueModulus();
 
 		for (Complex c : eigenvalues) {
 			if (Math.abs(c.getIm()) > tol) {
@@ -52,8 +78,9 @@ public final class EigenDecomposition
 			}
 		}
 		for (Vector<Complex> v : eigenvectors) {
+			double componentTol = tolerance.getValue() * maxComponentModulus(v);
 			for (int i = 0; i < v.size(); i++) {
-				if (Math.abs(v.get(i).getIm()) > tol) {
+				if (Math.abs(v.get(i).getIm()) > componentTol) {
 					throw new IllegalStateException("Decomposition contains a complex eigenvector component exceeding tolerance: " + v);
 				}
 			}

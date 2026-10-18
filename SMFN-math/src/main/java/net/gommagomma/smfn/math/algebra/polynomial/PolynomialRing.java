@@ -42,6 +42,21 @@ implements Ring<Polynomial<K>>
     }
 
 
+    /**
+     * Differenza {@code a - b} di due polinomi dello stesso grado i cui coefficienti di testa
+     * coincidono per costruzione (e' il passo di una divisione euclidea): il coefficiente di testa
+     * del risultato e' esattamente zero, invece del residuo di arrotondamento che la sottrazione
+     * in virgola mobile lascerebbe, e il grado scende davvero.
+     */
+    public Polynomial<K> subtractCancellingLeadingTerm(Polynomial<K> a, Polynomial<K> b) {
+        int top = a.degree();
+        List<K> coefficients = new ArrayList<>(top);
+        for (int i = 0; i < top; i++) {
+            coefficients.add(scalarStructure.subtract(a.getCoefficient(i), b.getCoefficient(i)));
+        }
+        return of(coefficients);
+    }
+
     @Override // AlgebraicStructure impls (override)
     public String getName() {
         return "Polynomial Ring over " + scalarStructure.getName();

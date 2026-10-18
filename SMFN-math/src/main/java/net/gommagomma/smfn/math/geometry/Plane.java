@@ -26,10 +26,7 @@ implements GeometryEntity<Real>
 		if (origin.dimension() != 3) {
 			throw new IllegalArgumentException("Il punto di riferimento di un piano deve essere 3D.");
 		}
-		double len = Math.sqrt(nx.getValue() * nx.getValue() + ny.getValue() * ny.getValue() + nz.getValue() * nz.getValue());
-		// Passa da RealField.isZero() invece di confrontare il double grezzo contro
-		// MathConstants.EPSILON, cosi' eredita la tolleranza ibrida assoluta+relativa
-		// invece di un epsilon assoluto fisso.
+		double len = Math.hypot(Math.hypot(nx.getValue(), ny.getValue()), nz.getValue());
 		if (R.isZero(new Real(len))) {
 			throw new IllegalArgumentException("Il vettore normale non puo' essere nullo.");
 		}
@@ -64,8 +61,12 @@ implements GeometryEntity<Real>
 		return isOnEntity(new Point(point));
 	}
 
+	/** Vero se la distanza dal piano e' trascurabile rispetto alla distanza del punto dal punto di riferimento. */
 	public boolean isOnEntity(Point point) {
-		return R.isZero(implicitFunctionAt(point));
+		Vector<Real> displacement = point.displacementTo(origin);
+		Real scale = new Real(Math.hypot(Math.hypot(displacement.get(0).getValue(), displacement.get(1).getValue()),
+			displacement.get(2).getValue()));
+		return R.isNegligible(implicitFunctionAt(point), scale);
 	}
 
 	/** f(P) = (normale . (P-origine)) / |normale| -- distanza con segno. */

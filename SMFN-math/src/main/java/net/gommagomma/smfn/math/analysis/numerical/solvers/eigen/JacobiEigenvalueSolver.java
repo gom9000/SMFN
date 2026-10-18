@@ -35,6 +35,9 @@ implements EigenvalueSolver<Real>
 		double[][] a = toRawArray(matrix, n);
 		double[][] v = identityArray(n);
 		double tolerance = params.tolerance.getValue();
+		// Le rotazioni sono ortogonali: la norma di Frobenius e' invariante e fornisce la scala
+		// rispetto a cui un elemento fuori diagonale e' trascurabile.
+		double offDiagonalLimit = tolerance * frobeniusNorm(a, n);
 
 		for (int iteration = 0; iteration < params.maxIterations; iteration++) {
 			int p = 0, q = 1;
@@ -49,7 +52,7 @@ implements EigenvalueSolver<Real>
 				}
 			}
 
-			if (n < 2 || maxOffDiagonal < tolerance) {
+			if (n < 2 || maxOffDiagonal <= offDiagonalLimit) {
 				return new BasicSolverResult<>(buildResult(a, v, n), TerminationStatus.CONVERGED, iteration);
 			}
 
@@ -57,6 +60,16 @@ implements EigenvalueSolver<Real>
 		}
 
 		return new BasicSolverResult<>(buildResult(a, v, n), TerminationStatus.MAX_ITERATIONS_REACHED, params.maxIterations);
+	}
+
+	private static double frobeniusNorm(double[][] a, int n) {
+		double norm = 0.0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				norm = Math.hypot(norm, a[i][j]);
+			}
+		}
+		return norm;
 	}
 
 	private void rotate(double[][] a, double[][] v, int n, int p, int q) {

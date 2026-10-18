@@ -41,8 +41,11 @@ implements GeometryEntity<Real>
 		return isOnEntity(new Point(point));
 	}
 
+	/** Vero se la distanza dal centro coincide con il raggio a meno di epsilon volte la maggiore delle due. */
 	public boolean isOnEntity(Point point) {
-		return R.isZero(implicitFunctionAt(point));
+		Real distance = point.distanceTo(center);
+		Real scale = new Real(Math.max(distance.getValue(), radius.getValue()));
+		return R.isNegligible(implicitFunctionAt(point), scale);
 	}
 
 	public Real implicitFunctionAt(Point point) {

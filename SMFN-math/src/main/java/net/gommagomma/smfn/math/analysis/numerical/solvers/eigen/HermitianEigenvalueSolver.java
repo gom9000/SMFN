@@ -57,6 +57,15 @@ implements EigenvalueSolver<Complex>
 		}
 
 		double tolerance = params.tolerance.getValue();
+		// Le rotazioni sono unitarie: la norma di Frobenius e' invariante e fornisce la scala
+		// rispetto a cui un elemento fuori diagonale e' trascurabile.
+		double frobenius = 0.0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				frobenius = Math.hypot(frobenius, Math.hypot(aRe[i][j], aIm[i][j]));
+			}
+		}
+		double offDiagonalLimit = tolerance * frobenius;
 
 		for (int iteration = 0; iteration < params.maxIterations; iteration++) {
 			int p = 0, q = 1;
@@ -72,7 +81,7 @@ implements EigenvalueSolver<Complex>
 				}
 			}
 
-			if (n < 2 || maxOffDiagonal < tolerance) {
+			if (n < 2 || maxOffDiagonal <= offDiagonalLimit) {
 				return new BasicSolverResult<>(buildResult(aRe, vRe, vIm, n), TerminationStatus.CONVERGED, iteration);
 			}
 

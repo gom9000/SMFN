@@ -150,7 +150,21 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
             resultIm /= scale;
         }
 
+        if (Double.isInfinite(resultRe) || Double.isInfinite(resultIm)) {
+            throw new ArithmeticException("The reciprocal of " + e + " is not representable.");
+        }
         return new Complex(resultRe, resultIm);
+    }
+
+    @Override
+    public boolean isInvertible(Complex e) {
+        if (isZero(e)) return false;
+        try {
+            inverse(e);
+            return true;
+        } catch (ArithmeticException notRepresentable) {
+            return false;
+        }
     }
 
 
@@ -186,5 +200,13 @@ implements Field<Complex>, ApproximateStructure<Complex>, NumericFactory<Complex
         double scaleSquared = Math.max(1.0, Math.max(aMagnitudeSquared, bMagnitudeSquared));
 
         return diffSquared < (epsilon() * epsilon() * scaleSquared);
+    }
+
+    @Override
+    public boolean areEqual(Complex a, Complex b, Real scale) {
+        if (a == b) return true;
+        if (a == null || b == null) return false;
+
+        return Math.hypot(a.getRe() - b.getRe(), a.getIm() - b.getIm()) <= epsilon() * scale.getValue();
     }
 }

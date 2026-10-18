@@ -65,7 +65,7 @@ public class PolynomialDivisionProvider<K extends ScalarElement<K>, S extends Ri
             quotient = polynomialRing.add(quotient, monomial);
             // Convenzione: quoziente a sinistra del divisore, sempre.
             Polynomial<K> subtrahend = polynomialRing.multiply(monomial, divisor);
-            remainder = polynomialRing.subtract(remainder, subtrahend);
+            remainder = polynomialRing.subtractCancellingLeadingTerm(remainder, subtrahend);
         }
 
         return new PolynomialDivisionResult<>(quotient, remainder);

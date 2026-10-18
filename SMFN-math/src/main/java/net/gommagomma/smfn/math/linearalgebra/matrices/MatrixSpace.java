@@ -37,23 +37,47 @@ implements LinearSpace<Matrix<K>, K, S>
     }
 
 
+    /**
+     * Scala numerica di un insieme di elementi: il massimo dei moduli. Rispetto a questa grandezza
+     * si decide se un pivot o una riga sono trascurabili. Nelle strutture esatte la scala non e' usata.
+     */
+    public Real scaleOf(K[] data) {
+        if (scalarStructure.isExact()) return new Real(0.0);
+        double scale = 0.0;
+        for (K element : data) {
+            scale = Math.max(scale, scalarStructure.magnitude(element).getValue());
+        }
+        return new Real(scale);
+    }
+
     public Matrix<K> toRowEchelonForm(Matrix<K> original) {
+        @SuppressWarnings("unchecked")
+        K[] data = (K[]) original.getData();
+        return toRowEchelonForm(original, scaleOf(data));
+    }
+
+    /**
+     * Forma a gradini in cui un pivot e' trascurabile se il suo modulo non supera epsilon volte
+     * {@code scale}. La scala e' fornita dal chiamante quando le colonne non hanno lo stesso
+     * significato (ad esempio una matrice aumentata con i termini noti).
+     */
+    public Matrix<K> toRowEchelonForm(Matrix<K> original, Real scale) {
         validateDimensions(original);
         // Cast non controllato, ma esplicito: l'algoritmo di Gauss lavora su un array
         // K[] mutabile per indice -- lo stesso presupposto che il codice faceva gia'
         // implicitamente prima, ora reso visibile invece che nascosto.
         @SuppressWarnings("unchecked")
         K[] workingData = (K[]) original.getData();
-        performGauss(workingData, rows, cols);
+        performGauss(workingData, rows, cols, scale);
         return of(workingData);
     }
 
-    protected void performGauss(K[] data, int r, int c) {
+    protected void performGauss(K[] data, int r, int c, Real scale) {
         int pivotRow = 0;
         for (int j = 0; j < c && pivotRow < r; j++) {
             int bestRow = findBestPivotInArray(data, j, pivotRow, r, c);
             K pivotValue = getFromData(data, bestRow, j, c);
-            if (scalarStructure.isZero(pivotValue)) continue;
+            if (scalarStructure.isNegligible(pivotValue, scale)) continue;
 
             swapRowsInArray(data, bestRow, pivotRow, c);
 
@@ -105,14 +129,16 @@ implements LinearSpace<Matrix<K>, K, S>
     public void setData(K[] data, int r, int j, K val, int totalCols) { data[r * totalCols + j] = val; }
     
     public int rank(Matrix<K> original) {
-        // Portiamo in forma a gradini
-        Matrix<K> ref = toRowEchelonForm(original);
+        @SuppressWarnings("unchecked")
+        K[] originalData = (K[]) original.getData();
+        Real scale = scaleOf(originalData);
+        Matrix<K> ref = toRowEchelonForm(original, scale);
         int rank = 0;
         
         for (int i = 0; i < ref.getRows(); i++) {
             boolean isRowZero = true;
             for (int j = 0; j < ref.getCols(); j++) {
-                if (!scalarStructure.isZero(ref.get(i, j))) {
+                if (!scalarStructure.isNegligible(ref.get(i, j), scale)) {
                     isRowZero = false;
                     break;
                 }

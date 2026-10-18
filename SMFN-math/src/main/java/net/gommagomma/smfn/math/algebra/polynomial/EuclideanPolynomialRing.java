@@ -100,7 +100,7 @@ implements EuclideanDomain<Polynomial<K>, Natural>
             
             // Sottrazione: remainder = remainder - (monomial * divisor)
             Polynomial<K> subtrahend = multiply(monomial, divisor);
-            remainder = subtract(remainder, subtrahend);
+            remainder = subtractCancellingLeadingTerm(remainder, subtrahend);
         }
 
         return new PolynomialDivisionResult<>(quotient, remainder);

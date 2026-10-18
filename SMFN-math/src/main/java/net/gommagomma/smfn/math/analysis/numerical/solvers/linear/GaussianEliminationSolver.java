@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.analysis.numerical.solvers.linear;
 
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
@@ -52,7 +53,10 @@ implements LinearSystemSolver<K>
 			augmentedData[i * (n + 1) + n] = b.get(i);
 		}
 		Matrix<K> augmented = augmentedSpace.of(augmentedData);
-		Matrix<K> reduced = augmentedSpace.toRowEchelonForm(augmented);
+		@SuppressWarnings("unchecked")
+		K[] coefficients = (K[]) A.getData();
+		Real scale = augmentedSpace.scaleOf(coefficients);
+		Matrix<K> reduced = augmentedSpace.toRowEchelonForm(augmented, scale);
 
 		@SuppressWarnings("unchecked")
 		K[] x = (K[]) new ScalarElement<?>[n];
@@ -62,7 +66,7 @@ implements LinearSystemSolver<K>
 				sum = scalarStructure.subtract(sum, scalarStructure.multiply(reduced.get(i, j), x[j]));
 			}
 			K pivot = reduced.get(i, i);
-			if (scalarStructure.isZero(pivot)) {
+			if (scalarStructure.isNegligible(pivot, scale)) {
 				throw new ArithmeticException("Il sistema non ha una soluzione unica (matrice dei coefficienti singolare).");
 			}
 			x[i] = scalarStructure.divide(sum, pivot);

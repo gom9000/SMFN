@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.matrices;
 
+import net.gommagomma.smfn.math.algebra.core.structures.composite.CompositeEquality;
 import java.util.Objects;
 
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
@@ -61,12 +62,8 @@ implements Semimodule<Matrix<K>, K, S>, CompositeElementFactory<Matrix<K>, K[]>
     @Override
     public boolean areEqual(Matrix<K> a, Matrix<K> b) {
         if (!contains(a) || !contains(b)) return false;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (!scalarStructure.areEqual(a.get(i, j), b.get(i, j))) return false;
-            }
-        }
-        return true;
+        return CompositeEquality.areEqual(scalarStructure, rows * cols,
+            k -> a.get(k / cols, k % cols), k -> b.get(k / cols, k % cols));
     }
 
     @Override

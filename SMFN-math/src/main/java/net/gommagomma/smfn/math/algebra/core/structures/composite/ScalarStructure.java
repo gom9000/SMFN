@@ -28,4 +28,23 @@ extends Semiring<K>
      * @return true se la struttura � esatta, false altrimenti
      */
 	boolean isExact(); 
+
+	/**
+	 * Indica se un elemento e' trascurabile rispetto a una scala di riferimento.
+	 *
+	 * @param element l'elemento da valutare
+	 * @param scale l'ordine di grandezza di riferimento, non negativo
+	 */
+	default boolean isNegligible(K element, Real scale) {
+		return isZero(element);
+	}
+
+	/**
+	 * Come areEqual(a, b), ma con la tolleranza proporzionale a una scala esplicita.
+	 *
+	 * @param scale l'ordine di grandezza di riferimento, non negativo
+	 */
+	default boolean areEqual(K a, K b, Real scale) {
+		return areEqual(a, b);
+	}
 }

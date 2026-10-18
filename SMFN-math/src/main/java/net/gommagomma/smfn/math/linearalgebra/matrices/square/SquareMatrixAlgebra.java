@@ -1,5 +1,6 @@
 package net.gommagomma.smfn.math.linearalgebra.matrices.square;
 
+import net.gommagomma.smfn.math.algebra.numerics.Real;
 import net.gommagomma.smfn.math.algebra.core.elements.ScalarElement;
 import net.gommagomma.smfn.math.algebra.core.structures.Field;
 import net.gommagomma.smfn.math.algebra.core.structures.capabilities.InvertibleElements;
@@ -36,7 +37,8 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
 
     @Override
     public boolean isInvertible(SquareMatrix<K> m) {
-        return !scalarStructure.isZero(determinant(m));
+        validateDimensions(m);
+        return spaceDelegate.rank(m.asMatrix()) == n;
     }
 
     /**
@@ -61,8 +63,10 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
             }
         }
 
-        // 2. Gauss-Jordan
-        performGaussJordan(augData, n, totalCols);
+        // 2. Gauss-Jordan; la singolarita' e' relativa alla grandezza degli elementi di m
+        @SuppressWarnings("unchecked")
+        K[] mData = (K[]) m.getData();
+        performGaussJordan(augData, n, totalCols, spaceDelegate.scaleOf(mData));
 
         // 3. Estrazione Inversa
         K[] invData = newDataArray(n * n);
@@ -79,7 +83,7 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
      * Al termine, se la matrice originale era invertibile, la parte sinistra [0..n-1] 
      * sar l'identit e la parte destra [n..2n-1] sar l'inversa.
      */
-    private void performGaussJordan(K[] data, int rows, int cols) {
+    private void performGaussJordan(K[] data, int rows, int cols, Real scale) {
         int pivotRow = 0;
 
         for (int j = 0; j < n && pivotRow < rows; j++) {
@@ -87,7 +91,7 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
             int bestRow = spaceDelegate.findBestPivotInArray(data, j, pivotRow, rows, cols);
             K pivotValue = spaceDelegate.getFromData(data, bestRow, j, cols);
 
-            if (scalarStructure.isZero(pivotValue)) {
+            if (scalarStructure.isNegligible(pivotValue, scale)) {
                 throw new ArithmeticException("Matrice singolare: impossibile calcolare l'inversa.");
             }
 

@@ -47,8 +47,11 @@ implements GeometryEntity<Real>
 		return isOnEntity(new Point(point));
 	}
 
+	/** Vero se x^2/a^2 + y^2/b^2 vale 1 a meno di epsilon volte la maggiore tra la somma dei termini e 1. */
 	public boolean isOnEntity(Point point) {
-		return R.isZero(implicitFunctionAt(point));
+		Real value = implicitFunctionAt(point);
+		double terms = value.getValue() + 1.0;
+		return R.isNegligible(value, new Real(Math.max(terms, 1.0)));
 	}
 
 	public Real implicitFunctionAt(Point point) {
