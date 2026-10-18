@@ -258,4 +258,25 @@ class QuantumSystemSimulatorTest
 		Real narrowDegeneracyTolerance = new Real(1e-6);
 		assertEquals(2, simulator.measurementProbabilities(observable, plus, loose, narrowDegeneracyTolerance).size());
 	}
+
+	@Test
+	@DisplayName("Una soglia di degenerazione NaN, infinita o negativa e' rifiutata; zero e' valida (degeneri solo gli autovalori identici)")
+	void invalidDegeneracyToleranceIsRejected() {
+		SquareMatrix<Complex> pauliZ = M2.of(new Complex[] {
+			new Complex(1, 0), new Complex(0, 0),
+			new Complex(0, 0), new Complex(-1, 0)
+		});
+		Observable<Complex> Z = new Observable<>(pauliZ);
+		double invSqrt2 = 1.0 / Math.sqrt(2.0);
+		QuantumState plus = QuantumState.of(new Complex(invSqrt2, 0), new Complex(invSqrt2, 0));
+		StoppingParameters params = new StoppingParameters(new Real(1e-12), 100);
+
+		for (double invalid : new double[] { Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, -1e-9 }) {
+			Real tolerance = new Real(invalid);
+			assertThrows(IllegalArgumentException.class, () -> simulator.measurementProbabilities(Z, plus, params, tolerance));
+			assertThrows(IllegalArgumentException.class, () -> simulator.performMeasurement(Z, plus, params, tolerance, new Random(1)));
+		}
+
+		assertEquals(2, simulator.measurementProbabilities(Z, plus, params, new Real(0.0)).size());
+	}
 }

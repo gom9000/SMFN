@@ -95,7 +95,12 @@ implements Ring<SquareMatrix<K>>, Module<SquareMatrix<K>, K, S>
         return new SquareMatrixRing<>(scalarStructure, minorN).of(minorData);
     }
 
-    private void validateDimensions(SquareMatrix<K> m) {
+    /**
+     * Verifica che {@code m} sia una matrice dell'ordine di questo anello.
+     *
+     * @throws IllegalArgumentException se l'ordine di {@code m} e' diverso da {@code n}
+     */
+    protected void validateDimensions(SquareMatrix<K> m) {
         if (m.getN() != n) {
             throw new IllegalArgumentException("Dimensione " + m.getN() + "x" + m.getN() + " incompatibile con anello di ordine " + n);
         }

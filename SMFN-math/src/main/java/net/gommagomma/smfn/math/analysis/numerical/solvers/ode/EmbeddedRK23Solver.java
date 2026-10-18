@@ -93,6 +93,34 @@ implements IntervalODEStepSolver<K, T, S>
 		return new EmbeddedStep<>(result, errorEstimate);
 	}
 
+	/**
+	 * Il controllo adattivo dell'errore richiede tolleranza, passo massimo e passo minimo finiti e
+	 * strettamente positivi, con passo minimo non superiore al massimo; l'eventuale passo fisso
+	 * iniziale deve essere anch'esso finito e strettamente positivo (e' un modulo: il verso e'
+	 * dato dall'intervallo di integrazione).
+	 */
+	private static void requireValidParameters(IntegrationParameters params) {
+		if (params.tolerance == null || params.maxStepSize == null || params.minStepSize == null) {
+			throw new IllegalArgumentException("EmbeddedRK23Solver richiede tolerance, maxStepSize e minStepSize.");
+		}
+		requireFinitePositive(params.tolerance, "tolerance");
+		requireFinitePositive(params.maxStepSize, "maxStepSize");
+		requireFinitePositive(params.minStepSize, "minStepSize");
+		if (params.minStepSize.getValue() > params.maxStepSize.getValue()) {
+			throw new IllegalArgumentException("minStepSize (" + params.minStepSize + ") non puo' superare maxStepSize (" + params.maxStepSize + ").");
+		}
+		if (params.fixedStepSize != null) {
+			requireFinitePositive(params.fixedStepSize, "fixedStepSize");
+		}
+	}
+
+	private static void requireFinitePositive(Real value, String name) {
+		double v = value.getValue();
+		if (!Double.isFinite(v) || v <= 0.0) {
+			throw new IllegalArgumentException(name + " deve essere finito e strettamente positivo: " + value + ".");
+		}
+	}
+
 	@Override
 	public T step(DifferentialEquationProblem<K, T> system, T currentState, Real currentTime, Real deltaTime, Module<T, K, S> space) {
 		return embeddedStep(system, currentState, currentTime, deltaTime, space).result;
@@ -105,12 +133,10 @@ implements IntervalODEStepSolver<K, T, S>
 		T currentState = problem.getInitialState();
 		Real currentTime = problem.getStartTime();
 
+		requireValidParameters(params);
 		Real tolerance = params.tolerance;
 		Real maxStepSize = params.maxStepSize;
 		Real minStepSize = params.minStepSize;
-		if (tolerance == null || maxStepSize == null || minStepSize == null) {
-			throw new IllegalArgumentException("EmbeddedRK23Solver richiede tolerance, maxStepSize e minStepSize.");
-		}
 
 		boolean forward = currentTime.isLessThan(endTime);
 		Real timeDirection = forward ? new Real(1.0) : new Real(-1.0);

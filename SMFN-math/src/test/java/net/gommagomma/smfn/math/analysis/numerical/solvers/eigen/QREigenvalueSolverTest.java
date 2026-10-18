@@ -177,13 +177,47 @@ class QREigenvalueSolverTest
 	@Test
 	@DisplayName("Budget di iterazioni insufficiente: MAX_ITERATIONS_REACHED con la migliore decomposizione disponibile, non un'eccezione")
 	void insufficientIterationBudgetReportsMaxIterationsReached() {
-		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 1.0, 2.0, 3.0, 4.0);
+		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 4.0, 1.0, 2.0, 3.0, 1.0, 5.0, 1.0, 2.0, 2.0, 1.0, 6.0, 1.0, 3.0, 2.0, 1.0, 7.0);
 		StoppingParameters tightBudget = new StoppingParameters(new Real(1e-12), 1);
 
 		SolverResult<EigenDecomposition> result = solver.solve(A, tightBudget);
 
 		assertEquals(TerminationStatus.MAX_ITERATIONS_REACHED, result.getStatus());
 		assertEquals(1, result.getIterationsExecuted());
-		assertEquals(2, result.getValue().getEigenvalues().size());
+		assertEquals(4, result.getValue().getEigenvalues().size());
+	}
+
+	@Test
+	@DisplayName("Il budget di iterazioni non e' mai superato, qualunque sia il numero di deflazioni")
+	void iterationBudgetIsNeverExceeded() {
+		java.util.Random random = new java.util.Random(12345);
+		for (int trial = 0; trial < 200; trial++) {
+			int n = 3 + random.nextInt(5);
+			double[] entries = new double[n * n];
+			for (int i = 0; i < entries.length; i++) entries[i] = random.nextDouble() * 2.0 - 1.0;
+			SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, entries);
+
+			for (int budget = 1; budget <= 12; budget++) {
+				SolverResult<EigenDecomposition> result = solver.solve(A, new StoppingParameters(new Real(1e-12), budget));
+
+				assertTrue(result.getIterationsExecuted() <= budget, "n=" + n + ", budget=" + budget + ", eseguite=" + result.getIterationsExecuted());
+				if (result.getStatus() == TerminationStatus.CONVERGED) {
+					assertEquals(n, result.getValue().getEigenvalues().size());
+				}
+			}
+		}
+	}
+
+	@Test
+	@DisplayName("Un budget sufficiente non viene dichiarato esaurito: CONVERGED con le stesse iterazioni, a budget uguale a quelle usate")
+	void exactBudgetStillConverges() {
+		SquareMatrix<Real> A = SquareMatrixElementFactory.of(R, 4.0, 1.0, 2.0, 3.0, 1.0, 5.0, 1.0, 2.0, 2.0, 1.0, 6.0, 1.0, 3.0, 2.0, 1.0, 7.0);
+		SolverResult<EigenDecomposition> reference = solver.solve(A, params);
+		int needed = reference.getIterationsExecuted();
+
+		SolverResult<EigenDecomposition> exact = solver.solve(A, new StoppingParameters(new Real(1e-12), needed));
+
+		assertEquals(TerminationStatus.CONVERGED, exact.getStatus());
+		assertEquals(needed, exact.getIterationsExecuted());
 	}
 }

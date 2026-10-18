@@ -37,32 +37,19 @@ final class QRAlgorithm
 		int iterationsUsed = 0;
 		TerminationStatus status = TerminationStatus.CONVERGED;
 
-		outer:
+		// Il budget params.maxIterations e' unico per l'intera risoluzione e conta i soli passi QR
+		// eseguiti; la deflazione e' un controllo e non consuma budget.
 		while (m > 1) {
-			boolean deflatedThisRound = false;
-
-			for (int it = 0; it < params.maxIterations; it++) {
-				iterationsUsed++;
-
-				if (hasDeflatedTrailingEntry(a, m, tolerance)) {
-					deflatedThisRound = true;
-					m--;
-					break;
-				}
-
-				Complex shift = wilkinsonShift(a, m);
-				hessenbergQrStep(a, q, m, n, shift);
-
-				if (iterationsUsed >= params.maxIterations && !hasDeflatedTrailingEntry(a, m, tolerance)) {
-					status = TerminationStatus.MAX_ITERATIONS_REACHED;
-					break outer;
-				}
+			if (hasDeflatedTrailingEntry(a, m, tolerance)) {
+				m--;
+				continue;
 			}
-
-			if (!deflatedThisRound) {
+			if (iterationsUsed >= params.maxIterations) {
 				status = TerminationStatus.MAX_ITERATIONS_REACHED;
 				break;
 			}
+			hessenbergQrStep(a, q, m, n, wilkinsonShift(a, m));
+			iterationsUsed++;
 		}
 
 		EigenDecomposition decomposition = buildResult(a, q, n);

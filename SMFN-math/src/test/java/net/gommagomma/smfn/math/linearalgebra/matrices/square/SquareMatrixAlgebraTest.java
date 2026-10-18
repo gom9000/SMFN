@@ -93,4 +93,14 @@ class SquareMatrixAlgebraTest extends LinearSpaceAxiomContract<SquareMatrix<Comp
 		assertTrue(R.areEqual(detLaplace, new Real(-6.0)));
 		assertTrue(R.areEqual(detGauss, new Real(-6.0)));
 	}
+
+	@Test
+	@DisplayName("inverse(): una matrice di ordine diverso da quello dell'algebra e' rifiutata, in entrambi i sensi")
+	void inverseRejectsMatrixOfDifferentOrder() {
+		SquareMatrixAlgebra<Complex, ComplexField> m3 = new SquareMatrixAlgebra<>(C, 3);
+		SquareMatrix<Complex> identity3 = m3.one();
+
+		assertThrows(IllegalArgumentException.class, () -> M2.inverse(identity3));
+		assertThrows(IllegalArgumentException.class, () -> m3.inverse(m(1, 2, 3, 4)));
+	}
 }

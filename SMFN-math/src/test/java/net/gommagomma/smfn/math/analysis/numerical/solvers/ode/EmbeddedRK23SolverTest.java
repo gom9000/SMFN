@@ -75,4 +75,32 @@ class EmbeddedRK23SolverTest
 			assertThrows(RuntimeException.class, () -> solver.integrate(derivativeAlwaysNaN(), new Real(1.0), params, V1))
 		);
 	}
+
+	@Test
+	@DisplayName("Parametri che disattiverebbero il controllo dell'errore sono rifiutati")
+	void invalidParametersAreRejected() {
+		EmbeddedRK23Solver<Real, Vector<Real>, RealField> solver = new EmbeddedRK23Solver<>();
+		double nan = Double.NaN;
+		double inf = Double.POSITIVE_INFINITY;
+		IntegrationParameters[] invalid = {
+			new IntegrationParameters(null, new Real(-1e-8), new Real(0.1), new Real(1e-6)),
+			new IntegrationParameters(null, new Real(0.0), new Real(0.1), new Real(1e-6)),
+			new IntegrationParameters(null, new Real(nan), new Real(0.1), new Real(1e-6)),
+			new IntegrationParameters(null, new Real(inf), new Real(0.1), new Real(1e-6)),
+			new IntegrationParameters(null, new Real(1e-8), new Real(0.0), new Real(1e-6)),
+			new IntegrationParameters(null, new Real(1e-8), new Real(-0.1), new Real(1e-6)),
+			new IntegrationParameters(null, new Real(1e-8), new Real(inf), new Real(1e-6)),
+			new IntegrationParameters(null, new Real(1e-8), new Real(0.1), new Real(0.0)),
+			new IntegrationParameters(null, new Real(1e-8), new Real(0.1), new Real(-1e-6)),
+			new IntegrationParameters(null, new Real(1e-8), new Real(0.1), new Real(nan)),
+			new IntegrationParameters(null, new Real(1e-8), new Real(1e-6), new Real(0.1)),
+			new IntegrationParameters(new Real(0.0), new Real(1e-8), new Real(0.1), new Real(1e-6)),
+			new IntegrationParameters(new Real(-0.01), new Real(1e-8), new Real(0.1), new Real(1e-6)),
+			new IntegrationParameters(new Real(nan), new Real(1e-8), new Real(0.1), new Real(1e-6)),
+		};
+
+		for (IntegrationParameters params : invalid) {
+			assertThrows(IllegalArgumentException.class, () -> solver.integrate(exponentialGrowth(), new Real(1.0), params, V1));
+		}
+	}
 }

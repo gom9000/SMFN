@@ -42,10 +42,12 @@ implements LinearSpace<SquareMatrix<K>, K, S>, InvertibleElements<SquareMatrix<K
     /**
      * Calcola l'inversa della matrice.
      * Implementazione tramite matrice aumentata [A | I] e riduzione a gradini.
+     * @throws IllegalArgumentException se l'ordine di m e' diverso da quello dell'algebra.
      * @throws ArithmeticException se m e' singolare (non invertibile).
      */
     @Override
     public SquareMatrix<K> inverse(SquareMatrix<K> m) {
+        validateDimensions(m);
         int totalCols = 2 * n;
         K[] augData = newDataArray(n * totalCols);
         K zero = scalarStructure.zero();

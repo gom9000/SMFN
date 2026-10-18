@@ -107,7 +107,9 @@ public final class QuantumSystemSimulator
 	 * relativa allo spettro. Il criterio e' completamente indipendente da {@code eigenParams.tolerance}.
 	 *
 	 * @param degeneracyTolerance due autovalori grezzi che differiscono per meno di questo valore
-	 *        vengono trattati come lo stesso esito di misura
+	 *        vengono trattati come lo stesso esito di misura; {@code null} per la soglia di default,
+	 *        altrimenti un valore finito e non negativo (zero: degeneri solo gli autovalori identici)
+	 * @throws IllegalArgumentException se {@code degeneracyTolerance} e' NaN, infinita o negativa
 	 */
 	public MeasurementOutcome performMeasurement(Observable<Complex> observable, QuantumState state,
 	                                              StoppingParameters eigenParams, Real degeneracyTolerance, Random random) {
@@ -152,7 +154,9 @@ public final class QuantumSystemSimulator
 	 * relativa allo spettro. Il criterio e' completamente indipendente da {@code eigenParams.tolerance}.
 	 *
 	 * @param degeneracyTolerance due autovalori grezzi che differiscono per meno di questo valore
-	 *        vengono trattati come lo stesso esito di misura
+	 *        vengono trattati come lo stesso esito di misura; {@code null} per la soglia di default,
+	 *        altrimenti un valore finito e non negativo (zero: degeneri solo gli autovalori identici)
+	 * @throws IllegalArgumentException se {@code degeneracyTolerance} e' NaN, infinita o negativa
 	 */
 	public List<MeasurementProbability> measurementProbabilities(Observable<Complex> observable, QuantumState state,
 	                                                               StoppingParameters eigenParams, Real degeneracyTolerance) {
@@ -169,6 +173,12 @@ public final class QuantumSystemSimulator
 
 	private BornDistribution computeBornDistribution(Observable<Complex> observable, QuantumState state,
 	                                                   StoppingParameters eigenParams, Real degeneracyTolerance) {
+		if (degeneracyTolerance != null) {
+			double value = degeneracyTolerance.getValue();
+			if (!Double.isFinite(value) || value < 0.0) {
+				throw new IllegalArgumentException("La soglia di degenerazione deve essere finita e non negativa: " + degeneracyTolerance + ".");
+			}
+		}
 		SolverResult<EigenDecomposition> result = new HermitianEigenvalueSolver().solve(observable.asOperator(), eigenParams);
 		if (result.getStatus() != TerminationStatus.CONVERGED) {
 			throw new IllegalStateException("Eigenvalue decomposition did not converge: " + result.getStatus());
